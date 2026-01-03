@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-A web-based GUI for building neuroimaging (fMRI) analysis workflows. Users visually design workflows by dragging/dropping analysis operations (FSL, AFNI, SPM) onto a canvas, configure parameters, connect nodes, and export to Common Workflow Language (CWL) format.
+A web-based GUI for building neuroimaging (fMRI) analysis workflows. Users visually design workflows by dragging/dropping analysis operations (FSL, AFNI, FreeSurfer, ANTs) onto a canvas, configure parameters, connect nodes, and export to Common Workflow Language (CWL) format.
 
 **Live Demo**: https://kunaalagarwal.github.io/fMRIbuild/
 
@@ -18,24 +18,30 @@ A web-based GUI for building neuroimaging (fMRI) analysis workflows. Users visua
 
 ```
 src/
-├── components/          # React components
-│   ├── main.jsx         # App entry, workspace state provider
+├── main.jsx                # App entry point
+├── components/             # React components (8 files)
+│   ├── actionsBar.jsx      # Generate workflow + workspace buttons
+│   ├── footer.jsx          # Footer component
+│   ├── headerBar.jsx       # Header with help modal
+│   ├── NodeComponent.jsx   # Custom node with parameter editing modal
+│   ├── toggleWorkflowBar.jsx  # Workspace tab navigation
 │   ├── workflowCanvas.jsx  # ReactFlow canvas for node/edge editing
 │   ├── workflowMenu.jsx    # Left sidebar with draggable tools
-│   ├── NodeComponent.jsx   # Custom node with parameter editing modal
-│   ├── actionsBar.jsx      # Generate workflow + workspace buttons
-│   ├── headerBar.jsx       # Header with help modal
-│   └── toggleWorkflowBar.jsx # Workspace tab navigation
+│   └── workflowMenuItem.jsx   # Individual tool item with hover info
+├── data/
+│   └── toolData.js         # Tool metadata by library (100+ tools)
 ├── hooks/
 │   ├── useWorkspaces.js    # Multi-workspace state + localStorage persistence
 │   ├── generateWorkflow.js # Orchestrates CWL zip generation
 │   └── buildWorkflow.js    # Converts ReactFlow graph to CWL YAML
-└── styles/              # Paired CSS files for each component
+└── styles/                 # CSS files (9 files, paired with components)
 
 public/cwl/
-├── toolMap.js           # Tool registry (inputs, outputs, CWL paths)
-├── fsl/                 # FSL tool CWL definitions
-└── README.md            # Template for exported bundles
+├── toolMap.js              # CWL tool registry (execution layer)
+├── fsl/                    # FSL CWL tool definitions
+│   ├── bet.cwl
+│   └── fast.cwl
+└── README.md               # Template for exported bundles
 ```
 
 ## Essential Commands
@@ -49,14 +55,15 @@ npm run deploy    # Deploy to GitHub Pages
 
 ## Key Files Reference
 
-| Purpose | File | Key Lines |
-|---------|------|-----------|
-| App entry & state setup | src/components/main.jsx | 26-45 |
-| ReactFlow canvas config | src/components/workflowCanvas.jsx | 23-50 |
-| Node parameter editing | src/components/NodeComponent.jsx | 37-43 |
-| Workspace persistence | src/hooks/useWorkspaces.js | 6-24 |
-| CWL workflow generation | src/hooks/buildWorkflow.js | 12-150 |
-| Tool definitions | public/cwl/toolMap.js | 1-200+ |
+| Purpose | File |
+|---------|------|
+| App entry point | src/main.jsx |
+| ReactFlow canvas config | src/components/workflowCanvas.jsx |
+| Node parameter editing | src/components/NodeComponent.jsx |
+| Workspace persistence | src/hooks/useWorkspaces.js |
+| CWL workflow generation | src/hooks/buildWorkflow.js |
+| CWL tool definitions | public/cwl/toolMap.js |
+| Tool UI metadata | src/data/toolData.js |
 
 ## Data Flow
 
@@ -68,25 +75,40 @@ npm run deploy    # Deploy to GitHub Pages
    - `generateWorkflow.js` fetches CWL files, creates ZIP bundle
    - Downloads `workflow_bundle.zip`
 
-## Tool Registry
+## Tool Architecture (Two Layers)
 
-Tools are defined in `public/cwl/toolMap.js` with this structure:
+### Execution Layer: `public/cwl/toolMap.js`
+CWL tool definitions with full input/output specifications:
 - `id`: Unique identifier
 - `cwlPath`: Path to CWL file
-- `requiredInputs`/`optionalInputs`: Array of `{name, type, description}`
+- `requiredInputs`/`optionalInputs`: Array of `{name, type, description, flag}`
 - `primaryOutputs`: Outputs that can connect to next node's input
-- `outputs`: All tool outputs
+- `outputs`: All tool outputs with glob patterns
 
 Type system: `File`, `string`, `int`, `double`, `boolean`, `record`
+
+### Display Layer: `src/data/toolData.js`
+UI metadata for 100+ tools organized by library:
+- FSL, AFNI, FreeSurfer, ANTs libraries
+- Each tool: `{name, fullName, function, typicalUse, docUrl}`
+- Used for menu display, hover info, and documentation links
+
+## Current Tools
+
+**CWL Implemented** (2 tools with full workflow support):
+- `bet` - Brain Extraction Tool (FSL)
+- `fast` - FMRIB's Automated Segmentation Tool (FSL)
+
+**UI Available** (~100 tools for future implementation):
+- FSL: Preprocessing, Statistical, ICA/Denoising, Diffusion/Structural, Utilities
+- AFNI: Preprocessing, Statistical, Connectivity, ROI/Parcellation, Utilities
+- FreeSurfer: Surface Reconstruction, Parcellation, Functional, Morphometry
+- ANTs: Registration, Segmentation, Utilities
 
 ## Environment Configuration
 
 - `vite.config.js`: Base URL set to `/fMRIbuild/` for GitHub Pages
 - CWL files fetched using `import.meta.env.BASE_URL` for path resolution
-
-## Current Tools
-
-Brain Extraction, Segmentation, Registration, Smoothing, Filtering, Transformation, Preprocessing, Normalization, Feature Extraction, Fnirt, Flirt, 3D-Deconvolution, 3D-Merge, 3D-Shift
 
 ---
 
@@ -102,11 +124,11 @@ When working on specific areas, check these files:
 ### Tool Reference Summary
 
 The `fmri_tools_reference.md` contains ~150 neuroimaging tools with CWL compatibility status:
-- **✅ Ready**: ~120 tools (FSL, AFNI, ANTs, FreeSurfer CLI tools)
-- **⚠️ Possible**: ~25 tools (SPM/MATLAB-based, complex pipelines)
-- **❌ Not Feasible**: ~5 tools (GUI-only)
+- **Ready**: ~120 tools (FSL, AFNI, ANTs, FreeSurfer CLI tools)
+- **Possible**: ~25 tools (SPM/MATLAB-based, complex pipelines)
+- **Not Feasible**: ~5 tools (GUI-only)
 
-**Implementation priority**: Brain extraction → Motion correction → Registration → Smoothing → Segmentation → Statistical analysis
+**Implementation priority**: Brain extraction -> Motion correction -> Registration -> Smoothing -> Segmentation -> Statistical analysis
 
 ---
 
@@ -116,3 +138,4 @@ The `fmri_tools_reference.md` contains ~150 neuroimaging tools with CWL compatib
 - Components import paired CSS files (e.g., `actionsBar.jsx` imports `actionsBar.css`)
 - Error handling uses `alert()` for user-facing errors, `console.error()` for debug
 - Workspace state persists to localStorage automatically
+- Double-click a tool in the menu to access its documentation

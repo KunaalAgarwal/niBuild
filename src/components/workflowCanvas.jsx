@@ -1,6 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import ReactFlow, {
-  addEdge,
   Background,
   Controls,
   MiniMap,
@@ -14,6 +13,7 @@ import '../styles/workflowCanvas.css';
 import '../styles/actionsBar.css';
 
 import NodeComponent from './NodeComponent';
+import EdgeMappingModal from './EdgeMappingModal';
 
 // Define node types.
 const nodeTypes = { default: NodeComponent };
@@ -25,6 +25,12 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
+  // Edge mapping modal state
+  const [showEdgeModal, setShowEdgeModal] = useState(false);
+  const [pendingConnection, setPendingConnection] = useState(null);
+  const [editingEdge, setEditingEdge] = useState(null);
+  const [edgeModalData, setEdgeModalData] = useState(null);
 
   // --- INITIALIZATION & Synchronization ---
   // This effect watches for changes in the persistent workspace.
@@ -42,7 +48,17 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
             onSaveParameters: (newParams) => handleNodeUpdate(node.id, newParams)
           }
         }));
-        const initialEdges = workflowItems.edges || [];
+        // Restore edges with styling and data (mappings)
+        const initialEdges = (workflowItems.edges || []).map((edge) => ({
+          ...edge,
+          animated: true,
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            width: 10,
+            height: 10,
+          },
+          style: { strokeWidth: 2 },
+        }));
         setNodes(initialNodes);
         setEdges(initialEdges);
       }
@@ -69,29 +85,116 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
     });
   };
 
-  // Connect edges.
+  // Connect edges - open modal to configure mapping.
   const onConnect = useCallback(
       (connection) => {
-        setEdges((eds) => {
-          const newEdges = addEdge(
-              {
-                ...connection,
-                animated: true,
-                markerEnd: {
-                  type: MarkerType.ArrowClosed,
-                  width: 10,
-                  height: 10,
-                },
-                style: { strokeWidth: 2 },
-              },
-              eds
-          );
-          updateWorkspaceState(nodes, newEdges);
-          return newEdges;
-        });
+        // Store pending connection and open modal
+        setPendingConnection(connection);
+        setEditingEdge(null);
+
+        // Get source/target node info for modal
+        const sourceNode = nodes.find(n => n.id === connection.source);
+        const targetNode = nodes.find(n => n.id === connection.target);
+
+        if (sourceNode && targetNode) {
+          setEdgeModalData({
+            sourceNode: { id: sourceNode.id, label: sourceNode.data.label },
+            targetNode: { id: targetNode.id, label: targetNode.data.label }
+          });
+          setShowEdgeModal(true);
+        }
       },
-      [nodes, edges, updateCurrentWorkspaceItems]
+      [nodes]
   );
+
+  // Handle double-click on edge to edit mapping
+  const onEdgeDoubleClick = useCallback(
+      (event, edge) => {
+        event.stopPropagation();
+        const sourceNode = nodes.find(n => n.id === edge.source);
+        const targetNode = nodes.find(n => n.id === edge.target);
+
+        if (sourceNode && targetNode) {
+          setEditingEdge(edge);
+          setPendingConnection(null);
+          setEdgeModalData({
+            sourceNode: { id: sourceNode.id, label: sourceNode.data.label },
+            targetNode: { id: targetNode.id, label: targetNode.data.label },
+            existingMappings: edge.data?.mappings || []
+          });
+          setShowEdgeModal(true);
+        }
+      },
+      [nodes]
+  );
+
+  // Handle saving edge mappings from modal
+  const handleEdgeMappingSave = useCallback(
+      (mappings) => {
+        if (editingEdge) {
+          // Update existing edge
+          setEdges((eds) => {
+            const updatedEdges = eds.map((e) =>
+                e.id === editingEdge.id
+                    ? { ...e, data: { ...e.data, mappings } }
+                    : e
+            );
+            updateWorkspaceState(nodes, updatedEdges);
+            return updatedEdges;
+          });
+        } else if (pendingConnection) {
+          // Create new edge with mappings
+          const newEdge = {
+            id: `${pendingConnection.source}-${pendingConnection.target}-${Date.now()}`,
+            source: pendingConnection.source,
+            target: pendingConnection.target,
+            animated: true,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              width: 10,
+              height: 10,
+            },
+            style: { strokeWidth: 2 },
+            data: { mappings }
+          };
+          setEdges((eds) => {
+            const newEdges = [...eds, newEdge];
+            updateWorkspaceState(nodes, newEdges);
+            return newEdges;
+          });
+        }
+
+        // Reset modal state
+        setShowEdgeModal(false);
+        setPendingConnection(null);
+        setEditingEdge(null);
+        setEdgeModalData(null);
+      },
+      [nodes, pendingConnection, editingEdge]
+  );
+
+  // Handle closing edge modal without saving
+  const handleEdgeModalClose = useCallback(() => {
+    setShowEdgeModal(false);
+    setPendingConnection(null);
+    setEditingEdge(null);
+    setEdgeModalData(null);
+  }, []);
+
+  // Wrap onEdgesChange to sync edge deletions to localStorage
+  const handleEdgesChange = useCallback((changes) => {
+    // Apply the changes first
+    onEdgesChange(changes);
+
+    // Check if any edges were deleted and sync to localStorage
+    const deletions = changes.filter(c => c.type === 'remove');
+    if (deletions.length > 0) {
+      setEdges((currentEdges) => {
+        updateWorkspaceState(nodes, currentEdges);
+        return currentEdges;
+      });
+    }
+  }, [nodes, onEdgesChange]);
 
   // Handle drag over.
   const handleDragOver = (event) => {
@@ -179,6 +282,7 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
     edges: edges.map((edge) => ({
       source: edge.source,
       target: edge.target,
+      data: edge.data,  // Include mapping data
     })),
   });
 
@@ -200,9 +304,10 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
               nodes={nodes}
               edges={edges}
               onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
+              onEdgesChange={handleEdgesChange}
               onConnect={onConnect}
               onNodesDelete={onNodesDelete}
+              onEdgeDoubleClick={onEdgeDoubleClick}
               fitView
               nodeTypes={nodeTypes}
               edgeTypes={edgeTypes}
@@ -213,6 +318,16 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
             <Controls />
           </ReactFlow>
         </div>
+
+        {/* Edge Mapping Modal */}
+        <EdgeMappingModal
+            show={showEdgeModal}
+            onClose={handleEdgeModalClose}
+            onSave={handleEdgeMappingSave}
+            sourceNode={edgeModalData?.sourceNode}
+            targetNode={edgeModalData?.targetNode}
+            existingMappings={edgeModalData?.existingMappings || []}
+        />
       </div>
   );
 }
