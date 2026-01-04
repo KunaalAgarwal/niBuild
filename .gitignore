@@ -7,4 +7,3 @@ node_modules/
 dist/
 /public/*.log   # Ignore logs
 /public/temp/   # Ignore temporary files
-.claude
