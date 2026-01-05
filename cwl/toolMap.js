@@ -4,6 +4,7 @@
  * Structure:
  * - id: short identifier for the tool
  * - cwlPath: path to CWL file relative to project root
+ * - dockerImage: Docker image name for this tool (without tag)
  * - primaryOutputs: outputs that flow to downstream steps (usually main image files)
  * - requiredInputs: inputs that MUST be satisfied for valid CWL
  *   - type: CWL type (File, string, int, double, boolean)
@@ -18,10 +19,19 @@
  *   - requires: optional input that must be set for this output to be produced
  */
 
+// Docker images for each neuroimaging library
+export const DOCKER_IMAGES = {
+    fsl: 'brainlife/fsl',
+    afni: 'afni/afni',
+    ants: 'antsx/ants',
+    freesurfer: 'freesurfer/freesurfer'
+};
+
 export const TOOL_MAP = {
     'bet': {
         id: 'bet',
         cwlPath: 'cwl/fsl/bet.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['brain_extraction'],
 
         requiredInputs: {
@@ -151,6 +161,7 @@ export const TOOL_MAP = {
     'fast': {
         id: 'fast',
         cwlPath: 'cwl/fsl/fast.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['segmented_files'],
 
         requiredInputs: {
@@ -306,6 +317,7 @@ export const TOOL_MAP = {
     'fslreorient2std': {
         id: 'fslreorient2std',
         cwlPath: 'cwl/fsl/fslreorient2std.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['reoriented_image'],
 
         requiredInputs: {
@@ -339,6 +351,7 @@ export const TOOL_MAP = {
     'fslroi': {
         id: 'fslroi',
         cwlPath: 'cwl/fsl/fslroi.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['roi_image'],
 
         requiredInputs: {
@@ -381,6 +394,7 @@ export const TOOL_MAP = {
     'fslsplit': {
         id: 'fslsplit',
         cwlPath: 'cwl/fsl/fslsplit.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['split_files'],
 
         requiredInputs: {
@@ -417,6 +431,7 @@ export const TOOL_MAP = {
     'fslmerge': {
         id: 'fslmerge',
         cwlPath: 'cwl/fsl/fslmerge.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['merged_image'],
 
         requiredInputs: {
@@ -456,6 +471,7 @@ export const TOOL_MAP = {
     'fslstats': {
         id: 'fslstats',
         cwlPath: 'cwl/fsl/fslstats.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['stats_output'],
 
         requiredInputs: {
@@ -491,6 +507,7 @@ export const TOOL_MAP = {
     'fslmeants': {
         id: 'fslmeants',
         cwlPath: 'cwl/fsl/fslmeants.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['timeseries'],
 
         requiredInputs: {
@@ -529,6 +546,7 @@ export const TOOL_MAP = {
     'cluster': {
         id: 'cluster',
         cwlPath: 'cwl/fsl/cluster.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['cluster_table'],
 
         requiredInputs: {
@@ -576,6 +594,7 @@ export const TOOL_MAP = {
     'mcflirt': {
         id: 'mcflirt',
         cwlPath: 'cwl/fsl/mcflirt.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['motion_corrected'],
 
         requiredInputs: {
@@ -625,6 +644,7 @@ export const TOOL_MAP = {
     'slicetimer': {
         id: 'slicetimer',
         cwlPath: 'cwl/fsl/slicetimer.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['slice_time_corrected'],
 
         requiredInputs: {
@@ -661,6 +681,7 @@ export const TOOL_MAP = {
     'susan': {
         id: 'susan',
         cwlPath: 'cwl/fsl/susan.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['smoothed_image'],
 
         requiredInputs: {
@@ -705,6 +726,7 @@ export const TOOL_MAP = {
     'flirt': {
         id: 'flirt',
         cwlPath: 'cwl/fsl/flirt.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['registered_image'],
 
         requiredInputs: {
@@ -764,6 +786,7 @@ export const TOOL_MAP = {
     'applywarp': {
         id: 'applywarp',
         cwlPath: 'cwl/fsl/applywarp.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['warped_image'],
 
         requiredInputs: {
@@ -811,6 +834,7 @@ export const TOOL_MAP = {
     'invwarp': {
         id: 'invwarp',
         cwlPath: 'cwl/fsl/invwarp.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['inverse_warp'],
 
         requiredInputs: {
@@ -852,6 +876,7 @@ export const TOOL_MAP = {
     'convertwarp': {
         id: 'convertwarp',
         cwlPath: 'cwl/fsl/convertwarp.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['combined_warp'],
 
         requiredInputs: {
@@ -890,6 +915,7 @@ export const TOOL_MAP = {
     'fslmaths': {
         id: 'fslmaths',
         cwlPath: 'cwl/fsl/fslmaths.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['output_image'],
 
         requiredInputs: {
@@ -937,6 +963,7 @@ export const TOOL_MAP = {
     'fnirt': {
         id: 'fnirt',
         cwlPath: 'cwl/fsl/fnirt.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['warped_image'],
 
         requiredInputs: {
@@ -988,6 +1015,7 @@ export const TOOL_MAP = {
     'fugue': {
         id: 'fugue',
         cwlPath: 'cwl/fsl/fugue.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['unwarped_image'],
 
         requiredInputs: {
@@ -1028,6 +1056,7 @@ export const TOOL_MAP = {
     'topup': {
         id: 'topup',
         cwlPath: 'cwl/fsl/topup.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['fieldcoef'],
 
         requiredInputs: {
@@ -1082,6 +1111,7 @@ export const TOOL_MAP = {
     'film_gls': {
         id: 'film_gls',
         cwlPath: 'cwl/fsl/film_gls.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['results'],
 
         requiredInputs: {
@@ -1120,6 +1150,7 @@ export const TOOL_MAP = {
     'flameo': {
         id: 'flameo',
         cwlPath: 'cwl/fsl/flameo.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['stats_dir'],
 
         requiredInputs: {
@@ -1173,6 +1204,7 @@ export const TOOL_MAP = {
     'randomise': {
         id: 'randomise',
         cwlPath: 'cwl/fsl/randomise.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['tstat'],
 
         requiredInputs: {
@@ -1222,6 +1254,7 @@ export const TOOL_MAP = {
     'melodic': {
         id: 'melodic',
         cwlPath: 'cwl/fsl/melodic.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['melodic_IC'],
 
         requiredInputs: {
@@ -1278,6 +1311,7 @@ export const TOOL_MAP = {
     'dual_regression': {
         id: 'dual_regression',
         cwlPath: 'cwl/fsl/dual_regression.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['stage2_spatial_maps'],
 
         requiredInputs: {
@@ -1343,6 +1377,7 @@ export const TOOL_MAP = {
     'run_first_all': {
         id: 'run_first_all',
         cwlPath: 'cwl/fsl/run_first_all.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['segmentation_files'],
 
         requiredInputs: {
@@ -1390,6 +1425,7 @@ export const TOOL_MAP = {
     'sienax': {
         id: 'sienax',
         cwlPath: 'cwl/fsl/sienax.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['report'],
 
         requiredInputs: {
@@ -1430,6 +1466,7 @@ export const TOOL_MAP = {
     'siena': {
         id: 'siena',
         cwlPath: 'cwl/fsl/siena.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['report'],
 
         requiredInputs: {
@@ -1473,6 +1510,7 @@ export const TOOL_MAP = {
     'fsl_anat': {
         id: 'fsl_anat',
         cwlPath: 'cwl/fsl/fsl_anat.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['t1_biascorr_brain'],
 
         requiredInputs: {
@@ -1520,6 +1558,7 @@ export const TOOL_MAP = {
     'probtrackx2': {
         id: 'probtrackx2',
         cwlPath: 'cwl/fsl/probtrackx2.cwl',
+        dockerImage: DOCKER_IMAGES.fsl,
         primaryOutputs: ['fdt_paths'],
 
         requiredInputs: {
@@ -1583,6 +1622,7 @@ export const TOOL_MAP = {
     '3dSkullStrip': {
         id: '3dSkullStrip',
         cwlPath: 'cwl/afni/3dSkullStrip.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['skull_stripped'],
 
         requiredInputs: {
@@ -1608,6 +1648,7 @@ export const TOOL_MAP = {
     '3dvolreg': {
         id: '3dvolreg',
         cwlPath: 'cwl/afni/3dvolreg.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['registered'],
 
         requiredInputs: {
@@ -1633,6 +1674,7 @@ export const TOOL_MAP = {
     '3dTshift': {
         id: '3dTshift',
         cwlPath: 'cwl/afni/3dTshift.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['shifted'],
 
         requiredInputs: {
@@ -1656,6 +1698,7 @@ export const TOOL_MAP = {
     '3dDespike': {
         id: '3dDespike',
         cwlPath: 'cwl/afni/3dDespike.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['despiked'],
 
         requiredInputs: {
@@ -1679,6 +1722,7 @@ export const TOOL_MAP = {
     '3dBandpass': {
         id: '3dBandpass',
         cwlPath: 'cwl/afni/3dBandpass.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['filtered'],
 
         requiredInputs: {
@@ -1704,6 +1748,7 @@ export const TOOL_MAP = {
     '3dBlurToFWHM': {
         id: '3dBlurToFWHM',
         cwlPath: 'cwl/afni/3dBlurToFWHM.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['blurred'],
 
         requiredInputs: {
@@ -1727,6 +1772,7 @@ export const TOOL_MAP = {
     '3dmerge': {
         id: '3dmerge',
         cwlPath: 'cwl/afni/3dmerge.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['merged'],
 
         requiredInputs: {
@@ -1750,6 +1796,7 @@ export const TOOL_MAP = {
     '3dAllineate': {
         id: '3dAllineate',
         cwlPath: 'cwl/afni/3dAllineate.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['aligned'],
 
         requiredInputs: {
@@ -1776,6 +1823,7 @@ export const TOOL_MAP = {
     '3dQwarp': {
         id: '3dQwarp',
         cwlPath: 'cwl/afni/3dQwarp.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['warped'],
 
         requiredInputs: {
@@ -1801,6 +1849,7 @@ export const TOOL_MAP = {
     '3dUnifize': {
         id: '3dUnifize',
         cwlPath: 'cwl/afni/3dUnifize.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['unifized'],
 
         requiredInputs: {
@@ -1823,6 +1872,7 @@ export const TOOL_MAP = {
     '3dAutomask': {
         id: '3dAutomask',
         cwlPath: 'cwl/afni/3dAutomask.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['mask'],
 
         requiredInputs: {
@@ -1846,6 +1896,7 @@ export const TOOL_MAP = {
     '3dTcat': {
         id: '3dTcat',
         cwlPath: 'cwl/afni/3dTcat.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['concatenated'],
 
         requiredInputs: {
@@ -1868,6 +1919,7 @@ export const TOOL_MAP = {
     '@auto_tlrc': {
         id: '@auto_tlrc',
         cwlPath: 'cwl/afni/auto_tlrc.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['tlrc_anat'],
 
         requiredInputs: {
@@ -1891,6 +1943,7 @@ export const TOOL_MAP = {
     '@SSwarper': {
         id: '@SSwarper',
         cwlPath: 'cwl/afni/SSwarper.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['skull_stripped', 'warped'],
 
         requiredInputs: {
@@ -1916,6 +1969,7 @@ export const TOOL_MAP = {
     'align_epi_anat': {
         id: 'align_epi_anat',
         cwlPath: 'cwl/afni/align_epi_anat.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['aligned_anat', 'aligned_epi'],
 
         requiredInputs: {
@@ -1944,6 +1998,7 @@ export const TOOL_MAP = {
     '3dDeconvolve': {
         id: '3dDeconvolve',
         cwlPath: 'cwl/afni/3dDeconvolve.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -1970,6 +2025,7 @@ export const TOOL_MAP = {
     '3dREMLfit': {
         id: '3dREMLfit',
         cwlPath: 'cwl/afni/3dREMLfit.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -1994,6 +2050,7 @@ export const TOOL_MAP = {
     '3dttest++': {
         id: '3dttest++',
         cwlPath: 'cwl/afni/3dttest++.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2018,6 +2075,7 @@ export const TOOL_MAP = {
     '3dANOVA': {
         id: '3dANOVA',
         cwlPath: 'cwl/afni/3dANOVA.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2039,6 +2097,7 @@ export const TOOL_MAP = {
     '3dANOVA2': {
         id: '3dANOVA2',
         cwlPath: 'cwl/afni/3dANOVA2.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2061,6 +2120,7 @@ export const TOOL_MAP = {
     '3dANOVA3': {
         id: '3dANOVA3',
         cwlPath: 'cwl/afni/3dANOVA3.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2084,6 +2144,7 @@ export const TOOL_MAP = {
     '3dClustSim': {
         id: '3dClustSim',
         cwlPath: 'cwl/afni/3dClustSim.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['clustsim_1D'],
 
         requiredInputs: {
@@ -2106,6 +2167,7 @@ export const TOOL_MAP = {
     '3dFWHMx': {
         id: '3dFWHMx',
         cwlPath: 'cwl/afni/3dFWHMx.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['fwhm_output'],
 
         requiredInputs: {
@@ -2130,6 +2192,7 @@ export const TOOL_MAP = {
     '3dMEMA': {
         id: '3dMEMA',
         cwlPath: 'cwl/afni/3dMEMA.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2151,6 +2214,7 @@ export const TOOL_MAP = {
     '3dMVM': {
         id: '3dMVM',
         cwlPath: 'cwl/afni/3dMVM.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2174,6 +2238,7 @@ export const TOOL_MAP = {
     '3dLME': {
         id: '3dLME',
         cwlPath: 'cwl/afni/3dLME.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2198,6 +2263,7 @@ export const TOOL_MAP = {
     '3dLMEr': {
         id: '3dLMEr',
         cwlPath: 'cwl/afni/3dLMEr.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2222,6 +2288,7 @@ export const TOOL_MAP = {
     '3dNetCorr': {
         id: '3dNetCorr',
         cwlPath: 'cwl/afni/3dNetCorr.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['correlation_matrix'],
 
         requiredInputs: {
@@ -2246,6 +2313,7 @@ export const TOOL_MAP = {
     '3dTcorr1D': {
         id: '3dTcorr1D',
         cwlPath: 'cwl/afni/3dTcorr1D.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['correlation'],
 
         requiredInputs: {
@@ -2269,6 +2337,7 @@ export const TOOL_MAP = {
     '3dTcorrMap': {
         id: '3dTcorrMap',
         cwlPath: 'cwl/afni/3dTcorrMap.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['mean_corr'],
 
         requiredInputs: {
@@ -2292,6 +2361,7 @@ export const TOOL_MAP = {
     '3dRSFC': {
         id: '3dRSFC',
         cwlPath: 'cwl/afni/3dRSFC.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['filtered'],
 
         requiredInputs: {
@@ -2320,6 +2390,7 @@ export const TOOL_MAP = {
     '3dROIstats': {
         id: '3dROIstats',
         cwlPath: 'cwl/afni/3dROIstats.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2343,6 +2414,7 @@ export const TOOL_MAP = {
     '3dmaskave': {
         id: '3dmaskave',
         cwlPath: 'cwl/afni/3dmaskave.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['average'],
 
         requiredInputs: {
@@ -2365,6 +2437,7 @@ export const TOOL_MAP = {
     '3dUndump': {
         id: '3dUndump',
         cwlPath: 'cwl/afni/3dUndump.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['dataset'],
 
         requiredInputs: {
@@ -2388,6 +2461,7 @@ export const TOOL_MAP = {
     'whereami': {
         id: 'whereami',
         cwlPath: 'cwl/afni/whereami.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['output'],
 
         requiredInputs: {},
@@ -2408,6 +2482,7 @@ export const TOOL_MAP = {
     '3dresample': {
         id: '3dresample',
         cwlPath: 'cwl/afni/3dresample.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['resampled'],
 
         requiredInputs: {
@@ -2431,6 +2506,7 @@ export const TOOL_MAP = {
     '3dfractionize': {
         id: '3dfractionize',
         cwlPath: 'cwl/afni/3dfractionize.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['fractionized'],
 
         requiredInputs: {
@@ -2455,6 +2531,7 @@ export const TOOL_MAP = {
     '3dcalc': {
         id: '3dcalc',
         cwlPath: 'cwl/afni/3dcalc.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['result'],
 
         requiredInputs: {
@@ -2478,6 +2555,7 @@ export const TOOL_MAP = {
     '3dTstat': {
         id: '3dTstat',
         cwlPath: 'cwl/afni/3dTstat.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['stats'],
 
         requiredInputs: {
@@ -2503,6 +2581,7 @@ export const TOOL_MAP = {
     '3dinfo': {
         id: '3dinfo',
         cwlPath: 'cwl/afni/3dinfo.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['info'],
 
         requiredInputs: {
@@ -2525,6 +2604,7 @@ export const TOOL_MAP = {
     '3dcopy': {
         id: '3dcopy',
         cwlPath: 'cwl/afni/3dcopy.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['copied'],
 
         requiredInputs: {
@@ -2546,6 +2626,7 @@ export const TOOL_MAP = {
     '3dZeropad': {
         id: '3dZeropad',
         cwlPath: 'cwl/afni/3dZeropad.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['padded'],
 
         requiredInputs: {
@@ -2572,6 +2653,7 @@ export const TOOL_MAP = {
     '3dNwarpApply': {
         id: '3dNwarpApply',
         cwlPath: 'cwl/afni/3dNwarpApply.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['warped'],
 
         requiredInputs: {
@@ -2595,6 +2677,7 @@ export const TOOL_MAP = {
     '3dNwarpCat': {
         id: '3dNwarpCat',
         cwlPath: 'cwl/afni/3dNwarpCat.cwl',
+        dockerImage: DOCKER_IMAGES.afni,
         primaryOutputs: ['concatenated_warp'],
 
         requiredInputs: {
@@ -2622,6 +2705,7 @@ export const TOOL_MAP = {
     'mri_convert': {
         id: 'mri_convert',
         cwlPath: 'cwl/freesurfer/mri_convert.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['converted'],
 
         requiredInputs: {
@@ -2653,6 +2737,7 @@ export const TOOL_MAP = {
     'mri_watershed': {
         id: 'mri_watershed',
         cwlPath: 'cwl/freesurfer/mri_watershed.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['brain'],
 
         requiredInputs: {
@@ -2681,6 +2766,7 @@ export const TOOL_MAP = {
     'mri_normalize': {
         id: 'mri_normalize',
         cwlPath: 'cwl/freesurfer/mri_normalize.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['normalized'],
 
         requiredInputs: {
@@ -2707,6 +2793,7 @@ export const TOOL_MAP = {
     'mri_segment': {
         id: 'mri_segment',
         cwlPath: 'cwl/freesurfer/mri_segment.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['segmentation'],
 
         requiredInputs: {
@@ -2732,6 +2819,7 @@ export const TOOL_MAP = {
     'mris_inflate': {
         id: 'mris_inflate',
         cwlPath: 'cwl/freesurfer/mris_inflate.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['inflated'],
 
         requiredInputs: {
@@ -2756,6 +2844,7 @@ export const TOOL_MAP = {
     'mris_sphere': {
         id: 'mris_sphere',
         cwlPath: 'cwl/freesurfer/mris_sphere.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['sphere'],
 
         requiredInputs: {
@@ -2782,6 +2871,7 @@ export const TOOL_MAP = {
     'mri_aparc2aseg': {
         id: 'mri_aparc2aseg',
         cwlPath: 'cwl/freesurfer/mri_aparc2aseg.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['aparc_aseg'],
 
         requiredInputs: {
@@ -2806,6 +2896,7 @@ export const TOOL_MAP = {
     'mri_annotation2label': {
         id: 'mri_annotation2label',
         cwlPath: 'cwl/freesurfer/mri_annotation2label.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['labels'],
 
         requiredInputs: {
@@ -2829,6 +2920,7 @@ export const TOOL_MAP = {
     'mris_ca_label': {
         id: 'mris_ca_label',
         cwlPath: 'cwl/freesurfer/mris_ca_label.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['annotation'],
 
         requiredInputs: {
@@ -2854,6 +2946,7 @@ export const TOOL_MAP = {
     'mri_label2vol': {
         id: 'mri_label2vol',
         cwlPath: 'cwl/freesurfer/mri_label2vol.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['label_volume'],
 
         requiredInputs: {
@@ -2885,6 +2978,7 @@ export const TOOL_MAP = {
     'bbregister': {
         id: 'bbregister',
         cwlPath: 'cwl/freesurfer/bbregister.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['out_reg'],
 
         requiredInputs: {
@@ -2912,6 +3006,7 @@ export const TOOL_MAP = {
     'mri_vol2surf': {
         id: 'mri_vol2surf',
         cwlPath: 'cwl/freesurfer/mri_vol2surf.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['out_file'],
 
         requiredInputs: {
@@ -2940,6 +3035,7 @@ export const TOOL_MAP = {
     'mri_surf2vol': {
         id: 'mri_surf2vol',
         cwlPath: 'cwl/freesurfer/mri_surf2vol.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['out_file'],
 
         requiredInputs: {
@@ -2967,6 +3063,7 @@ export const TOOL_MAP = {
     'mris_preproc': {
         id: 'mris_preproc',
         cwlPath: 'cwl/freesurfer/mris_preproc.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['out_file'],
 
         requiredInputs: {
@@ -2994,6 +3091,7 @@ export const TOOL_MAP = {
     'mri_glmfit': {
         id: 'mri_glmfit',
         cwlPath: 'cwl/freesurfer/mri_glmfit.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['glm_dir'],
 
         requiredInputs: {
@@ -3027,6 +3125,7 @@ export const TOOL_MAP = {
     'mris_anatomical_stats': {
         id: 'mris_anatomical_stats',
         cwlPath: 'cwl/freesurfer/mris_anatomical_stats.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['stats_table'],
 
         requiredInputs: {
@@ -3053,6 +3152,7 @@ export const TOOL_MAP = {
     'mri_segstats': {
         id: 'mri_segstats',
         cwlPath: 'cwl/freesurfer/mri_segstats.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['summary'],
 
         requiredInputs: {
@@ -3080,6 +3180,7 @@ export const TOOL_MAP = {
     'aparcstats2table': {
         id: 'aparcstats2table',
         cwlPath: 'cwl/freesurfer/aparcstats2table.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['table'],
 
         requiredInputs: {
@@ -3105,6 +3206,7 @@ export const TOOL_MAP = {
     'asegstats2table': {
         id: 'asegstats2table',
         cwlPath: 'cwl/freesurfer/asegstats2table.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['table'],
 
         requiredInputs: {
@@ -3135,6 +3237,7 @@ export const TOOL_MAP = {
     'dmri_postreg': {
         id: 'dmri_postreg',
         cwlPath: 'cwl/freesurfer/dmri_postreg.cwl',
+        dockerImage: DOCKER_IMAGES.freesurfer,
         primaryOutputs: ['out_file'],
 
         requiredInputs: {
@@ -3164,6 +3267,7 @@ export const TOOL_MAP = {
     'N4BiasFieldCorrection': {
         id: 'N4BiasFieldCorrection',
         cwlPath: 'cwl/ants/N4BiasFieldCorrection.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['corrected_image'],
 
         requiredInputs: {
@@ -3191,6 +3295,7 @@ export const TOOL_MAP = {
     'DenoiseImage': {
         id: 'DenoiseImage',
         cwlPath: 'cwl/ants/DenoiseImage.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['denoised_image'],
 
         requiredInputs: {
@@ -3218,6 +3323,7 @@ export const TOOL_MAP = {
     'ImageMath': {
         id: 'ImageMath',
         cwlPath: 'cwl/ants/ImageMath.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['output'],
 
         requiredInputs: {
@@ -3241,6 +3347,7 @@ export const TOOL_MAP = {
     'ThresholdImage': {
         id: 'ThresholdImage',
         cwlPath: 'cwl/ants/ThresholdImage.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['thresholded'],
 
         requiredInputs: {
@@ -3267,6 +3374,7 @@ export const TOOL_MAP = {
     'LabelGeometryMeasures': {
         id: 'LabelGeometryMeasures',
         cwlPath: 'cwl/ants/LabelGeometryMeasures.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['csv_output'],
 
         requiredInputs: {
@@ -3288,6 +3396,7 @@ export const TOOL_MAP = {
     'antsJointLabelFusion.sh': {
         id: 'antsJointLabelFusion.sh',
         cwlPath: 'cwl/ants/antsJointLabelFusion.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['labeled_image'],
 
         requiredInputs: {
@@ -3319,6 +3428,7 @@ export const TOOL_MAP = {
     'antsRegistration': {
         id: 'antsRegistration',
         cwlPath: 'cwl/ants/antsRegistration.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['warped_image', 'forward_transforms'],
 
         requiredInputs: {
@@ -3352,6 +3462,7 @@ export const TOOL_MAP = {
     'antsRegistrationSyN.sh': {
         id: 'antsRegistrationSyN.sh',
         cwlPath: 'cwl/ants/antsRegistrationSyN.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['warped_image', 'affine_transform', 'warp_field'],
 
         requiredInputs: {
@@ -3383,6 +3494,7 @@ export const TOOL_MAP = {
     'antsRegistrationSyNQuick.sh': {
         id: 'antsRegistrationSyNQuick.sh',
         cwlPath: 'cwl/ants/antsRegistrationSyNQuick.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['warped_image', 'affine_transform'],
 
         requiredInputs: {
@@ -3411,6 +3523,7 @@ export const TOOL_MAP = {
     'antsApplyTransforms': {
         id: 'antsApplyTransforms',
         cwlPath: 'cwl/ants/antsApplyTransforms.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['transformed_image'],
 
         requiredInputs: {
@@ -3437,6 +3550,7 @@ export const TOOL_MAP = {
     'antsMotionCorr': {
         id: 'antsMotionCorr',
         cwlPath: 'cwl/ants/antsMotionCorr.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['corrected_image'],
 
         requiredInputs: {
@@ -3468,6 +3582,7 @@ export const TOOL_MAP = {
     'antsIntermodalityIntrasubject.sh': {
         id: 'antsIntermodalityIntrasubject.sh',
         cwlPath: 'cwl/ants/antsIntermodalityIntrasubject.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['warped_image', 'affine_transform'],
 
         requiredInputs: {
@@ -3499,6 +3614,7 @@ export const TOOL_MAP = {
     'Atropos': {
         id: 'Atropos',
         cwlPath: 'cwl/ants/Atropos.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['segmentation'],
 
         requiredInputs: {
@@ -3527,6 +3643,7 @@ export const TOOL_MAP = {
     'antsAtroposN4.sh': {
         id: 'antsAtroposN4.sh',
         cwlPath: 'cwl/ants/antsAtroposN4.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['segmentation', 'bias_corrected'],
 
         requiredInputs: {
@@ -3556,6 +3673,7 @@ export const TOOL_MAP = {
     'antsBrainExtraction.sh': {
         id: 'antsBrainExtraction.sh',
         cwlPath: 'cwl/ants/antsBrainExtraction.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['brain_extracted', 'brain_mask'],
 
         requiredInputs: {
@@ -3583,6 +3701,7 @@ export const TOOL_MAP = {
     'KellyKapowski': {
         id: 'KellyKapowski',
         cwlPath: 'cwl/ants/KellyKapowski.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['thickness_image'],
 
         requiredInputs: {
@@ -3610,6 +3729,7 @@ export const TOOL_MAP = {
     'antsCorticalThickness.sh': {
         id: 'antsCorticalThickness.sh',
         cwlPath: 'cwl/ants/antsCorticalThickness.cwl',
+        dockerImage: DOCKER_IMAGES.ants,
         primaryOutputs: ['cortical_thickness', 'brain_segmentation', 'brain_extraction_mask'],
 
         requiredInputs: {
