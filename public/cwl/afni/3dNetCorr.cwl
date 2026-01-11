@@ -8,7 +8,7 @@ baseCommand: '3dNetCorr'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log

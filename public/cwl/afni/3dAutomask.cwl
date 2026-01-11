@@ -8,7 +8,7 @@ baseCommand: '3dAutomask'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -95,28 +95,24 @@ outputs:
   mask:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix)+orig.BRIK.gz
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   masked_input:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.apply_prefix)+orig.HEAD
-        - $(inputs.apply_prefix)+orig.BRIK
-        - $(inputs.apply_prefix).nii
-        - $(inputs.apply_prefix).nii.gz
+      glob: $(inputs.apply_prefix)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   depth_map:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.depth)+orig.HEAD
-        - $(inputs.depth)+orig.BRIK
-        - $(inputs.depth).nii
-        - $(inputs.depth).nii.gz
+      glob: $(inputs.depth)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   log:
     type: File
     outputBinding:

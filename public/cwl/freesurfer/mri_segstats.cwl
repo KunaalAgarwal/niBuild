@@ -9,12 +9,27 @@ baseCommand: 'mri_segstats'
 
 hints:
   DockerRequirement:
-    dockerPull: freesurfer/freesurfer:latest
+    dockerPull: freesurfer/freesurfer:7.4.1
+
+requirements:
+  EnvVarRequirement:
+    envDef:
+      - envName: SUBJECTS_DIR
+        envValue: $(inputs.subjects_dir.path)
+      - envName: FS_LICENSE
+        envValue: $(inputs.fs_license.path)
 
 stdout: mri_segstats.log
 stderr: mri_segstats.log
 
 inputs:
+  subjects_dir:
+    type: Directory
+    label: FreeSurfer SUBJECTS_DIR
+  fs_license:
+    type: File
+    label: FreeSurfer license file
+
   # Segmentation input
   seg:
     type: File

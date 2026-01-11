@@ -4,11 +4,11 @@
 
 cwlVersion: v1.2
 class: CommandLineTool
-baseCommand: '@SSwarper'
+baseCommand: ['xvfb-run', '-a', '@SSwarper']
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: fmribuild/afni-test:latest
 
 stdout: $(inputs.subid)_SSwarper.log
 stderr: $(inputs.subid)_SSwarper.log
@@ -126,20 +126,26 @@ outputs:
     type: File
     outputBinding:
       glob:
-        - anatSS.$(inputs.subid).nii*
-        - anatSS.$(inputs.subid)+orig.*
+        - anatSS.$(inputs.subid).nii
+        - anatSS.$(inputs.subid).nii.gz
   warped:
-    type: File
+    type: ['null', File]
     outputBinding:
       glob:
-        - anatQQ.$(inputs.subid).nii*
-        - anatQQ.$(inputs.subid)+tlrc.*
+        - anatQQ.$(inputs.subid)+tlrc.HEAD
+        - anatQQ.$(inputs.subid)+tlrc.BRIK
+        - anatQQ.$(inputs.subid)+tlrc.BRIK.gz
+        - anatQQ.$(inputs.subid).nii
+        - anatQQ.$(inputs.subid).nii.gz
   warp:
-    type: File
+    type: ['null', File]
     outputBinding:
       glob:
-        - anatQQ.$(inputs.subid)_WARP.nii*
-        - anatQQ.$(inputs.subid)_WARP+tlrc.*
+        - anatQQ.$(inputs.subid)_WARP+tlrc.HEAD
+        - anatQQ.$(inputs.subid)_WARP+tlrc.BRIK
+        - anatQQ.$(inputs.subid)_WARP+tlrc.BRIK.gz
+        - anatQQ.$(inputs.subid)_WARP.nii
+        - anatQQ.$(inputs.subid)_WARP.nii.gz
   affine:
     type: ['null', File]
     outputBinding:

@@ -8,7 +8,10 @@ baseCommand: '3dMEMA'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: fmribuild/afni-test:latest
+
+requirements:
+  InlineJavascriptRequirement: {}
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -23,9 +26,19 @@ inputs:
   set:
     type:
       type: array
-      items: string
+      items:
+        type: record
+        name: mema_set
+        fields:
+          setname:
+            type: string
+          subject:
+            type: string
+          beta:
+            type: File
+          tstat:
+            type: File
     label: Data set specification (SETNAME subject beta_dset t_dset)
-    inputBinding: {prefix: -set}
   groups:
     type: ['null', string]
     label: Names of 1-2 groups for comparison
@@ -89,17 +102,39 @@ inputs:
     label: Verbosity level (0=quiet)
     inputBinding: {prefix: -verb}
 
+arguments:
+  - valueFrom: |
+      ${
+        var args = [];
+        if (inputs.set && inputs.set.length) {
+          var grouped = {};
+          inputs.set.forEach(function(entry) {
+            if (!grouped[entry.setname]) {
+              grouped[entry.setname] = [];
+            }
+            grouped[entry.setname].push(entry);
+          });
+          Object.keys(grouped).forEach(function(name) {
+            args.push("-set", name);
+            grouped[name].forEach(function(entry) {
+              args.push(entry.subject);
+              args.push(entry.beta.path);
+              args.push(entry.tstat.path);
+            });
+          });
+        }
+        return args;
+      }
+    position: 1
+
 outputs:
   stats:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix)+tlrc.HEAD
-        - $(inputs.prefix)+tlrc.BRIK
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   log:
     type: File
     outputBinding:

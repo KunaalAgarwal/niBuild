@@ -8,7 +8,10 @@ baseCommand: 'antsMotionCorr'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
+
+requirements:
+  InlineJavascriptRequirement: {}
 
 stdout: antsMotionCorr.log
 stderr: antsMotionCorr.log
@@ -35,7 +38,9 @@ inputs:
   metric:
     type: string
     label: Metric specification (e.g., MI[fixed,moving,1,32,Regular,0.1])
-    inputBinding: {prefix: -m}
+    inputBinding:
+      prefix: -m
+      valueFrom: $(self.replace("{fixed}", inputs.fixed_image.path).replace("{moving}", inputs.moving_image.path))
   transform:
     type: string
     label: Transform type (e.g., Rigid[0.1] or Affine[0.1])

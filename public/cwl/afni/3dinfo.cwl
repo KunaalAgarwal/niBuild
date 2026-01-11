@@ -8,7 +8,7 @@ baseCommand: '3dinfo'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: 3dinfo_output.txt
 stderr: 3dinfo.log

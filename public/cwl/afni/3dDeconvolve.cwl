@@ -8,7 +8,35 @@ baseCommand: '3dDeconvolve'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
+
+requirements:
+  InlineJavascriptRequirement: {}
+  SchemaDefRequirement:
+    types:
+      - name: stim_times_spec
+        type: record
+        fields:
+          index:
+            type: int
+          file:
+            type: File
+          model:
+            type: string
+      - name: stim_file_spec
+        type: record
+        fields:
+          index:
+            type: int
+          file:
+            type: File
+      - name: stim_label_spec
+        type: record
+        fields:
+          index:
+            type: int
+          label:
+            type: string
 
 stdout: $(inputs.bucket).log
 stderr: $(inputs.bucket).log
@@ -38,25 +66,22 @@ inputs:
   # Stimulus timing files (multiple can be specified)
   stim_times:
     type:
-      - 'null'
-      - type: array
-        items: string
+      type: array
+      items: stim_times_spec
+    default: []
     label: Stimulus times specification (k tname Rmodel)
-    inputBinding: {prefix: -stim_times}
   stim_file:
     type:
-      - 'null'
-      - type: array
-        items: string
+      type: array
+      items: stim_file_spec
+    default: []
     label: Stimulus file specification (k sname)
-    inputBinding: {prefix: -stim_file}
   stim_label:
     type:
-      - 'null'
-      - type: array
-        items: string
+      type: array
+      items: stim_label_spec
+    default: []
     label: Stimulus labels (k label)
-    inputBinding: {prefix: -stim_label}
 
   # Nuisance regressors
   ortvec:
@@ -100,9 +125,20 @@ inputs:
     type:
       - 'null'
       - type: array
-        items: string
+        items:
+          type: record
+          name: glt_label_spec
+          fields:
+            index:
+              type: int
+              inputBinding:
+                prefix: -glt_label
+                position: 1
+            label:
+              type: string
+              inputBinding:
+                position: 2
     label: GLT labels (k label)
-    inputBinding: {prefix: -glt_label}
 
   # Matrix output
   x1D:
@@ -154,17 +190,33 @@ inputs:
     label: Suppress progress messages
     inputBinding: {prefix: -quiet}
 
+arguments:
+  - valueFrom: |
+      ${
+        var args = [];
+        (inputs.stim_times || []).forEach(function(entry) {
+          var stimPath = entry.file.path || entry.file.basename;
+          args.push("-stim_times", entry.index.toString(), stimPath, entry.model);
+        });
+        (inputs.stim_file || []).forEach(function(entry) {
+          var stimPath = entry.file.path || entry.file.basename;
+          args.push("-stim_file", entry.index.toString(), stimPath);
+        });
+        (inputs.stim_label || []).forEach(function(entry) {
+          args.push("-stim_label", entry.index.toString(), entry.label);
+        });
+        return args;
+      }
+    position: 1
+
 outputs:
   stats:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.bucket)+orig.HEAD
-        - $(inputs.bucket)+orig.BRIK
-        - $(inputs.bucket)+tlrc.HEAD
-        - $(inputs.bucket)+tlrc.BRIK
-        - $(inputs.bucket).nii
-        - $(inputs.bucket).nii.gz
+      glob: $(inputs.bucket)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   design_matrix:
     type: ['null', File]
     outputBinding:
@@ -176,15 +228,17 @@ outputs:
   fitted:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.fitts)+orig.*
-        - $(inputs.fitts).nii*
+      glob: $(inputs.fitts)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   residuals:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.errts)+orig.*
-        - $(inputs.errts).nii*
+      glob: $(inputs.errts)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   log:
     type: File
     outputBinding:

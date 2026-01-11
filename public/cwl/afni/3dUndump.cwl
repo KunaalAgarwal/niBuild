@@ -8,7 +8,7 @@ baseCommand: '3dUndump'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -102,13 +102,10 @@ outputs:
   dataset:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix)+tlrc.HEAD
-        - $(inputs.prefix)+tlrc.BRIK
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   log:
     type: File
     outputBinding:

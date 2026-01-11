@@ -63,14 +63,15 @@ inputs:
     type: ['null', int]
     label: Random seed
     inputBinding:
-      prefix: --seed
+      prefix: --seed=
+      separate: false
 
   # One-sample test
   one_sample_group_mean:
     type: ['null', boolean]
     label: Perform one-sample group mean test
     inputBinding:
-      prefix: -1
+      prefix: "-1"
 
   # TFCE options
   tfce:
@@ -87,17 +88,20 @@ inputs:
     type: ['null', double]
     label: TFCE height parameter (default 2)
     inputBinding:
-      prefix: --tfce_H
+      prefix: --tfce_H=
+      separate: false
   tfce_E:
     type: ['null', double]
     label: TFCE extent parameter (default 0.5)
     inputBinding:
-      prefix: --tfce_E
+      prefix: --tfce_E=
+      separate: false
   tfce_C:
     type: ['null', double]
     label: TFCE connectivity parameter (default 6)
     inputBinding:
-      prefix: --tfce_C
+      prefix: --tfce_C=
+      separate: false
 
   # Cluster thresholding
   c_thresh:
@@ -192,19 +196,28 @@ outputs:
         - $(inputs.output)_tstat*.nii.gz
         - $(inputs.output)_tstat*.nii
   f_corrp:
-    type: ['null', File[]]
+    type:
+      - 'null'
+      - type: array
+        items: File
     outputBinding:
       glob:
         - $(inputs.output)_tfce_corrp_fstat*.nii.gz
         - $(inputs.output)_vox_corrp_fstat*.nii.gz
   f_p:
-    type: ['null', File[]]
+    type:
+      - 'null'
+      - type: array
+        items: File
     outputBinding:
       glob:
         - $(inputs.output)_tfce_p_fstat*.nii.gz
         - $(inputs.output)_vox_p_fstat*.nii.gz
   fstat:
-    type: ['null', File[]]
+    type:
+      - 'null'
+      - type: array
+        items: File
     outputBinding:
       glob:
         - $(inputs.output)_fstat*.nii.gz

@@ -4,68 +4,60 @@
 
 cwlVersion: v1.2
 class: CommandLineTool
-baseCommand: '@auto_tlrc'
+baseCommand: ['bash', '-lc']
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
+requirements:
+  InlineJavascriptRequirement: {}
 
-stdout: $(inputs.prefix).log
-stderr: $(inputs.prefix).log
+stdout: auto_tlrc.log
+stderr: auto_tlrc.log
 
 inputs:
   input:
     type: File
     label: Input anatomical dataset
-    inputBinding: {prefix: -input}
   base:
     type: File
     label: Reference template in standard space (e.g., TT_N27+tlrc)
-    inputBinding: {prefix: -base}
+    secondaryFiles:
+      - pattern: ^.BRIK
+        required: false
+      - pattern: ^.BRIK.gz
+        required: false
 
-  # Output naming
-  prefix:
-    type: ['null', string]
-    label: Output dataset prefix
-    inputBinding: {prefix: -prefix}
   suffix:
     type: ['null', string]
     label: Output dataset suffix
-    inputBinding: {prefix: -suffix}
 
   # Skull stripping options
   no_ss:
     type: ['null', boolean]
     label: Do not strip skull of input dataset
-    inputBinding: {prefix: -no_ss}
   warp_orig_vol:
     type: ['null', boolean]
     label: Preserve skull in output by warping original volume
-    inputBinding: {prefix: -warp_orig_vol}
 
   # Resolution options
   dxyz:
     type: ['null', double]
     label: Cubic voxel size in mm (default matches template)
-    inputBinding: {prefix: -dxyz}
   dx:
     type: ['null', double]
     label: X voxel dimension in mm
-    inputBinding: {prefix: -dx}
   dy:
     type: ['null', double]
     label: Y voxel dimension in mm
-    inputBinding: {prefix: -dy}
   dz:
     type: ['null', double]
     label: Z voxel dimension in mm
-    inputBinding: {prefix: -dz}
 
   # Padding
   pad_base:
     type: ['null', double]
     label: Padding in mm to prevent cropping (default 15)
-    inputBinding: {prefix: -pad_base}
 
   # Transform options
   xform:
@@ -74,41 +66,76 @@ inputs:
       - type: enum
         symbols: [affine_general, shift_rotate_scale]
     label: Warping transformation type
-    inputBinding: {prefix: -xform}
   init_xform:
     type: ['null', File]
     label: Apply preliminary affine transform before registration
-    inputBinding: {prefix: -init_xform}
 
   # Algorithm options
   maxite:
     type: ['null', int]
     label: Maximum iterations for alignment algorithm
-    inputBinding: {prefix: -maxite}
   use_3dAllineate:
     type: ['null', boolean]
     label: Use 3dAllineate instead of 3dWarpDrive
-    inputBinding: {prefix: -3dAllineate}
 
   # For applying transform to other datasets
   apar:
     type: ['null', File]
     label: Reference anatomical for applying transform
-    inputBinding: {prefix: -apar}
   onewarp:
     type: ['null', boolean]
     label: Single interpolation step
-    inputBinding: {prefix: -onewarp}
   twowarp:
     type: ['null', boolean]
     label: Dual interpolation steps
-    inputBinding: {prefix: -twowarp}
 
   # Other options
   overwrite:
     type: ['null', boolean]
     label: Replace existing outputs
-    inputBinding: {prefix: -overwrite}
+
+arguments:
+  - valueFrom: |
+      ${
+        var input = inputs.input.path;
+        var base = inputs.base.path || inputs.base.basename;
+        var args = ["@auto_tlrc", "-base", base, "-input", "auto_tlrc_input.nii.gz"];
+
+        function addFlag(name, val) {
+          if (val) {
+            args.push(name);
+          }
+        }
+        function addOpt(name, val) {
+          if (val !== null && val !== undefined) {
+            args.push(name, val.toString());
+          }
+        }
+
+        addOpt("-suffix", inputs.suffix);
+        addFlag("-no_ss", inputs.no_ss);
+        addFlag("-warp_orig_vol", inputs.warp_orig_vol);
+        addOpt("-dxyz", inputs.dxyz);
+        addOpt("-dx", inputs.dx);
+        addOpt("-dy", inputs.dy);
+        addOpt("-dz", inputs.dz);
+        addOpt("-pad_base", inputs.pad_base);
+        addOpt("-xform", inputs.xform);
+        if (inputs.init_xform) {
+          args.push("-init_xform", inputs.init_xform.path);
+        }
+        addOpt("-maxite", inputs.maxite);
+        addFlag("-3dAllineate", inputs.use_3dAllineate);
+        if (inputs.apar) {
+          args.push("-apar", inputs.apar.path);
+        }
+        addFlag("-onewarp", inputs.onewarp);
+        addFlag("-twowarp", inputs.twowarp);
+        addFlag("-overwrite", inputs.overwrite);
+
+        return "set -euo pipefail; cp \"" + input + "\" auto_tlrc_input.nii.gz; " + args.join(" ");
+      }
+    position: 0
 
 outputs:
   tlrc_anat:
@@ -118,6 +145,8 @@ outputs:
         - "*+tlrc.HEAD"
         - "*+tlrc.BRIK"
         - "*+tlrc.BRIK.gz"
+        - "*_at.nii"
+        - "*_at.nii.gz"
   transform:
     type: ['null', File]
     outputBinding:
@@ -125,4 +154,4 @@ outputs:
   log:
     type: ['null', File]
     outputBinding:
-      glob: $(inputs.prefix).log
+      glob: auto_tlrc.log

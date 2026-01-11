@@ -8,7 +8,7 @@ baseCommand: 'KellyKapowski'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: KellyKapowski.log
 stderr: KellyKapowski.log
@@ -52,14 +52,6 @@ inputs:
     type: ['null', double]
     label: Gradient field smoothing parameter
     inputBinding: {prefix: -m}
-  gm_label:
-    type: ['null', int]
-    label: Gray matter label in segmentation
-    inputBinding: {prefix: --gray-matter-label}
-  wm_label:
-    type: ['null', int]
-    label: White matter label in segmentation
-    inputBinding: {prefix: --white-matter-label}
   number_integration_points:
     type: ['null', int]
     label: Number of integration points

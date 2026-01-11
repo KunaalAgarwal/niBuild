@@ -8,7 +8,7 @@ baseCommand: '3dRSFC'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -123,34 +123,31 @@ outputs:
   filtered:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix)+tlrc.HEAD
-        - $(inputs.prefix)+tlrc.BRIK
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)_LFF+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   alff:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.prefix)_ALFF+orig.*
-        - $(inputs.prefix)_ALFF+tlrc.*
-        - $(inputs.prefix)_ALFF.nii*
+      glob: $(inputs.prefix)_ALFF+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   falff:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.prefix)_fALFF+orig.*
-        - $(inputs.prefix)_fALFF+tlrc.*
-        - $(inputs.prefix)_fALFF.nii*
+      glob: $(inputs.prefix)_fALFF+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   rsfa:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.prefix)_RSFA+orig.*
-        - $(inputs.prefix)_RSFA+tlrc.*
-        - $(inputs.prefix)_RSFA.nii*
+      glob: $(inputs.prefix)_RSFA+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   log:
     type: File
     outputBinding:

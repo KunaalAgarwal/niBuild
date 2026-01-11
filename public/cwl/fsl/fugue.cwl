@@ -32,12 +32,14 @@ inputs:
     type: ['null', File]
     label: Pre-calculated fieldmap in rad/s
     inputBinding:
-      prefix: --loadfmap
+      prefix: --loadfmap=
+      separate: false
   loadshift:
     type: ['null', File]
     label: Pre-calculated voxel shift map
     inputBinding:
-      prefix: --loadshift
+      prefix: --loadshift=
+      separate: false
 
   # Output options
   unwarp:
@@ -54,24 +56,28 @@ inputs:
     type: ['null', string]
     label: Save fieldmap in rad/s
     inputBinding:
-      prefix: --savefmap
+      prefix: --savefmap=
+      separate: false
   saveshift:
     type: ['null', string]
     label: Save voxel shift map
     inputBinding:
-      prefix: --saveshift
+      prefix: --saveshift=
+      separate: false
 
   # Sequence parameters
   dwell:
     type: ['null', double]
     label: EPI dwell time / echo spacing (seconds)
     inputBinding:
-      prefix: --dwell
+      prefix: --dwell=
+      separate: false
   asym:
     type: ['null', double]
     label: Asymmetry time (echo time difference) in ms
     inputBinding:
-      prefix: --asym
+      prefix: --asym=
+      separate: false
 
   # Unwarp direction
   unwarpdir:
@@ -81,14 +87,16 @@ inputs:
         symbols: [x, y, z, x-, y-, z-]
     label: Phase-encode / unwarp direction
     inputBinding:
-      prefix: --unwarpdir
+      prefix: --unwarpdir=
+      separate: false
 
   # Mask
   mask:
     type: ['null', File]
     label: Brain mask image
     inputBinding:
-      prefix: --mask
+      prefix: --mask=
+      separate: false
 
   # Regularization options
   smooth2:
@@ -100,7 +108,8 @@ inputs:
     type: ['null', double]
     label: 3D Gaussian smoothing sigma
     inputBinding:
-      prefix: --smooth3
+      prefix: --smooth3=
+      separate: false
   median:
     type: ['null', boolean]
     label: Apply 2D median filter
@@ -110,12 +119,14 @@ inputs:
     type: ['null', int]
     label: 3D polynomial fitting degree
     inputBinding:
-      prefix: --poly
+      prefix: --poly=
+      separate: false
   fourier:
     type: ['null', int]
     label: 3D sinusoidal fitting degree
     inputBinding:
-      prefix: --fourier
+      prefix: --fourier=
+      separate: false
   despike:
     type: ['null', boolean]
     label: Apply despiking filter

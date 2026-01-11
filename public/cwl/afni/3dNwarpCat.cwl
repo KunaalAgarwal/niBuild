@@ -8,7 +8,9 @@ baseCommand: '3dNwarpCat'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
+requirements:
+  InlineJavascriptRequirement: {}
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -17,24 +19,34 @@ inputs:
   prefix:
     type: string
     label: Output dataset prefix for concatenated warp
-    inputBinding: {prefix: -prefix}
+    inputBinding:
+      prefix: -prefix
+      valueFrom: $(runtime.outdir + "/" + self)
 
   # Warp inputs (can specify multiple)
   warp1:
     type: File
     label: First warp input
+    secondaryFiles:
+      - ^.BRIK
     inputBinding: {prefix: -warp1}
   warp2:
     type: ['null', File]
     label: Second warp input
+    secondaryFiles:
+      - ^.BRIK
     inputBinding: {prefix: -warp2}
   warp3:
     type: ['null', File]
     label: Third warp input
+    secondaryFiles:
+      - ^.BRIK
     inputBinding: {prefix: -warp3}
   warp4:
     type: ['null', File]
     label: Fourth warp input
+    secondaryFiles:
+      - ^.BRIK
     inputBinding: {prefix: -warp4}
 
   # Interpolation
@@ -68,13 +80,10 @@ outputs:
   concatenated_warp:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix)+tlrc.HEAD
-        - $(inputs.prefix)+tlrc.BRIK
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   log:
     type: File
     outputBinding:

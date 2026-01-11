@@ -8,15 +8,17 @@ baseCommand: '3dNwarpApply'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
 
 inputs:
   nwarp:
-    type: string
-    label: 3D warp dataset(s) - can catenate multiple warps
+    type: File
+    label: 3D warp dataset to apply
+    secondaryFiles:
+      - ^.BRIK
     inputBinding: {prefix: -nwarp}
   source:
     type: File
@@ -91,13 +93,10 @@ outputs:
   warped:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix)+tlrc.HEAD
-        - $(inputs.prefix)+tlrc.BRIK
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   log:
     type: File
     outputBinding:

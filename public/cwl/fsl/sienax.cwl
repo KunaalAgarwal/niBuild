@@ -7,6 +7,9 @@ cwlVersion: v1.2
 class: CommandLineTool
 baseCommand: 'sienax'
 
+requirements:
+  InlineJavascriptRequirement: {}
+
 hints:
   DockerRequirement:
     dockerPull: brainlife/fsl:latest
@@ -28,6 +31,7 @@ inputs:
     label: Output directory name
     inputBinding:
       prefix: -o
+      position: 2
 
   # Processing options
   bet_options:
@@ -35,31 +39,37 @@ inputs:
     label: BET options (e.g., "-f 0.3")
     inputBinding:
       prefix: -B
+      position: 2
   two_class:
     type: ['null', boolean]
     label: Two-class segmentation (no grey/white separation)
     inputBinding:
-      prefix: -2
+      prefix: "-2"
+      position: 2
   t2_weighted:
     type: ['null', boolean]
     label: Input is T2-weighted
     inputBinding:
       prefix: -t2
+      position: 2
   regional:
     type: ['null', boolean]
     label: Estimate regional volumes (peripheral GM, ventricular CSF)
     inputBinding:
       prefix: -r
+      position: 2
   lesion_mask:
     type: ['null', File]
     label: Lesion mask to correct mislabeled GM voxels
     inputBinding:
       prefix: -lm
+      position: 2
   fast_options:
     type: ['null', string]
     label: FAST segmentation options (e.g., "-i 20")
     inputBinding:
       prefix: -S
+      position: 2
 
   # Spatial constraints
   top_threshold:
@@ -67,17 +77,20 @@ inputs:
     label: Ignore from this height (mm) upwards in MNI space
     inputBinding:
       prefix: -t
+      position: 2
   bottom_threshold:
     type: ['null', double]
     label: Ignore from this height (mm) downwards in MNI space
     inputBinding:
       prefix: -b
+      position: 2
 
   debug:
     type: ['null', boolean]
     label: Debug mode (keep intermediate files)
     inputBinding:
       prefix: -d
+      position: 2
 
 outputs:
   output_directory:

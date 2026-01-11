@@ -8,7 +8,25 @@ baseCommand: '3dLMEr'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: fmribuild/afni-test:latest
+
+requirements:
+  InlineJavascriptRequirement: {}
+  InitialWorkDirRequirement:
+    listing: |
+      ${
+        var lines = [];
+        lines.push("Subj\tCond\tInputFile");
+        (inputs.table || []).forEach(function(row) {
+          var fpath = row.input_file.path || row.input_file.basename;
+          lines.push([row.subj, row.cond, fpath].join("\t"));
+        });
+        return [{
+          "class": "File",
+          "basename": "dataTable.txt",
+          "contents": lines.join("\n") + "\n"
+        }];
+      }
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -18,10 +36,20 @@ inputs:
     type: string
     label: Output filename prefix
     inputBinding: {prefix: -prefix}
-  dataTable:
-    type: File
-    label: Data structure in long format
-    inputBinding: {prefix: -dataTable}
+  table:
+    type:
+      type: array
+      items:
+        type: record
+        name: lmer_table_row
+        fields:
+          subj:
+            type: string
+          cond:
+            type: string
+          input_file:
+            type: File
+    label: Data table rows (Subj, Cond, InputFile)
 
   # Model specification (uses R formula syntax)
   model:
@@ -125,31 +153,32 @@ inputs:
     label: Number of parallel processors
     inputBinding: {prefix: -jobs}
 
+arguments:
+  - -dataTable
+  - "@dataTable.txt"
+
 outputs:
   stats:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix)+tlrc.HEAD
-        - $(inputs.prefix)+tlrc.BRIK
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   residuals:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.resid)+orig.*
-        - $(inputs.resid)+tlrc.*
-        - $(inputs.resid).nii*
+      glob: $(inputs.resid)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   random_effects:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.REprefix)+orig.*
-        - $(inputs.REprefix)+tlrc.*
-        - $(inputs.REprefix).nii*
+      glob: $(inputs.REprefix)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   log:
     type: File
     outputBinding:

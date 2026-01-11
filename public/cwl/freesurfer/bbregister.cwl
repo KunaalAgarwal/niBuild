@@ -9,12 +9,28 @@ baseCommand: 'bbregister'
 
 hints:
   DockerRequirement:
-    dockerPull: freesurfer/freesurfer:latest
+    dockerPull: freesurfer/freesurfer:7.4.1
+
+requirements:
+  EnvVarRequirement:
+    envDef:
+      - envName: SUBJECTS_DIR
+        envValue: $(inputs.subjects_dir.path)
+      - envName: FS_LICENSE
+        envValue: $(inputs.fs_license.path)
+  InlineJavascriptRequirement: {}
 
 stdout: bbregister.log
 stderr: bbregister.log
 
 inputs:
+  subjects_dir:
+    type: Directory
+    label: FreeSurfer SUBJECTS_DIR
+  fs_license:
+    type: File
+    label: FreeSurfer license file
+
   # Required inputs
   subject:
     type: string
@@ -54,39 +70,30 @@ inputs:
         }
 
   # Initialization options
-  init:
-    type:
-      - 'null'
-      - type: enum
-        symbols: [coreg, rr, spm, fsl, header, best]
-    label: Registration initialization method
+  init_coreg:
+    type: ['null', boolean]
+    label: Initialize using mri_coreg (default)
     inputBinding:
-      prefix: --init
+      prefix: --init-coreg
       position: 5
-  init_fsl:
+  init_header:
     type: ['null', boolean]
-    label: Initialize using FSL FLIRT
+    label: Initialize using header geometry
     inputBinding:
-      prefix: --init-fsl
+      prefix: --init-header
       position: 6
-  init_spm:
-    type: ['null', boolean]
-    label: Initialize using SPM spm_coreg
-    inputBinding:
-      prefix: --init-spm
-      position: 7
-  init_rr:
-    type: ['null', boolean]
-    label: Initialize using mri_robust_register
-    inputBinding:
-      prefix: --init-rr
-      position: 8
   init_reg:
     type: ['null', File]
     label: Initialize with existing registration file
     inputBinding:
       prefix: --init-reg
-      position: 9
+      position: 7
+  no_coreg_ref_mask:
+    type: ['null', boolean]
+    label: Do not use aparc+aseg.mgz as reference mask
+    inputBinding:
+      prefix: --no-coreg-ref-mask
+      position: 8
 
   # Degrees of freedom
   dof:
@@ -97,7 +104,57 @@ inputs:
     label: Degrees of freedom (6=rigid, 9=+scaling, 12=affine)
     inputBinding:
       prefix: --dof
+      position: 9
+
+  # Speed/optimization controls
+  tol:
+    type: ['null', double]
+    label: Second stage loop tolerance
+    inputBinding:
+      prefix: --tol
       position: 10
+  tol1d:
+    type: ['null', double]
+    label: Second stage 1D tolerance
+    inputBinding:
+      prefix: --tol1d
+      position: 11
+  nmax:
+    type: ['null', int]
+    label: Max number of iterations
+    inputBinding:
+      prefix: --nmax
+      position: 12
+  subsamp:
+    type: ['null', int]
+    label: Second stage vertex subsampling
+    inputBinding:
+      prefix: --subsamp
+      position: 13
+  subsamp1:
+    type: ['null', int]
+    label: Pass 1 vertex subsampling
+    inputBinding:
+      prefix: --subsamp1
+      position: 14
+  brute1max:
+    type: ['null', double]
+    label: Pass 1 brute force max translation
+    inputBinding:
+      prefix: --brute1max
+      position: 15
+  brute1delta:
+    type: ['null', double]
+    label: Pass 1 brute force delta
+    inputBinding:
+      prefix: --brute1delta
+      position: 16
+  no_brute2:
+    type: ['null', boolean]
+    label: Disable brute force search on pass 2
+    inputBinding:
+      prefix: --no-brute2
+      position: 17
 
   # Output options
   lta:
@@ -165,7 +222,7 @@ outputs:
   out_reg:
     type: File
     outputBinding:
-      glob: $(inputs.out_reg_file)*
+      glob: $(inputs.out_reg_file)
   out_fsl_mat:
     type: ['null', File]
     outputBinding:

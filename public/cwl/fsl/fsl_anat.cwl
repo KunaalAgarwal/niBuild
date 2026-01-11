@@ -7,6 +7,9 @@ cwlVersion: v1.2
 class: CommandLineTool
 baseCommand: 'fsl_anat'
 
+requirements:
+  InlineJavascriptRequirement: {}
+
 hints:
   DockerRequirement:
     dockerPull: brainlife/fsl:latest
@@ -24,6 +27,7 @@ inputs:
   output_dir:
     type: ['null', string]
     label: Output directory name
+    default: fsl_anat_out
     inputBinding:
       prefix: -o
 
@@ -40,6 +44,16 @@ inputs:
     label: Use weak bias field correction
     inputBinding:
       prefix: --weakbias
+  noreorient:
+    type: ['null', boolean]
+    label: Skip reorientation to standard
+    inputBinding:
+      prefix: --noreorient
+  nocrop:
+    type: ['null', boolean]
+    label: Skip robustfov cropping
+    inputBinding:
+      prefix: --nocrop
   nobias:
     type: ['null', boolean]
     label: Skip bias field correction
@@ -76,7 +90,8 @@ inputs:
     type: ['null', double]
     label: BET -f parameter (brain extraction threshold)
     inputBinding:
-      prefix: --betfparam
+      prefix: --betfparam=
+      separate: false
   bias_smoothing:
     type: ['null', double]
     label: Bias field smoothing (mm)
@@ -99,61 +114,61 @@ outputs:
   output_directory:
     type: Directory
     outputBinding:
-      glob: $(inputs.output_dir || inputs.input.nameroot).anat
+      glob: '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")'
   t1:
     type: ['null', File]
     outputBinding:
       glob:
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1.nii.gz
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1.nii
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1.nii.gz'
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1.nii'
   t1_brain:
     type: ['null', File]
     outputBinding:
       glob:
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_brain.nii.gz
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_brain.nii
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_brain.nii.gz'
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_brain.nii'
   t1_brain_mask:
     type: ['null', File]
     outputBinding:
       glob:
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_brain_mask.nii.gz
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_brain_mask.nii
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_brain_mask.nii.gz'
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_brain_mask.nii'
   t1_biascorr:
     type: ['null', File]
     outputBinding:
       glob:
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_biascorr.nii.gz
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_biascorr.nii
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_biascorr.nii.gz'
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_biascorr.nii'
   t1_biascorr_brain:
     type: ['null', File]
     outputBinding:
       glob:
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_biascorr_brain.nii.gz
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_biascorr_brain.nii
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_biascorr_brain.nii.gz'
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_biascorr_brain.nii'
   mni_to_t1_nonlin_warp:
     type: ['null', File]
     outputBinding:
       glob:
-        - $(inputs.output_dir || inputs.input.nameroot).anat/MNI_to_T1_nonlin_field.nii.gz
-        - $(inputs.output_dir || inputs.input.nameroot).anat/MNI_to_T1_nonlin_field.nii
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/MNI_to_T1_nonlin_field.nii.gz'
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/MNI_to_T1_nonlin_field.nii'
   t1_to_mni_nonlin_warp:
     type: ['null', File]
     outputBinding:
       glob:
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_to_MNI_nonlin_field.nii.gz
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_to_MNI_nonlin_field.nii
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_to_MNI_nonlin_field.nii.gz'
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_to_MNI_nonlin_field.nii'
   segmentation:
     type: ['null', File]
     outputBinding:
       glob:
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_fast_seg.nii.gz
-        - $(inputs.output_dir || inputs.input.nameroot).anat/T1_fast_seg.nii
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_fast_seg.nii.gz'
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/T1_fast_seg.nii'
   subcortical_seg:
     type: ['null', File]
     outputBinding:
       glob:
-        - $(inputs.output_dir || inputs.input.nameroot).anat/first_results/T1_first_all_fast_firstseg.nii.gz
-        - $(inputs.output_dir || inputs.input.nameroot).anat/first_results/T1_first_all_fast_firstseg.nii
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/first_results/T1_first_all_fast_firstseg.nii.gz'
+        - '$( (inputs.output_dir ? inputs.output_dir : inputs.input.nameroot.replace(/\.nii$/, "")) + ".anat")/first_results/T1_first_all_fast_firstseg.nii'
   log:
     type: File
     outputBinding:

@@ -8,7 +8,7 @@ baseCommand: 'N4BiasFieldCorrection'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: N4BiasFieldCorrection.log
 stderr: N4BiasFieldCorrection.log

@@ -8,7 +8,7 @@ baseCommand: 'antsBrainExtraction.sh'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: antsBrainExtraction.log
 stderr: antsBrainExtraction.log
