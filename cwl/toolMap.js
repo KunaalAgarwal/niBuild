@@ -38,7 +38,8 @@ export const TOOL_MAP = {
             input: {
                 type: 'File',
                 passthrough: true,
-                label: 'Input T1-weighted image'
+                label: 'Input T1-weighted image',
+                acceptedExtensions: ['.nii', '.nii.gz']
             },
             output: {
                 type: 'string',
@@ -168,7 +169,8 @@ export const TOOL_MAP = {
             input: {
                 type: 'File',
                 passthrough: true,
-                label: 'Input image (brain extracted recommended)'
+                label: 'Input image (brain extracted recommended)',
+                acceptedExtensions: ['.nii', '.nii.gz']
             },
             output: {
                 type: 'string',
@@ -324,7 +326,8 @@ export const TOOL_MAP = {
             input: {
                 type: 'File',
                 passthrough: true,
-                label: 'Input image to reorient'
+                label: 'Input image to reorient',
+                acceptedExtensions: ['.nii', '.nii.gz']
             },
             output: {
                 type: 'string',
@@ -601,7 +604,8 @@ export const TOOL_MAP = {
             input: {
                 type: 'File',
                 passthrough: true,
-                label: 'Input 4D timeseries'
+                label: 'Input 4D timeseries',
+                acceptedExtensions: ['.nii', '.nii.gz']
             },
             output: {
                 type: 'string',
@@ -733,7 +737,8 @@ export const TOOL_MAP = {
             input: {
                 type: 'File',
                 passthrough: true,
-                label: 'Input image'
+                label: 'Input image',
+                acceptedExtensions: ['.nii', '.nii.gz']
             },
             reference: {
                 type: 'File',
@@ -1626,7 +1631,7 @@ export const TOOL_MAP = {
         primaryOutputs: ['skull_stripped'],
 
         requiredInputs: {
-            input: { type: 'File', passthrough: true, label: 'Input volume' },
+            input: { type: 'File', passthrough: true, label: 'Input volume', acceptedExtensions: ['.nii', '.nii.gz', '+orig.*', '+tlrc.*'] },
             prefix: { type: 'string', label: 'Output volume prefix' }
         },
 
@@ -1652,7 +1657,7 @@ export const TOOL_MAP = {
         primaryOutputs: ['registered'],
 
         requiredInputs: {
-            input: { type: 'File', passthrough: true, label: 'Input 4D dataset' },
+            input: { type: 'File', passthrough: true, label: 'Input 4D dataset', acceptedExtensions: ['.nii', '.nii.gz', '+orig.*', '+tlrc.*'] },
             prefix: { type: 'string', label: 'Output prefix' }
         },
 
@@ -2709,7 +2714,7 @@ export const TOOL_MAP = {
         primaryOutputs: ['converted'],
 
         requiredInputs: {
-            input: { type: 'File', passthrough: true, label: 'Input volume file' },
+            input: { type: 'File', passthrough: true, label: 'Input volume file', acceptedExtensions: ['.nii', '.nii.gz', '.mgz', '.mgh'] },
             output: { type: 'string', label: 'Output filename' }
         },
 
@@ -3271,7 +3276,7 @@ export const TOOL_MAP = {
         primaryOutputs: ['corrected_image'],
 
         requiredInputs: {
-            input_image: { type: 'File', passthrough: true, label: 'Input image for bias correction' },
+            input_image: { type: 'File', passthrough: true, label: 'Input image for bias correction', acceptedExtensions: ['.nii', '.nii.gz'] },
             output_prefix: { type: 'string', label: 'Output prefix' }
         },
 
