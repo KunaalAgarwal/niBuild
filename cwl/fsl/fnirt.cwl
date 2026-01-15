@@ -20,97 +20,114 @@ inputs:
     type: File
     label: Input image to register
     inputBinding:
-      prefix: --in
+      prefix: --in=
+      separate: false
   reference:
     type: File
     label: Reference/target image
     inputBinding:
-      prefix: --ref
+      prefix: --ref=
+      separate: false
 
   # Initial transforms
   affine:
     type: ['null', File]
     label: Affine transformation matrix from FLIRT
     inputBinding:
-      prefix: --aff
+      prefix: --aff=
+      separate: false
   inwarp:
     type: ['null', File]
     label: Initial non-linear warp (coefficients or field)
     inputBinding:
-      prefix: --inwarp
+      prefix: --inwarp=
+      separate: false
   intin:
     type: ['null', File]
     label: Initial intensity mapping from previous FNIRT run
     inputBinding:
-      prefix: --intin
+      prefix: --intin=
+      separate: false
 
   # Configuration
   config:
     type: ['null', File]
     label: Configuration file with predefined settings
     inputBinding:
-      prefix: --config
+      prefix: --config=
+      separate: false
 
   # Masks
   refmask:
     type: ['null', File]
     label: Reference space mask
     inputBinding:
-      prefix: --refmask
+      prefix: --refmask=
+      separate: false
   inmask:
     type: ['null', File]
     label: Input image mask
     inputBinding:
-      prefix: --inmask
+      prefix: --inmask=
+      separate: false
 
   # Output files
   cout:
     type: ['null', string]
     label: Output warp coefficients filename
     inputBinding:
-      prefix: --cout
+      prefix: --cout=
+      separate: false
   iout:
     type: ['null', string]
     label: Output warped image filename
     inputBinding:
-      prefix: --iout
+      prefix: --iout=
+      separate: false
   fout:
     type: ['null', string]
     label: Output displacement field filename
     inputBinding:
-      prefix: --fout
+      prefix: --fout=
+      separate: false
   jout:
     type: ['null', string]
     label: Output Jacobian map filename
     inputBinding:
-      prefix: --jout
+      prefix: --jout=
+      separate: false
   refout:
     type: ['null', string]
     label: Output intensity modulated reference filename
     inputBinding:
-      prefix: --refout
+      prefix: --refout=
+      separate: false
   intout:
     type: ['null', string]
     label: Output intensity transformation filename
     inputBinding:
-      prefix: --intout
+      prefix: --intout=
+      separate: false
   logout:
     type: ['null', string]
     label: Output log filename
     inputBinding:
-      prefix: --logout
+      prefix: --logout=
+      separate: false
 
   # Global parameters
   warpres:
     type: ['null', string]
     label: Warp resolution in mm (e.g., "10,10,10")
     inputBinding:
-      prefix: --warpres
+      prefix: --warpres=
+      separate: false
   splineorder:
     type: ['null', int]
     label: B-spline order (2=quadratic, 3=cubic)
     inputBinding:
-      prefix: --splineorder
+      prefix: --splineorder=
+      separate: false
   regmod:
     type:
       - 'null'
@@ -118,7 +135,8 @@ inputs:
         symbols: [membrane_energy, bending_energy]
     label: Regularization model
     inputBinding:
-      prefix: --regmod
+      prefix: --regmod=
+      separate: false
   intmod:
     type:
       - 'null'
@@ -126,61 +144,72 @@ inputs:
         symbols: [none, global_linear, global_non_linear, local_linear, global_non_linear_with_bias, local_non_linear]
     label: Intensity normalization model
     inputBinding:
-      prefix: --intmod
+      prefix: --intmod=
+      separate: false
   intorder:
     type: ['null', int]
     label: Order of polynomial intensity modulation
     inputBinding:
-      prefix: --intorder
+      prefix: --intorder=
+      separate: false
 
   # Multi-resolution parameters
   subsamp:
     type: ['null', string]
     label: Subsampling levels (e.g., "4,2,1,1")
     inputBinding:
-      prefix: --subsamp
+      prefix: --subsamp=
+      separate: false
   miter:
     type: ['null', string]
     label: Max iterations per level (e.g., "5,5,5,5")
     inputBinding:
-      prefix: --miter
+      prefix: --miter=
+      separate: false
   infwhm:
     type: ['null', string]
     label: Input smoothing FWHM per level (e.g., "8,4,2,2")
     inputBinding:
-      prefix: --infwhm
+      prefix: --infwhm=
+      separate: false
   reffwhm:
     type: ['null', string]
     label: Reference smoothing FWHM per level (e.g., "8,4,2,2")
     inputBinding:
-      prefix: --reffwhm
+      prefix: --reffwhm=
+      separate: false
   lambda_:
     type: ['null', string]
     label: Regularization weight per level
     inputBinding:
-      prefix: --lambda
+      prefix: --lambda=
+      separate: false
 
   # Advanced options
   ssqlambda:
     type: ['null', int]
     label: Weight lambda by sum-of-squared differences (0 or 1)
     inputBinding:
-      prefix: --ssqlambda
+      prefix: --ssqlambda=
+      separate: false
   jacrange:
     type: ['null', string]
     label: Allowable Jacobian range (e.g., "0.01,100")
     inputBinding:
-      prefix: --jacrange
+      prefix: --jacrange=
+      separate: false
   biasres:
     type: ['null', string]
     label: Bias field spline resolution (e.g., "50,50,50")
     inputBinding:
-      prefix: --biasres
+      prefix: --biasres=
+      separate: false
   biaslambda:
     type: ['null', double]
     label: Bias field regularization weight
     inputBinding:
-      prefix: --biaslambda
+      prefix: --biaslambda=
+      separate: false
   numprec:
     type:
       - 'null'
@@ -188,7 +217,8 @@ inputs:
         symbols: [float, double]
     label: Numerical precision for Hessian calculation
     inputBinding:
-      prefix: --numprec
+      prefix: --numprec=
+      separate: false
 
   verbose:
     type: ['null', boolean]

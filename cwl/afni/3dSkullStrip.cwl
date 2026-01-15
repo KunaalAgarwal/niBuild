@@ -4,11 +4,11 @@
 
 cwlVersion: v1.2
 class: CommandLineTool
-baseCommand: '3dSkullStrip'
+baseCommand: ['xvfb-run', '-a', '3dSkullStrip']
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: fmribuild/afni-test:latest
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -143,20 +143,17 @@ outputs:
   skull_stripped:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix)+orig.BRIK.gz
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   mask:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.prefix)_mask+orig.HEAD
-        - $(inputs.prefix)_mask+orig.BRIK
-        - $(inputs.prefix)_mask.nii
-        - $(inputs.prefix)_mask.nii.gz
+      glob: $(inputs.prefix)_mask+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   log:
     type: File
     outputBinding:

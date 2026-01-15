@@ -8,7 +8,10 @@ baseCommand: '3dresample'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
+
+requirements:
+  InlineJavascriptRequirement: {}
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -29,9 +32,11 @@ inputs:
     label: Align grid to master dataset
     inputBinding: {prefix: -master}
   dxyz:
-    type: ['null', string]
+    type:
+      - 'null'
+      - type: array
+        items: double
     label: Resample to new voxel dimensions (dx dy dz in mm)
-    inputBinding: {prefix: -dxyz}
 
   # Orientation
   orient:
@@ -77,17 +82,24 @@ inputs:
     label: Debug level (0-2)
     inputBinding: {prefix: -debug}
 
+arguments:
+  - valueFrom: |
+      ${
+        if (inputs.dxyz) {
+          return ["-dxyz"].concat(inputs.dxyz.map(function(v){return v.toString();}));
+        }
+        return [];
+      }
+    position: 1
+
 outputs:
   resampled:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix)+tlrc.HEAD
-        - $(inputs.prefix)+tlrc.BRIK
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   log:
     type: File
     outputBinding:

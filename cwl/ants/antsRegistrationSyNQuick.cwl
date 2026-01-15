@@ -8,7 +8,7 @@ baseCommand: 'antsRegistrationSyNQuick.sh'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: antsRegistrationSyNQuick.log
 stderr: antsRegistrationSyNQuick.log

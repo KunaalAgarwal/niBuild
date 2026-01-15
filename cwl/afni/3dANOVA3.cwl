@@ -8,7 +8,9 @@ baseCommand: '3dANOVA3'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
+requirements:
+  InlineJavascriptRequirement: {}
 
 stdout: $(inputs.bucket).log
 stderr: $(inputs.bucket).log
@@ -17,43 +19,46 @@ inputs:
   type:
     type: int
     label: ANOVA model type (1-5 for different random/fixed combinations)
-    inputBinding: {prefix: -type}
   alevels:
     type: int
     label: Number of levels for factor A
-    inputBinding: {prefix: -alevels}
   blevels:
     type: int
     label: Number of levels for factor B
-    inputBinding: {prefix: -blevels}
   clevels:
     type: int
     label: Number of levels for factor C
-    inputBinding: {prefix: -clevels}
   dset:
     type:
       type: array
-      items: string
+      items:
+        type: record
+        name: anova3_dset
+        fields:
+          alevel:
+            type: int
+          blevel:
+            type: int
+          clevel:
+            type: int
+          dataset:
+            type: File
+            secondaryFiles: '$(self.basename.match(/\\.HEAD$/) ? ["^.BRIK", "^.BRIK.gz"] : [])'
     label: Dataset specifications (level_A level_B level_C filename)
-    inputBinding: {prefix: -dset}
   bucket:
     type: string
     label: Output bucket dataset prefix
-    inputBinding: {prefix: -bucket}
 
   # Output options - main effects
   fa:
     type: ['null', string]
     label: F-statistic for factor A
-    inputBinding: {prefix: -fa}
   fb:
     type: ['null', string]
     label: F-statistic for factor B
-    inputBinding: {prefix: -fb}
   fc:
     type: ['null', string]
     label: F-statistic for factor C
-    inputBinding: {prefix: -fc}
 
   # Output options - interactions
   fab:
@@ -106,17 +111,49 @@ inputs:
     label: Debug level
     inputBinding: {prefix: -debug}
 
+arguments:
+  - valueFrom: |
+      ${
+        var args = [];
+        args.push("-type", inputs.type.toString());
+        args.push("-alevels", inputs.alevels.toString());
+        args.push("-blevels", inputs.blevels.toString());
+        args.push("-clevels", inputs.clevels.toString());
+        if (inputs.fa) {
+          args.push("-fa", inputs.fa);
+        }
+        if (inputs.fb) {
+          args.push("-fb", inputs.fb);
+        }
+        if (inputs.fc) {
+          args.push("-fc", inputs.fc);
+        }
+        (inputs.dset || []).forEach(function(entry) {
+          var datasetPath = entry.dataset.path || entry.dataset.basename;
+          if (entry.dataset.basename.match(/\\.HEAD$/)) {
+            datasetPath = datasetPath.replace(/\\.HEAD$/, '');
+          }
+          args.push(
+            "-dset",
+            entry.alevel.toString(),
+            entry.blevel.toString(),
+            entry.clevel.toString(),
+            datasetPath
+          );
+        });
+        args.push("-bucket", inputs.bucket);
+        return args;
+      }
+    position: 0
+
 outputs:
   stats:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.bucket)+orig.HEAD
-        - $(inputs.bucket)+orig.BRIK
-        - $(inputs.bucket)+tlrc.HEAD
-        - $(inputs.bucket)+tlrc.BRIK
-        - $(inputs.bucket).nii
-        - $(inputs.bucket).nii.gz
+      glob: $(inputs.bucket)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   log:
     type: File
     outputBinding:

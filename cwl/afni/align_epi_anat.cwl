@@ -8,7 +8,7 @@ baseCommand: 'align_epi_anat.py'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: align_epi_anat.log
 stderr: align_epi_anat.log
@@ -132,25 +132,31 @@ outputs:
   aligned_anat:
     type: ['null', File]
     outputBinding:
-      glob:
-        - "*_al+orig.HEAD"
-        - "*_al+orig.BRIK"
-        - "*_al.nii"
-        - "*_al.nii.gz"
+      glob: "*_al+orig.HEAD"
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   aligned_epi:
     type: ['null', File]
     outputBinding:
-      glob:
-        - "*_al_reg+orig.HEAD"
-        - "*_al_reg+orig.BRIK"
+      glob: "*_al_reg+orig.HEAD"
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   transform_matrix:
-    type: ['null', File]
+    type:
+      - 'null'
+      - type: array
+        items: File
     outputBinding:
       glob: "*.aff12.1D"
   volreg_output:
     type: ['null', File]
     outputBinding:
-      glob: "*_vr+orig.*"
+      glob: "*_vr+orig.HEAD"
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   log:
     type: File
     outputBinding:

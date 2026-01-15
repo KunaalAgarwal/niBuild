@@ -44,7 +44,8 @@ inputs:
         symbols: [lap, bic, mdl, aic, mean]
     label: Dimension estimation technique
     inputBinding:
-      prefix: --dimest
+      prefix: --dimest=
+      separate: false
 
   # Approach
   approach:
@@ -52,7 +53,7 @@ inputs:
       - 'null'
       - type: enum
         symbols: [defl, symm, tica, concat]
-    label: ICA approach (2D: defl/symm, 3D: tica, group: concat)
+    label: "ICA approach (2D: defl/symm, 3D: tica, group: concat)"
     inputBinding:
       prefix: -a
 
@@ -61,7 +62,8 @@ inputs:
     type: ['null', double]
     label: TR in seconds
     inputBinding:
-      prefix: --tr
+      prefix: --tr=
+      separate: false
   no_bet:
     type: ['null', boolean]
     label: Switch off brain extraction (BET)
@@ -81,7 +83,8 @@ inputs:
     type: ['null', double]
     label: Brain/non-brain threshold percentage
     inputBinding:
-      prefix: --bgthreshold
+      prefix: --bgthreshold=
+      separate: false
   var_norm:
     type: ['null', boolean]
     label: Switch off variance normalization
@@ -111,22 +114,26 @@ inputs:
         symbols: [gauss, tanh, pow3, pow4]
     label: Non-linearity function
     inputBinding:
-      prefix: --nl
+      prefix: --nl=
+      separate: false
   maxit:
     type: ['null', int]
     label: Maximum iterations before restart
     inputBinding:
-      prefix: --maxit
+      prefix: --maxit=
+      separate: false
   max_restart:
     type: ['null', int]
     label: Maximum number of restarts
     inputBinding:
-      prefix: --maxrestart
+      prefix: --maxrestart=
+      separate: false
   epsilon:
     type: ['null', double]
     label: Minimum error change
     inputBinding:
-      prefix: --eps
+      prefix: --eps=
+      separate: false
 
   # MIGP options
   migp:
@@ -138,12 +145,14 @@ inputs:
     type: ['null', int]
     label: Number of internal eigenmaps
     inputBinding:
-      prefix: --migpN
+      prefix: --migpN=
+      separate: false
   migp_factor:
     type: ['null', int]
     label: MIGP memory threshold factor
     inputBinding:
-      prefix: --migp_factor
+      prefix: --migp_factor=
+      separate: false
   migp_shuffle:
     type: ['null', boolean]
     label: Randomize MIGP file order
@@ -160,39 +169,46 @@ inputs:
     type: ['null', double]
     label: Mixture model threshold (0-1)
     inputBinding:
-      prefix: --mmthresh
+      prefix: --mmthresh=
+      separate: false
   ICs:
     type: ['null', File]
     label: IC components file for mixture modelling
     inputBinding:
-      prefix: --ICs
+      prefix: --ICs=
+      separate: false
   mix:
     type: ['null', File]
     label: Mixing matrix for mixture modelling
     inputBinding:
-      prefix: --mix
+      prefix: --mix=
+      separate: false
 
   # Design matrices (for group analysis)
   t_des:
     type: ['null', File]
     label: Design matrix across time-domain
     inputBinding:
-      prefix: --Tdes
+      prefix: --Tdes=
+      separate: false
   t_con:
     type: ['null', File]
     label: T-contrast matrix across time-domain
     inputBinding:
-      prefix: --Tcon
+      prefix: --Tcon=
+      separate: false
   s_des:
     type: ['null', File]
     label: Design matrix across subject-domain
     inputBinding:
-      prefix: --Sdes
+      prefix: --Sdes=
+      separate: false
   s_con:
     type: ['null', File]
     label: T-contrast matrix across subject-domain
     inputBinding:
-      prefix: --Scon
+      prefix: --Scon=
+      separate: false
 
   # Output options
   out_all:
@@ -241,12 +257,14 @@ inputs:
     type: ['null', string]
     label: Control string for spatial map images
     inputBinding:
-      prefix: --report_maps
+      prefix: --report_maps=
+      separate: false
   bg_image:
     type: ['null', File]
     label: Background image for report
     inputBinding:
-      prefix: --bgimage
+      prefix: --bgimage=
+      separate: false
 
   # Other options
   log_power:

@@ -7,6 +7,9 @@ cwlVersion: v1.2
 class: CommandLineTool
 baseCommand: 'siena'
 
+requirements:
+  InlineJavascriptRequirement: {}
+
 hints:
   DockerRequirement:
     dockerPull: brainlife/fsl:latest
@@ -33,6 +36,7 @@ inputs:
     label: Output directory name
     inputBinding:
       prefix: -o
+      position: 3
 
   # Processing options
   bet_options:
@@ -40,26 +44,31 @@ inputs:
     label: BET options (e.g., "-f 0.3")
     inputBinding:
       prefix: -B
+      position: 3
   two_class:
     type: ['null', boolean]
     label: Two-class segmentation (no grey/white separation)
     inputBinding:
-      prefix: -2
+      prefix: "-2"
+      position: 3
   t2_weighted:
     type: ['null', boolean]
     label: Inputs are T2-weighted
     inputBinding:
       prefix: -t2
+      position: 3
   std_masking:
     type: ['null', boolean]
     label: Apply standard-space masking for difficult cases
     inputBinding:
       prefix: -m
+      position: 3
   siena_diff_options:
     type: ['null', string]
     label: Options to pass to siena_diff (e.g., "-s -i 20")
     inputBinding:
       prefix: -S
+      position: 3
 
   # Ventricular analysis
   ventricle_analysis:
@@ -67,11 +76,13 @@ inputs:
     label: Activate ventricular analysis (VIENA)
     inputBinding:
       prefix: -V
+      position: 3
   ventricle_mask:
     type: ['null', File]
     label: Custom ventricle mask
     inputBinding:
       prefix: -v
+      position: 3
 
   # Spatial constraints
   top_threshold:
@@ -79,17 +90,20 @@ inputs:
     label: Ignore from this height (mm) upwards in MNI space
     inputBinding:
       prefix: -t
+      position: 3
   bottom_threshold:
     type: ['null', double]
     label: Ignore from this height (mm) downwards in MNI space
     inputBinding:
       prefix: -b
+      position: 3
 
   debug:
     type: ['null', boolean]
     label: Debug mode (keep intermediate files)
     inputBinding:
       prefix: -d
+      position: 3
 
 outputs:
   output_directory:

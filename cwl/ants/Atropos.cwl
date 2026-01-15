@@ -8,7 +8,7 @@ baseCommand: 'Atropos'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: Atropos.log
 stderr: Atropos.log

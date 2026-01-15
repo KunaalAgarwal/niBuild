@@ -8,7 +8,7 @@ baseCommand: '3dFWHMx'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.out)
 stderr: 3dFWHMx.log

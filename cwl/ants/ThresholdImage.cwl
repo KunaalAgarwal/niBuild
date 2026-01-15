@@ -8,7 +8,7 @@ baseCommand: 'ThresholdImage'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: ThresholdImage.log
 stderr: ThresholdImage.log

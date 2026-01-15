@@ -20,88 +20,104 @@ inputs:
     type: File
     label: Input 4D image with reversed phase-encode pairs
     inputBinding:
-      prefix: --imain
+      prefix: --imain=
+      separate: false
   encoding_file:
     type: File
     label: Acquisition parameters file (phase encode direction and readout time)
     inputBinding:
-      prefix: --datain
+      prefix: --datain=
+      separate: false
   output:
     type: string
     label: Output basename
     inputBinding:
-      prefix: --out
+      prefix: --out=
+      separate: false
 
   # Output options
   fout:
     type: ['null', string]
     label: Output fieldmap filename
     inputBinding:
-      prefix: --fout
+      prefix: --fout=
+      separate: false
   iout:
     type: ['null', string]
     label: Output corrected images filename
     inputBinding:
-      prefix: --iout
+      prefix: --iout=
+      separate: false
   logout:
     type: ['null', string]
     label: Output log filename
     inputBinding:
-      prefix: --logout
+      prefix: --logout=
+      separate: false
   dfout:
     type: ['null', string]
     label: Output displacement fields filename
     inputBinding:
-      prefix: --dfout
+      prefix: --dfout=
+      separate: false
   rbmout:
     type: ['null', string]
     label: Output rigid body matrices filename
     inputBinding:
-      prefix: --rbmout
+      prefix: --rbmout=
+      separate: false
   jacout:
     type: ['null', string]
     label: Output Jacobian images filename
     inputBinding:
-      prefix: --jacout
+      prefix: --jacout=
+      separate: false
 
   # Configuration
   config:
     type: ['null', File]
     label: Configuration file (e.g., b02b0.cnf)
     inputBinding:
-      prefix: --config
+      prefix: --config=
+      separate: false
 
   # Estimation parameters
   warpres:
     type: ['null', string]
     label: Warp resolution in mm (e.g., "10,10,10")
     inputBinding:
-      prefix: --warpres
+      prefix: --warpres=
+      separate: false
   subsamp:
     type: ['null', string]
     label: Subsampling level (e.g., "1")
     inputBinding:
-      prefix: --subsamp
+      prefix: --subsamp=
+      separate: false
   fwhm:
     type: ['null', string]
     label: FWHM for smoothing (e.g., "8,4,2,1")
     inputBinding:
-      prefix: --fwhm
+      prefix: --fwhm=
+      separate: false
   miter:
     type: ['null', string]
     label: Max iterations per level
     inputBinding:
-      prefix: --miter
+      prefix: --miter=
+      separate: false
   lambda_:
     type: ['null', string]
     label: Regularization weight
     inputBinding:
-      prefix: --lambda
+      prefix: --lambda=
+      separate: false
   ssqlambda:
     type: ['null', int]
     label: Weight lambda by SSD (0 or 1)
     inputBinding:
-      prefix: --ssqlambda
+      prefix: --ssqlambda=
+      separate: false
   regmod:
     type:
       - 'null'
@@ -109,26 +125,30 @@ inputs:
         symbols: [bending_energy, membrane_energy]
     label: Regularization model
     inputBinding:
-      prefix: --regmod
+      prefix: --regmod=
+      separate: false
 
   # Movement estimation
   estmov:
     type: ['null', int]
     label: Estimate movement (0=off, 1=on)
     inputBinding:
-      prefix: --estmov
+      prefix: --estmov=
+      separate: false
   minmet:
     type: ['null', int]
     label: Minimization method (0=Levenberg-Marquardt, 1=scaled conjugate gradient)
     inputBinding:
-      prefix: --minmet
+      prefix: --minmet=
+      separate: false
 
   # Spline options
   splineorder:
     type: ['null', int]
     label: B-spline order (2 or 3)
     inputBinding:
-      prefix: --splineorder
+      prefix: --splineorder=
+      separate: false
   numprec:
     type:
       - 'null'
@@ -136,7 +156,8 @@ inputs:
         symbols: [double, float]
     label: Numerical precision
     inputBinding:
-      prefix: --numprec
+      prefix: --numprec=
+      separate: false
 
   # Interpolation
   interp:
@@ -146,19 +167,22 @@ inputs:
         symbols: [spline, linear]
     label: Interpolation method
     inputBinding:
-      prefix: --interp
+      prefix: --interp=
+      separate: false
 
   # Other options
   scale:
     type: ['null', int]
     label: Scale images (0=off, 1=on)
     inputBinding:
-      prefix: --scale
+      prefix: --scale=
+      separate: false
   regrid:
     type: ['null', int]
     label: Regrid (0=off, 1=on)
     inputBinding:
-      prefix: --regrid
+      prefix: --regrid=
+      separate: false
 
   verbose:
     type: ['null', boolean]
@@ -169,7 +193,8 @@ inputs:
     type: ['null', int]
     label: Number of threads
     inputBinding:
-      prefix: --nthr
+      prefix: --nthr=
+      separate: false
 
 outputs:
   movpar:

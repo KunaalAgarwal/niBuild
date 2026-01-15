@@ -75,9 +75,7 @@ inputs:
         symbols: [spline, nn, sinc]
     label: Final interpolation method
     inputBinding:
-      prefix: '-'
-      separate: false
-      suffix: '_final'
+      valueFrom: $("-" + self + "_final")
 
   # Output options
   save_mats:
@@ -175,7 +173,10 @@ outputs:
     outputBinding:
       glob: $(inputs.output).mat/MAT_*
   rms_files:
-    type: ['null', File[]]
+    type:
+      - 'null'
+      - type: array
+        items: File
     outputBinding:
       glob:
         - $(inputs.output)_abs.rms

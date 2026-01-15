@@ -53,11 +53,11 @@ inputs:
   radius:
     type: ['null', double]
     label: Radius of the brain centre in mm
-    inputBinding: {prefix: -r, position: 9}
+    inputBinding: {prefix: -r, position: 9, separate: false}
   cog:
     type: ['null', string]  # e.g. "90 110 75"
     label: Center of gravity vox coordinates
-    inputBinding: {prefix: -c, position: 10}
+    inputBinding: {prefix: -c, position: 10, separate: false}
   threshold:
     type: ['null', boolean]
     label: Use thresholding to estimate the brain centre

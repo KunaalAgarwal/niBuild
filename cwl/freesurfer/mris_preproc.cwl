@@ -9,12 +9,27 @@ baseCommand: 'mris_preproc'
 
 hints:
   DockerRequirement:
-    dockerPull: freesurfer/freesurfer:latest
+    dockerPull: freesurfer/freesurfer:7.4.1
+
+requirements:
+  EnvVarRequirement:
+    envDef:
+      - envName: SUBJECTS_DIR
+        envValue: $(inputs.subjects_dir.path)
+      - envName: FS_LICENSE
+        envValue: $(inputs.fs_license.path)
 
 stdout: mris_preproc.log
 stderr: mris_preproc.log
 
 inputs:
+  subjects_dir:
+    type: Directory
+    label: FreeSurfer SUBJECTS_DIR
+  fs_license:
+    type: File
+    label: FreeSurfer license file
+
   # Required inputs
   output:
     type: string
@@ -39,11 +54,14 @@ inputs:
 
   # Subject input options
   subjects:
-    type: ['null', 'string[]']
+    type:
+      - 'null'
+      - type: array
+        items: string
+        inputBinding:
+          prefix: --s
+          position: 4
     label: List of subject names
-    inputBinding:
-      prefix: --s
-      position: 4
   fsgd:
     type: ['null', File]
     label: FreeSurfer Group Descriptor file

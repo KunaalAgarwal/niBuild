@@ -8,7 +8,7 @@ baseCommand: 'antsIntermodalityIntrasubject.sh'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: antsIntermodalityIntrasubject.log
 stderr: antsIntermodalityIntrasubject.log
@@ -48,7 +48,10 @@ inputs:
     label: Output prefix from prior antsRegistration T1-to-template
     inputBinding: {prefix: -w}
   auxiliary_images:
-    type: ['null', File[]]
+    type:
+      - 'null'
+      - type: array
+        items: File
     label: Auxiliary scalar images to warp
     inputBinding:
       prefix: -a

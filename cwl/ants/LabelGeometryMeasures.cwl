@@ -8,7 +8,7 @@ baseCommand: 'LabelGeometryMeasures'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: LabelGeometryMeasures.log
 stderr: LabelGeometryMeasures.log
@@ -23,7 +23,10 @@ inputs:
     label: Input label/segmentation image
     inputBinding: {position: 2}
   intensity_image:
-    type: ['null', File]
+    type:
+      - 'null'
+      - File
+      - string
     label: Intensity image for weighted measures (use 'none' to skip)
     inputBinding: {position: 3}
   output_csv:

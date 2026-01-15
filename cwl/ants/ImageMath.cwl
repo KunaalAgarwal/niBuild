@@ -8,7 +8,7 @@ baseCommand: 'ImageMath'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: ImageMath.log
 stderr: ImageMath.log

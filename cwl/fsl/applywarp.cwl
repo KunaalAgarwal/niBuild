@@ -20,19 +20,22 @@ inputs:
     type: File
     label: Input image to be warped
     inputBinding:
-      prefix: --in
+      prefix: --in=
+      separate: false
       position: 1
   reference:
     type: File
     label: Reference image
     inputBinding:
-      prefix: --ref
+      prefix: --ref=
+      separate: false
       position: 2
   output:
     type: string
     label: Output filename
     inputBinding:
-      prefix: --out
+      prefix: --out=
+      separate: false
       position: 3
 
   # Warp field
@@ -40,19 +43,22 @@ inputs:
     type: ['null', File]
     label: Warp field file
     inputBinding:
-      prefix: --warp
+      prefix: --warp=
+      separate: false
 
   # Affine transforms
   premat:
     type: ['null', File]
     label: Pre-transform affine matrix (applied first)
     inputBinding:
-      prefix: --premat
+      prefix: --premat=
+      separate: false
   postmat:
     type: ['null', File]
     label: Post-transform affine matrix (applied last)
     inputBinding:
-      prefix: --postmat
+      prefix: --postmat=
+      separate: false
 
   # Warp interpretation
   relwarp:
@@ -74,7 +80,8 @@ inputs:
         symbols: [nn, trilinear, sinc, spline]
     label: Interpolation method
     inputBinding:
-      prefix: --interp
+      prefix: --interp=
+      separate: false
 
   # Supersampling
   supersample:
@@ -86,14 +93,16 @@ inputs:
     type: ['null', string]
     label: Supersampling level (integer or 'a' for auto)
     inputBinding:
-      prefix: --superlevel
+      prefix: --superlevel=
+      separate: false
 
   # Masking
   mask:
     type: ['null', File]
     label: Mask in reference space
     inputBinding:
-      prefix: --mask
+      prefix: --mask=
+      separate: false
 
   # Data type
   datatype:
@@ -103,13 +112,15 @@ inputs:
         symbols: [char, short, int, float, double]
     label: Output data type
     inputBinding:
-      prefix: --datatype
+      prefix: --datatype=
+      separate: false
 
   padding_size:
     type: ['null', int]
     label: Padding size
     inputBinding:
-      prefix: --paddingsize
+      prefix: --paddingsize=
+      separate: false
 
   verbose:
     type: ['null', boolean]

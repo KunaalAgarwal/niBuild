@@ -39,7 +39,8 @@ inputs:
     type: ['null', File]
     label: Label image for extracting timeseries per label
     inputBinding:
-      prefix: --label
+      prefix: --label=
+      separate: false
       position: 4
 
   # Coordinate options
@@ -79,7 +80,8 @@ inputs:
     type: ['null', int]
     label: Number of eigenvariates to output
     inputBinding:
-      prefix: --order
+      prefix: --order=
+      separate: false
       position: 10
   nobin:
     type: ['null', boolean]
