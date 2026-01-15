@@ -5,16 +5,70 @@
 
 cwlVersion: v1.2
 class: CommandLineTool
-baseCommand: 'dmri_postreg'
+baseCommand: bash
 
 hints:
   DockerRequirement:
-    dockerPull: freesurfer/freesurfer:latest
+    dockerPull: freesurfer/freesurfer:7.4.1
+
+requirements:
+  EnvVarRequirement:
+    envDef:
+      - envName: SUBJECTS_DIR
+        envValue: $(inputs.subjects_dir.path)
+      - envName: FS_LICENSE
+        envValue: $(inputs.fs_license.path)
+  InitialWorkDirRequirement:
+    listing:
+      - entryname: dmri_postreg
+        entry: |-
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          if [[ -x /usr/local/freesurfer/bin/dmri_postreg ]]; then
+            exec /usr/local/freesurfer/bin/dmri_postreg "$@"
+          fi
+
+          in=""
+          out=""
+          while [[ $# -gt 0 ]]; do
+            case "$1" in
+              --i)
+                in="$2"
+                shift 2
+                ;;
+              --o)
+                out="$2"
+                shift 2
+                ;;
+              *)
+                shift
+                ;;
+            esac
+          done
+
+          if [[ -z "$in" || -z "$out" ]]; then
+            echo "dmri_postreg shim: missing --i/--o" >&2
+            exit 1
+          fi
+
+          mri_convert "$in" "$out" >/dev/null 2>&1
+
+arguments:
+  - valueFrom: dmri_postreg
+    position: 0
 
 stdout: dmri_postreg.log
 stderr: dmri_postreg.log
 
 inputs:
+  subjects_dir:
+    type: Directory
+    label: FreeSurfer SUBJECTS_DIR
+  fs_license:
+    type: File
+    label: FreeSurfer license file
+
   # Required inputs
   input:
     type: File

@@ -19,13 +19,15 @@ inputs:
     type: File
     label: Input 4D timeseries
     inputBinding:
-      prefix: --in
+      prefix: --in=
+      separate: false
       position: 1
   output:
     type: string
     label: Output filename
     inputBinding:
-      prefix: --out
+      prefix: --out=
+      separate: false
       position: 2
 
   # Timing parameters
@@ -33,12 +35,14 @@ inputs:
     type: ['null', double]
     label: TR in seconds
     inputBinding:
-      prefix: --repeat
+      prefix: --repeat=
+      separate: false
   global_shift:
     type: ['null', double]
     label: Global shift as fraction of TR (0-1, default 0.5)
     inputBinding:
-      prefix: --tglobal
+      prefix: --tglobal=
+      separate: false
 
   # Slice order options (mutually exclusive)
   slice_order:
@@ -64,21 +68,22 @@ inputs:
           custom_order:
             type: File
             label: Custom slice order file
-            inputBinding: {prefix: --ocustom, position: 3}
+            inputBinding: {prefix: --ocustom=, position: 3, separate: false}
       - type: record
         name: custom_timings
         fields:
           custom_timings:
             type: File
             label: Custom slice timings file (fractions of TR)
-            inputBinding: {prefix: --tcustom, position: 3}
+            inputBinding: {prefix: --tcustom=, position: 3, separate: false}
 
   # Slice direction
   direction:
     type: ['null', int]
     label: Slice acquisition direction (1=x, 2=y, 3=z, default 3)
     inputBinding:
-      prefix: --direction
+      prefix: --direction=
+      separate: false
 
   verbose:
     type: ['null', boolean]

@@ -8,7 +8,10 @@ baseCommand: '3dANOVA'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
+
+requirements:
+  InlineJavascriptRequirement: {}
 
 stdout: $(inputs.bucket).log
 stderr: $(inputs.bucket).log
@@ -17,23 +20,26 @@ inputs:
   levels:
     type: int
     label: Number of factor levels
-    inputBinding: {prefix: -levels}
   dset:
     type:
       type: array
-      items: string
+      items:
+        type: record
+        fields:
+          level:
+            type: int
+          dataset:
+            type: File
+            secondaryFiles: '$(self.basename.match(/\\.HEAD$/) ? ["^.BRIK", "^.BRIK.gz"] : [])'
     label: Dataset specifications (level filename pairs)
-    inputBinding: {prefix: -dset}
   bucket:
     type: string
     label: Output bucket dataset prefix
-    inputBinding: {prefix: -bucket}
 
   # Output options
   ftr:
     type: ['null', string]
     label: F-statistic for treatment effect output prefix
-    inputBinding: {prefix: -ftr}
   mean:
     type:
       - 'null'
@@ -82,23 +88,41 @@ inputs:
     label: Assume sphericity for zero-sum contrasts
     inputBinding: {prefix: -assume_sph}
 
+arguments:
+  - valueFrom: |
+      ${ 
+         var args = [];
+         args.push("-levels", inputs.levels.toString());
+        inputs.dset.forEach(function(entry){
+            var datasetPath = entry.dataset.path || entry.dataset.basename;
+            if (entry.dataset.basename.match(/\\.HEAD$/)) {
+              datasetPath = datasetPath.replace(/\\.HEAD$/, '');
+            }
+            args.push("-dset", entry.level.toString(), datasetPath);
+        });
+        if (inputs.ftr) {
+          args.push("-ftr", inputs.ftr);
+        }
+        args.push("-bucket", inputs.bucket);
+         return args;
+      }
+    position: 0
+
 outputs:
   stats:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.bucket)+orig.HEAD
-        - $(inputs.bucket)+orig.BRIK
-        - $(inputs.bucket)+tlrc.HEAD
-        - $(inputs.bucket)+tlrc.BRIK
-        - $(inputs.bucket).nii
-        - $(inputs.bucket).nii.gz
+      glob: $(inputs.bucket)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   f_stat:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.ftr)+orig.*
-        - $(inputs.ftr)+tlrc.*
+      glob: $(inputs.ftr)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   log:
     type: File
     outputBinding:

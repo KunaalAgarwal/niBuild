@@ -20,13 +20,15 @@ inputs:
     type: File
     label: Reference image in target space
     inputBinding:
-      prefix: --ref
+      prefix: --ref=
+      separate: false
       position: 1
   output:
     type: string
     label: Output warp filename
     inputBinding:
-      prefix: --out
+      prefix: --out=
+      separate: false
       position: 2
 
   # Input warps
@@ -34,36 +36,42 @@ inputs:
     type: ['null', File]
     label: First warp field
     inputBinding:
-      prefix: --warp1
+      prefix: --warp1=
+      separate: false
   warp2:
     type: ['null', File]
     label: Second warp field (applied after warp1)
     inputBinding:
-      prefix: --warp2
+      prefix: --warp2=
+      separate: false
 
   # Affine transforms
   premat:
     type: ['null', File]
     label: Pre-transform affine matrix (applied first)
     inputBinding:
-      prefix: --premat
+      prefix: --premat=
+      separate: false
   midmat:
     type: ['null', File]
     label: Mid-warp affine transform
     inputBinding:
-      prefix: --midmat
+      prefix: --midmat=
+      separate: false
   postmat:
     type: ['null', File]
     label: Post-transform affine matrix (applied last)
     inputBinding:
-      prefix: --postmat
+      prefix: --postmat=
+      separate: false
 
   # Shift map (for fieldmap-based corrections)
   shiftmap:
     type: ['null', File]
     label: Shift map (fieldmap) file
     inputBinding:
-      prefix: --shiftmap
+      prefix: --shiftmap=
+      separate: false
   shiftdir:
     type:
       - 'null'
@@ -71,7 +79,8 @@ inputs:
         symbols: [x, y, z, x-, y-, z-]
     label: Shift direction
     inputBinding:
-      prefix: --shiftdir
+      prefix: --shiftdir=
+      separate: false
 
   # Warp interpretation (input)
   abswarp:
@@ -107,12 +116,14 @@ inputs:
     type: ['null', double]
     label: Minimum Jacobian
     inputBinding:
-      prefix: --jmin
+      prefix: --jmin=
+      separate: false
   jacobian_max:
     type: ['null', double]
     label: Maximum Jacobian
     inputBinding:
-      prefix: --jmax
+      prefix: --jmax=
+      separate: false
 
   verbose:
     type: ['null', boolean]

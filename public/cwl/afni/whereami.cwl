@@ -8,7 +8,7 @@ baseCommand: 'whereami'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: whereami_output.txt
 stderr: whereami.log
@@ -16,7 +16,10 @@ stderr: whereami.log
 inputs:
   # Coordinate input (one of these required)
   coord:
-    type: ['null', string]
+    type:
+      - 'null'
+      - type: array
+        items: double
     label: Brain location in mm (x y z)
     inputBinding: {position: 1}
   coord_file:

@@ -9,12 +9,27 @@ baseCommand: 'mris_inflate'
 
 hints:
   DockerRequirement:
-    dockerPull: freesurfer/freesurfer:latest
+    dockerPull: freesurfer/freesurfer:7.4.1
+
+requirements:
+  EnvVarRequirement:
+    envDef:
+      - envName: SUBJECTS_DIR
+        envValue: $(inputs.subjects_dir.path)
+      - envName: FS_LICENSE
+        envValue: $(inputs.fs_license.path)
 
 stdout: mris_inflate.log
 stderr: mris_inflate.log
 
 inputs:
+  subjects_dir:
+    type: Directory
+    label: FreeSurfer SUBJECTS_DIR
+  fs_license:
+    type: File
+    label: FreeSurfer license file
+
   # Required inputs
   input:
     type: File

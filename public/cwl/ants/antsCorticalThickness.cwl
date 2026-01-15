@@ -8,7 +8,10 @@ baseCommand: 'antsCorticalThickness.sh'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
+
+requirements:
+  InlineJavascriptRequirement: {}
 
 stdout: antsCorticalThickness.log
 stderr: antsCorticalThickness.log
@@ -33,7 +36,20 @@ inputs:
   segmentation_priors:
     type: string
     label: Segmentation priors pattern (e.g., priors%d.nii.gz)
-    inputBinding: {prefix: -p}
+    inputBinding:
+      prefix: -p
+      valueFrom: |
+        ${
+          if (inputs.segmentation_priors_dir) {
+            return inputs.segmentation_priors_dir.path + "/" + self;
+          }
+          return self;
+        }
+  segmentation_priors_dir:
+    type:
+      - 'null'
+      - Directory
+    label: Directory containing segmentation priors (used with segmentation_priors pattern)
   output_prefix:
     type: string
     label: Output prefix
@@ -98,11 +114,11 @@ outputs:
     outputBinding:
       glob: $(inputs.output_prefix)BrainExtractionMask.nii.gz
   brain_segmentation:
-    type: File
+    type: ['null', File]
     outputBinding:
       glob: $(inputs.output_prefix)BrainSegmentation.nii.gz
   cortical_thickness:
-    type: File
+    type: ['null', File]
     outputBinding:
       glob: $(inputs.output_prefix)CorticalThickness.nii.gz
   brain_normalized:
@@ -126,7 +142,10 @@ outputs:
     outputBinding:
       glob: $(inputs.output_prefix)TemplateToSubject1GenericAffine.mat
   segmentation_posteriors:
-    type: File[]
+    type:
+      - 'null'
+      - type: array
+        items: File
     outputBinding:
       glob: $(inputs.output_prefix)BrainSegmentationPosteriors*.nii.gz
   log:

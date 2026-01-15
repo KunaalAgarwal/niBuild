@@ -55,7 +55,7 @@ inputs:
     type: ['null', boolean]
     label: Use 3-stage registration
     inputBinding:
-      prefix: -3
+      prefix: "-3"
   verbose:
     type: ['null', boolean]
     label: Verbose output

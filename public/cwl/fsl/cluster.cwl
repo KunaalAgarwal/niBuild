@@ -20,13 +20,15 @@ inputs:
     type: File
     label: Input statistical image (e.g., z-stat)
     inputBinding:
-      prefix: --in
+      prefix: --in=
+      separate: false
       position: 1
   threshold:
     type: double
     label: Threshold value for cluster formation
     inputBinding:
-      prefix: --thresh
+      prefix: --thresh=
+      separate: false
       position: 2
 
   # Output options
@@ -34,49 +36,57 @@ inputs:
     type: ['null', string]
     label: Output cluster index image filename
     inputBinding:
-      prefix: --oindex
+      prefix: --oindex=
+      separate: false
       position: 3
   othresh:
     type: ['null', string]
     label: Output thresholded image filename
     inputBinding:
-      prefix: --othresh
+      prefix: --othresh=
+      separate: false
       position: 4
   olmax:
     type: ['null', string]
     label: Output local maxima text file
     inputBinding:
-      prefix: --olmax
+      prefix: --olmax=
+      separate: false
       position: 5
   olmaxim:
     type: ['null', string]
     label: Output local maxima image filename
     inputBinding:
-      prefix: --olmaxim
+      prefix: --olmaxim=
+      separate: false
       position: 6
   osize:
     type: ['null', string]
     label: Output cluster size image filename
     inputBinding:
-      prefix: --osize
+      prefix: --osize=
+      separate: false
       position: 7
   omax:
     type: ['null', string]
     label: Output max intensity image filename
     inputBinding:
-      prefix: --omax
+      prefix: --omax=
+      separate: false
       position: 8
   omean:
     type: ['null', string]
     label: Output mean intensity image filename
     inputBinding:
-      prefix: --omean
+      prefix: --omean=
+      separate: false
       position: 9
   opvals:
     type: ['null', string]
     label: Output log p-values image filename
     inputBinding:
-      prefix: --opvals
+      prefix: --opvals=
+      separate: false
       position: 10
 
   # Statistical options
@@ -84,25 +94,29 @@ inputs:
     type: ['null', double]
     label: P-threshold for clusters
     inputBinding:
-      prefix: --pthresh
+      prefix: --pthresh=
+      separate: false
       position: 11
   dlh:
     type: ['null', double]
     label: Smoothness estimate (sqrt determinant of Lambda)
     inputBinding:
-      prefix: --dlh
+      prefix: --dlh=
+      separate: false
       position: 12
   volume:
     type: ['null', int]
     label: Number of voxels in mask
     inputBinding:
-      prefix: --volume
+      prefix: --volume=
+      separate: false
       position: 13
   cope:
     type: ['null', File]
     label: COPE image for effect size reporting
     inputBinding:
-      prefix: --cope
+      prefix: --cope=
+      separate: false
       position: 14
 
   # Processing options
@@ -110,13 +124,15 @@ inputs:
     type: ['null', double]
     label: Minimum distance between peaks in mm
     inputBinding:
-      prefix: --peakdist
+      prefix: --peakdist=
+      separate: false
       position: 15
   connectivity:
     type: ['null', int]
     label: Voxel connectivity (6, 18, or 26)
     inputBinding:
-      prefix: --connectivity
+      prefix: --connectivity=
+      separate: false
       position: 16
   fractional:
     type: ['null', boolean]
@@ -140,7 +156,8 @@ inputs:
     type: ['null', int]
     label: Number of local maxima to report
     inputBinding:
-      prefix: --num
+      prefix: --num=
+      separate: false
       position: 20
 
   # Registration options
@@ -148,19 +165,22 @@ inputs:
     type: ['null', File]
     label: Linear transformation matrix file
     inputBinding:
-      prefix: --xfm
+      prefix: --xfm=
+      separate: false
       position: 21
   stdvol:
     type: ['null', File]
     label: Standard space volume for coordinate transformation
     inputBinding:
-      prefix: --stdvol
+      prefix: --stdvol=
+      separate: false
       position: 22
   warpvol:
     type: ['null', File]
     label: Warp field for non-linear transformation
     inputBinding:
-      prefix: --warpvol
+      prefix: --warpvol=
+      separate: false
       position: 23
 
   # Reporting options

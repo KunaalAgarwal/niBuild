@@ -8,7 +8,7 @@ baseCommand: '3dTcorrMap'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: 3dTcorrMap.log
 stderr: 3dTcorrMap.log
@@ -91,24 +91,24 @@ outputs:
   mean_corr:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.Mean)+orig.*
-        - $(inputs.Mean)+tlrc.*
-        - $(inputs.Mean).nii*
+      glob: $(inputs.Mean)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   zmean_corr:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.Zmean)+orig.*
-        - $(inputs.Zmean)+tlrc.*
-        - $(inputs.Zmean).nii*
+      glob: $(inputs.Zmean)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   corrmap:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.CorrMap)+orig.*
-        - $(inputs.CorrMap)+tlrc.*
-        - $(inputs.CorrMap).nii*
+      glob: $(inputs.CorrMap)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   log:
     type: File
     outputBinding:

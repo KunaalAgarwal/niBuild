@@ -7,3 +7,6 @@ node_modules/
 dist/
 /public/*.log   # Ignore logs
 /public/temp/   # Ignore temporary files
+tests/work/
+tests/work/ants/derived/cortical_testMode_*
+tests/data/

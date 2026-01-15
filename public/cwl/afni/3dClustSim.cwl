@@ -8,7 +8,7 @@ baseCommand: '3dClustSim'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -98,11 +98,17 @@ inputs:
 
 outputs:
   clustsim_1D:
-    type: ['null', File]
+    type:
+      - 'null'
+      - type: array
+        items: File
     outputBinding:
       glob: $(inputs.prefix).NN*.1D
   clustsim_niml:
-    type: ['null', File]
+    type:
+      - 'null'
+      - type: array
+        items: File
     outputBinding:
       glob: $(inputs.prefix).NN*.niml
   log:

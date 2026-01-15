@@ -8,7 +8,7 @@ baseCommand: 'DenoiseImage'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: DenoiseImage.log
 stderr: DenoiseImage.log

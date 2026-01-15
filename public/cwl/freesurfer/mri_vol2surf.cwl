@@ -9,12 +9,27 @@ baseCommand: 'mri_vol2surf'
 
 hints:
   DockerRequirement:
-    dockerPull: freesurfer/freesurfer:latest
+    dockerPull: freesurfer/freesurfer:7.4.1
+
+requirements:
+  EnvVarRequirement:
+    envDef:
+      - envName: SUBJECTS_DIR
+        envValue: $(inputs.subjects_dir.path)
+      - envName: FS_LICENSE
+        envValue: $(inputs.fs_license.path)
 
 stdout: mri_vol2surf.log
 stderr: mri_vol2surf.log
 
 inputs:
+  subjects_dir:
+    type: Directory
+    label: FreeSurfer SUBJECTS_DIR
+  fs_license:
+    type: File
+    label: FreeSurfer license file
+
   # Required inputs
   source_file:
     type: File
@@ -45,8 +60,8 @@ inputs:
       prefix: --reg
       position: 4
   reg_header:
-    type: ['null', File]
-    label: Target volume for header registration
+    type: ['null', string]
+    label: Subject name for header registration
     inputBinding:
       prefix: --regheader
       position: 4
@@ -60,9 +75,9 @@ inputs:
   # Subject options
   subject:
     type: ['null', string]
-    label: Subject name (if not in reg file)
+    label: Source subject name
     inputBinding:
-      prefix: --s
+      prefix: --srcsubject
       position: 5
   trgsubject:
     type: ['null', string]

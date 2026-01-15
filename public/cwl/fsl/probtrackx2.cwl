@@ -20,7 +20,8 @@ inputs:
     type: string
     label: Basename of bedpostX samples (e.g., merged)
     inputBinding:
-      prefix: --samples
+      prefix: --samples=
+      separate: false
   mask:
     type: File
     label: Brain mask in diffusion space
@@ -35,39 +36,46 @@ inputs:
     type: string
     label: Output directory
     inputBinding:
-      prefix: --dir
+      prefix: --dir=
+      separate: false
 
   # Tracking parameters
   n_samples:
     type: ['null', int]
     label: Number of samples per voxel (default 5000)
     inputBinding:
-      prefix: --nsamples
+      prefix: --nsamples=
+      separate: false
   n_steps:
     type: ['null', int]
     label: Number of steps per sample (default 2000)
     inputBinding:
-      prefix: --nsteps
+      prefix: --nsteps=
+      separate: false
   step_length:
     type: ['null', double]
     label: Step length in mm (default 0.5)
     inputBinding:
-      prefix: --steplength
+      prefix: --steplength=
+      separate: false
   c_thresh:
     type: ['null', double]
     label: Curvature threshold (default 0.2)
     inputBinding:
-      prefix: --cthr
+      prefix: --cthr=
+      separate: false
   fibthresh:
     type: ['null', double]
     label: Minimum fiber volume fraction (default 0.01)
     inputBinding:
-      prefix: --fibthresh
+      prefix: --fibthresh=
+      separate: false
   dist_thresh:
     type: ['null', double]
     label: Minimum distance threshold in mm
     inputBinding:
-      prefix: --distthresh
+      prefix: --distthresh=
+      separate: false
   loopcheck:
     type: ['null', boolean]
     label: Enable loop checking
@@ -84,19 +92,22 @@ inputs:
     type: ['null', int]
     label: Fiber sampling strategy (0=max, 1=sample, 2=sample+reject, 3=sample+reject+modulate)
     inputBinding:
-      prefix: --randfib
+      prefix: --randfib=
+      separate: false
   fibst:
     type: ['null', int]
     label: Force starting fiber (1-based index)
     inputBinding:
-      prefix: --fibst
+      prefix: --fibst=
+      separate: false
 
   # Masks and ROIs
   waypoints:
     type: ['null', File]
     label: Waypoint mask (paths must pass through ALL)
     inputBinding:
-      prefix: --waypoints
+      prefix: --waypoints=
+      separate: false
   waycond:
     type:
       - 'null'
@@ -104,22 +115,26 @@ inputs:
         symbols: [AND, OR]
     label: Waypoint condition (AND or OR)
     inputBinding:
-      prefix: --waycond
+      prefix: --waycond=
+      separate: false
   avoid:
     type: ['null', File]
     label: Exclusion mask (reject paths through this)
     inputBinding:
-      prefix: --avoid
+      prefix: --avoid=
+      separate: false
   stop:
     type: ['null', File]
     label: Stop mask (terminate paths here)
     inputBinding:
-      prefix: --stop
+      prefix: --stop=
+      separate: false
   target_masks:
     type: ['null', File]
     label: List of target masks
     inputBinding:
-      prefix: --targetmasks
+      prefix: --targetmasks=
+      separate: false
   os2t:
     type: ['null', boolean]
     label: Output seeds to targets
@@ -131,17 +146,20 @@ inputs:
     type: ['null', File]
     label: Transformation matrix (seed to diffusion space)
     inputBinding:
-      prefix: --xfm
+      prefix: --xfm=
+      separate: false
   invxfm:
     type: ['null', File]
     label: Inverse transformation matrix
     inputBinding:
-      prefix: --invxfm
+      prefix: --invxfm=
+      separate: false
   seedref:
     type: ['null', File]
     label: Reference image for seed space
     inputBinding:
-      prefix: --seedref
+      prefix: --seedref=
+      separate: false
 
   # Output options
   opd:
@@ -158,7 +176,8 @@ inputs:
     type: ['null', string]
     label: Output file stem
     inputBinding:
-      prefix: --out
+      prefix: --out=
+      separate: false
   omatrix1:
     type: ['null', boolean]
     label: Output matrix (seed x seed)
@@ -207,7 +226,8 @@ inputs:
     type: ['null', int]
     label: Random seed
     inputBinding:
-      prefix: --rseed
+      prefix: --rseed=
+      separate: false
   modeuler:
     type: ['null', boolean]
     label: Use modified Euler streamlining
@@ -217,7 +237,8 @@ inputs:
     type: ['null', double]
     label: Sample sub-voxel tracking starting points
     inputBinding:
-      prefix: --sampvox
+      prefix: --sampvox=
+      separate: false
 
 outputs:
   output_directory:
@@ -239,7 +260,10 @@ outputs:
     outputBinding:
       glob: $(inputs.output_dir)/fdt_matrix*.dot
   targets:
-    type: ['null', File[]]
+    type:
+      - 'null'
+      - type: array
+        items: File
     outputBinding:
       glob:
         - $(inputs.output_dir)/seeds_to_*.nii.gz

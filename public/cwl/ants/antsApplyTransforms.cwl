@@ -8,7 +8,7 @@ baseCommand: 'antsApplyTransforms'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: antsApplyTransforms.log
 stderr: antsApplyTransforms.log

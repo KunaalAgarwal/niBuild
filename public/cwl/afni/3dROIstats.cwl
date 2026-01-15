@@ -8,7 +8,7 @@ baseCommand: '3dROIstats'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.input.nameroot)_roistats.txt
 stderr: 3dROIstats.log

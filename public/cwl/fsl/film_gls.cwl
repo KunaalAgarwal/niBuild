@@ -7,6 +7,9 @@ cwlVersion: v1.2
 class: CommandLineTool
 baseCommand: 'film_gls'
 
+requirements:
+  InlineJavascriptRequirement: {}
+
 hints:
   DockerRequirement:
     dockerPull: brainlife/fsl:latest
@@ -20,74 +23,82 @@ inputs:
     type: File
     label: Input 4D data file
     inputBinding:
-      position: 1
+      prefix: --in=
+      separate: false
   design_file:
     type: File
     label: Design matrix file (.mat)
     inputBinding:
-      position: 2
+      prefix: --pd=
+      separate: false
   threshold:
     type: ['null', double]
     label: Threshold for FILM estimation (default 1000)
     default: 1000.0
     inputBinding:
-      position: 3
+      prefix: --thr=
+      separate: false
 
   # Output options
   results_dir:
     type: ['null', string]
     label: Results directory name
     inputBinding:
-      prefix: -rn
+      prefix: --rn=
+      separate: false
 
   # Autocorrelation options
   autocorr_noestimate:
     type: ['null', boolean]
     label: Do not estimate autocorrelation
     inputBinding:
-      prefix: -noest
+      prefix: --noest
   autocorr_estimate_only:
     type: ['null', boolean]
     label: Only estimate autocorrelation (no GLM)
     inputBinding:
-      prefix: -ac
+      prefix: --ac
   smooth_autocorr:
     type: ['null', boolean]
     label: Smooth autocorrelation estimates
     inputBinding:
-      prefix: -sa
+      prefix: --sa
   fit_armodel:
     type: ['null', boolean]
     label: Fit autoregressive model
     inputBinding:
-      prefix: -ar
+      prefix: --ar
   use_pava:
     type: ['null', boolean]
     label: Estimate autocorrelation using PAVA
     inputBinding:
-      prefix: -pava
+      prefix: --pava
   tukey_window:
     type: ['null', int]
     label: Tukey window size for autocorrelation
     inputBinding:
-      prefix: -tukey
+      prefix: --tukey=
+      separate: false
   multitaper_product:
     type: ['null', int]
     label: Multitaper with slepian tapers
     inputBinding:
-      prefix: -mt
+      prefix: --mt=
+      separate: false
 
   # Susan options
   brightness_threshold:
     type: ['null', int]
     label: Susan brightness threshold
     inputBinding:
-      prefix: -epith
+      prefix: --epith=
+      separate: false
   mask_size:
     type: ['null', int]
     label: Susan mask size
     inputBinding:
-      prefix: -ms
+      prefix: --ms=
+      separate: false
 
   # Output options
   full_data:
@@ -99,7 +110,7 @@ inputs:
     type: ['null', boolean]
     label: Output prewhitened data
     inputBinding:
-      prefix: -output_pwdata
+      prefix: --outputPWdata
 
 outputs:
   results:

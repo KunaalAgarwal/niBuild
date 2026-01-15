@@ -20,19 +20,22 @@ inputs:
     type: File
     label: Warp field to invert
     inputBinding:
-      prefix: --warp
+      prefix: --warp=
+      separate: false
       position: 1
   reference:
     type: File
     label: Reference image in target space
     inputBinding:
-      prefix: --ref
+      prefix: --ref=
+      separate: false
       position: 2
   output:
     type: string
     label: Output inverted warp filename
     inputBinding:
-      prefix: --out
+      prefix: --out=
+      separate: false
       position: 3
 
   # Warp interpretation (mutually exclusive)
@@ -57,24 +60,28 @@ inputs:
     type: ['null', double]
     label: Minimum Jacobian (default 0.01)
     inputBinding:
-      prefix: --jmin
+      prefix: --jmin=
+      separate: false
   jacobian_max:
     type: ['null', double]
     label: Maximum Jacobian (default 100.0)
     inputBinding:
-      prefix: --jmax
+      prefix: --jmax=
+      separate: false
 
   # Iteration options
   niter:
     type: ['null', int]
     label: Number of gradient descent iterations
     inputBinding:
-      prefix: --niter
+      prefix: --niter=
+      separate: false
   regularise:
     type: ['null', double]
     label: Regularization strength (default 1.0)
     inputBinding:
-      prefix: --regularise
+      prefix: --regularise=
+      separate: false
 
   verbose:
     type: ['null', boolean]

@@ -8,7 +8,7 @@ baseCommand: 'antsAtroposN4.sh'
 
 hints:
   DockerRequirement:
-    dockerPull: antsx/ants:latest
+    dockerPull: fnndsc/ants:latest
 
 stdout: antsAtroposN4.log
 stderr: antsAtroposN4.log
@@ -81,7 +81,10 @@ inputs:
       prefix: -j
       valueFrom: '1'
   posterior_for_n4:
-    type: ['null', int[]]
+    type:
+      - 'null'
+      - type: array
+        items: int
     label: Posterior labels for N4 weight mask
     inputBinding:
       prefix: -y
@@ -117,7 +120,7 @@ outputs:
   bias_corrected:
     type: File
     outputBinding:
-      glob: $(inputs.output_prefix)BrainSegmentation0N4.nii.gz
+      glob: $(inputs.output_prefix)Segmentation0N4.nii.gz
   log:
     type: File
     outputBinding:

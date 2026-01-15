@@ -8,7 +8,7 @@ baseCommand: '3dQwarp'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.prefix).log
 stderr: $(inputs.prefix).log
@@ -119,31 +119,24 @@ outputs:
   warped:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.prefix)+tlrc.HEAD
-        - $(inputs.prefix)+tlrc.BRIK
-        - $(inputs.prefix)+orig.HEAD
-        - $(inputs.prefix)+orig.BRIK
-        - $(inputs.prefix).nii
-        - $(inputs.prefix).nii.gz
+      glob: $(inputs.prefix)+*.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   warp:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.prefix)_WARP+tlrc.HEAD
-        - $(inputs.prefix)_WARP+tlrc.BRIK
-        - $(inputs.prefix)_WARP+orig.HEAD
-        - $(inputs.prefix)_WARP+orig.BRIK
-        - $(inputs.prefix)_WARP.nii
-        - $(inputs.prefix)_WARP.nii.gz
+      glob: $(inputs.prefix)_WARP+*.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   inverse_warp:
     type: ['null', File]
     outputBinding:
-      glob:
-        - $(inputs.prefix)_WARPINV+tlrc.HEAD
-        - $(inputs.prefix)_WARPINV+tlrc.BRIK
-        - $(inputs.prefix)_WARPINV+orig.HEAD
-        - $(inputs.prefix)_WARPINV+orig.BRIK
+      glob: $(inputs.prefix)_WARPINV+*.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   log:
     type: File
     outputBinding:

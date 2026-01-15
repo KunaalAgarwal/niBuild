@@ -8,7 +8,7 @@ baseCommand: '3dcopy'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.new_prefix).log
 stderr: $(inputs.new_prefix).log
@@ -37,13 +37,10 @@ outputs:
   copied:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.new_prefix)+orig.HEAD
-        - $(inputs.new_prefix)+orig.BRIK
-        - $(inputs.new_prefix)+tlrc.HEAD
-        - $(inputs.new_prefix)+tlrc.BRIK
-        - $(inputs.new_prefix).nii
-        - $(inputs.new_prefix).nii.gz
+      glob: $(inputs.new_prefix)+orig.HEAD
+    secondaryFiles:
+      - .BRIK
+      - .BRIK.gz
   log:
     type: File
     outputBinding:

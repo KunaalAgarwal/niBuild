@@ -8,7 +8,7 @@ baseCommand: '3dREMLfit'
 
 hints:
   DockerRequirement:
-    dockerPull: afni/afni:latest
+    dockerPull: brainlife/afni:latest
 
 stdout: $(inputs.Rbuck).log
 stderr: $(inputs.Rbuck).log
@@ -148,13 +148,10 @@ outputs:
   stats:
     type: File
     outputBinding:
-      glob:
-        - $(inputs.Rbuck)+orig.HEAD
-        - $(inputs.Rbuck)+orig.BRIK
-        - $(inputs.Rbuck)+tlrc.HEAD
-        - $(inputs.Rbuck)+tlrc.BRIK
-        - $(inputs.Rbuck).nii
-        - $(inputs.Rbuck).nii.gz
+      glob: $(inputs.Rbuck)+orig.HEAD
+    secondaryFiles:
+      - ^.BRIK
+      - ^.BRIK.gz
   betas:
     type: ['null', File]
     outputBinding:
