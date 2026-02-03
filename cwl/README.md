@@ -4,7 +4,7 @@ This bundle contains a packed CWL (Common Workflow Language) workflow that is re
 
 ## Contents
 
-- `workflow.cwl` - The complete workflow with all tool definitions inlined
+- `<name>.cwl` - The complete workflow with all tool definitions inlined (where `<name>` is your workflow name)
 
 ## Prerequisites
 
@@ -27,19 +27,19 @@ pip install toil[cwl]
 ### Basic execution
 
 ```bash
-cwltool workflow.cwl --input <your_input_file.nii.gz>
+cwltool <name>.cwl --input <your_input_file.nii.gz>
 ```
 
 ### With Docker (recommended)
 
 ```bash
-cwltool --docker workflow.cwl --input <your_input_file.nii.gz>
+cwltool --docker <name>.cwl --input <your_input_file.nii.gz>
 ```
 
 ### With Singularity (for HPC environments)
 
 ```bash
-cwltool --singularity workflow.cwl --input <your_input_file.nii.gz>
+cwltool --singularity <name>.cwl --input <your_input_file.nii.gz>
 ```
 
 ## Viewing Workflow Inputs
@@ -47,7 +47,7 @@ cwltool --singularity workflow.cwl --input <your_input_file.nii.gz>
 To see all available inputs and their types:
 
 ```bash
-cwltool --make-template workflow.cwl
+cwltool --make-template <name>.cwl
 ```
 
 This will generate a YAML template showing all inputs you can provide.
@@ -57,7 +57,7 @@ This will generate a YAML template showing all inputs you can provide.
 To validate the workflow without running it:
 
 ```bash
-cwltool --validate workflow.cwl
+cwltool --validate <name>.cwl
 ```
 
 ## Troubleshooting
