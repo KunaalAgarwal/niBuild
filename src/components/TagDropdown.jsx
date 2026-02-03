@@ -29,18 +29,11 @@ const TagDropdown = ({
         setInputValue(value);
     }, [value]);
 
-    // Filter tags based on input
+    // Always show all tags (no filtering)
     useEffect(() => {
-        if (!inputValue) {
-            setFilteredTags(tags);
-        } else {
-            const filtered = tags.filter(tag =>
-                tag.toLowerCase().includes(inputValue.toLowerCase())
-            );
-            setFilteredTags(filtered);
-        }
+        setFilteredTags(tags);
         setHighlightedIndex(-1);
-    }, [inputValue, tags]);
+    }, [tags]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
