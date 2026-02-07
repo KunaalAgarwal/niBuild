@@ -17,23 +17,17 @@ echo ""
 
 run_test() {
   local script="$1"
-  local name
-  name="$(basename "$script" .sh | sed 's/^test_//')"
+  local before_lines
+  before_lines=$(wc -l < "$SUMMARY_FILE")
 
-  if bash "$script" "$@" 2>&1; then
-    ((PASS++)) || true
-  else
-    local rc=$?
-    if [[ $rc -eq 0 ]]; then
-      ((PASS++)) || true
-    else
-      # Check if it was a skip (logged to summary)
-      if grep -qP "^${name}\tSKIP" "$SUMMARY_FILE" 2>/dev/null; then
-        ((SKIP++)) || true
-      else
-        ((FAIL++)) || true
-      fi
-    fi
+  bash "$script" "$@" 2>&1 || true
+
+  # Count results from summary.tsv (run_tool writes PASS/FAIL/SKIP there)
+  local new_lines=$(( $(wc -l < "$SUMMARY_FILE") - before_lines ))
+  if [[ $new_lines -gt 0 ]]; then
+    ((PASS += $(tail -n "$new_lines" "$SUMMARY_FILE" | grep -cP '\tPASS$' || true) )) || true
+    ((FAIL += $(tail -n "$new_lines" "$SUMMARY_FILE" | grep -cP '\tFAIL$' || true) )) || true
+    ((SKIP += $(tail -n "$new_lines" "$SUMMARY_FILE" | grep -cP '\tSKIP$' || true) )) || true
   fi
   echo ""
 }

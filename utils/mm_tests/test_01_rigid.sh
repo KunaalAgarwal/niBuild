@@ -26,6 +26,9 @@ reference_image:
   path: "${MM_T1}"
 output_prefix: "${PREFIX}"
 transform_type: "0"
+brain_mask:
+  class: File
+  path: "${MM_MASK}"
 EOF
 
 run_tool "$NAME" "${JOB_DIR}/${NAME}.yml" "$CWL"

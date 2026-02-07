@@ -11,7 +11,7 @@ hints:
     dockerPull: fnndsc/ants:latest
 
 stdout: antsIntermodalityIntrasubject.log
-stderr: antsIntermodalityIntrasubject.log
+stderr: antsIntermodalityIntrasubject.err.log
 
 inputs:
   dimensionality:
@@ -31,9 +31,8 @@ inputs:
     label: Output prefix
     inputBinding: {prefix: -o}
 
-  # Optional parameters
   brain_mask:
-    type: ['null', File]
+    type: File
     label: Anatomical T1 brain mask
     inputBinding: {prefix: -x}
   transform_type:
