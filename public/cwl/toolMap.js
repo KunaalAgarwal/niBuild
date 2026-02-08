@@ -1858,8 +1858,8 @@ export const TOOL_MAP = {
         },
 
         outputs: {
-            warped: { type: 'File?', label: 'Warped output', glob: ['$(inputs.prefix)+*.*', '$(inputs.prefix).nii*'] },
-            warp: { type: 'File?', label: 'Warp field', glob: ['$(inputs.prefix)_WARP+*.*', '$(inputs.prefix)_WARP.nii*'] },
+            warped: { type: 'File?', label: 'Warped output', glob: ['$(inputs.prefix)+orig.*', '$(inputs.prefix)+tlrc.*', '$(inputs.prefix).nii*'] },
+            warp: { type: 'File?', label: 'Warp field', glob: ['$(inputs.prefix)_WARP+orig.*', '$(inputs.prefix)_WARP+tlrc.*', '$(inputs.prefix)_WARP.nii*'] },
             log: { type: 'File', label: 'Log file', glob: ['$(inputs.prefix).log'] }
         }
     },
@@ -1952,7 +1952,7 @@ export const TOOL_MAP = {
         },
 
         outputs: {
-            tlrc_anat: { type: 'File', label: 'TLRC-aligned anatomical', glob: ['*+tlrc.*'] },
+            tlrc_anat: { type: 'File', label: 'TLRC-aligned anatomical', glob: ['*+orig.*', '*+tlrc.*', '*.nii*'] },
             transform: { type: 'File?', label: 'Transform file', glob: ['*.Xat.1D'] },
             log: { type: 'File?', label: 'Log file', glob: ['*.log'] }
         }
@@ -1977,9 +1977,9 @@ export const TOOL_MAP = {
         },
 
         outputs: {
-            skull_stripped: { type: 'File', label: 'Skull-stripped output', glob: ['anatSS.$(inputs.subid).*'] },
-            warped: { type: 'File', label: 'Warped to template', glob: ['anatQQ.$(inputs.subid).*'] },
-            warp: { type: 'File', label: 'Warp field', glob: ['anatQQ.$(inputs.subid)_WARP.*'] },
+            skull_stripped: { type: 'File', label: 'Skull-stripped output', glob: ['anatSS.$(inputs.subid)+orig.*', 'anatSS.$(inputs.subid)+tlrc.*', 'anatSS.$(inputs.subid).nii*'] },
+            warped: { type: 'File', label: 'Warped to template', glob: ['anatQQ.$(inputs.subid)+orig.*', 'anatQQ.$(inputs.subid)+tlrc.*', 'anatQQ.$(inputs.subid).nii*'] },
+            warp: { type: 'File', label: 'Warp field', glob: ['anatQQ.$(inputs.subid)_WARP+orig.*', 'anatQQ.$(inputs.subid)_WARP+tlrc.*', 'anatQQ.$(inputs.subid)_WARP.nii*'] },
             log: { type: 'File', label: 'Log file', glob: ['$(inputs.subid)_SSwarper.log'] }
         }
     },
@@ -2005,7 +2005,7 @@ export const TOOL_MAP = {
 
         outputs: {
             aligned_anat: { type: 'File?', label: 'Aligned anatomical', glob: ['*_al+orig.*', '*_al+tlrc.*', '*_al.nii*'] },
-            aligned_epi: { type: 'File?', label: 'Aligned EPI', glob: ['*_al_reg+orig.*', '*_al_reg+tlrc.*'] },
+            aligned_epi: { type: 'File?', label: 'Aligned EPI', glob: ['*_al_reg+orig.*', '*_al_reg+tlrc.*', '*_al_reg.nii*'] },
             transform_matrix: { type: 'File?', label: 'Transform matrix', glob: ['*.aff12.1D'] },
             log: { type: 'File', label: 'Log file', glob: ['align_epi_anat.log'] }
         }

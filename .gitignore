@@ -18,7 +18,6 @@ notes/
 /public/temp/
 
 # Testing artifacts (downloaded datasets and tool outputs)
-tests/
 tests/data/
 tests/work/
 utils/structural_mri_tests/jobs/
