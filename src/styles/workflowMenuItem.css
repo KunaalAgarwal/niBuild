@@ -13,6 +13,7 @@
                 box-shadow 0.2s ease, border 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
 }
 
 /* Dynamic font sizing for long tool names */
@@ -22,6 +23,13 @@
 
 .workflow-menu-item.font-smaller {
     font-size: clamp(0.5rem, 0.75vw, 0.65rem);
+}
+
+.workflow-menu-item .tool-name {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .workflow-menu-item:hover {

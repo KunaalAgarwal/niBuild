@@ -1,6 +1,6 @@
 # dMRI CWL Tool Tests
 
-Validation tests for all 18 diffusion MRI CWL tool definitions across FSL, MRtrix3, and FreeSurfer.
+Validation tests for all 19 diffusion MRI CWL tool definitions across FSL, MRtrix3, and FreeSurfer.
 
 ## Prerequisites
 
@@ -62,6 +62,7 @@ bash test_tbss_1_preproc.sh   # standalone
 bash test_tbss_2_reg.sh       # depends on tbss_1
 bash test_tbss_3_postreg.sh   # depends on tbss_2
 bash test_tbss_4_prestats.sh  # depends on tbss_3
+bash test_tbss_non_FA.sh      # depends on tbss_4 (projects non-FA data onto skeleton)
 ```
 
 ### Run FSL diffusion pipeline in order
@@ -84,7 +85,7 @@ FSL Diffusion:
   bedpostx ──────> probtrackx2
 
 FSL TBSS:
-  tbss_1_preproc > tbss_2_reg > tbss_3_postreg > tbss_4_prestats
+  tbss_1_preproc > tbss_2_reg > tbss_3_postreg > tbss_4_prestats > tbss_non_FA
 
 MRtrix3:
   dwidenoise ────┐

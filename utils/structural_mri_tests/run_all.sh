@@ -73,6 +73,9 @@ run_test "${SCRIPT_DIR}/test_3dAllineate.sh" "$@"
 run_test "${SCRIPT_DIR}/test_3dQwarp.sh" "$@"
 run_test "${SCRIPT_DIR}/test_auto_tlrc.sh" "$@"
 
+# FSL - WMH segmentation
+run_test "${SCRIPT_DIR}/test_bianca.sh" "$@"
+
 # ── Phase 2: Depends on Phase 1 ───────────────────────────────────
 
 echo "── Phase 2: Dependent tools ──"

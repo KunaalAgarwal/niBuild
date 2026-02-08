@@ -30,6 +30,7 @@ run_test() {
 # Phase 1: No dependencies
 for s in test_fslmaths.sh test_fslstats.sh test_fslroi.sh \
          test_fslreorient2std.sh test_fslmerge.sh test_cluster.sh \
+         test_robustfov.sh \
          test_3dcalc.sh test_3dinfo.sh test_3dcopy.sh \
          test_3dZeropad.sh test_3dresample.sh test_3dfractionize.sh \
          test_3dUndump.sh test_whereami.sh \

@@ -1,6 +1,6 @@
 # Structural MRI CWL Test Suite
 
-Individual CWL test scripts for 32 structural MRI tools across FSL, ANTs, FreeSurfer, and AFNI.
+Individual CWL test scripts for 37 structural MRI tools across FSL, ANTs, FreeSurfer, and AFNI, plus a standalone recon-all test.
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ FreeSurfer tools require a license file. Either:
 
 ## Running Tests
 
-### Run all 32 tests
+### Run all 37 tests
 
 ```bash
 bash utils/structural_mri_tests/run_all.sh
@@ -108,6 +108,28 @@ utils/structural_mri_tests/
 | 30 | FreeSurfer | `test_asegstats2table.sh` | asegstats2table |
 | 31 | AFNI | `test_3dSkullStrip.sh` | 3dSkullStrip |
 | 32 | AFNI | `test_SSwarper.sh` | @SSwarper |
+| 33 | AFNI | `test_3dUnifize.sh` | 3dUnifize |
+| 34 | AFNI | `test_3dAllineate.sh` | 3dAllineate |
+| 35 | AFNI | `test_3dQwarp.sh` | 3dQwarp |
+| 36 | AFNI | `test_auto_tlrc.sh` | auto_tlrc |
+| 37 | FSL | `test_bianca.sh` | bianca |
+
+## Standalone Tests (Not in run_all.sh)
+
+### recon-all
+
+The FreeSurfer `recon-all` pipeline (full cortical reconstruction) takes 6-24 hours to complete and is therefore **not included in `run_all.sh`**. Run it separately:
+
+```bash
+bash utils/structural_mri_tests/test_recon-all.sh
+```
+
+This runs the full `recon-all -all` pipeline (autorecon1 + autorecon2 + autorecon3) on MNI152 2mm data. It requires:
+- A valid FreeSurfer license (set `FS_LICENSE` or place at `tests/data/freesurfer/license.txt`)
+- Sufficient disk space (~1GB per subject)
+- Patience (6-24 hours depending on hardware)
+
+The test verifies that the subject output directory is created with expected subdirectories (`mri/`, `surf/`, `label/`, `stats/`).
 
 ## Environment Variables
 
