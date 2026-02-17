@@ -7,3 +7,28 @@
   height: 100%;
   width: 99%;
 }
+
+.react-flow__minimap {
+  width: 120px !important;
+  height: 90px !important;
+  overflow: hidden;
+}
+
+.react-flow__minimap svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .react-flow__minimap {
+    width: 80px !important;
+    height: 60px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .react-flow__minimap {
+    width: 60px !important;
+    height: 45px !important;
+  }
+}

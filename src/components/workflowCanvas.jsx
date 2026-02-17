@@ -360,11 +360,16 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
               onNodesDelete={onNodesDelete}
               onEdgeDoubleClick={onEdgeDoubleClick}
               fitView
+              fitViewOptions={{ maxZoom: 1, padding: 0.2 }}
               nodeTypes={nodeTypes}
               edgeTypes={edgeTypes}
               onInit={(instance) => setReactFlowInstance(instance)}
           >
-            <MiniMap />
+            <MiniMap
+              nodeColor="#4a90e2"
+              maskColor="rgba(0, 0, 0, 0.65)"
+              style={{ backgroundColor: '#1a1a1a' }}
+            />
             <Background variant="dots" gap={12} size={1} />
             <Controls />
           </ReactFlow>
