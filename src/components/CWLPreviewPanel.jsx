@@ -44,7 +44,10 @@ function CWLPreviewPanel({ getWorkflowData }) {
             }
             try {
                 const graph = getWorkflowData();
-                if (!graph || !graph.nodes || graph.nodes.length < 2 || !graph.edges || graph.edges.length < 1) {
+                const dummyIds = new Set((graph?.nodes || []).filter(n => n.data?.isDummy).map(n => n.id));
+                const realNodeCount = (graph?.nodes || []).filter(n => !n.data?.isDummy).length;
+                const realEdgeCount = (graph?.edges || []).filter(e => !dummyIds.has(e.source) && !dummyIds.has(e.target)).length;
+                if (!graph || !graph.nodes || realNodeCount < 2 || !graph.edges || realEdgeCount < 1) {
                     setCwlOutput('');
                     setJobOutput('');
                     setError(null);
