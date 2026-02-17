@@ -34,7 +34,8 @@ const NodeComponent = ({ data }) => {
     // Check if this is a dummy node early
     const isDummy = data.isDummy === true;
 
-    const { showError } = useToast();
+    const { showError, dismissMessage } = useToast();
+    const JSON_ERROR_MSG = 'Invalid JSON entered. Please ensure entry is formatted appropriately.';
     const [showModal, setShowModal] = useState(false);
     const [textInput, setTextInput] = useState(data.parameters || '');
     const [dockerVersion, setDockerVersion] = useState(data.dockerVersion || 'latest');
@@ -146,33 +147,34 @@ const NodeComponent = ({ data }) => {
     };
 
     const handleCloseModal = () => {
-        setShowModal(false);
-
         // Default to 'latest' if docker version is empty
         const finalDockerVersion = dockerVersion.trim() || 'latest';
         if (finalDockerVersion !== dockerVersion) {
             setDockerVersion(finalDockerVersion);
         }
 
-        // Attempt to parse; fallback to user's raw text if invalid
+        // Validate JSON before allowing close
         if (typeof data.onSaveParameters === 'function') {
             try {
-                data.onSaveParameters({
-                    params: JSON.parse(textInput),
-                    dockerVersion: finalDockerVersion
-                });
+                JSON.parse(textInput);
             } catch (err) {
-                showError('Invalid JSON entered. Defaulting to raw text storage. Please ensure entry is formatted appropriately.');
-                data.onSaveParameters({
-                    params: textInput,
-                    dockerVersion: finalDockerVersion
-                });
+                showError(JSON_ERROR_MSG, 4000);
+                return; // Keep modal open
             }
+
+            dismissMessage(JSON_ERROR_MSG);
+            data.onSaveParameters({
+                params: JSON.parse(textInput),
+                dockerVersion: finalDockerVersion
+            });
         }
+
+        setShowModal(false);
     };
 
     const handleInputChange = (e) => {
         setTextInput(e.target.value);
+        dismissMessage(JSON_ERROR_MSG);
     };
 
     const handleKeyDown = (e) => {

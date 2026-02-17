@@ -197,6 +197,12 @@ if not paths:
 missing = [p for p in paths if not os.path.exists(p)]
 if missing:
     print("missing outputs:", ", ".join(missing)); sys.exit(3)
+
+# Warn about empty array outputs (may indicate glob pattern mismatches)
+empty_arrays = [k for k, v in data.items() if isinstance(v, list) and len(v) == 0]
+if empty_arrays:
+    print("WARNING: empty array outputs:", ", ".join(empty_arrays), file=sys.stderr)
+
 print("ok")
 PY
 }

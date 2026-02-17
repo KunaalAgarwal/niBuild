@@ -1,64 +1,94 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import { Toast, ToastContainer } from 'react-bootstrap';
+import '../styles/toast.css';
 
 const ToastContext = createContext(null);
 
 /**
  * Toast notification provider using React Bootstrap.
  * Replaces blocking alert() calls with non-blocking toasts.
+ * Deduplicates by message — repeated triggers reset the dismiss timer
+ * instead of stacking duplicates.
  */
 export function ToastProvider({ children }) {
     const [toasts, setToasts] = useState([]);
-
-    const addToast = useCallback((message, variant = 'danger', duration = 5000) => {
-        const id = Date.now();
-        setToasts(prev => [...prev, { id, message, variant, duration }]);
-    }, []);
+    const activeRef = useRef(new Map()); // message -> { id, timerId }
 
     const removeToast = useCallback((id) => {
         setToasts(prev => prev.filter(t => t.id !== id));
     }, []);
 
-    const showError = useCallback((message) => {
-        addToast(message, 'danger', 6000);
+    const dismissToast = useCallback((id, message) => {
+        setToasts(prev => prev.map(t =>
+            t.id === id ? { ...t, show: false } : t
+        ));
+        activeRef.current.delete(message);
+    }, []);
+
+    const addToast = useCallback((message, variant = 'danger', duration = 5000) => {
+        const existing = activeRef.current.get(message);
+
+        if (existing) {
+            clearTimeout(existing.timerId);
+            const timerId = setTimeout(() => dismissToast(existing.id, message), duration);
+            activeRef.current.set(message, { id: existing.id, timerId });
+            return;
+        }
+
+        const id = Date.now();
+        const timerId = setTimeout(() => dismissToast(id, message), duration);
+        activeRef.current.set(message, { id, timerId });
+        setToasts(prev => [...prev, { id, message, variant, show: true }]);
+    }, [dismissToast]);
+
+    const showError = useCallback((message, duration = 2000) => {
+        addToast(message, 'danger', duration);
     }, [addToast]);
 
     const showWarning = useCallback((message) => {
-        addToast(message, 'warning', 5000);
+        addToast(message, 'warning', 1800);
     }, [addToast]);
 
     const showSuccess = useCallback((message) => {
-        addToast(message, 'success', 4000);
+        addToast(message, 'success', 1500);
     }, [addToast]);
 
     const showInfo = useCallback((message) => {
-        addToast(message, 'info', 4000);
+        addToast(message, 'info', 1500);
     }, [addToast]);
 
+    const dismissMessage = useCallback((message) => {
+        const entry = activeRef.current.get(message);
+        if (!entry) return;
+        clearTimeout(entry.timerId);
+        activeRef.current.delete(message);
+        setToasts(prev => prev.map(t =>
+            t.id === entry.id ? { ...t, show: false } : t
+        ));
+    }, []);
+
     return (
-        <ToastContext.Provider value={{ showError, showWarning, showSuccess, showInfo }}>
+        <ToastContext.Provider value={{ showError, showWarning, showSuccess, showInfo, dismissMessage }}>
             {children}
             <ToastContainer
                 position="top-end"
-                className="p-3"
+                className="p-3 custom-toast-container"
                 style={{ zIndex: 9999 }}
             >
                 {toasts.map(toast => (
                     <Toast
                         key={toast.id}
-                        onClose={() => removeToast(toast.id)}
-                        autohide
-                        delay={toast.duration}
-                        bg={toast.variant}
+                        show={toast.show}
+                        onExited={() => removeToast(toast.id)}
+                        animation={true}
+                        className={`custom-toast toast-${toast.variant}`}
                     >
-                        <Toast.Header closeButton>
-                            <strong className="me-auto">
+                        <Toast.Body className="custom-toast-body">
+                            <span className="toast-label">
                                 {toast.variant === 'danger' ? 'Error' :
                                  toast.variant === 'warning' ? 'Warning' :
                                  toast.variant === 'success' ? 'Success' : 'Info'}
-                            </strong>
-                        </Toast.Header>
-                        <Toast.Body className={toast.variant === 'danger' || toast.variant === 'warning' ? 'text-white' : ''}>
+                            </span>
                             {toast.message}
                         </Toast.Body>
                     </Toast>
@@ -80,7 +110,8 @@ export function useToast() {
             showError: (msg) => alert(msg),
             showWarning: (msg) => alert(msg),
             showSuccess: (msg) => alert(msg),
-            showInfo: (msg) => alert(msg)
+            showInfo: (msg) => alert(msg),
+            dismissMessage: () => {}
         };
     }
     return context;

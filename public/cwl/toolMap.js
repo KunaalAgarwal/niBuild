@@ -1410,19 +1410,28 @@ export const TOOL_MAP = {
                 flag: '-m',
                 options: ['auto', 'fast', 'none']
             },
-            structures: { type: 'string', label: 'Structures to segment', flag: '-s' }
+            structures: { type: 'string', label: 'Structures to segment', flag: '-s' },
+            affine: { type: 'File', label: 'Affine matrix for registration', flag: '-a' },
+            three_stage: { type: 'boolean', label: 'Use 3-stage registration', flag: '-3' },
+            verbose: { type: 'boolean', label: 'Verbose output', flag: '-v' },
+            debug: { type: 'boolean', label: 'Debug mode (keep temporary files)', flag: '-d' }
         },
 
         outputs: {
             segmentation_files: {
                 type: 'File[]',
                 label: 'Segmentation files',
-                glob: ['$(inputs.output)*_first*.nii.gz', '$(inputs.output)*_firstseg.nii.gz']
+                glob: ['$(inputs.output)_all_fast_firstseg.nii.gz', '$(inputs.output)_all_fast_origsegs.nii.gz', '$(inputs.output)-*_first.nii.gz']
             },
             vtk_meshes: {
                 type: 'File[]',
                 label: 'VTK meshes',
-                glob: ['$(inputs.output)*.vtk']
+                glob: ['$(inputs.output)-*.vtk']
+            },
+            bvars: {
+                type: 'File[]',
+                label: 'BVARS shape/appearance model files',
+                glob: ['$(inputs.output)-*.bvars']
             },
             log: {
                 type: 'File',

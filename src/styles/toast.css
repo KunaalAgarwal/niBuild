@@ -1,0 +1,57 @@
+/* Faster fade transition (Bootstrap default is 0.15s) */
+.custom-toast-container .toast.fade {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    transform: translateX(0);
+}
+
+.custom-toast-container .toast.fade:not(.show) {
+    opacity: 0;
+    transform: translateX(12px);
+}
+
+/* Base toast — compact single-row dark style */
+.custom-toast {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid transparent;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    font-family: 'Inter', sans-serif;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    width: fit-content !important;
+    max-width: 400px;
+}
+
+/* Variant left-border accent */
+.custom-toast.toast-danger  { border-left-color: #e74c3c; }
+.custom-toast.toast-warning { border-left-color: #ffc107; }
+.custom-toast.toast-success { border-left-color: #4CAF50; }
+.custom-toast.toast-info    { border-left-color: #4a90e2; }
+
+/* Body — single compact row */
+.custom-toast .custom-toast-body {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #d0d0d0;
+    font-size: 0.8rem;
+    padding: 10px 14px;
+    line-height: 1.4;
+}
+
+/* Inline variant label */
+.custom-toast .toast-label {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    flex-shrink: 0;
+}
+
+.custom-toast.toast-danger  .toast-label { color: #e74c3c; }
+.custom-toast.toast-warning .toast-label { color: #ffc107; }
+.custom-toast.toast-success .toast-label { color: #4CAF50; }
+.custom-toast.toast-info    .toast-label { color: #4a90e2; }

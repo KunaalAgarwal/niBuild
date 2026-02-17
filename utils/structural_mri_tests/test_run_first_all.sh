@@ -13,13 +13,25 @@ prepare_fsl_data
 # Generate template for reference
 make_template "$CWL" "$TOOL"
 
-# Use 2mm T1 to keep memory usage manageable. The 1mm image causes
-# Docker OOM on systems with limited RAM.
+# Use brain-extracted 2mm T1 with -b flag so FIRST skips its internal BET.
+# Segment only L_Hipp to keep runtime manageable (~5 min vs ~30 min for all).
+# Note: MNI152 is a template average, so segmentation quality is not
+# meaningful — this test verifies the CWL wiring produces output files.
+FIRST_INPUT="$T1W_2MM_BRAIN"
+if [[ ! -f "$FIRST_INPUT" ]]; then
+  echo "Brain-extracted 2mm T1 not found, running BET..."
+  docker_fsl bet "$T1W_2MM" "${DERIVED_DIR}/bet_2mm_out" -R
+  FIRST_INPUT="${DERIVED_DIR}/bet_2mm_out.nii.gz"
+fi
+[[ -f "$FIRST_INPUT" ]] || die "Missing brain-extracted input for run_first_all"
+
 cat > "${JOB_DIR}/${TOOL}.yml" <<EOF
 input:
   class: File
-  path: "${T1W_2MM}"
+  path: "${FIRST_INPUT}"
 output: "first_out"
+brain_extracted: true
+structures: "L_Hipp"
 EOF
 
 run_tool "$TOOL" "${JOB_DIR}/${TOOL}.yml" "$CWL"
