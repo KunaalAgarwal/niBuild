@@ -1,5 +1,6 @@
 import YAML from 'js-yaml';
 import { TOOL_MAP } from '../../public/cwl/toolMap.js';
+import { computeScatteredNodes } from '../utils/scatterPropagation.js';
 
 /**
  * Convert the React-Flow graph into a CWL Workflow YAML string.
@@ -91,29 +92,8 @@ export function buildCWLWorkflowObject(graph) {
         return totalCount > 1 ? `${toolId}_${count}` : toolId;
     };
 
-    // Track source nodes (no incoming edges)
-    const sourceNodeIds = new Set(
-        nodes.filter(n => inEdgesOf(n.id).length === 0).map(n => n.id)
-    );
-
     /* ---------- compute scatter propagation ---------- */
-    // A step scatters if the user enabled it OR any upstream step is scattered.
-    // Forward pass over topological order ensures upstream decisions propagate.
-    const scatteredSteps = new Set();
-    order.forEach((nodeId) => {
-        const node = nodeById(nodeId);
-        // Only honor scatterEnabled on source nodes (no incoming edges)
-        if (node.data?.scatterEnabled && sourceNodeIds.has(nodeId)) {
-            scatteredSteps.add(nodeId);
-            return;
-        }
-        for (const edge of inEdgesOf(nodeId)) {
-            if (scatteredSteps.has(edge.source)) {
-                scatteredSteps.add(nodeId);
-                return;
-            }
-        }
-    });
+    const { scatteredNodeIds: scatteredSteps, sourceNodeIds } = computeScatteredNodes(nodes, edges);
 
     /* ---------- helper: wrap a type string in CWL array ---------- */
     const toArrayType = (typeStr) => {

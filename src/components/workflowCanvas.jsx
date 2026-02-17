@@ -17,6 +17,7 @@ import EdgeMappingModal, { checkTypeCompatibility } from './EdgeMappingModal';
 import { TOOL_MAP } from '../../public/cwl/toolMap.js';
 import { useNodeLookup } from '../hooks/useNodeLookup.js';
 import { ScatterPropagationContext } from '../context/ScatterPropagationContext.jsx';
+import { computeScatteredNodes } from '../utils/scatterPropagation.js';
 
 // Define node types.
 const nodeTypes = { default: NodeComponent };
@@ -41,30 +42,8 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
   // Compute which nodes inherit scatter from upstream (BFS propagation).
   // Used by NodeComponent via ScatterPropagationContext to show badges.
   const scatterContext = useMemo(() => {
-    // Compute source node IDs (nodes with no incoming edges)
-    const targetIds = new Set(edges.map(e => e.target));
-    const sourceNodeIds = new Set(
-        nodes.filter(n => !targetIds.has(n.id)).map(n => n.id)
-    );
-
-    // BFS propagation: only honor scatterEnabled on source nodes
-    const propagated = new Set();
-    const sources = new Set(
-        nodes.filter(n => n.data?.scatterEnabled && sourceNodeIds.has(n.id)).map(n => n.id)
-    );
-    const visited = new Set(sources);
-    const queue = [...sources];
-    while (queue.length) {
-      const nodeId = queue.shift();
-      for (const edge of edges) {
-        if (edge.source === nodeId && !visited.has(edge.target)) {
-          visited.add(edge.target);
-          propagated.add(edge.target);
-          queue.push(edge.target);
-        }
-      }
-    }
-    return { propagatedIds: propagated, sourceNodeIds };
+    const { scatteredNodeIds, sourceNodeIds } = computeScatteredNodes(nodes, edges);
+    return { propagatedIds: scatteredNodeIds, sourceNodeIds };
   }, [nodes, edges]);
 
   // Edge mapping modal state

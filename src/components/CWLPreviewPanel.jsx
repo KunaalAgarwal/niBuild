@@ -17,8 +17,8 @@ const highlightYaml = (yaml) => {
         }
         let hl = escapeHtml(line);
         hl = hl.replace(/^(\s*)([\w][\w-]*)(:)/, '$1<span class="cwl-key">$2</span>$3');
-        hl = hl.replace(/&#39;([^&#39;]*)&#39;/g, '<span class="cwl-string">$&</span>');
-        hl = hl.replace(/&quot;([^&quot;]*)&quot;/g, '<span class="cwl-string">$&</span>');
+        hl = hl.replace(/&#39;(.*?)&#39;/g, '<span class="cwl-string">$&</span>');
+        hl = hl.replace(/&quot;(.*?)&quot;/g, '<span class="cwl-string">$&</span>');
         hl = hl.replace(/\b(true|false|null)\b/g, '<span class="cwl-bool">$1</span>');
         return hl;
     }).join('\n');
@@ -71,7 +71,7 @@ function CWLPreviewPanel({ getWorkflowData }) {
         navigator.clipboard.writeText(activeContent).then(() => {
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
-        });
+        }).catch(() => {});
     }, [activeContent]);
 
     const highlightedHtml = activeContent ? highlightYaml(activeContent) : '';

@@ -167,8 +167,9 @@ const NodeComponent = ({ data, id }) => {
 
         // Validate JSON before allowing close
         if (typeof data.onSaveParameters === 'function') {
+            let parsed;
             try {
-                JSON.parse(textInput);
+                parsed = JSON.parse(textInput);
             } catch (err) {
                 showError(JSON_ERROR_MSG, 4000);
                 return; // Keep modal open
@@ -176,7 +177,7 @@ const NodeComponent = ({ data, id }) => {
 
             dismissMessage(JSON_ERROR_MSG);
             data.onSaveParameters({
-                params: JSON.parse(textInput),
+                params: parsed,
                 dockerVersion: finalDockerVersion,
                 scatterEnabled: scatterEnabled
             });
@@ -258,7 +259,7 @@ const NodeComponent = ({ data, id }) => {
                     <Handle type="source" position={Position.Bottom} />
                 </div>
 
-                {((data.scatterEnabled && isSourceNode) || isScatterInherited) && (
+                {isScatterInherited && (
                     <div className="node-scatter-badge">SCATTER</div>
                 )}
 
@@ -369,7 +370,7 @@ const NodeComponent = ({ data, id }) => {
                                 </Form.Label>
                                 <Form.Check
                                     type="switch"
-                                    id={`scatter-toggle-${data.label}`}
+                                    id={`scatter-toggle-${id}`}
                                     checked={scatterEnabled}
                                     onChange={(e) => setScatterEnabled(e.target.checked)}
                                     disabled={!isSourceNode}
