@@ -3,7 +3,7 @@
  *
  * CWL files are the single source of truth for inputs, outputs, types,
  * labels, flags, and Docker images. This file provides ONLY:
- *   - Orchestration metadata (primaryOutputs, passthrough, bounds, requires, enumHints)
+ *   - Orchestration metadata (inputExtensions, outputExtensions, bounds, requires, enumHints)
  *   - UI display metadata (fullName, function, modality, docUrl, etc.)
  *   - Menu organization (modality assignments, ordering)
  *
@@ -26,17 +26,6 @@ export const DOCKER_IMAGES = {
 export const TOOL_ANNOTATIONS = {
     "bet": {
         "cwlPath": "cwl/fsl/bet.cwl",
-        "primaryOutputs": [
-            "brain_extraction"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "bounds": {
             "frac": [
                 0,
@@ -58,21 +47,20 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-f (fractional intensity 0→1, default 0.5), -g (vertical gradient), -R (robust mode), -m (output binary mask)",
         "keyPoints": "Default threshold works for most T1s. Use -R for noisy/difficult data. Lower -f (~0.3) for functional images.",
         "typicalUse": "First step in structural or functional preprocessing to isolate brain tissue.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BET"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "brain_extraction": [".nii",".nii.gz"],
+            "brain_mask": [".nii",".nii.gz"],
+            "brain_skull": [".nii",".nii.gz"],
+            "brain_mesh": [".vtk"],
+            "brain_registration": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BET"
     },
     "fast": {
         "cwlPath": "cwl/fsl/fast.cwl",
-        "primaryOutputs": [
-            "segmented_files"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "requires": {
             "output_bias_field": "bias_field",
             "output_bias_corrected_image": "bias_corrected_image",
@@ -92,63 +80,54 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-n (number of tissue classes, default 3), -t (image type: 1=T1, 2=T2, 3=PD), -B (output bias field), -o (output basename)",
         "keyPoints": "Input must be brain-extracted. Outputs partial volume maps (*_pve_0/1/2) for each tissue class. Use -B to get estimated bias field.",
         "typicalUse": "Tissue probability maps for normalization, VBM studies, or masking.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FAST"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "manualseg": [".nii",".nii.gz"],
+            "initialize_priors": [".mat"]
+        },
+                "outputExtensions": {
+            "segmented_files": [".nii.gz"],
+            "output_bias_field": [".nii.gz"],
+            "output_bias_corrected_image": [".nii.gz"],
+            "output_probability_maps": [".nii.gz"],
+            "output_segments": [".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FAST"
     },
     "fslreorient2std": {
         "cwlPath": "cwl/fsl/fslreorient2std.cwl",
-        "primaryOutputs": [
-            "reoriented_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Reorient to Standard Orientation",
         "function": "Reorients images to match standard (MNI) orientation using 90-degree rotations and flips only.",
         "modality": "3D or 4D NIfTI volume in any orientation.",
         "keyParameters": "<input> [output]",
         "keyPoints": "Only applies 90-degree rotations/flips (no interpolation). Does not register to standard space. Should be run as first step before any processing.",
         "typicalUse": "Ensuring consistent orientation before processing.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Orientation%20Explained"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "reoriented_image": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Orientation%20Explained"
     },
     "fslroi": {
         "cwlPath": "cwl/fsl/fslroi.cwl",
-        "primaryOutputs": [
-            "roi_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Region of Interest Extraction (fslroi)",
         "function": "Extracts a spatial or temporal sub-region from NIfTI images.",
         "modality": "3D or 4D NIfTI volume.",
         "keyParameters": "<input> <output> <xmin> <xsize> <ymin> <ysize> <zmin> <zsize> [<tmin> <tsize>]",
         "keyPoints": "Indices are 0-based. For temporal extraction only, use: fslroi input output tmin tsize. Useful for extracting reference volumes from 4D data.",
         "typicalUse": "Cropping images spatially or selecting specific time points from 4D data.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "roi_image": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
     },
     "fslsplit": {
         "cwlPath": "cwl/fsl/fslsplit.cwl",
-        "primaryOutputs": [
-            "split_files"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "dimension": [
                 "t",
@@ -163,105 +142,96 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "<input> [output_basename] -t/-x/-y/-z (split direction, default -t for time)",
         "keyPoints": "Default splits along time dimension. Output files are numbered sequentially (vol0000, vol0001, ...). Useful for per-volume quality control.",
         "typicalUse": "Processing individual volumes separately, quality control inspection.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "split_files": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
     },
     "fslmerge": {
         "cwlPath": "cwl/fsl/fslmerge.cwl",
-        "primaryOutputs": [
-            "merged_image"
-        ],
-        "passthrough": {
-            "input_files": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Volume Merge (fslmerge)",
         "function": "Concatenates multiple 3D volumes into a 4D time series or merges along any spatial axis.",
         "modality": "Multiple 3D NIfTI volumes.",
         "keyParameters": "-t/-x/-y/-z/-a (merge direction), <output> <input1> <input2> ...",
         "keyPoints": "Use -t for temporal concatenation (most common). -a auto-detects axis. Input images must have matching spatial dimensions when merging in time.",
         "typicalUse": "Combining processed volumes back into 4D, concatenating runs.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
+"inputExtensions": {
+            "input_files": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "merged_image": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
     },
     "fslstats": {
         "cwlPath": "cwl/fsl/fslstats.cwl",
-        "primaryOutputs": [
-            "stats_output"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Image Statistics (fslstats)",
         "function": "Computes various summary statistics from image data, optionally within a mask region.",
         "modality": "3D or 4D NIfTI volume, optional mask.",
         "keyParameters": "-k (mask image), -m (mean), -s (standard deviation), -r (min max), -V (volume in voxels and mm3), -p (nth percentile)",
         "keyPoints": "Apply -k mask before other options. Use -t for per-volume stats on 4D data. Outputs to stdout for easy scripting.",
         "typicalUse": "Extracting summary statistics from ROIs or whole-brain.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "mask": [".nii",".nii.gz"],
+            "index_mask": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "stats_output": [".txt"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
     },
     "fslmeants": {
         "cwlPath": "cwl/fsl/fslmeants.cwl",
-        "primaryOutputs": [
-            "timeseries"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Mean Time Series Extraction (fslmeants)",
         "function": "Extracts the mean time series from a 4D dataset within a mask or at specified coordinates.",
         "modality": "4D fMRI NIfTI time series plus ROI mask or coordinates.",
         "keyParameters": "-i (input 4D), -o (output text file), -m (mask image), -c (x y z coordinates), --eig (output eigenvariates)",
         "keyPoints": "Outputs one value per timepoint. Use -m for mask-based extraction, -c for single-voxel. --eig outputs eigenvariate (first principal component) instead of mean.",
         "typicalUse": "ROI time series extraction for seed-based connectivity analysis.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "mask": [".nii",".nii.gz"],
+            "label": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "timeseries": [".txt"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
     },
     "cluster": {
         "cwlPath": "cwl/fsl/cluster.cwl",
-        "primaryOutputs": [
-            "cluster_table"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Cluster Analysis (cluster)",
         "function": "Identifies contiguous clusters of suprathreshold voxels in statistical images and reports their properties.",
         "modality": "Statistical map (z-stat or p-value 3D NIfTI).",
         "keyParameters": "-i (input stat image), -t (z threshold), -p (p threshold), --oindex (cluster index output), --olmax (local maxima output), -c (cope image for effect sizes)",
         "keyPoints": "Reports cluster size, peak coordinates, and p-values. Use with -c to get mean COPE within clusters. GRF-based p-values require smoothness estimates.",
         "typicalUse": "Cluster-based thresholding and extracting peak coordinates from statistical maps.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Cluster"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "cope": [".nii",".nii.gz"],
+            "xfm": [".mat"],
+            "stdvol": [".nii",".nii.gz"],
+            "warpvol": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "cluster_table": [".txt"],
+            "cluster_index": [".nii",".nii.gz"],
+            "thresholded_image": [".nii",".nii.gz"],
+            "local_maxima_txt": [".txt"],
+            "local_maxima_image": [".nii",".nii.gz"],
+            "size_image": [".nii",".nii.gz"],
+            "max_image": [".nii",".nii.gz"],
+            "mean_image": [".nii",".nii.gz"],
+            "pvals_image": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Cluster"
     },
     "mcflirt": {
         "cwlPath": "cwl/fsl/mcflirt.cwl",
-        "primaryOutputs": [
-            "motion_corrected"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "cost": [
                 "mutualinfo",
@@ -277,63 +247,58 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-refvol (reference volume index), -cost (cost function), -plots (output motion parameter plots), -mats (save transformation matrices)",
         "keyPoints": "Default reference is middle volume. Use -plots for motion parameter files (6 columns: 3 rotations + 3 translations). Motion params useful as nuisance regressors.",
         "typicalUse": "Correcting head motion in functional data; motion parameters used as nuisance regressors.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/MCFLIRT"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "ref_file": [".nii",".nii.gz"],
+            "init": [".mat"]
+        },
+                "outputExtensions": {
+            "motion_corrected": [".nii",".nii.gz"],
+            "motion_parameters": [".par"],
+            "mean_image": [".nii",".nii.gz"],
+            "variance_image": [".nii",".nii.gz"],
+            "std_image": [".nii",".nii.gz"],
+            "transformation_matrices": [".mat"],
+            "rms_files": [".rms"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/MCFLIRT"
     },
     "slicetimer": {
         "cwlPath": "cwl/fsl/slicetimer.cwl",
-        "primaryOutputs": [
-            "slice_time_corrected"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FMRIB's Slice Timing Correction (SliceTimer)",
         "function": "Corrects for differences in slice acquisition times within each volume using sinc interpolation.",
         "modality": "4D fMRI NIfTI time series.",
         "keyParameters": "-r (TR in seconds), --odd (interleaved odd slices first), --down (reverse slice order), --tcustom (custom timing file)",
         "keyPoints": "Must match actual acquisition order. Important for event-related designs with short TRs. Less critical for long TRs or block designs.",
         "typicalUse": "Temporal alignment of slices acquired at different times within each TR.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/SliceTimer"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "custom_order": [".txt"],
+            "custom_timings": [".txt"]
+        },
+                "outputExtensions": {
+            "slice_time_corrected": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/SliceTimer"
     },
     "susan": {
         "cwlPath": "cwl/fsl/susan.cwl",
-        "primaryOutputs": [
-            "smoothed_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "Smallest Univalue Segment Assimilating Nucleus (SUSAN)",
         "function": "Edge-preserving noise reduction using nonlinear filtering that smooths within tissue boundaries while preserving edges.",
         "modality": "3D or 4D NIfTI volume (structural or functional).",
         "keyParameters": "<input> <brightness_threshold> <spatial_size_mm> <dimensionality> <use_median> <n_usans> [<usan1>] <output>",
         "keyPoints": "Brightness threshold typically 0.75 * median intensity. Set dimensionality to 3 for 3D volumes. Better edge preservation than Gaussian smoothing.",
         "typicalUse": "Noise reduction while preserving structural boundaries in functional or structural data.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/SUSAN"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "smoothed_image": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/SUSAN"
     },
     "flirt": {
         "cwlPath": "cwl/fsl/flirt.cwl",
-        "primaryOutputs": [
-            "registered_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "cost": [
                 "mutualinfo",
@@ -356,21 +321,25 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-ref (reference image), -dof (degrees of freedom: 6/7/9/12), -cost (cost function), -omat (output matrix)",
         "keyPoints": "Use 6-DOF for within-subject rigid-body, 12-DOF for cross-subject affine. Cost function matters: corratio for intra-modal, mutualinfo for inter-modal.",
         "typicalUse": "EPI-to-structural alignment, structural-to-standard registration.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FLIRT"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "reference": [".nii",".nii.gz"],
+            "init_matrix": [".mat"],
+            "in_weight": [".nii",".nii.gz"],
+            "ref_weight": [".nii",".nii.gz"],
+            "wm_seg": [".nii",".nii.gz"],
+            "fieldmap": [".nii",".nii.gz"],
+            "fieldmapmask": [".nii",".nii.gz"],
+            "schedule": [".sch"]
+        },
+                "outputExtensions": {
+            "registered_image": [".nii",".nii.gz"],
+            "transformation_matrix": [".mat"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FLIRT"
     },
     "applywarp": {
         "cwlPath": "cwl/fsl/applywarp.cwl",
-        "primaryOutputs": [
-            "warped_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "interp": [
                 "nn",
@@ -385,97 +354,110 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-i (input), -r (reference), -o (output), -w (warp field), --premat (pre-warp affine), --postmat (post-warp affine), --interp (interpolation)",
         "keyPoints": "Can chain affine + nonlinear transforms in one step. Use --interp=nn for label images, --interp=spline for continuous images. Reference defines output grid.",
         "typicalUse": "Applying normalization warps to functional data or atlas labels.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FNIRT/UserGuide#Applying_the_warps"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "reference": [".nii",".nii.gz"],
+            "warp": [".nii",".nii.gz"],
+            "premat": [".mat"],
+            "postmat": [".mat"],
+            "mask": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "warped_image": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FNIRT/UserGuide#Applying_the_warps"
     },
     "invwarp": {
         "cwlPath": "cwl/fsl/invwarp.cwl",
-        "primaryOutputs": [
-            "inverse_warp"
-        ],
-        "passthrough": {
-            "warp": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Invert Warp Field (invwarp)",
         "function": "Computes the inverse of a non-linear warp field for reverse transformations.",
         "modality": "Non-linear warp field (4D NIfTI from FNIRT --cout output).",
         "keyParameters": "-w (input warp), -o (output inverse warp), -r (reference image for output space)",
         "keyPoints": "Needed to map atlas/standard-space ROIs back to native space. Reference should be the image that was originally warped.",
         "typicalUse": "Creating inverse transformations for atlas-to-native space mapping.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FNIRT/UserGuide#Inverting_warps"
+"inputExtensions": {
+            "warp": [".nii",".nii.gz"],
+            "reference": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "inverse_warp": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FNIRT/UserGuide#Inverting_warps"
     },
     "convertwarp": {
         "cwlPath": "cwl/fsl/convertwarp.cwl",
-        "primaryOutputs": [
-            "combined_warp"
-        ],
         "fullName": "FSL Convert/Combine Warps (convertwarp)",
         "function": "Combines multiple warp fields and affine matrices into a single composite warp for efficient one-step transformation.",
         "modality": "Warp fields and/or affine matrices from FLIRT/FNIRT.",
         "keyParameters": "-r (reference), -o (output), --premat (first affine), --warp1 (first warp), --midmat (middle affine), --warp2 (second warp), --postmat (final affine)",
         "keyPoints": "Applying one combined warp is faster and has less interpolation error than chaining multiple transformations. Transform order: premat > warp1 > midmat > warp2 > postmat.",
         "typicalUse": "Concatenating multiple transformations (e.g., func > struct > standard) efficiently.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FNIRT/UserGuide#Combining_warps"
+"inputExtensions": {
+            "reference": [".nii",".nii.gz"],
+            "warp1": [".nii",".nii.gz"],
+            "warp2": [".nii",".nii.gz"],
+            "premat": [".mat"],
+            "midmat": [".mat"],
+            "postmat": [".mat"],
+            "shiftmap": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "combined_warp": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FNIRT/UserGuide#Combining_warps"
     },
     "fslmaths": {
         "cwlPath": "cwl/fsl/fslmaths.cwl",
-        "primaryOutputs": [
-            "output_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Mathematical Image Operations (fslmaths)",
         "function": "Performs a wide range of voxelwise mathematical operations on NIfTI images including arithmetic, filtering, thresholding, and morphological operations.",
         "modality": "3D or 4D NIfTI volume(s).",
         "keyParameters": "-add/-sub/-mul/-div (arithmetic), -thr/-uthr (thresholding), -bin (binarize), -s (smoothing sigma mm), -bptf (bandpass temporal filter)",
         "keyPoints": "Swiss army knife of neuroimaging. Operations are applied left to right. Use -odt to control output data type. -bptf values are in volumes not seconds.",
         "typicalUse": "Mathematical operations, masking, thresholding, temporal filtering.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "add_file": [".nii",".nii.gz"],
+            "sub_file": [".nii",".nii.gz"],
+            "mul_file": [".nii",".nii.gz"],
+            "div_file": [".nii",".nii.gz"],
+            "mas": [".nii",".nii.gz"],
+            "max_file": [".nii",".nii.gz"],
+            "min_file": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "output_image": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Fslutils"
     },
     "fnirt": {
         "cwlPath": "cwl/fsl/fnirt.cwl",
-        "primaryOutputs": [
-            "warped_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FMRIB's Non-linear Image Registration Tool (FNIRT)",
         "function": "Non-linear registration using B-spline deformations for precise anatomical alignment to a template.",
         "modality": "T1-weighted 3D NIfTI volume plus reference template. Requires initial affine from FLIRT.",
         "keyParameters": "--ref (reference), --aff (initial affine), --config (config file), --cout (coefficient output), --iout (warped output)",
         "keyPoints": "Always run FLIRT first for initial alignment. Use --config=T1_2_MNI152_2mm for standard T1-to-MNI. Computationally intensive.",
         "typicalUse": "High-accuracy normalization to MNI space for group analyses.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FNIRT"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "reference": [".nii",".nii.gz"],
+            "affine": [".mat"],
+            "inwarp": [".nii",".nii.gz"],
+            "intin": [".nii",".nii.gz"],
+            "config": [".cnf"],
+            "refmask": [".nii",".nii.gz"],
+            "inmask": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "warp_coefficients": [".nii",".nii.gz"],
+            "warped_image": [".nii",".nii.gz"],
+            "displacement_field": [".nii",".nii.gz"],
+            "jacobian_map": [".nii",".nii.gz"],
+            "intensity_modulated_ref": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FNIRT"
     },
     "fugue": {
         "cwlPath": "cwl/fsl/fugue.cwl",
-        "primaryOutputs": [
-            "unwarped_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "unwarpdir": [
                 "x",
@@ -492,105 +474,123 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "--loadfmap (fieldmap), --dwell (echo spacing in seconds), --unwarpdir (phase-encode direction: x/y/z/-x/-y/-z)",
         "keyPoints": "Requires preprocessed fieldmap (e.g., from fsl_prepare_fieldmap). Dwell time and unwarp direction must match acquisition parameters.",
         "typicalUse": "Distortion correction when fieldmap data is available.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "phasemap": [".nii",".nii.gz"],
+            "loadfmap": [".nii",".nii.gz"],
+            "loadshift": [".nii",".nii.gz"],
+            "mask": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "unwarped_image": [".nii",".nii.gz"],
+            "warped_image": [".nii",".nii.gz"],
+            "fieldmap_output": [".nii",".nii.gz"],
+            "shiftmap_output": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE"
     },
     "topup": {
         "cwlPath": "cwl/fsl/topup.cwl",
-        "primaryOutputs": [
-            "fieldcoef"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "Tool for Estimating and Correcting Susceptibility-Induced Distortions (TOPUP)",
         "function": "Estimates and corrects susceptibility-induced distortions using pairs of images with reversed phase-encode directions.",
         "modality": "4D NIfTI with concatenated blip-up/blip-down b=0 images, plus acquisition parameters file.",
         "keyParameters": "--imain (concatenated images), --datain (acquisition parameters file), --config (config file), --out (output basename)",
         "keyPoints": "Requires reversed phase-encode image pair. Default config b02b0.cnf works well for most data. Outputs warp fields reusable by applytopup.",
         "typicalUse": "Distortion correction using blip-up/blip-down acquisitions for fMRI or DWI.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/topup"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "encoding_file": [".txt"],
+            "config": [".cnf"]
+        },
+                "outputExtensions": {
+            "movpar": [".txt"],
+            "fieldcoef": [".nii",".nii.gz"],
+            "fieldmap": [".nii",".nii.gz"],
+            "corrected_images": [".nii",".nii.gz"],
+            "displacement_fields": [".nii",".nii.gz"],
+            "jacobian_images": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/topup"
     },
     "film_gls": {
         "cwlPath": "cwl/fsl/film_gls.cwl",
-        "primaryOutputs": [
-            "results"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FMRIB's Improved Linear Model (FILM)",
         "function": "Fits general linear model to fMRI time series with prewhitening using autocorrelation correction.",
         "modality": "4D fMRI NIfTI time series plus design matrix and contrast files.",
         "keyParameters": "--in (input 4D), --pd (design matrix), --con (contrast file), --thr (threshold), --sa (smoothed autocorrelation)",
         "keyPoints": "Core statistical engine of FEAT. Design matrix must be pre-generated (e.g., via Feat_model). Outputs parameter estimates (pe), contrasts (cope), and stats (zstat).",
         "typicalUse": "First-level statistical analysis within FEAT or standalone.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FILM"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "design_file": [".mat"]
+        },
+                "outputExtensions": {
+            "residual4d": [".nii",".nii.gz"],
+            "param_estimates": [".nii",".nii.gz"],
+            "sigmasquareds": [".nii",".nii.gz"],
+            "threshac1": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FILM"
     },
     "flameo": {
         "cwlPath": "cwl/fsl/flameo.cwl",
-        "primaryOutputs": [
-            "stats_dir"
-        ],
-        "passthrough": {
-            "cope_file": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FMRIB's Local Analysis of Mixed Effects (FLAME)",
         "function": "Group-level mixed-effects analysis accounting for both within-subject and between-subject variance using MCMC-based Bayesian estimation.",
         "modality": "4D NIfTI of stacked subject-level COPEs, VARCOPEs, plus group design matrix and contrast files.",
         "keyParameters": "--cope (cope image), --vc (varcope image), --dm (design matrix), --cs (contrast file), --runmode (fe/ols/flame1/flame12)",
         "keyPoints": "FLAME1 is recommended (good accuracy with reasonable speed). OLS is fast but ignores within-subject variance. FLAME1+2 is most accurate but slowest.",
         "typicalUse": "Second-level group analyses with proper random effects.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FLAME"
+"inputExtensions": {
+            "cope_file": [".nii",".nii.gz"],
+            "var_cope_file": [".nii",".nii.gz"],
+            "mask_file": [".nii",".nii.gz"],
+            "design_file": [".mat"],
+            "t_con_file": [".con"],
+            "cov_split_file": [".grp"],
+            "f_con_file": [".fts"],
+            "dof_var_cope_file": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "copes": [".nii",".nii.gz"],
+            "var_copes": [".nii",".nii.gz"],
+            "tstats": [".nii",".nii.gz"],
+            "zstats": [".nii",".nii.gz"],
+            "fstats": [".nii",".nii.gz"],
+            "zfstats": [".nii",".nii.gz"],
+            "tdof": [".nii",".nii.gz"],
+            "res4d": [".nii",".nii.gz"],
+            "weights": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FLAME"
     },
     "randomise": {
         "cwlPath": "cwl/fsl/randomise.cwl",
-        "primaryOutputs": [
-            "tstat"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Randomise Permutation Testing",
         "function": "Non-parametric permutation testing for statistical inference with multiple correction methods including TFCE.",
         "modality": "4D NIfTI of stacked subject images plus design matrix and contrast files.",
         "keyParameters": "-i (input 4D), -o (output basename), -d (design matrix), -t (contrast file), -n (num permutations), -T (TFCE)",
         "keyPoints": "Use -T for TFCE (recommended). 5000+ permutations for publication. Computationally intensive but provides strong family-wise error control.",
         "typicalUse": "Group-level inference with family-wise error correction (VBM, TBSS, etc.).",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Randomise"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "design_mat": [".mat"],
+            "tcon": [".con"],
+            "fcon": [".fts"],
+            "mask": [".nii",".nii.gz"],
+            "x_block_labels": [".txt"]
+        },
+                "outputExtensions": {
+            "t_corrp": [".nii.gz"],
+            "t_p": [".nii.gz"],
+            "tstat": [".nii",".nii.gz"],
+            "f_corrp": [".nii.gz"],
+            "f_p": [".nii.gz"],
+            "fstat": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Randomise"
     },
     "melodic": {
         "cwlPath": "cwl/fsl/melodic.cwl",
-        "primaryOutputs": [
-            "melodic_IC"
-        ],
-        "passthrough": {
-            "input_files": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "approach": [
                 "defl",
@@ -605,42 +605,50 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-i (input 4D), -o (output directory), -d (dimensionality), --report (generate HTML report), --bgimage (background for report)",
         "keyPoints": "Auto-dimensionality estimation by default (Laplace approximation). Can be run single-subject or group. Components classified as signal vs. noise manually or via FIX.",
         "typicalUse": "Data exploration, artifact identification, resting-state network analysis.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/MELODIC"
+"inputExtensions": {
+            "input_files": [".nii",".nii.gz"],
+            "mask": [".nii",".nii.gz"],
+            "ICs": [".nii",".nii.gz"],
+            "mix": [".txt"],
+            "t_des": [".mat"],
+            "t_con": [".con"],
+            "s_des": [".mat"],
+            "s_con": [".con"],
+            "bg_image": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "melodic_IC": [".nii",".nii.gz"],
+            "melodic_mix": [".txt"],
+            "melodic_FTmix": [".txt"],
+            "melodic_Tmodes": [".txt"],
+            "mean": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/MELODIC"
     },
     "dual_regression": {
         "cwlPath": "cwl/fsl/dual_regression.cwl",
-        "primaryOutputs": [
-            "stage2_spatial_maps"
-        ],
-        "passthrough": {
-            "group_IC_maps": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Dual Regression",
         "function": "Projects group-level ICA spatial maps back to individual subjects via spatial then temporal regression to obtain subject-specific network maps.",
         "modality": "4D fMRI NIfTI time series for each subject plus group ICA spatial maps.",
         "keyParameters": "<group_ICA_maps> <design_matrix> <design_contrasts> <num_permutations> <subject_list>",
         "keyPoints": "Two-stage regression: (1) spatial regression gives subject time courses, (2) temporal regression gives subject spatial maps. Can include randomise for group comparison.",
         "typicalUse": "Subject-level ICA-based resting-state network analysis and group comparisons.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/DualRegression"
+"inputExtensions": {
+            "group_IC_maps": [".nii",".nii.gz"],
+            "design_mat": [".mat"],
+            "design_con": [".con"],
+            "input_files": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "stage1_timeseries": [".txt"],
+            "stage2_spatial_maps": [".nii",".nii.gz"],
+            "stage3_tstats": [".nii",".nii.gz"],
+            "stage3_corrp": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/DualRegression"
     },
     "run_first_all": {
         "cwlPath": "cwl/fsl/run_first_all.cwl",
-        "primaryOutputs": [
-            "segmentation_files"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "method": [
                 "auto",
@@ -654,107 +662,110 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-i (input image), -o (output basename), -b (run BET first), -s (comma-separated structures list)",
         "keyPoints": "Models 15 subcortical structures. Outputs meshes (.vtk) and volumetric labels. Can run on selected structures only with -s flag.",
         "typicalUse": "Volumetric analysis of subcortical structures (hippocampus, amygdala, caudate, etc.).",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FIRST"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "affine": [".mat"]
+        },
+                "outputExtensions": {
+            "segmentation_files": [".nii.gz"],
+            "vtk_meshes": [".vtk"],
+            "bvars": [".bvars"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FIRST"
     },
     "sienax": {
         "cwlPath": "cwl/fsl/sienax.cwl",
-        "primaryOutputs": [
-            "report"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "SIENA Cross-Sectional (SIENAX)",
         "function": "Cross-sectional brain volume estimation normalized for head size using atlas-based scaling.",
         "modality": "T1-weighted 3D NIfTI volume.",
         "keyParameters": "-o (output directory), -r (regional analysis), -BET (BET options), -S (SIENAX options)",
         "keyPoints": "Single timepoint analysis. Normalizes volumes by head size for cross-subject comparisons. Reports total brain, GM, and WM volumes.",
         "typicalUse": "Single timepoint normalized brain volume measures.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/SIENA"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "lesion_mask": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "report": [".sienax"],
+            "brain_volume": [".nii",".nii.gz"],
+            "segmentation": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/SIENA"
     },
     "siena": {
         "cwlPath": "cwl/fsl/siena.cwl",
-        "primaryOutputs": [
-            "report"
-        ],
-        "passthrough": {
-            "input1": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "Structural Image Evaluation using Normalisation of Atrophy (SIENA)",
         "function": "Estimates percentage brain volume change between two timepoints using edge-point displacement analysis.",
         "modality": "Two T1-weighted 3D NIfTI volumes from different timepoints.",
         "keyParameters": "-o (output directory), -BET (BET options), -2 (2-class segmentation), -S (SIENA step options)",
         "keyPoints": "Requires two scans of same subject at different timepoints. Reports percentage brain volume change (PBVC). Accurate to ~0.2% volume change.",
         "typicalUse": "Measuring brain volume change over time (e.g., atrophy in neurodegeneration).",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/SIENA"
+"inputExtensions": {
+            "input1": [".nii",".nii.gz"],
+            "input2": [".nii",".nii.gz"],
+            "ventricle_mask": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "report": [".siena"],
+            "pbvc": [".sienax"],
+            "edge_points": [".nii",".nii.gz"],
+            "flow_images": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/SIENA"
     },
     "fsl_anat": {
         "cwlPath": "cwl/fsl/fsl_anat.cwl",
-        "primaryOutputs": [
-            "t1_biascorr_brain"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Anatomical Processing Pipeline",
         "function": "Comprehensive automated pipeline for structural T1 processing including reorientation, cropping, bias correction, registration, segmentation, and subcortical segmentation.",
         "modality": "T1-weighted 3D NIfTI volume.",
         "keyParameters": "-i (input image), --noseg (skip segmentation), --nosubcortseg (skip subcortical), --nononlinreg (skip non-linear registration)",
         "keyPoints": "Runs BET, FAST, FLIRT, FNIRT, and FIRST in sequence. Creates output directory with all intermediate files. Good for standardized structural processing.",
         "typicalUse": "Full structural preprocessing from T1 image.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/fsl_anat"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "t1": [".nii",".nii.gz"],
+            "t1_brain": [".nii",".nii.gz"],
+            "t1_brain_mask": [".nii",".nii.gz"],
+            "t1_biascorr": [".nii",".nii.gz"],
+            "t1_biascorr_brain": [".nii",".nii.gz"],
+            "mni_to_t1_nonlin_warp": [".nii",".nii.gz"],
+            "t1_to_mni_nonlin_warp": [".nii",".nii.gz"],
+            "segmentation": [".nii",".nii.gz"],
+            "subcortical_seg": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/fsl_anat"
     },
     "probtrackx2": {
         "cwlPath": "cwl/fsl/probtrackx2.cwl",
-        "primaryOutputs": [
-            "fdt_paths"
-        ],
-        "passthrough": {
-            "seed": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "Probabilistic Tractography with Crossing Fibres (probtrackx2)",
         "function": "Probabilistic tractography using fiber orientation distributions from bedpostx to trace white matter pathways.",
         "modality": "BEDPOSTX output directory plus seed mask (3D NIfTI).",
         "keyParameters": "-x (seed mask), -s (bedpostx merged samples), --dir (output directory), -l (loop check), --waypoints (waypoint masks), --avoid (exclusion mask)",
         "keyPoints": "Requires bedpostx output. Use --omatrix1 for seed-to-voxel connectivity, --omatrix2 for NxN connectivity. Waypoints constrain tractography to specific paths.",
         "typicalUse": "White matter connectivity analysis, tract-based statistics.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX"
+"inputExtensions": {
+            "mask": [".nii",".nii.gz"],
+            "seed": [".nii",".nii.gz",".txt"],
+            "waypoints": [".nii",".nii.gz",".txt"],
+            "avoid": [".nii",".nii.gz"],
+            "stop": [".nii",".nii.gz"],
+            "target_masks": [".txt"],
+            "xfm": [".mat"],
+            "invxfm": [".mat"],
+            "seedref": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "fdt_paths": [".nii",".nii.gz"],
+            "way_total": [".txt"],
+            "matrix": [".dot"],
+            "targets": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX"
     },
     "3dSkullStrip": {
         "cwlPath": "cwl/afni/3dSkullStrip.cwl",
-        "primaryOutputs": [
-            "skull_stripped"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "bounds": {
             "shrink_fac": [
                 0,
@@ -767,161 +778,126 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-input (input dataset), -prefix (output prefix), -push_to_edge (expand mask), -orig_vol (output original volume)",
         "keyPoints": "Often more aggressive than BET. Use -push_to_edge if too much brain is removed. Works on T1 or T2 images.",
         "typicalUse": "Brain extraction for structural or functional images in AFNI pipelines.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dSkullStrip.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "skull_stripped": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dSkullStrip.html"
     },
     "3dvolreg": {
         "cwlPath": "cwl/afni/3dvolreg.cwl",
-        "primaryOutputs": [
-            "registered"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Volume Registration (3dvolreg)",
         "function": "Rigid-body motion correction by registering all volumes in a 4D dataset to a base volume.",
         "modality": "4D fMRI NIfTI/AFNI time series.",
         "keyParameters": "-base (reference volume index or dataset), -prefix (output), -1Dfile (motion parameters output), -maxdisp1D (max displacement output)",
         "keyPoints": "Default base is volume 0; use median volume for better results. Motion parameters output as 6 columns.",
         "typicalUse": "Motion correction for fMRI; outputs 6 motion parameters for nuisance regression.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dvolreg.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "base_file": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "weight": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "registered": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "motion_params": [".1D"],
+            "motion_1D": [".1D"],
+            "transform_matrix": [".aff12.1D"],
+            "max_displacement": [".1D"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dvolreg.html"
     },
     "3dTshift": {
         "cwlPath": "cwl/afni/3dTshift.cwl",
-        "primaryOutputs": [
-            "shifted"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Temporal Shift (3dTshift)",
         "function": "Corrects for slice timing differences by shifting each voxel time series to a common temporal reference.",
         "modality": "4D fMRI NIfTI/AFNI time series.",
         "keyParameters": "-prefix (output), -tpattern (slice timing pattern: alt+z, seq+z, etc.), -tzero (align to time zero), -TR (repetition time)",
         "keyPoints": "Auto-detects slice timing from header if available. Common patterns: alt+z (interleaved ascending), seq+z (sequential ascending).",
         "typicalUse": "Aligning all slices to the same temporal reference in fMRI data.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTshift.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "voxshift": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "shifted": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTshift.html"
     },
     "3dDespike": {
         "cwlPath": "cwl/afni/3dDespike.cwl",
-        "primaryOutputs": [
-            "despiked"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Despike (3dDespike)",
         "function": "Removes transient signal spikes from fMRI time series using an L1-norm fitting approach.",
         "modality": "4D fMRI NIfTI/AFNI time series.",
         "keyParameters": "-prefix (output), -ssave (save spike fit), -nomask (process all voxels), -NEW (updated algorithm)",
         "keyPoints": "Run early in preprocessing pipeline (before motion correction). -NEW algorithm recommended.",
         "typicalUse": "Artifact removal before other preprocessing steps.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dDespike.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "despiked": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "spikiness": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dDespike.html"
     },
     "3dBandpass": {
         "cwlPath": "cwl/afni/3dBandpass.cwl",
-        "primaryOutputs": [
-            "filtered"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Bandpass Filter (3dBandpass)",
         "function": "Applies temporal bandpass filtering to fMRI time series with optional simultaneous nuisance regression.",
         "modality": "4D fMRI NIfTI/AFNI time series.",
         "keyParameters": "<fbot> <ftop> (frequency range in Hz), -prefix (output), -ort (nuisance regressors file)",
         "keyPoints": "Typical resting-state range: 0.01-0.1 Hz. Can simultaneously regress nuisance signals with -ort.",
         "typicalUse": "Resting-state frequency filtering (typically 0.01-0.1 Hz).",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dBandpass.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "ort": [".1D",".txt"],
+            "dsort": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "filtered": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dBandpass.html"
     },
     "3dBlurToFWHM": {
         "cwlPath": "cwl/afni/3dBlurToFWHM.cwl",
-        "primaryOutputs": [
-            "blurred"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Adaptive Smoothing to Target FWHM",
         "function": "Adaptively smooths data to achieve a target smoothness level, accounting for existing smoothness.",
         "modality": "3D or 4D NIfTI/AFNI volume with mask.",
         "keyParameters": "-input (input dataset), -prefix (output), -FWHM (target smoothness in mm), -mask (brain mask)",
         "keyPoints": "Measures existing smoothness and adds only enough to reach target FWHM. Better than fixed-kernel smoothing.",
         "typicalUse": "Achieving consistent smoothness across subjects/studies.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dBlurToFWHM.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "blurmaster": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "blurred": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dBlurToFWHM.html"
     },
     "3dmerge": {
         "cwlPath": "cwl/afni/3dmerge.cwl",
-        "primaryOutputs": [
-            "merged"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Merge and Smooth (3dmerge)",
         "function": "Combines spatial filtering and dataset merging operations, commonly used for Gaussian smoothing.",
         "modality": "3D or 4D NIfTI/AFNI volume.",
         "keyParameters": "-1blur_fwhm (FWHM in mm), -doall (process all sub-bricks), -prefix (output)",
         "keyPoints": "Simple Gaussian smoothing with -1blur_fwhm. -doall applies to all volumes in 4D.",
         "typicalUse": "Gaussian smoothing of functional data.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dmerge.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "merged": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dmerge.html"
     },
     "3dAllineate": {
         "cwlPath": "cwl/afni/3dAllineate.cwl",
-        "primaryOutputs": [
-            "aligned"
-        ],
-        "passthrough": {
-            "source": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "enumHints": {
             "cost": [
                 "ls",
@@ -950,69 +926,64 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-source (moving image), -base (reference), -prefix (output), -cost (cost function: lpc, mi, nmi), -1Dmatrix_save (save transform)",
         "keyPoints": "lpc cost recommended for EPI-to-T1 alignment. nmi for intra-modal.",
         "typicalUse": "Affine alignment between modalities or to standard space.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dAllineate.html"
+"inputExtensions": {
+            "source": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "base": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "oned_matrix_apply": [".1D",".txt"],
+            "oned_param_apply": [".1D",".txt"],
+            "weight": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "emask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "source_mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "master": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "aligned": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "matrix": [".aff12.1D"],
+            "params": [".1D"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dAllineate.html"
     },
     "3dQwarp": {
         "cwlPath": "cwl/afni/3dQwarp.cwl",
-        "primaryOutputs": [
-            "warped"
-        ],
-        "passthrough": {
-            "source": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Nonlinear Warp (3dQwarp)",
         "function": "Non-linear registration using cubic polynomial basis functions for precise anatomical alignment.",
         "modality": "T1-weighted 3D NIfTI/AFNI volumes (source and base, both skull-stripped).",
         "keyParameters": "-source (moving), -base (reference), -prefix (output), -blur (smoothing), -minpatch (minimum patch size)",
         "keyPoints": "Both images should be skull-stripped. Use -blur 0 3 for typical T1 registration. Usually preceded by 3dAllineate.",
         "typicalUse": "High-accuracy normalization to template.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dQwarp.html"
+"inputExtensions": {
+            "source": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "base": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "iniwarp": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK",".1D",".txt"],
+            "emask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "warped": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "warp": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "inverse_warp": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dQwarp.html"
     },
     "3dUnifize": {
         "cwlPath": "cwl/afni/3dUnifize.cwl",
-        "primaryOutputs": [
-            "unifized"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Intensity Uniformization (3dUnifize)",
         "function": "Corrects intensity inhomogeneity (bias field) to produce uniform white matter intensity.",
         "modality": "T1-weighted or T2-weighted 3D NIfTI/AFNI volume.",
         "keyParameters": "-input (input), -prefix (output), -T2 (for T2-weighted input), -GM (also unifize gray matter)",
         "keyPoints": "Fast bias correction alternative to N4. Works well for T1 images by default. Use -T2 flag for T2-weighted images.",
         "typicalUse": "Bias correction before segmentation or registration.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dUnifize.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "unifized": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "scale_factors": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "automask": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dUnifize.html"
     },
     "3dAutomask": {
         "cwlPath": "cwl/afni/3dAutomask.cwl",
-        "primaryOutputs": [
-            "mask"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "bounds": {
             "clfrac": [
                 0.1,
@@ -1025,46 +996,35 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-prefix (output mask), -dilate (number of dilation steps), -erode (number of erosion steps), -clfrac (clip fraction)",
         "keyPoints": "Works on EPI data directly (no structural needed). Lower -clfrac includes more voxels.",
         "typicalUse": "Generating functional brain masks from EPI data.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dAutomask.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "mask": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "masked_input": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "depth_map": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dAutomask.html"
     },
     "3dTcat": {
         "cwlPath": "cwl/afni/3dTcat.cwl",
-        "primaryOutputs": [
-            "concatenated"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Temporal Concatenate (3dTcat)",
         "function": "Concatenates datasets along the time dimension or selects specific sub-bricks from 4D data.",
         "modality": "3D or 4D NIfTI/AFNI volumes.",
         "keyParameters": "-prefix (output), <dataset>[selector] (input with optional sub-brick selector)",
         "keyPoints": "Sub-brick selectors allow flexible volume selection: [0..5] for first 6, [0..$-3] to skip last 3.",
         "typicalUse": "Combining runs, removing initial steady-state volumes.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTcat.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "glueto": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "concatenated": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTcat.html"
     },
     "@auto_tlrc": {
         "cwlPath": "cwl/afni/auto_tlrc.cwl",
-        "primaryOutputs": [
-            "tlrc_anat"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "enumHints": {
             "xform": [
                 "affine_general",
@@ -1077,404 +1037,413 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-base (template), -input (anatomical), -no_ss (skip skull strip)",
         "keyPoints": "Legacy tool for Talairach normalization. For modern analyses, prefer @SSwarper or 3dQwarp.",
         "typicalUse": "Legacy Talairach normalization.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/@auto_tlrc.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "base": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "init_xform": [".1D",".txt"],
+            "apar": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "tlrc_anat": ["+tlrc.HEAD","+tlrc.BRIK",".nii",".nii.gz"],
+            "transform": [".Xat.1D"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/@auto_tlrc.html"
     },
     "@SSwarper": {
         "cwlPath": "cwl/afni/SSwarper.cwl",
-        "primaryOutputs": [
-            "skull_stripped",
-            "warped"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI Skull Strip and Nonlinear Warp (@SSwarper)",
         "function": "Combined skull stripping and non-linear warping to template in a single optimized pipeline.",
         "modality": "T1-weighted 3D NIfTI volume plus reference template.",
         "keyParameters": "-input (T1 image), -base (template), -subid (subject ID), -odir (output dir)",
         "keyPoints": "Preferred over separate skull-strip + registration. Output compatible with afni_proc.py.",
         "typicalUse": "Modern anatomical preprocessing for afni_proc.py pipelines.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/@SSwarper.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "base": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask_ss": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "skull_stripped": [".nii",".nii.gz"],
+            "warped": ["+tlrc.HEAD","+tlrc.BRIK",".nii",".nii.gz"],
+            "warp": ["+tlrc.HEAD","+tlrc.BRIK",".nii",".nii.gz"],
+            "affine": [".aff12.1D"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/@SSwarper.html"
     },
     "align_epi_anat": {
         "cwlPath": "cwl/afni/align_epi_anat.cwl",
-        "primaryOutputs": [
-            "aligned_anat",
-            "aligned_epi"
-        ],
-        "passthrough": {
-            "epi": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI align_epi_anat — EPI-to-Anatomy Alignment",
         "function": "Aligns EPI functional images to anatomical images with optional distortion correction using local Pearson correlation.",
         "modality": "EPI volume (3D NIfTI) plus T1-weighted anatomical.",
         "keyParameters": "-epi (EPI dataset), -anat (anatomical), -epi_base (EPI reference volume), -cost (cost function, default lpc)",
         "keyPoints": "lpc cost function designed for EPI-to-T1 alignment. Central tool in afni_proc.py.",
         "typicalUse": "Core EPI-to-structural alignment in functional preprocessing.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/align_epi_anat.py.html"
+"inputExtensions": {
+            "epi": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "anat": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "aligned_anat": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "aligned_epi": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "transform_matrix": [".aff12.1D"],
+            "volreg_output": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/align_epi_anat.py.html"
     },
     "3dDeconvolve": {
         "cwlPath": "cwl/afni/3dDeconvolve.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Deconvolve (GLM Analysis)",
         "function": "Multiple linear regression analysis for fMRI with flexible hemodynamic response function models.",
         "modality": "4D fMRI NIfTI/AFNI time series plus stimulus timing files.",
         "keyParameters": "-input (4D data), -polort (polynomial detrending order), -num_stimts (number of regressors), -stim_times (timing files with HRF model), -gltsym (contrasts)",
         "keyPoints": "Supports many HRF models (GAM, BLOCK, dmBLOCK, TENT, CSPLIN). Use -x1D_stop to generate design matrix only.",
         "typicalUse": "First-level GLM analysis with flexible HRF models.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dDeconvolve.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "stim_times": [".1D",".txt"],
+            "stim_file": [".1D",".txt"],
+            "ortvec": [".1D",".txt"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "censor": [".1D",".txt"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "design_matrix": [".1D"],
+            "xmat": [".xmat.1D"],
+            "fitted": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "residuals": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dDeconvolve.html"
     },
     "3dREMLfit": {
         "cwlPath": "cwl/afni/3dREMLfit.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D REML Fit (Improved GLM)",
         "function": "GLM with ARMA(1,1) temporal autocorrelation correction using restricted maximum likelihood estimation.",
         "modality": "4D fMRI NIfTI/AFNI time series plus design matrix from 3dDeconvolve.",
         "keyParameters": "-matrix (design matrix from 3dDeconvolve -x1D), -input (4D data), -Rbuck (output stats), -Rvar (output variance)",
         "keyPoints": "More accurate statistics than 3dDeconvolve OLS. Run after 3dDeconvolve for improved inference.",
         "typicalUse": "More accurate first-level statistics than 3dDeconvolve OLS.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dREMLfit.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "matrix": [".1D",".txt"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "STATmask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "ABfile": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "addbase": [".1D",".txt"],
+            "slibase": [".1D",".txt"],
+            "dsort": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "betas": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK",".nii",".nii.gz"],
+            "variance": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK",".nii",".nii.gz"],
+            "fitted": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK",".nii",".nii.gz"],
+            "residuals": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK",".nii",".nii.gz"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dREMLfit.html"
     },
     "3dttest++": {
         "cwlPath": "cwl/afni/3dttest++.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
-        "passthrough": {
-            "setA": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D T-Test (3dttest++)",
         "function": "Two-sample t-test with support for covariates, paired tests, and cluster-level inference.",
         "modality": "Subject-level 3D NIfTI/AFNI volumes.",
         "keyParameters": "-setA/-setB (group datasets), -prefix (output), -covariates (covariate file), -paired (paired test), -Clustsim (cluster simulation)",
         "keyPoints": "Use -Clustsim for built-in cluster-level correction. -covariates allows continuous covariates.",
         "typicalUse": "Group comparisons with covariate control.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dttest++.html"
+"inputExtensions": {
+            "setA": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "setB": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "covariates": [".1D",".txt"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "residuals": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK",".nii",".nii.gz"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dttest++.html"
     },
     "3dANOVA": {
         "cwlPath": "cwl/afni/3dANOVA.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
         "fullName": "AFNI 3D One-Way ANOVA",
         "function": "Voxelwise fixed-effects one-way analysis of variance.",
         "modality": "Multiple 3D NIfTI/AFNI volumes organized by factor level.",
         "keyParameters": "-levels (number of levels), -dset (level dataset), -ftr (F-test output), -mean (level means output)",
         "keyPoints": "Fixed-effects only. For random/mixed effects, use 3dMVM or 3dLME instead.",
         "typicalUse": "Single-factor group analysis.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dANOVA.html"
+"inputExtensions": {
+            "dset": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "f_stat": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dANOVA.html"
     },
     "3dANOVA2": {
         "cwlPath": "cwl/afni/3dANOVA2.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
         "fullName": "AFNI 3D Two-Way ANOVA",
         "function": "Voxelwise fixed-effects two-way analysis of variance with main effects and interaction.",
         "modality": "Multiple 3D NIfTI/AFNI volumes organized by two factors.",
         "keyParameters": "-type (1-5, model type), -alevels/-blevels (factor levels), -dset (datasets), -fa/-fb/-fab (F-tests)",
         "keyPoints": "Type determines fixed/random effects per factor. Types 1-3 for within-subject designs.",
         "typicalUse": "Two-factor factorial designs.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dANOVA2.html"
+"inputExtensions": {
+            "dset": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dANOVA2.html"
     },
     "3dANOVA3": {
         "cwlPath": "cwl/afni/3dANOVA3.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
         "fullName": "AFNI 3D Three-Way ANOVA",
         "function": "Voxelwise fixed-effects three-way analysis of variance.",
         "modality": "Multiple 3D NIfTI/AFNI volumes organized by three factors.",
         "keyParameters": "-type (1-5), -alevels/-blevels/-clevels, -dset, -fa/-fb/-fc/-fab/-fac/-fbc/-fabc (F-tests)",
         "keyPoints": "Extension of 3dANOVA2 to three factors. Consider 3dMVM for more flexible modeling.",
         "typicalUse": "Three-factor factorial designs.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dANOVA3.html"
+"inputExtensions": {
+            "dset": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dANOVA3.html"
     },
     "3dClustSim": {
         "cwlPath": "cwl/afni/3dClustSim.cwl",
-        "primaryOutputs": [
-            "clustsim_1D"
-        ],
         "fullName": "AFNI 3D Cluster Size Simulation (3dClustSim)",
         "function": "Simulates null distribution of cluster sizes for determining cluster-extent thresholds that control family-wise error rate.",
         "modality": "Brain mask (3D NIfTI/AFNI) plus smoothness estimates from 3dFWHMx.",
         "keyParameters": "-mask (brain mask), -acf (ACF parameters from 3dFWHMx), -athr (per-voxel alpha), -pthr (per-voxel p thresholds)",
         "keyPoints": "Use ACF-based smoothness (not FWHM) from 3dFWHMx on residuals. Updated in 2016 for non-Gaussian assumptions.",
         "typicalUse": "Determining cluster size thresholds for multiple comparison correction.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dClustSim.html"
+"inputExtensions": {
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "inset": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "clustsim_1D": [".1D"],
+            "clustsim_niml": [".niml"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dClustSim.html"
     },
     "3dFWHMx": {
         "cwlPath": "cwl/afni/3dFWHMx.cwl",
-        "primaryOutputs": [
-            "fwhm_output"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Smoothness Estimation (3dFWHMx)",
         "function": "Estimates spatial smoothness of data using the autocorrelation function (ACF) model.",
         "modality": "Residual 4D NIfTI/AFNI from GLM analysis plus brain mask.",
         "keyParameters": "-input (residuals), -mask (brain mask), -acf (output ACF parameters), -detrend (detrend order)",
         "keyPoints": "Run on residuals (not original data). ACF model accounts for non-Gaussian spatial structure. Output feeds into 3dClustSim.",
         "typicalUse": "Getting smoothness estimates for 3dClustSim.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dFWHMx.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "fwhm_output": [".1D"],
+            "acf_output": [".1D"],
+            "detrended": ["+orig.HEAD","+orig.BRIK",".nii",".nii.gz"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dFWHMx.html"
     },
     "3dMEMA": {
         "cwlPath": "cwl/afni/3dMEMA.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
         "fullName": "AFNI 3D Mixed Effects Meta Analysis (3dMEMA)",
         "function": "Mixed effects meta-analysis for group studies that properly accounts for within and between-subject variance.",
         "modality": "Subject-level beta and t-statistic volumes (3D NIfTI/AFNI).",
         "keyParameters": "-set (group name and subject beta+tstat pairs), -groups (group names), -covariates (covariate file), -prefix (output)",
         "keyPoints": "Uses both beta and t-stat from each subject. Better for unequal within-subject variance. Requires R.",
         "typicalUse": "Group analysis with proper mixed effects modeling.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dMEMA.html"
+"inputExtensions": {
+            "set": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "covariates": [".1D",".txt"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dMEMA.html"
     },
     "3dMVM": {
         "cwlPath": "cwl/afni/3dMVM.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
         "fullName": "AFNI 3D MultiVariate Modeling (3dMVM)",
         "function": "Multivariate modeling framework supporting ANOVA/ANCOVA designs with between and within-subject factors.",
         "modality": "Subject-level 3D NIfTI/AFNI volumes with data table specifying factors.",
         "keyParameters": "-dataTable (structured input table), -bsVars (between-subject variables), -wsVars (within-subject variables), -qVars (quantitative variables)",
         "keyPoints": "Most flexible group analysis tool in AFNI. Handles complex repeated measures designs. Requires R.",
         "typicalUse": "Complex repeated measures and mixed designs.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dMVM.html"
+"inputExtensions": {
+            "table": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dMVM.html"
     },
     "3dLME": {
         "cwlPath": "cwl/afni/3dLME.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
         "fullName": "AFNI 3D Linear Mixed Effects (3dLME)",
         "function": "Linear mixed effects modeling using R lme4 package for designs with random effects.",
         "modality": "Subject-level 3D NIfTI/AFNI volumes with data table.",
         "keyParameters": "-dataTable (input table), -model (model formula), -ranEff (random effects specification), -qVars (quantitative variables)",
         "keyPoints": "Best for longitudinal data and nested designs. Uses R lme4 syntax. Handles missing data naturally.",
         "typicalUse": "Longitudinal data, nested designs with random effects.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLME.html"
+"inputExtensions": {
+            "table": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "residuals": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "random_effects": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLME.html"
     },
     "3dLMEr": {
         "cwlPath": "cwl/afni/3dLMEr.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
         "fullName": "AFNI 3D Linear Mixed Effects with R (3dLMEr)",
         "function": "Linear mixed effects with direct R formula syntax integration for flexible model specification.",
         "modality": "Subject-level 3D NIfTI/AFNI volumes with data table.",
         "keyParameters": "-dataTable (input table), -model (R lmer formula), -qVars (quantitative variables), -gltCode (contrast specification)",
         "keyPoints": "More flexible than 3dLME. Uses lmerTest for degrees of freedom. Accepts full R formula syntax.",
         "typicalUse": "Flexible mixed effects with R formula syntax.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLMEr.html"
+"inputExtensions": {
+            "table": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "residuals": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "random_effects": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLMEr.html"
     },
     "3dNetCorr": {
         "cwlPath": "cwl/afni/3dNetCorr.cwl",
-        "primaryOutputs": [
-            "correlation_matrix"
-        ],
-        "passthrough": {
-            "inset": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Network Correlation Matrix (3dNetCorr)",
         "function": "Computes pairwise correlation matrices between ROI time series extracted from a parcellation atlas.",
         "modality": "4D fMRI NIfTI/AFNI time series plus integer-labeled parcellation volume.",
         "keyParameters": "-inset (4D time series), -in_rois (parcellation), -prefix (output), -fish_z (Fisher z-transform), -ts_out (output time series)",
         "keyPoints": "Outputs correlation matrix as text file. Use -fish_z for Fisher z-transformed values.",
         "typicalUse": "Creating functional connectivity matrices from parcellations.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dNetCorr.html"
+"inputExtensions": {
+            "inset": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "in_rois": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "weight_ts": [".1D",".txt"],
+            "weight_corr": [".1D",".txt"]
+        },
+                "outputExtensions": {
+            "correlation_matrix": [".netcc"],
+            "time_series": [".netts"],
+            "wb_corr_maps": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dNetCorr.html"
     },
     "3dTcorr1D": {
         "cwlPath": "cwl/afni/3dTcorr1D.cwl",
-        "primaryOutputs": [
-            "correlation"
-        ],
-        "passthrough": {
-            "xset": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Seed-Based Correlation (3dTcorr1D)",
         "function": "Computes voxelwise correlation between a 4D dataset and one or more 1D seed time series.",
         "modality": "4D fMRI NIfTI/AFNI time series plus 1D seed time series file.",
         "keyParameters": "-prefix (output), <4D_dataset> <1D_seed_timeseries>",
         "keyPoints": "Simple seed-based correlation. Extract seed time series first (e.g., with 3dmaskave).",
         "typicalUse": "Seed-based functional connectivity analysis.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTcorr1D.html"
+"inputExtensions": {
+            "xset": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "y1D": [".1D",".txt"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "correlation": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTcorr1D.html"
     },
     "3dTcorrMap": {
         "cwlPath": "cwl/afni/3dTcorrMap.cwl",
-        "primaryOutputs": [
-            "mean_corr"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Whole-Brain Correlation Map (3dTcorrMap)",
         "function": "Computes various whole-brain voxelwise correlation metrics including average correlation and global connectivity.",
         "modality": "4D fMRI NIfTI/AFNI time series plus brain mask.",
         "keyParameters": "-input (4D data), -mask (brain mask), -Mean (mean correlation map), -Hist (histogram outputs)",
         "keyPoints": "Computes every-voxel-to-every-voxel correlations. Memory intensive.",
         "typicalUse": "Global connectivity metrics, whole-brain correlation exploration.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTcorrMap.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "seed": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "ort": [".1D",".txt"]
+        },
+                "outputExtensions": {
+            "mean_corr": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "zmean_corr": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "corrmap": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTcorrMap.html"
     },
     "3dRSFC": {
         "cwlPath": "cwl/afni/3dRSFC.cwl",
-        "primaryOutputs": [
-            "filtered"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Resting State Functional Connectivity (3dRSFC)",
         "function": "Computes resting-state frequency-domain metrics including ALFF, fALFF, mALFF, and RSFA from bandpass-filtered data.",
         "modality": "4D resting-state fMRI NIfTI/AFNI time series plus brain mask.",
         "keyParameters": "<fbot> <ftop> (frequency range), -prefix (output), -input (4D data), -mask (brain mask)",
         "keyPoints": "Computes ALFF (amplitude of low-frequency fluctuations), fALFF (fractional ALFF), and RSFA.",
         "typicalUse": "Amplitude of low-frequency fluctuations analysis in resting-state fMRI.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dRSFC.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "ort": [".1D",".txt"],
+            "dsort": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "filtered": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "alff": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "falff": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "rsfa": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dRSFC.html"
     },
     "3dROIstats": {
         "cwlPath": "cwl/afni/3dROIstats.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D ROI Statistics (3dROIstats)",
         "function": "Extracts statistical summary measures from data within defined ROI masks.",
         "modality": "3D or 4D NIfTI/AFNI volume plus ROI mask with integer labels.",
         "keyParameters": "-mask (ROI mask), -nzmean (mean of non-zero voxels), -nzvoxels (count non-zero voxels), -minmax (min and max)",
         "keyPoints": "Can handle multi-label ROI masks. Outputs one row per volume, one column per ROI.",
         "typicalUse": "Extracting mean values from defined regions of interest.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dROIstats.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "roisel": [".1D",".txt"]
+        },
+                "outputExtensions": {
+            "stats": [".txt"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dROIstats.html"
     },
     "3dmaskave": {
         "cwlPath": "cwl/afni/3dmaskave.cwl",
-        "primaryOutputs": [
-            "average"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Mask Average (3dmaskave)",
         "function": "Extracts and outputs the average time series from voxels within a mask region.",
         "modality": "4D fMRI NIfTI/AFNI time series plus binary mask.",
         "keyParameters": "-mask (mask dataset), -quiet (output values only), -mrange (min max value range in mask)",
         "keyPoints": "Simple and fast ROI time series extraction. Output is one value per timepoint to stdout.",
         "typicalUse": "Simple ROI time series extraction for connectivity analysis.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dmaskave.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "average": [".1D"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dmaskave.html"
     },
     "3dUndump": {
         "cwlPath": "cwl/afni/3dUndump.cwl",
-        "primaryOutputs": [
-            "dataset"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".txt",
-                    ".1D",
-                    ".csv"
-                ]
-            }
-        },
         "enumHints": {
             "datum": [
                 "byte",
@@ -1488,36 +1457,39 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-prefix (output), -master (template grid), -xyz (coordinates are in mm), -srad (sphere radius in mm)",
         "keyPoints": "Use -srad to create spherical ROIs at each coordinate. Master dataset defines output grid.",
         "typicalUse": "Creating spherical ROIs from peak coordinates.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dUndump.html"
+"inputExtensions": {
+            "input": [".1D",".txt"],
+            "master": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "ROImask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "dataset": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dUndump.html"
     },
     "whereami": {
         "cwlPath": "cwl/afni/whereami.cwl",
-        "primaryOutputs": [
-            "output"
-        ],
         "fullName": "AFNI Atlas Location Query (whereami)",
         "function": "Reports anatomical atlas labels for given coordinates or identifies regions in multiple atlases simultaneously.",
         "modality": "MNI or Talairach coordinates, or labeled dataset.",
         "keyParameters": "-coord_file (coordinate file), -atlas (atlas name), -lpi/-rai (coordinate system)",
         "keyPoints": "Queries multiple atlases at once by default. Coordinates must match atlas space.",
         "typicalUse": "Identifying anatomical locations of activation peaks.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/whereami.html"
+"inputExtensions": {
+            "coord_file": [".1D",".txt"],
+            "dset": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "bmask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "omask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "output": [".txt"],
+            "mask_output": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK",".nii",".nii.gz"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/whereami.html"
     },
     "3dresample": {
         "cwlPath": "cwl/afni/3dresample.cwl",
-        "primaryOutputs": [
-            "resampled"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "enumHints": {
             "rmode": [
                 "NN",
@@ -1532,46 +1504,35 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-master (template grid), -prefix (output), -dxyz (voxel size), -rmode (interpolation: NN, Li, Cu)",
         "keyPoints": "Use -rmode NN for label/mask images, Li or Cu for continuous data.",
         "typicalUse": "Matching resolution between datasets for analysis.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dresample.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "master": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "resampled": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dresample.html"
     },
     "3dfractionize": {
         "cwlPath": "cwl/afni/3dfractionize.cwl",
-        "primaryOutputs": [
-            "fractionized"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Fractionize (ROI Resampling)",
         "function": "Resamples ROI/atlas datasets using fractional occupancy to maintain region representation at different resolutions.",
         "modality": "ROI/atlas volume (3D NIfTI/AFNI) plus template for target grid.",
         "keyParameters": "-template (target grid), -input (ROI dataset), -prefix (output), -clip (fraction threshold, default 0.5)",
         "keyPoints": "Better than nearest-neighbor for resampling parcellations. Preserves small ROIs better.",
         "typicalUse": "Resampling parcellations to functional resolution.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dfractionize.html"
+"inputExtensions": {
+            "template": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "warp": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "fractionized": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dfractionize.html"
     },
     "3dcalc": {
         "cwlPath": "cwl/afni/3dcalc.cwl",
-        "primaryOutputs": [
-            "result"
-        ],
-        "passthrough": {
-            "a": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "enumHints": {
             "datum": [
                 "byte",
@@ -1585,115 +1546,85 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-a/-b/-c (input datasets), -expr (mathematical expression), -prefix (output), -datum (output data type)",
         "keyPoints": "Extremely flexible expression syntax. Supports conditionals, trigonometric, and logical operations. Up to 26 inputs (a-z).",
         "typicalUse": "Mathematical operations, masking, thresholding, combining datasets.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dcalc.html"
+"inputExtensions": {
+            "a": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "b": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "c": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "d": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "result": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dcalc.html"
     },
     "3dTstat": {
         "cwlPath": "cwl/afni/3dTstat.cwl",
-        "primaryOutputs": [
-            "stats"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Temporal Statistics (3dTstat)",
         "function": "Computes voxelwise temporal statistics (mean, stdev, median, etc.) across a 4D time series.",
         "modality": "4D NIfTI/AFNI time series.",
         "keyParameters": "-prefix (output), -mean/-stdev/-median/-max/-min (statistic type), -mask (optional mask)",
         "keyPoints": "Default computes mean. Can compute multiple statistics in one run.",
         "typicalUse": "Creating mean functional images, variance maps, temporal SNR.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTstat.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "mask": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "stats": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dTstat.html"
     },
     "3dinfo": {
         "cwlPath": "cwl/afni/3dinfo.cwl",
-        "primaryOutputs": [
-            "info"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Dataset Information (3dinfo)",
         "function": "Displays header information and metadata from AFNI/NIfTI datasets.",
         "modality": "Any NIfTI or AFNI format dataset.",
         "keyParameters": "-n4 (dimensions), -tr (TR), -orient (orientation), -prefix (prefix only), -space (coordinate space)",
         "keyPoints": "Essential for scripting and QC. Use specific flags for machine-readable output.",
         "typicalUse": "Quality control, scripting decisions based on data properties.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dinfo.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "info": [".txt"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dinfo.html"
     },
     "3dcopy": {
         "cwlPath": "cwl/afni/3dcopy.cwl",
-        "primaryOutputs": [
-            "copied"
-        ],
-        "passthrough": {
-            "old_dataset": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Dataset Copy (3dcopy)",
         "function": "Copies a dataset with optional format conversion between AFNI and NIfTI formats.",
         "modality": "Any NIfTI or AFNI format dataset.",
         "keyParameters": "<input> <output> (format determined by output extension)",
         "keyPoints": "Output format determined by extension. Simple way to convert between formats.",
         "typicalUse": "Format conversion between AFNI and NIfTI, making editable copies.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dcopy.html"
+"inputExtensions": {
+            "old_dataset": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "copied": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dcopy.html"
     },
     "3dZeropad": {
         "cwlPath": "cwl/afni/3dZeropad.cwl",
-        "primaryOutputs": [
-            "padded"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "fullName": "AFNI 3D Zero Padding (3dZeropad)",
         "function": "Adds zero-valued slices around dataset boundaries to extend the image matrix.",
         "modality": "3D or 4D NIfTI/AFNI volume.",
         "keyParameters": "-I/-S/-A/-P/-R/-L (add slices in each direction), -master (match grid of master dataset), -prefix (output)",
         "keyPoints": "Use -master to match another dataset grid. Can also crop with negative values.",
         "typicalUse": "Matching matrix sizes between datasets, preventing edge effects.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dZeropad.html"
+"inputExtensions": {
+            "input": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "master": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "padded": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dZeropad.html"
     },
     "3dNwarpApply": {
         "cwlPath": "cwl/afni/3dNwarpApply.cwl",
-        "primaryOutputs": [
-            "warped"
-        ],
-        "passthrough": {
-            "source": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "enumHints": {
             "interp": [
                 "NN",
@@ -1709,23 +1640,17 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-nwarp (warp dataset), -source (input), -master (reference grid), -prefix (output), -interp (interpolation method)",
         "keyPoints": "Can concatenate multiple warps in -nwarp string. Use wsinc5 interpolation for best quality.",
         "typicalUse": "Applying 3dQwarp transformations to functional or other data.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dNwarpApply.html"
+"inputExtensions": {
+            "nwarp": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "source": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "warped": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dNwarpApply.html"
     },
     "3dNwarpCat": {
         "cwlPath": "cwl/afni/3dNwarpCat.cwl",
-        "primaryOutputs": [
-            "concatenated_warp"
-        ],
-        "passthrough": {
-            "warp1": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    "+orig.*",
-                    "+tlrc.*"
-                ]
-            }
-        },
         "enumHints": {
             "interp": [
                 "linear",
@@ -1739,23 +1664,19 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-prefix (output), -warp1/-warp2/... (warps to concatenate), -iwarp (use inverse of a warp)",
         "keyPoints": "Reduces interpolation artifacts from multiple separate applications. Can invert individual warps in the chain.",
         "typicalUse": "Combining transformations efficiently for one-step resampling.",
-        "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dNwarpCat.html"
+"inputExtensions": {
+            "warp1": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "warp2": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "warp3": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"],
+            "warp4": [".nii",".nii.gz","+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "outputExtensions": {
+            "concatenated_warp": ["+orig.HEAD","+orig.BRIK","+tlrc.HEAD","+tlrc.BRIK"]
+        },
+                "docUrl": "https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dNwarpCat.html"
     },
     "mri_convert": {
         "cwlPath": "cwl/freesurfer/mri_convert.cwl",
-        "primaryOutputs": [
-            "converted"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "enumHints": {
             "resample_type": [
                 "interpolate",
@@ -1771,213 +1692,180 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "--conform (resample to 256 cubed at 1mm isotropic), --out_type (output format), -vs (voxel size)",
         "keyPoints": "Use --conform to prepare T1 for FreeSurfer processing. Handles DICOM to NIfTI conversion. Can change voxel size and data type.",
         "typicalUse": "Converting DICOM to NIfTI, conforming images to FreeSurfer standards.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_convert"
+"inputExtensions": {
+            "input": [".mgz",".mgh",".nii",".nii.gz",".img",".hdr",".mnc"],
+            "reslice_like": [".mgz",".mgh",".nii",".nii.gz"],
+            "apply_transform": [".xfm",".m3z",".lta"],
+            "apply_inverse_transform": [".xfm",".m3z",".lta"]
+        },
+                "outputExtensions": {
+            "converted": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_convert"
     },
     "mri_watershed": {
         "cwlPath": "cwl/freesurfer/mri_watershed.cwl",
-        "primaryOutputs": [
-            "brain"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "fullName": "FreeSurfer MRI Watershed Skull Stripping",
         "function": "Brain extraction using a hybrid watershed/surface deformation algorithm to find the brain-skull boundary.",
         "modality": "T1-weighted 3D volume (typically MGZ format within FreeSurfer pipeline).",
         "keyParameters": "-T1 (specify T1 volume), -atlas (use atlas for initial estimate), -h (preflooding height, default 25)",
         "keyPoints": "Core component of recon-all. Adjust -h parameter if too much/too little brain removed. Usually part of autorecon1.",
         "typicalUse": "Brain extraction within recon-all pipeline.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_watershed"
+"inputExtensions": {
+            "input": [".mgz",".mgh",".nii",".nii.gz"],
+            "brain_atlas": [".mgz",".mgh",".nii",".nii.gz",".gca"]
+        },
+                "outputExtensions": {
+            "brain": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_watershed"
     },
     "mri_normalize": {
         "cwlPath": "cwl/freesurfer/mri_normalize.cwl",
-        "primaryOutputs": [
-            "normalized"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "fullName": "FreeSurfer MRI Intensity Normalization",
         "function": "Normalizes T1 image intensities so that white matter has a target intensity value (default 110).",
         "modality": "T1-weighted 3D volume (MGZ format, within FreeSurfer pipeline).",
         "keyParameters": "-n (number of iterations), -b (bias field smoothing sigma), -aseg (use aseg for normalization regions)",
         "keyPoints": "Part of recon-all autorecon1. Creates nu.mgz (non-uniformity corrected) and T1.mgz (intensity normalized).",
         "typicalUse": "Preparing T1 for segmentation within FreeSurfer pipeline.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_normalize"
+"inputExtensions": {
+            "input": [".mgz",".mgh",".nii",".nii.gz"],
+            "mask": [".mgz",".mgh",".nii",".nii.gz"],
+            "aseg": [".mgz",".mgh",".nii",".nii.gz"],
+            "control_points": [".dat"],
+            "brain_mask": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "normalized": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_normalize"
     },
     "mri_segment": {
         "cwlPath": "cwl/freesurfer/mri_segment.cwl",
-        "primaryOutputs": [
-            "segmentation"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "fullName": "FreeSurfer MRI White Matter Segmentation",
         "function": "Segments white matter from normalized T1 image using intensity thresholding and morphological operations.",
         "modality": "Intensity-normalized T1 volume (T1.mgz from mri_normalize).",
         "keyParameters": "-thicken (thicken WM), -wlo/-whi (WM intensity range)",
         "keyPoints": "Part of recon-all. Outputs wm.mgz used for surface reconstruction. Quality depends on good intensity normalization.",
         "typicalUse": "White matter identification for surface reconstruction.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_segment"
+"inputExtensions": {
+            "input": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "segmentation": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_segment"
     },
     "mris_inflate": {
         "cwlPath": "cwl/freesurfer/mris_inflate.cwl",
-        "primaryOutputs": [
-            "inflated"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".pial",
-                    ".white",
-                    ".inflated",
-                    ".sphere",
-                    ".gii"
-                ]
-            }
-        },
         "fullName": "FreeSurfer Surface Inflation",
         "function": "Inflates folded cortical surface to a smooth shape while minimizing metric distortion for visualization.",
         "modality": "FreeSurfer surface file (e.g., lh.smoothwm).",
         "keyParameters": "-n (number of iterations), -dist (target distance)",
         "keyPoints": "Creates inflated surface for visualizing buried cortex. Part of recon-all. Metric distortion encoded in sulc file.",
         "typicalUse": "Creating inflated surfaces for visualization of cortical data.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_inflate"
+"inputExtensions": {
+            "input": [".white",".pial",".smoothwm",".orig",".inflated"]
+        },
+                "outputExtensions": {
+            "inflated": [".inflated"],
+            "sulc_file": [".sulc"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_inflate"
     },
     "mris_sphere": {
         "cwlPath": "cwl/freesurfer/mris_sphere.cwl",
-        "primaryOutputs": [
-            "sphere"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".pial",
-                    ".white",
-                    ".inflated",
-                    ".sphere",
-                    ".gii"
-                ]
-            }
-        },
         "fullName": "FreeSurfer Surface to Sphere Mapping",
         "function": "Maps the inflated cortical surface to a sphere for inter-subject spherical registration.",
         "modality": "FreeSurfer inflated surface file.",
         "keyParameters": "(minimal user-facing parameters; uses inflated surface)",
         "keyPoints": "Prerequisite for cortical atlas registration. Part of recon-all. Spherical mapping enables vertex-wise inter-subject comparisons.",
         "typicalUse": "Preparing cortical surface for spherical registration and atlas labeling.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_sphere"
+"inputExtensions": {
+            "input": [".inflated",".white",".pial",".smoothwm",".orig"],
+            "in_smoothwm": [".smoothwm",".white",".pial",".orig"]
+        },
+                "outputExtensions": {
+            "sphere": [".sphere"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_sphere"
     },
     "mri_aparc2aseg": {
         "cwlPath": "cwl/freesurfer/mri_aparc2aseg.cwl",
-        "primaryOutputs": [
-            "aparc_aseg"
-        ],
         "fullName": "FreeSurfer Cortical Parcellation to Volume",
         "function": "Combines surface-based cortical parcellation (aparc) with volumetric subcortical segmentation (aseg) into a single volume.",
         "modality": "FreeSurfer subject directory (requires completed recon-all).",
         "keyParameters": "--s (subject), --annot (annotation name, default aparc), --o (output volume)",
         "keyPoints": "Creates aparc+aseg.mgz combining ~80 cortical and subcortical regions. Different parcellation schemes available.",
         "typicalUse": "Creating volumetric parcellation from surface labels for ROI analysis.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_aparc2aseg"
+"inputExtensions": {
+            "volmask": [".mgz",".mgh",".nii",".nii.gz"],
+            "ribbon": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "aparc_aseg": [".mgz",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_aparc2aseg"
     },
     "mri_annotation2label": {
         "cwlPath": "cwl/freesurfer/mri_annotation2label.cwl",
-        "primaryOutputs": [
-            "labels"
-        ],
         "fullName": "FreeSurfer Annotation to Individual Labels",
         "function": "Extracts individual region labels from a surface annotation file into separate label files.",
         "modality": "FreeSurfer annotation file (e.g., lh.aparc.annot).",
         "keyParameters": "--subject (subject), --hemi (hemisphere), --annotation (annotation name), --outdir (output directory)",
         "keyPoints": "Creates one .label file per region. Label files contain vertex indices and coordinates.",
         "typicalUse": "Extracting individual ROIs from parcellation for targeted analysis.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_annotation2label"
+"inputExtensions": {
+            "ctab": [".txt",".ctab"]
+        },
+                "outputExtensions": {
+            "border_file": [".border"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_annotation2label"
     },
     "mris_ca_label": {
         "cwlPath": "cwl/freesurfer/mris_ca_label.cwl",
-        "primaryOutputs": [
-            "annotation"
-        ],
-        "passthrough": {
-            "canonsurf": {
-                "acceptedExtensions": [
-                    ".pial",
-                    ".white",
-                    ".inflated",
-                    ".sphere",
-                    ".gii"
-                ]
-            }
-        },
         "fullName": "FreeSurfer Cortical Atlas Labeling",
         "function": "Applies a cortical parcellation atlas to an individual subject using trained classifier on spherical surface.",
         "modality": "FreeSurfer subject directory with sphere.reg (requires completed recon-all).",
         "keyParameters": "<subject> <hemisphere> <sphere.reg> <atlas.gcs> <output_annotation>",
         "keyPoints": "Uses Gaussian classifier atlas trained on manual labels. Part of recon-all. Different atlases available.",
         "typicalUse": "Applying cortical parcellation atlas to individual subjects.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_ca_label"
+"inputExtensions": {
+            "canonsurf": [".sphere.reg",".sphere"],
+            "classifier": [".gcs"],
+            "aseg": [".mgz",".mgh",".nii",".nii.gz"],
+            "l": [".label"],
+            "t": [".txt",".ctab"]
+        },
+                "outputExtensions": {
+            "annotation": [".annot"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_ca_label"
     },
     "mri_label2vol": {
         "cwlPath": "cwl/freesurfer/mri_label2vol.cwl",
-        "primaryOutputs": [
-            "label_volume"
-        ],
-        "passthrough": {
-            "temp": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "fullName": "FreeSurfer Label to Volume Conversion",
         "function": "Converts surface-based labels to volumetric ROIs using a registration matrix.",
         "modality": "FreeSurfer label file plus template volume and registration.",
         "keyParameters": "--label (input label), --temp (template volume), --reg (registration file), --o (output volume), --proj (projection parameters)",
         "keyPoints": "Requires registration between surface and target volume space. Use --proj to control projection depth.",
         "typicalUse": "Creating volumetric ROIs from FreeSurfer surface parcellations.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_label2vol"
+"inputExtensions": {
+            "label": [".label"],
+            "annot": [".annot"],
+            "seg": [".mgz",".mgh",".nii",".nii.gz"],
+            "temp": [".mgz",".mgh",".nii",".nii.gz"],
+            "reg": [".dat",".lta"]
+        },
+                "outputExtensions": {
+            "label_volume": [".mgz",".mgh",".nii",".nii.gz"],
+            "hits_volume": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_label2vol"
     },
     "bbregister": {
         "cwlPath": "cwl/freesurfer/bbregister.cwl",
-        "primaryOutputs": [
-            "out_reg"
-        ],
-        "passthrough": {
-            "source_file": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "enumHints": {
             "contrast_type": [
                 "t1",
@@ -2005,23 +1893,20 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "--s (subject), --mov (moving/source image), --reg (output registration), --init-fsl (initialization method), --bold (contrast type)",
         "keyPoints": "Superior to volume-based registration for EPI-to-T1. Requires completed recon-all. --init-fsl recommended.",
         "typicalUse": "High-quality EPI to T1 registration using cortical surfaces.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/bbregister"
+"inputExtensions": {
+            "source_file": [".mgz",".mgh",".nii",".nii.gz"],
+            "init_reg": [".dat",".lta"],
+            "int": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "out_reg": [".dat",".lta"],
+            "out_fsl_mat": [".mat"],
+            "mincost": [".mincost"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/bbregister"
     },
     "mri_vol2surf": {
         "cwlPath": "cwl/freesurfer/mri_vol2surf.cwl",
-        "primaryOutputs": [
-            "out_file"
-        ],
-        "passthrough": {
-            "source_file": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "enumHints": {
             "interp": [
                 "nearest",
@@ -2034,112 +1919,119 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "--mov (input volume), --reg (registration), --hemi (hemisphere), --projfrac (fraction of cortical thickness), --o (output)",
         "keyPoints": "Use --projfrac 0.5 to sample at mid-cortical depth. Can average across depths with --projfrac-avg.",
         "typicalUse": "Mapping functional or PET data to cortical surface for surface-based analysis.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_vol2surf"
+"inputExtensions": {
+            "source_file": [".mgz",".mgh",".nii",".nii.gz"],
+            "reg_file": [".dat",".lta"],
+            "surf_file": [".white",".pial",".inflated",".smoothwm",".orig"],
+            "mask_label": [".label"]
+        },
+                "outputExtensions": {
+            "out_file": [".mgh",".mgz",".nii",".nii.gz",".w"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_vol2surf"
     },
     "mri_surf2vol": {
         "cwlPath": "cwl/freesurfer/mri_surf2vol.cwl",
-        "primaryOutputs": [
-            "out_file"
-        ],
-        "passthrough": {
-            "source_file": {
-                "acceptedExtensions": [
-                    ".pial",
-                    ".white",
-                    ".inflated",
-                    ".sphere",
-                    ".gii",
-                    ".curv",
-                    ".sulc",
-                    ".annot"
-                ]
-            }
-        },
         "fullName": "FreeSurfer Surface to Volume Projection",
         "function": "Projects surface-based data back to volumetric space using registration and template volume.",
         "modality": "FreeSurfer surface overlay file plus template volume and registration.",
         "keyParameters": "--surfval (surface data), --reg (registration), --template (output grid template), --hemi (hemisphere), --o (output volume)",
         "keyPoints": "Inverse of mri_vol2surf. Template defines output grid dimensions.",
         "typicalUse": "Converting surface-based results back to volume space for reporting.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_surf2vol"
+"inputExtensions": {
+            "source_file": [".mgh",".mgz",".nii",".nii.gz",".w",".curv",".sulc",".thickness",".area"],
+            "reg": [".dat",".lta"],
+            "template": [".mgz",".mgh",".nii",".nii.gz"],
+            "ribbon": [".mgz",".mgh",".nii",".nii.gz"],
+            "merge": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "out_file": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_surf2vol"
     },
     "mris_preproc": {
         "cwlPath": "cwl/freesurfer/mris_preproc.cwl",
-        "primaryOutputs": [
-            "out_file"
-        ],
         "fullName": "FreeSurfer Surface Data Preprocessing for Group Analysis",
         "function": "Concatenates surface data across subjects onto a common template surface for group-level analysis.",
         "modality": "Per-subject surface overlays (thickness, area, etc.) from FreeSurfer processing.",
         "keyParameters": "--s (subject list), --meas (measure: thickness, area, volume), --target (target subject/template), --hemi (hemisphere), --o (output)",
         "keyPoints": "Resamples all subjects to common surface (fsaverage). Can smooth on surface with --fwhm.",
         "typicalUse": "Preparing surface data for group statistical analysis.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_preproc"
+"inputExtensions": {
+            "fsgd": [".fsgd"],
+            "f": [".txt"],
+            "mask": [".label"]
+        },
+                "outputExtensions": {
+            "out_file": [".mgh",".mgz",".nii",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_preproc"
     },
     "mri_glmfit": {
         "cwlPath": "cwl/freesurfer/mri_glmfit.cwl",
-        "primaryOutputs": [
-            "glm_dir"
-        ],
-        "passthrough": {
-            "y": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "fullName": "FreeSurfer General Linear Model (mri_glmfit)",
         "function": "Fits a general linear model on surface or volume data for group-level statistical analysis.",
         "modality": "Concatenated surface data from mris_preproc or stacked volume data.",
         "keyParameters": "--y (input data), --fsgd (FreeSurfer group descriptor), --C (contrast file), --surf (surface subject), --glmdir (output directory)",
         "keyPoints": "Uses FSGD file for design specification. Supports DODS and DOSS design types. Can run on surface or volume data.",
         "typicalUse": "Surface-based or volume-based group statistical analysis.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_glmfit"
+"inputExtensions": {
+            "y": [".mgh",".mgz",".nii",".nii.gz"],
+            "fsgd": [".fsgd"],
+            "design": [".mat",".txt"],
+            "C": [".mat",".txt",".mtx"],
+            "mask": [".mgh",".mgz",".nii",".nii.gz",".label"],
+            "wls": [".mgh",".mgz",".nii",".nii.gz"]
+        },
+                "outputExtensions": {},
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_glmfit"
     },
     "mris_anatomical_stats": {
         "cwlPath": "cwl/freesurfer/mris_anatomical_stats.cwl",
-        "primaryOutputs": [
-            "stats_table"
-        ],
         "fullName": "FreeSurfer Surface Anatomical Statistics",
         "function": "Computes surface-based morphometric measures (thickness, area, volume, curvature) for each region in a parcellation.",
         "modality": "FreeSurfer subject directory with completed recon-all.",
         "keyParameters": "-a (annotation file), -f (output stats file), -b (output table format)",
         "keyPoints": "Outputs per-region cortical thickness, surface area, gray matter volume, and curvature.",
         "typicalUse": "Extracting regional cortical thickness, area, and volume measures.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_anatomical_stats"
+"inputExtensions": {
+            "annotation": [".annot"],
+            "label": [".label"],
+            "cortex": [".label"],
+            "ctab": [".txt",".ctab"]
+        },
+                "outputExtensions": {
+            "stats_table": [".txt",".csv",".dat"],
+            "stats": [".stats"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mris_anatomical_stats"
     },
     "mri_segstats": {
         "cwlPath": "cwl/freesurfer/mri_segstats.cwl",
-        "primaryOutputs": [
-            "summary"
-        ],
-        "passthrough": {
-            "seg": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "fullName": "FreeSurfer Segmentation Statistics",
         "function": "Computes volume and intensity statistics for each region in a segmentation volume.",
         "modality": "Segmentation volume (e.g., aseg.mgz) plus optional intensity volume.",
         "keyParameters": "--seg (segmentation), --i (intensity volume), --ctab (color table), --sum (output summary file), --excludeid 0 (exclude background)",
         "keyPoints": "Reports volume, mean intensity, and other statistics per region. Can use any segmentation volume.",
         "typicalUse": "Extracting regional volumes and mean intensities per structure.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_segstats"
+"inputExtensions": {
+            "seg": [".mgz",".mgh",".nii",".nii.gz"],
+            "in": [".mgz",".mgh",".nii",".nii.gz"],
+            "ctab": [".txt",".ctab"],
+            "mask": [".mgz",".mgh",".nii",".nii.gz"],
+            "brainmask": [".mgz",".mgh",".nii",".nii.gz"],
+            "pv": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "summary": [".stats",".txt",".dat",".csv"],
+            "avgwf_file": [".txt",".dat"],
+            "avgwfvol_file": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/mri_segstats"
     },
     "aparcstats2table": {
         "cwlPath": "cwl/freesurfer/aparcstats2table.cwl",
-        "primaryOutputs": [
-            "table"
-        ],
         "enumHints": {
             "meas": [
                 "area",
@@ -2164,13 +2056,16 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "--subjects (subject list), --hemi (hemisphere), --meas (measure: thickness, area, volume), --tablefile (output table)",
         "keyPoints": "Creates one row per subject, one column per region. Output table ready for statistical software.",
         "typicalUse": "Creating group spreadsheet of cortical morphometry for statistical analysis.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/aparcstats2table"
+"inputExtensions": {
+            "subjectsfile": [".txt"]
+        },
+                "outputExtensions": {
+            "table": [".txt",".csv",".dat"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/aparcstats2table"
     },
     "asegstats2table": {
         "cwlPath": "cwl/freesurfer/asegstats2table.cwl",
-        "primaryOutputs": [
-            "table"
-        ],
         "enumHints": {
             "meas": [
                 "volume",
@@ -2189,23 +2084,17 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "--subjects (subject list), --meas (measure: volume, mean), --tablefile (output table), --stats (stats file name)",
         "keyPoints": "Creates one row per subject with subcortical volumes. Default uses aseg.stats.",
         "typicalUse": "Group analysis of subcortical volumes.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/asegstats2table"
+"inputExtensions": {
+            "subjectsfile": [".txt"],
+            "segids": [".txt"]
+        },
+                "outputExtensions": {
+            "table": [".txt",".csv",".dat"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/asegstats2table"
     },
     "dmri_postreg": {
         "cwlPath": "cwl/freesurfer/dmri_postreg.cwl",
-        "primaryOutputs": [
-            "out_file"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz",
-                    ".mgh"
-                ]
-            }
-        },
         "enumHints": {
             "interp": [
                 "nearest",
@@ -2219,42 +2108,39 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "--s (subject), --reg (registration method: bbr or manual)",
         "keyPoints": "Part of TRACULA pipeline. Handles diffusion-to-structural registration refinement. Usually called by trac-all.",
         "typicalUse": "Part of TRACULA pipeline for automated tractography.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/dmri_postreg"
+"inputExtensions": {
+            "input": [".mgz",".mgh",".nii",".nii.gz"],
+            "reg": [".dat",".lta"],
+            "xfm": [".xfm",".lta",".dat"],
+            "ref": [".mgz",".mgh",".nii",".nii.gz"],
+            "mask": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "out_file": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/dmri_postreg"
     },
     "N4BiasFieldCorrection": {
         "cwlPath": "cwl/ants/N4BiasFieldCorrection.cwl",
-        "primaryOutputs": [
-            "corrected_image"
-        ],
-        "passthrough": {
-            "input_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "ANTs N4 Bias Field Correction",
         "function": "Advanced bias field (intensity inhomogeneity) correction using the N4 algorithm with iterative B-spline fitting.",
         "modality": "3D NIfTI volume (any MRI contrast), optional brain mask.",
         "keyParameters": "-d (dimension), -i (input), -o (output [,bias_field]), -x (mask), -s (shrink factor), -c (convergence)",
         "keyPoints": "Gold standard for bias correction. Use mask to restrict correction to brain. -s 4 speeds up computation.",
         "typicalUse": "Removing intensity inhomogeneity before segmentation or registration.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki/Atropos-and-N4"
+"inputExtensions": {
+            "input_image": [".nii",".nii.gz"],
+            "mask_image": [".nii",".nii.gz"],
+            "weight_image": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "corrected_image": [".nii.gz"],
+            "bias_field": [".nii.gz"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki/Atropos-and-N4"
     },
     "DenoiseImage": {
         "cwlPath": "cwl/ants/DenoiseImage.cwl",
-        "primaryOutputs": [
-            "denoised_image"
-        ],
-        "passthrough": {
-            "input_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "noise_model": [
                 "Rician",
@@ -2267,42 +2153,35 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-d (dimension), -i (input), -o (output [,noise_image]), -v (verbose)",
         "keyPoints": "Preserves edges better than Gaussian smoothing. Can output estimated noise image. Apply before bias correction.",
         "typicalUse": "Noise reduction while preserving structural edges.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki/DenoiseImage"
+"inputExtensions": {
+            "input_image": [".nii",".nii.gz"],
+            "mask_image": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "denoised_image": [".nii.gz"],
+            "noise_image": [".nii.gz"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki/DenoiseImage"
     },
     "ImageMath": {
         "cwlPath": "cwl/ants/ImageMath.cwl",
-        "primaryOutputs": [
-            "output"
-        ],
-        "passthrough": {
-            "input_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "ANTs Image Math Operations",
         "function": "Versatile tool for image arithmetic, morphological operations, distance transforms, and various measurements.",
         "modality": "3D NIfTI volume(s).",
         "keyParameters": "<dimension> <output> <operation> <input1> [input2] [parameters]",
         "keyPoints": "Operations include: m (multiply), + (add), ME/MD (erode/dilate), GetLargestComponent, FillHoles, Normalize.",
         "typicalUse": "Mathematical operations, morphological operations, connected component analysis.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki/ImageMath"
+"inputExtensions": {
+            "input_image": [".nii",".nii.gz"],
+            "second_input": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "output": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki/ImageMath"
     },
     "ThresholdImage": {
         "cwlPath": "cwl/ants/ThresholdImage.cwl",
-        "primaryOutputs": [
-            "thresholded"
-        ],
-        "passthrough": {
-            "input_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "threshold_mode": [
                 "Otsu",
@@ -2315,64 +2194,54 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "<dimension> <input> <output> <lower> <upper> (binary) or Otsu <num_thresholds> (automatic)",
         "keyPoints": "Otsu mode automatically finds optimal threshold. Binary mode uses explicit lower/upper bounds.",
         "typicalUse": "Creating binary masks, Otsu-based adaptive thresholding.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki"
+"inputExtensions": {
+            "input_image": [".nii",".nii.gz"],
+            "mask_image": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "thresholded": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki"
     },
     "LabelGeometryMeasures": {
         "cwlPath": "cwl/ants/LabelGeometryMeasures.cwl",
-        "primaryOutputs": [
-            "csv_output"
-        ],
-        "passthrough": {
-            "label_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "ANTs Label Geometry Measures",
         "function": "Computes geometric properties (volume, centroid, bounding box, eccentricity) for each labeled region in a parcellation.",
         "modality": "3D integer-labeled NIfTI volume (parcellation/segmentation), optional intensity image.",
         "keyParameters": "<dimension> <label_image> [<intensity_image>] [<output_csv>]",
         "keyPoints": "Outputs CSV with volume, centroid, elongation, roundness per label.",
         "typicalUse": "Extracting volume, centroid, and shape measures per labeled region.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki"
+"inputExtensions": {
+            "label_image": [".nii",".nii.gz"],
+            "intensity_image": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "csv_output": [".csv"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki"
     },
     "antsJointLabelFusion.sh": {
         "cwlPath": "cwl/ants/antsJointLabelFusion.cwl",
-        "primaryOutputs": [
-            "labeled_image"
-        ],
-        "passthrough": {
-            "target_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "ANTs Joint Label Fusion",
         "function": "Multi-atlas segmentation that combines labels from multiple pre-labeled atlases using joint label fusion with local weighting.",
         "modality": "Target 3D NIfTI volume plus multiple atlas images with corresponding label maps.",
         "keyParameters": "-d (dimension), -t (target image), -g (atlas images), -l (atlas labels), -o (output prefix)",
         "keyPoints": "More accurate than single-atlas segmentation. Requires multiple registered atlases. Computationally intensive but highly accurate.",
         "typicalUse": "High-accuracy segmentation using multiple atlas priors.",
+        "inputExtensions": {
+            "target_image": [".nii", ".nii.gz"],
+            "atlas_images": [".nii", ".nii.gz"],
+            "atlas_labels": [".nii", ".nii.gz"],
+            "mask_image": [".nii", ".nii.gz"]
+        },
+        "outputExtensions": {
+            "labeled_image": [".nii.gz"],
+            "intensity_fusion": [".nii.gz"]
+        },
         "docUrl": "https://github.com/ANTsX/ANTs/wiki/antsJointLabelFusion"
     },
     "antsRegistration": {
         "cwlPath": "cwl/ants/antsRegistration.cwl",
-        "primaryOutputs": [
-            "warped_image",
-            "forward_transforms"
-        ],
-        "passthrough": {
-            "fixed_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "interpolation": [
                 "Linear",
@@ -2387,23 +2256,21 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-d (dimension), -f (fixed), -m (moving), -t (transform type), -c (convergence), -s (smoothing sigmas), -o (output)",
         "keyPoints": "Multi-stage approach: rigid then affine then SyN. SyN is symmetric diffeomorphic. CC metric best for intra-modal, MI for inter-modal.",
         "typicalUse": "High-quality multi-stage registration with full parameter control.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki/Anatomy-of-an-antsRegistration-call"
+"inputExtensions": {
+            "fixed_image": [".nii",".nii.gz"],
+            "moving_image": [".nii",".nii.gz"],
+            "initial_moving_transform": [".mat",".h5",".nii.gz",".txt"]
+        },
+                "outputExtensions": {
+            "warped_image": [".nii.gz"],
+            "inverse_warped_image": [".nii.gz"],
+            "forward_transforms": [".mat",".nii.gz"],
+            "inverse_transforms": [".nii.gz"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki/Anatomy-of-an-antsRegistration-call"
     },
     "antsRegistrationSyN.sh": {
         "cwlPath": "cwl/ants/antsRegistrationSyN.cwl",
-        "primaryOutputs": [
-            "warped_image",
-            "affine_transform",
-            "warp_field"
-        ],
-        "passthrough": {
-            "fixed_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "transform_type": [
                 "t",
@@ -2421,22 +2288,22 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-d (dimension), -f (fixed), -m (moving), -o (output prefix), -t (transform type: s=SyN, b=BSplineSyN, a=affine only)",
         "keyPoints": "Good defaults for most use cases. Outputs forward/inverse warps and affine. Preferred over raw antsRegistration for simplicity.",
         "typicalUse": "Standard registration with good defaults for structural normalization.",
+        "inputExtensions": {
+            "fixed_image": [".nii", ".nii.gz"],
+            "moving_image": [".nii", ".nii.gz"],
+            "initial_transform": [".mat", ".h5", ".nii.gz", ".txt"]
+        },
+        "outputExtensions": {
+            "warped_image": [".nii.gz"],
+            "inverse_warped_image": [".nii.gz"],
+            "affine_transform": [".mat"],
+            "warp_field": [".nii.gz"],
+            "inverse_warp_field": [".nii.gz"]
+        },
         "docUrl": "https://github.com/ANTsX/ANTs/wiki/Anatomy-of-an-antsRegistration-call"
     },
     "antsRegistrationSyNQuick.sh": {
         "cwlPath": "cwl/ants/antsRegistrationSyNQuick.cwl",
-        "primaryOutputs": [
-            "warped_image",
-            "affine_transform"
-        ],
-        "passthrough": {
-            "fixed_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "transform_type": [
                 "t",
@@ -2454,21 +2321,22 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-d (dimension), -f (fixed), -m (moving), -o (output prefix), -t (transform type)",
         "keyPoints": "Same interface as antsRegistrationSyN.sh but ~4x faster with slightly less accuracy.",
         "typicalUse": "Quick registration when speed is priority over maximum accuracy.",
+        "inputExtensions": {
+            "fixed_image": [".nii", ".nii.gz"],
+            "moving_image": [".nii", ".nii.gz"],
+            "initial_transform": [".mat", ".h5", ".nii.gz", ".txt"]
+        },
+        "outputExtensions": {
+            "warped_image": [".nii.gz"],
+            "inverse_warped_image": [".nii.gz"],
+            "affine_transform": [".mat"],
+            "warp_field": [".nii.gz"],
+            "inverse_warp_field": [".nii.gz"]
+        },
         "docUrl": "https://github.com/ANTsX/ANTs/wiki/Anatomy-of-an-antsRegistration-call"
     },
     "antsApplyTransforms": {
         "cwlPath": "cwl/ants/antsApplyTransforms.cwl",
-        "primaryOutputs": [
-            "transformed_image"
-        ],
-        "passthrough": {
-            "input_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "interpolation": [
                 "Linear",
@@ -2490,43 +2358,38 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-d (dimension), -i (input), -r (reference), -o (output), -t (transforms, applied last-to-first), -n (interpolation: Linear, NearestNeighbor, BSpline)",
         "keyPoints": "Transforms applied in REVERSE order listed. Use -n NearestNeighbor for label images. -e flag for time series.",
         "typicalUse": "Applying registration transforms to data, labels, or ROIs.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki/Anatomy-of-an-antsRegistration-call"
+"inputExtensions": {
+            "input_image": [".nii",".nii.gz"],
+            "reference_image": [".nii",".nii.gz"],
+            "transforms": [".mat",".h5",".nii.gz",".txt"]
+        },
+                "outputExtensions": {
+            "transformed_image": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki/Anatomy-of-an-antsRegistration-call"
     },
     "antsMotionCorr": {
         "cwlPath": "cwl/ants/antsMotionCorr.cwl",
-        "primaryOutputs": [
-            "corrected_image"
-        ],
-        "passthrough": {
-            "fixed_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "ANTs Motion Correction",
         "function": "Motion correction for time series data using ANTs registration framework with rigid or affine transformations.",
         "modality": "4D fMRI or dynamic PET NIfTI time series.",
         "keyParameters": "-d (dimension), -a (compute average), -o (output), -u (use fixed reference), -m (metric)",
         "keyPoints": "Can compute average image and motion-correct simultaneously. Uses ANTs optimization. Slower than MCFLIRT.",
         "typicalUse": "High-quality motion correction using ANTs registration framework.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki/antsMotionCorr"
+"inputExtensions": {
+            "fixed_image": [".nii",".nii.gz"],
+            "moving_image": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "corrected_image": [".nii.gz"],
+            "average_image": [".nii.gz"],
+            "motion_parameters": [".csv"],
+            "displacement_field": [".nii.gz"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki/antsMotionCorr"
     },
     "antsIntermodalityIntrasubject.sh": {
         "cwlPath": "cwl/ants/antsIntermodalityIntrasubject.cwl",
-        "primaryOutputs": [
-            "warped_image",
-            "affine_transform"
-        ],
-        "passthrough": {
-            "input_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "transform_type": [
                 "0",
@@ -2541,21 +2404,16 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-d (dimension), -i (input modality 1), -r (reference modality 2), -o (output prefix), -t (transform type)",
         "keyPoints": "Uses mutual information cost function appropriate for cross-modal registration.",
         "typicalUse": "T1-to-T2, fMRI-to-T1, or DWI-to-T1 within-subject alignment.",
+        "outputExtensions": {
+            "warped_image": [".nii.gz"],
+            "affine_transform": [".mat"],
+            "warp_field": [".nii.gz"],
+            "inverse_warp_field": [".nii.gz"]
+        },
         "docUrl": "https://github.com/ANTsX/ANTs/wiki/Anatomy-of-an-antsRegistration-call"
     },
     "Atropos": {
         "cwlPath": "cwl/ants/Atropos.cwl",
-        "primaryOutputs": [
-            "segmentation"
-        ],
-        "passthrough": {
-            "intensity_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "likelihood_model": [
                 "Gaussian",
@@ -2569,88 +2427,77 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-d (dimension), -a (input image), -x (mask), -i (initialization: KMeans[N] or PriorProbabilityImages), -c (convergence), -o (output)",
         "keyPoints": "Initialize with KMeans[3] for basic GM/WM/CSF or use prior probability images. MRF prior improves spatial coherence.",
         "typicalUse": "GMM-based brain tissue segmentation with spatial regularization.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki/Atropos-and-N4"
+"inputExtensions": {
+            "intensity_image": [".nii",".nii.gz"],
+            "mask_image": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "segmentation": [".nii",".nii.gz"],
+            "posteriors": [".nii.gz"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki/Atropos-and-N4"
     },
     "antsAtroposN4.sh": {
         "cwlPath": "cwl/ants/antsAtroposN4.cwl",
-        "primaryOutputs": [
-            "segmentation",
-            "bias_corrected"
-        ],
-        "passthrough": {
-            "input_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "ANTs Combined Atropos with N4 Bias Correction",
         "function": "Iteratively combines N4 bias field correction with Atropos segmentation for improved results on biased images.",
         "modality": "Brain-extracted 3D NIfTI volume plus brain mask.",
         "keyParameters": "-d (dimension), -a (anatomical image), -x (mask), -c (number of classes), -o (output prefix), -n (number of iterations)",
         "keyPoints": "Iterative approach: N4 correction improves segmentation, which improves next N4 iteration. Superior to running separately.",
         "typicalUse": "Iterative N4 + segmentation for better results on images with bias field.",
+        "inputExtensions": {
+            "input_image": [".nii", ".nii.gz"],
+            "mask_image": [".nii", ".nii.gz"]
+        },
+        "outputExtensions": {
+            "segmentation": [".nii.gz"],
+            "posteriors": [".nii.gz"],
+            "bias_corrected": [".nii.gz"]
+        },
         "docUrl": "https://github.com/ANTsX/ANTs/wiki/Atropos-and-N4"
     },
     "antsBrainExtraction.sh": {
         "cwlPath": "cwl/ants/antsBrainExtraction.cwl",
-        "primaryOutputs": [
-            "brain_extracted",
-            "brain_mask"
-        ],
-        "passthrough": {
-            "anatomical_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "ANTs Template-Based Brain Extraction",
         "function": "High-quality brain extraction using registration to a brain template and tissue priors for robust skull stripping.",
         "modality": "T1-weighted 3D NIfTI volume plus brain template and brain probability mask.",
         "keyParameters": "-d (dimension, 3), -a (anatomical image), -e (brain template), -m (brain probability mask), -o (output prefix)",
         "keyPoints": "More robust than BET for difficult cases. Requires template and prior. Slower but generally more accurate.",
         "typicalUse": "High-quality skull stripping, especially for challenging datasets.",
+        "inputExtensions": {
+            "anatomical_image": [".nii", ".nii.gz"],
+            "template": [".nii", ".nii.gz"],
+            "brain_probability_mask": [".nii", ".nii.gz"],
+            "registration_mask": [".nii", ".nii.gz"]
+        },
+        "outputExtensions": {
+            "brain_extracted": [".nii.gz"],
+            "brain_mask": [".nii.gz"],
+            "brain_n4": [".nii.gz"],
+            "registration_template": [".nii.gz"]
+        },
         "docUrl": "https://github.com/ANTsX/ANTs/wiki/antsBrainExtraction-and-templates"
     },
     "KellyKapowski": {
         "cwlPath": "cwl/ants/KellyKapowski.cwl",
-        "primaryOutputs": [
-            "thickness_image"
-        ],
-        "passthrough": {
-            "segmentation_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "ANTs DiReCT Cortical Thickness (KellyKapowski)",
         "function": "Estimates cortical thickness using the DiReCT algorithm from segmentation data.",
         "modality": "Tissue segmentation image plus GM and WM probability maps (3D NIfTI).",
         "keyParameters": "-d (dimension), -s (segmentation image), -g (GM probability), -w (WM probability), -o (output thickness map), -c (convergence)",
         "keyPoints": "Core thickness estimation engine used by antsCorticalThickness.sh. Requires good segmentation as input.",
         "typicalUse": "Computing cortical thickness from pre-existing tissue segmentation.",
-        "docUrl": "https://github.com/ANTsX/ANTs/wiki/antsCorticalThickness-and-Templates"
+"inputExtensions": {
+            "segmentation_image": [".nii",".nii.gz"],
+            "gray_matter_prob": [".nii",".nii.gz"],
+            "white_matter_prob": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "thickness_image": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://github.com/ANTsX/ANTs/wiki/antsCorticalThickness-and-Templates"
     },
     "antsCorticalThickness.sh": {
         "cwlPath": "cwl/ants/antsCorticalThickness.cwl",
-        "primaryOutputs": [
-            "cortical_thickness",
-            "brain_segmentation",
-            "brain_extraction_mask"
-        ],
-        "passthrough": {
-            "anatomical_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "enumHints": {
             "run_stage": [
                 "0",
@@ -2665,43 +2512,51 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-d (dimension), -a (anatomical image), -e (brain template), -m (brain probability mask), -p (tissue priors prefix), -o (output prefix)",
         "keyPoints": "Runs full pipeline: N4, brain extraction, segmentation, registration, thickness. Requires template and priors. Computationally intensive.",
         "typicalUse": "Complete DiReCT-based cortical thickness measurement pipeline.",
+        "inputExtensions": {
+            "anatomical_image": [".nii", ".nii.gz"],
+            "template": [".nii", ".nii.gz"],
+            "brain_probability_mask": [".nii", ".nii.gz"],
+            "registration_mask": [".nii", ".nii.gz"],
+            "extraction_registration_mask": [".nii", ".nii.gz"]
+        },
+        "outputExtensions": {
+            "brain_extraction_mask": [".nii.gz"],
+            "brain_segmentation": [".nii.gz"],
+            "cortical_thickness": [".nii.gz"],
+            "brain_normalized": [".nii.gz"],
+            "subject_to_template_warp": [".nii.gz"],
+            "subject_to_template_affine": [".mat"],
+            "template_to_subject_warp": [".nii.gz"],
+            "template_to_subject_affine": [".mat"],
+            "segmentation_posteriors": [".nii.gz"]
+        },
         "docUrl": "https://github.com/ANTsX/ANTs/wiki/antsCorticalThickness-and-Templates"
     },
     "eddy": {
         "cwlPath": "cwl/fsl/eddy.cwl",
-        "primaryOutputs": [
-            "corrected_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Eddy Current and Motion Correction (eddy)",
         "function": "Corrects eddy current-induced distortions and subject movement in diffusion MRI data using a Gaussian process model.",
         "modality": "4D diffusion-weighted NIfTI with b-values (.bval), b-vectors (.bvec), acquisition parameters, and index files.",
         "keyParameters": "--imain (input DWI), --bvals, --bvecs, --acqp (acquisition params), --index (volume indices), --topup (topup output), --out (output)",
         "keyPoints": "Should follow topup if available. Outputs rotated bvecs to account for motion. Use --repol for outlier replacement. GPU version (eddy_cuda) much faster.",
         "typicalUse": "Primary preprocessing step for diffusion MRI after topup distortion correction.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/eddy"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "bvals": [".bval"],
+            "bvecs": [".bvec"],
+            "acqp": [".txt"],
+            "index": [".txt"],
+            "mask": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "corrected_image": [".nii",".nii.gz"],
+            "rotated_bvecs": [".eddy_rotated_bvecs"],
+            "parameters": [".eddy_parameters"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/eddy"
     },
     "dtifit": {
         "cwlPath": "cwl/fsl/dtifit.cwl",
-        "primaryOutputs": [
-            "FA",
-            "MD"
-        ],
-        "passthrough": {
-            "data": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "requires": {
             "tensor": "save_tensor"
         },
@@ -2711,172 +2566,163 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "-k (input DWI), -o (output basename), -m (brain mask), -r (bvecs file), -b (bvals file)",
         "keyPoints": "Outputs FA, MD, eigenvalues (L1/L2/L3), eigenvectors (V1/V2/V3), and full tensor. Assumes single-fiber per voxel (use bedpostx for crossing fibers).",
         "typicalUse": "Generating fractional anisotropy (FA) and mean diffusivity (MD) maps from DWI data.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#DTIFIT"
+"inputExtensions": {
+            "data": [".nii",".nii.gz"],
+            "mask": [".nii",".nii.gz"],
+            "bvecs": [".bvec"],
+            "bvals": [".bval"]
+        },
+                "outputExtensions": {
+            "FA": [".nii",".nii.gz"],
+            "MD": [".nii",".nii.gz"],
+            "L1": [".nii",".nii.gz"],
+            "L2": [".nii",".nii.gz"],
+            "L3": [".nii",".nii.gz"],
+            "V1": [".nii",".nii.gz"],
+            "V2": [".nii",".nii.gz"],
+            "V3": [".nii",".nii.gz"],
+            "tensor": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#DTIFIT"
     },
     "bedpostx": {
         "cwlPath": "cwl/fsl/bedpostx.cwl",
-        "primaryOutputs": [
-            "output_directory"
-        ],
-        "passthrough": {
-            "data_dir": {}
-        },
         "fullName": "Bayesian Estimation of Diffusion Parameters Obtained using Sampling Techniques (BEDPOSTX)",
         "function": "Bayesian estimation of fiber orientation distributions using MCMC sampling, supporting multiple crossing fibers per voxel.",
         "modality": "Directory containing 4D DWI (data.nii.gz), b-values (bvals), b-vectors (bvecs), and brain mask (nodif_brain_mask.nii.gz).",
         "keyParameters": "<data_directory>, -n (max fibers per voxel, default 3)",
         "keyPoints": "Very computationally intensive (hours-days). GPU version (bedpostx_gpu) strongly recommended. Required before probtrackx2. Outputs fiber orientations and uncertainty estimates.",
         "typicalUse": "Prerequisite for probabilistic tractography with probtrackx2.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX"
+"inputExtensions": {},
+                "outputExtensions": {
+            "merged_samples": [".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX"
     },
     "tbss_1_preproc": {
         "cwlPath": "cwl/fsl/tbss_1_preproc.cwl",
-        "primaryOutputs": [
-            "FA_directory"
-        ],
-        "passthrough": {
-            "fa_images": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "TBSS Step 1: Preprocessing",
         "function": "Preprocesses FA images for TBSS by slightly eroding them and zeroing end slices to remove outlier voxels.",
         "modality": "FA maps (3D NIfTI) from dtifit, placed in a common directory.",
         "keyParameters": "*.nii.gz (all FA images in current directory)",
         "keyPoints": "Run from directory containing all subjects FA images. Creates FA/ subdirectory with preprocessed images. Must be run before tbss_2_reg.",
         "typicalUse": "First step of TBSS pipeline for voxelwise diffusion analysis.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide"
+"inputExtensions": {
+            "fa_images": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {},
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide"
     },
     "tbss_2_reg": {
         "cwlPath": "cwl/fsl/tbss_2_reg.cwl",
-        "primaryOutputs": [
-            "FA_directory"
-        ],
-        "passthrough": {
-            "fa_directory": {}
-        },
         "fullName": "TBSS Step 2: Registration",
         "function": "Registers all FA images to a target (best subject or standard-space template) using non-linear registration.",
         "modality": "Preprocessed FA images from tbss_1_preproc.",
         "keyParameters": "-T (use FMRIB58_FA as target), -t <target> (use specified target), -n (find best subject as target)",
         "keyPoints": "Use -T for standard target (recommended for most analyses). -n finds best representative subject but takes longer. Registration quality should be checked visually.",
         "typicalUse": "Second step of TBSS pipeline: aligning all subjects to common space.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide"
+"inputExtensions": {
+            "target_image": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {},
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide"
     },
     "tbss_3_postreg": {
         "cwlPath": "cwl/fsl/tbss_3_postreg.cwl",
-        "primaryOutputs": [
-            "mean_FA",
-            "mean_FA_skeleton",
-            "all_FA"
-        ],
-        "passthrough": {
-            "fa_directory": {}
-        },
         "fullName": "TBSS Step 3: Post-Registration",
         "function": "Creates mean FA image and FA skeleton by projecting registered FA data onto a mean tract center.",
         "modality": "Registered FA images from tbss_2_reg.",
         "keyParameters": "-S (use study-specific mean FA and skeleton), -T (use FMRIB58_FA mean and skeleton)",
         "keyPoints": "Creates mean_FA, mean_FA_skeleton, and all_FA (4D). Skeleton threshold typically 0.2 FA. -S recommended for study-specific analysis.",
         "typicalUse": "Third step of TBSS: creating the white matter skeleton for analysis.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide"
+"inputExtensions": {},
+                "outputExtensions": {
+            "mean_FA": [".nii.gz"],
+            "mean_FA_skeleton": [".nii.gz"],
+            "all_FA": [".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide"
     },
     "tbss_4_prestats": {
         "cwlPath": "cwl/fsl/tbss_4_prestats.cwl",
-        "primaryOutputs": [
-            "all_FA_skeletonised"
-        ],
-        "passthrough": {
-            "fa_directory": {}
-        },
         "fullName": "TBSS Step 4: Pre-Statistics",
         "function": "Projects all subjects FA data onto the mean FA skeleton, ready for voxelwise cross-subject statistics.",
         "modality": "Mean FA skeleton from tbss_3_postreg plus registered FA images.",
         "keyParameters": "<threshold> (FA threshold for skeleton, typically 0.2)",
         "keyPoints": "Threshold determines which voxels are included in skeleton. Creates all_FA_skeletonised (4D) ready for randomise. Can also project non-FA data (MD, etc.) using tbss_non_FA.",
         "typicalUse": "Final TBSS step before statistical analysis with randomise.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide"
+"inputExtensions": {},
+                "outputExtensions": {
+            "all_FA_skeletonised": [".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide"
     },
     "oxford_asl": {
         "cwlPath": "cwl/fsl/oxford_asl.cwl",
-        "primaryOutputs": [
-            "output_directory"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "Oxford ASL Processing Pipeline",
         "function": "Complete pipeline for ASL MRI quantification including motion correction, registration, calibration, and partial volume correction.",
         "modality": "4D ASL NIfTI (tag/control pairs) plus structural T1 image.",
         "keyParameters": "-i (input ASL), -o (output dir), -s (structural image), --casl/--pasl (labeling type), --iaf (input format: tc/ct/diff), --tis (inversion times)",
         "keyPoints": "Handles both pASL and CASL/pCASL. Performs kinetic modeling via BASIL internally. Use --wp for white paper quantification mode. Requires calibration image for absolute CBF.",
         "typicalUse": "Complete ASL quantification from raw data to calibrated CBF maps.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BASIL"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "mask": [".nii",".nii.gz"],
+            "structural": [".nii",".nii.gz"],
+            "calib": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "perfusion": [".nii.gz"],
+            "arrival": [".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BASIL"
     },
     "basil": {
         "cwlPath": "cwl/fsl/basil.cwl",
-        "primaryOutputs": [
-            "output_directory"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "Bayesian Inference for Arterial Spin Labeling (BASIL)",
         "function": "Bayesian kinetic model inversion for ASL data using variational Bayes to estimate perfusion and arrival time.",
         "modality": "4D ASL NIfTI (differenced tag-control or raw tag/control pairs).",
         "keyParameters": "-i (input ASL), -o (output dir), --tis (inversion times), --casl/--pasl, --bolus (bolus duration), --bat (arterial transit time prior)",
         "keyPoints": "Core kinetic modeling engine used by oxford_asl. Multi-TI data enables arrival time estimation. Spatial regularization improves estimates in low-SNR regions.",
         "typicalUse": "Bayesian perfusion quantification with uncertainty estimation.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BASIL"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "mask": [".nii",".nii.gz"],
+            "options_file": [".txt"],
+            "pgm": [".nii",".nii.gz"],
+            "pwm": [".nii",".nii.gz"],
+            "t1im": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "perfusion": [".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BASIL"
     },
     "asl_calib": {
         "cwlPath": "cwl/fsl/asl_calib.cwl",
-        "primaryOutputs": [
-            "calibrated_perfusion"
-        ],
-        "passthrough": {
-            "perfusion": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "ASL Calibration (asl_calib)",
         "function": "Calibrates ASL perfusion data to absolute CBF units (ml/100g/min) using an M0 calibration image.",
         "modality": "Perfusion image (3D NIfTI) plus M0 calibration image and structural reference.",
         "keyParameters": "-i (perfusion image), -c (M0 calibration image), -s (structural image), --mode (voxelwise or reference region), --tr (TR of calibration)",
         "keyPoints": "Two modes: voxelwise (divides each voxel by local M0) or reference region (uses CSF M0 as reference). Reference region mode more robust to coil sensitivity variations.",
         "typicalUse": "Converting relative perfusion signals to absolute CBF values.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BASIL"
+"inputExtensions": {
+            "calib_image": [".nii",".nii.gz"],
+            "perfusion": [".nii",".nii.gz"],
+            "structural": [".nii",".nii.gz"],
+            "transform": [".mat"],
+            "mask": [".nii",".nii.gz"],
+            "bmask": [".nii",".nii.gz"],
+            "str2std": [".mat"],
+            "warp": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "calibrated_perfusion": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BASIL"
     },
     "dwidenoise": {
         "cwlPath": "cwl/mrtrix3/dwidenoise.cwl",
-        "primaryOutputs": [
-            "denoised"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mif"
-                ]
-            }
-        },
         "requires": {
             "noise_map": "noise"
         },
@@ -2886,44 +2732,34 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "<input> <output>, -noise (output noise map), -extent (spatial patch size, default 5,5,5), -mask (brain mask)",
         "keyPoints": "Should be run FIRST, before any other processing. Requires sufficient number of diffusion directions. Noise map useful for QC.",
         "typicalUse": "First step in DWI preprocessing to improve SNR.",
-        "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/dwidenoise.html"
+"inputExtensions": {
+            "input": [".mif",".nii",".nii.gz",".mgh",".mgz"],
+            "mask": [".mif",".nii",".nii.gz",".mgh",".mgz"]
+        },
+                "outputExtensions": {
+            "denoised": [".mif",".nii",".nii.gz"],
+            "noise_map": [".mif",".nii",".nii.gz"]
+        },
+                "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/dwidenoise.html"
     },
     "mrdegibbs": {
         "cwlPath": "cwl/mrtrix3/mrdegibbs.cwl",
-        "primaryOutputs": [
-            "degibbs"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mif"
-                ]
-            }
-        },
         "fullName": "MRtrix3 Gibbs Ringing Removal",
         "function": "Removes Gibbs ringing artifacts (truncation artifacts) from MRI data using a local subvoxel-shift method.",
         "modality": "3D or 4D NIfTI volume (structural or diffusion).",
         "keyParameters": "<input> <output>, -axes (axes along which data was acquired, default 0,1)",
         "keyPoints": "Run after dwidenoise but before any interpolation-based processing. Only effective if data was NOT zero-filled in k-space.",
         "typicalUse": "Removing Gibbs ringing after denoising, before other preprocessing.",
-        "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/mrdegibbs.html"
+"inputExtensions": {
+            "input": [".mif",".nii",".nii.gz",".mgh",".mgz"]
+        },
+                "outputExtensions": {
+            "degibbs": [".mif",".nii",".nii.gz"]
+        },
+                "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/mrdegibbs.html"
     },
     "dwi2tensor": {
         "cwlPath": "cwl/mrtrix3/dwi2tensor.cwl",
-        "primaryOutputs": [
-            "tensor"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mif"
-                ]
-            }
-        },
         "requires": {
             "b0_image": "b0",
             "kurtosis_tensor": "dkt"
@@ -2934,22 +2770,19 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "<input> <output>, -mask (brain mask), -b0 (output mean b=0 image), -dkt (output diffusion kurtosis tensor)",
         "keyPoints": "Assumes single fiber per voxel. Gradient information must be in image header or provided via -fslgrad bvecs bvals.",
         "typicalUse": "Fitting diffusion tensor to DWI data for FA/MD map generation.",
-        "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/dwi2tensor.html"
+"inputExtensions": {
+            "input": [".mif",".nii",".nii.gz",".mgh",".mgz"],
+            "mask": [".mif",".nii",".nii.gz",".mgh",".mgz"]
+        },
+                "outputExtensions": {
+            "tensor": [".mif",".nii",".nii.gz"],
+            "b0_image": [".mif",".nii",".nii.gz"],
+            "kurtosis_tensor": [".mif",".nii",".nii.gz"]
+        },
+                "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/dwi2tensor.html"
     },
     "tensor2metric": {
         "cwlPath": "cwl/mrtrix3/tensor2metric.cwl",
-        "primaryOutputs": [
-            "fa_map"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mif"
-                ]
-            }
-        },
         "requires": {
             "fa_map": "fa",
             "md_map": "adc",
@@ -2962,411 +2795,373 @@ export const TOOL_ANNOTATIONS = {
         "keyParameters": "<input>, -fa (output FA map), -adc (output MD map), -ad (output AD), -rd (output RD), -vector (output eigenvectors)",
         "keyPoints": "Multiple outputs can be generated in a single run. FA range 0-1. Specify each desired output explicitly.",
         "typicalUse": "Generating FA, MD, and other scalar diffusion maps from tensor.",
-        "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/tensor2metric.html"
+"inputExtensions": {
+            "input": [".mif",".nii",".nii.gz",".mgh",".mgz"],
+            "mask": [".mif",".nii",".nii.gz",".mgh",".mgz"]
+        },
+                "outputExtensions": {
+            "fa_map": [".mif",".nii",".nii.gz"],
+            "md_map": [".mif",".nii",".nii.gz"],
+            "ad_map": [".mif",".nii",".nii.gz"],
+            "rd_map": [".mif",".nii",".nii.gz"]
+        },
+                "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/tensor2metric.html"
     },
     "dwi2fod": {
         "cwlPath": "cwl/mrtrix3/dwi2fod.cwl",
-        "primaryOutputs": [
-            "wm_fod_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mif"
-                ]
-            }
-        },
         "fullName": "MRtrix3 Fiber Orientation Distribution Estimation",
         "function": "Estimates fiber orientation distributions (FODs) using constrained spherical deconvolution to resolve crossing fibers.",
         "modality": "4D diffusion-weighted NIfTI with multi-shell or single-shell data, plus tissue response functions.",
         "keyParameters": "<algorithm> <input> <wm_response> <wm_fod> [<gm_response> <gm_fod>] [<csf_response> <csf_fod>], -mask (brain mask)",
         "keyPoints": "Use msmt_csd for multi-shell data (recommended), csd for single-shell. Response functions from dwi2response.",
         "typicalUse": "Estimating fiber orientations for subsequent tractography.",
-        "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/dwi2fod.html"
+"inputExtensions": {
+            "input": [".mif",".nii",".nii.gz",".mgh",".mgz"],
+            "wm_response": [".txt"],
+            "gm_response": [".txt"],
+            "csf_response": [".txt"],
+            "mask": [".mif",".nii",".nii.gz",".mgh",".mgz"]
+        },
+                "outputExtensions": {
+            "wm_fod_image": [".mif",".nii",".nii.gz"],
+            "gm_fod_image": [".mif",".nii",".nii.gz"],
+            "csf_fod_image": [".mif",".nii",".nii.gz"]
+        },
+                "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/dwi2fod.html"
     },
     "tckgen": {
         "cwlPath": "cwl/mrtrix3/tckgen.cwl",
-        "primaryOutputs": [
-            "tractogram"
-        ],
-        "passthrough": {
-            "source": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mif"
-                ]
-            }
-        },
         "fullName": "MRtrix3 Streamline Tractography Generation",
         "function": "Generates streamline tractograms using various algorithms (iFOD2, FACT, etc.) from FOD or tensor images.",
         "modality": "FOD image (from dwi2fod) or tensor image, plus optional seed/mask/ROI images.",
         "keyParameters": "<source> <output.tck>, -algorithm (iFOD2, FACT, etc.), -seed_image (seeding region), -select (target streamline count), -cutoff (FOD amplitude cutoff)",
         "keyPoints": "iFOD2 (default) is probabilistic and handles crossing fibers. Use -select for target count. -cutoff controls termination.",
         "typicalUse": "Generating whole-brain or ROI-seeded tractograms.",
-        "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/tckgen.html"
+"inputExtensions": {
+            "source": [".mif",".nii",".nii.gz",".mgh",".mgz"],
+            "seed_image": [".mif",".nii",".nii.gz",".mgh",".mgz"],
+            "act": [".mif",".nii",".nii.gz",".mgh",".mgz"]
+        },
+                "outputExtensions": {
+            "tractogram": [".tck"]
+        },
+                "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/tckgen.html"
     },
     "tcksift": {
         "cwlPath": "cwl/mrtrix3/tcksift.cwl",
-        "primaryOutputs": [
-            "filtered_tractogram"
-        ],
-        "passthrough": {
-            "input_tracks": {
-                "acceptedExtensions": [
-                    ".tck"
-                ]
-            }
-        },
         "fullName": "MRtrix3 SIFT Tractogram Filtering",
         "function": "Filters tractograms to improve biological plausibility by matching streamline density to FOD lobe integrals.",
         "modality": "Tractogram (.tck) plus FOD image used for tractography.",
         "keyParameters": "<input.tck> <output.tck>, -act (ACT image), -term_number (target streamline count)",
         "keyPoints": "Dramatically improves connectome quantification. Run after tckgen. SIFT2 (tcksift2) outputs weights instead of filtering.",
         "typicalUse": "Improving tractogram biological accuracy before connectome construction.",
-        "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/tcksift.html"
+"inputExtensions": {
+            "input_tracks": [".tck"],
+            "fod": [".mif",".nii",".nii.gz",".mgh",".mgz"],
+            "act": [".mif",".nii",".nii.gz",".mgh",".mgz"]
+        },
+                "outputExtensions": {
+            "filtered_tractogram": [".tck"]
+        },
+                "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/tcksift.html"
     },
     "tck2connectome": {
         "cwlPath": "cwl/mrtrix3/tck2connectome.cwl",
-        "primaryOutputs": [
-            "connectome"
-        ],
-        "passthrough": {
-            "input_tracks": {
-                "acceptedExtensions": [
-                    ".tck"
-                ]
-            }
-        },
         "fullName": "MRtrix3 Tractogram to Connectome",
         "function": "Constructs a structural connectivity matrix by counting streamlines connecting pairs of regions from a parcellation.",
         "modality": "Tractogram (.tck) plus parcellation volume (integer-labeled 3D NIfTI).",
         "keyParameters": "<input.tck> <parcellation> <output.csv>, -assignment_radial_search (search radius), -scale_length (length scaling)",
         "keyPoints": "Output is NxN matrix. Use SIFT/SIFT2 filtered tractogram for quantitative connectomics. -symmetric recommended.",
         "typicalUse": "Building structural connectivity matrices from tractography and parcellation.",
-        "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/tck2connectome.html"
+"inputExtensions": {
+            "input_tracks": [".tck"],
+            "parcellation": [".mif",".nii",".nii.gz",".mgh",".mgz"]
+        },
+                "outputExtensions": {
+            "connectome": [".csv"]
+        },
+                "docUrl": "https://mrtrix.readthedocs.io/en/latest/reference/commands/tck2connectome.html"
     },
     "fmriprep": {
         "cwlPath": "cwl/fmriprep/fmriprep.cwl",
-        "primaryOutputs": [
-            "output_directory"
-        ],
-        "passthrough": {
-            "bids_dir": {}
-        },
         "fullName": "fMRIPrep: Robust fMRI Preprocessing Pipeline",
         "function": "Automated, robust preprocessing pipeline for task-based and resting-state fMRI, combining tools from FSL, FreeSurfer, ANTs, and AFNI with best practices.",
         "modality": "BIDS-formatted dataset containing T1w anatomical and BOLD fMRI data (NIfTI format).",
         "keyParameters": "<bids_dir> <output_dir> participant, --participant-label (subject IDs), --output-spaces (target spaces), --fs-license-file (FreeSurfer license)",
         "keyPoints": "Requires BIDS-formatted input. Handles brain extraction, segmentation, registration, motion correction, distortion correction, and confound estimation. Generates comprehensive visual QC reports.",
         "typicalUse": "Complete standardized fMRI preprocessing from BIDS data to analysis-ready outputs.",
-        "docUrl": "https://fmriprep.org/en/stable/"
+"inputExtensions": {
+            "fs_license_file": [".txt"]
+        },
+                "outputExtensions": {},
+                "docUrl": "https://fmriprep.org/en/stable/"
     },
     "mriqc": {
         "cwlPath": "cwl/mriqc/mriqc.cwl",
-        "primaryOutputs": [
-            "output_directory"
-        ],
-        "passthrough": {
-            "bids_dir": {}
-        },
         "fullName": "MRIQC: MRI Quality Control Pipeline",
         "function": "Automated quality control pipeline that extracts image quality metrics (IQMs) from structural and functional MRI and generates visual reports.",
         "modality": "BIDS-formatted dataset containing T1w, T2w, and/or BOLD fMRI data (NIfTI format).",
         "keyParameters": "<bids_dir> <output_dir> participant, --participant-label (subject IDs), --modalities (T1w, T2w, bold), --no-sub (skip submission to web API)",
         "keyPoints": "Requires BIDS-formatted input. Computes dozens of IQMs (SNR, CNR, EFC, FBER, motion metrics). Generates individual and group-level visual reports.",
         "typicalUse": "Automated quality assessment of MRI data before preprocessing.",
-        "docUrl": "https://mriqc.readthedocs.io/en/stable/"
+"inputExtensions": {},
+                "outputExtensions": {},
+                "docUrl": "https://mriqc.readthedocs.io/en/stable/"
     },
     "mri_gtmpvc": {
         "cwlPath": "cwl/freesurfer/mri_gtmpvc.cwl",
-        "primaryOutputs": [
-            "output_directory"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz"
-                ]
-            }
-        },
         "fullName": "FreeSurfer Geometric Transfer Matrix Partial Volume Correction",
         "function": "Performs partial volume correction for PET data using the geometric transfer matrix method based on high-resolution anatomical segmentation.",
         "modality": "PET volume (3D NIfTI/MGZ) plus FreeSurfer segmentation (aparc+aseg).",
         "keyParameters": "--i (input PET), --seg (segmentation), --reg (registration to anatomy), --psf (point spread function FWHM in mm), --o (output directory)",
         "keyPoints": "Accounts for PET spatial resolution blurring across tissue boundaries. PSF should match scanner resolution (~4-6mm).",
         "typicalUse": "Partial volume correction of PET data using anatomical segmentation.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/PetSurfer"
+"inputExtensions": {
+            "input": [".mgz",".mgh",".nii",".nii.gz"],
+            "seg": [".mgz",".mgh",".nii",".nii.gz"],
+            "reg": [".lta",".dat"]
+        },
+                "outputExtensions": {
+            "gtm_stats": [".dat"]
+        },
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/PetSurfer"
     },
     "tbss_non_FA": {
         "cwlPath": "cwl/fsl/tbss_non_FA.cwl",
-        "primaryOutputs": [
-            "skeletonised_data"
-        ],
-        "passthrough": {
-            "fa_directory": {}
-        },
         "fullName": "TBSS Non-FA Image Projection",
         "function": "Projects non-FA diffusion images (MD, AD, RD, etc.) onto the mean FA skeleton using the same registration from the FA-based TBSS pipeline.",
         "modality": "Non-FA diffusion scalar maps (3D NIfTI) in same space as FA images used for TBSS.",
         "keyParameters": "<non_FA_image> (e.g., all_MD) - run after tbss_4_prestats with non-FA data in stats directory",
         "keyPoints": "Must run full TBSS pipeline on FA first. Non-FA images must be in same native space as original FA. Creates all_<measure>_skeletonised for use with randomise.",
         "typicalUse": "Analyzing MD, AD, RD, or other diffusion metrics on the FA-derived skeleton.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide#Using_non-FA_Images_in_TBSS"
+"inputExtensions": {},
+                "outputExtensions": {
+            "skeletonised_data": [".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS/UserGuide#Using_non-FA_Images_in_TBSS"
     },
     "applytopup": {
         "cwlPath": "cwl/fsl/applytopup.cwl",
-        "primaryOutputs": [
-            "corrected_images"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Apply Topup Distortion Correction",
         "function": "Applies the susceptibility-induced off-resonance field estimated by topup to correct distortions in EPI images.",
         "modality": "3D or 4D EPI NIfTI plus topup output (movpar.txt and fieldcoef files).",
         "keyParameters": "--imain (input images), --topup (topup output prefix), --datain (acquisition parameters), --inindex (index into datain), --out (output), --method (jac or lsr)",
         "keyPoints": "Use after running topup. --method=jac applies Jacobian modulation (recommended for fMRI). Can apply to multiple images at once.",
         "typicalUse": "Applying distortion correction to fMRI or DWI data using pre-computed topup results.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/topup/ApplyTopupUsersGuide"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"],
+            "topup_fieldcoef": [".nii",".nii.gz"],
+            "topup_movpar": [".txt"],
+            "encoding_file": [".txt"]
+        },
+                "outputExtensions": {
+            "corrected_images": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/topup/ApplyTopupUsersGuide"
     },
     "fsl_prepare_fieldmap": {
         "cwlPath": "cwl/fsl/fsl_prepare_fieldmap.cwl",
-        "primaryOutputs": [
-            "fieldmap"
-        ],
-        "passthrough": {
-            "phase_image": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Fieldmap Preparation",
         "function": "Prepares a fieldmap for use with FUGUE by converting phase difference images to radians per second.",
         "modality": "Phase difference image and magnitude image from gradient echo fieldmap acquisition.",
         "keyParameters": "<scanner> <phase_image> <magnitude_image> <output_fieldmap> <delta_TE_ms>",
         "keyPoints": "Scanner type determines unwrapping method (SIEMENS most common). Delta TE is the echo time difference in milliseconds. Output is in rad/s for use with FUGUE.",
         "typicalUse": "Converting raw fieldmap images to FUGUE-compatible format for EPI distortion correction.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE/Guide#SIEMENS_data"
+"inputExtensions": {
+            "phase_image": [".nii",".nii.gz"],
+            "magnitude_image": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "fieldmap": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE/Guide#SIEMENS_data"
     },
     "prelude": {
         "cwlPath": "cwl/fsl/prelude.cwl",
-        "primaryOutputs": [
-            "unwrapped_phase"
-        ],
-        "passthrough": {
-            "phase": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Phase Region Expanding Labeller for Unwrapping Discrete Estimates (PRELUDE)",
         "function": "Performs 3D phase unwrapping on wrapped phase images using a region-growing algorithm.",
         "modality": "Wrapped phase image (3D NIfTI) plus optional magnitude image for masking.",
         "keyParameters": "-p (wrapped phase), -a (magnitude for mask), -o (output unwrapped phase), -m (brain mask), -f (apply phase filter)",
         "keyPoints": "Essential preprocessing for fieldmap-based distortion correction. Magnitude image improves unwrapping quality. Can handle phase wraps > 2pi.",
         "typicalUse": "Unwrapping phase images before fieldmap calculation for distortion correction.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE/Guide#PRELUDE_.28phase_unwrapping.29"
+"inputExtensions": {
+            "phase": [".nii",".nii.gz"],
+            "magnitude": [".nii",".nii.gz"],
+            "complex_input": [".nii",".nii.gz"],
+            "mask": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "unwrapped_phase": [".nii",".nii.gz"],
+            "saved_mask": [".nii",".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE/Guide#PRELUDE_.28phase_unwrapping.29"
     },
     "bianca": {
         "cwlPath": "cwl/fsl/bianca.cwl",
-        "primaryOutputs": [
-            "wmh_map"
-        ],
-        "passthrough": {
-            "singlefile": {
-                "acceptedExtensions": [
-                    ".txt"
-                ]
-            }
-        },
         "fullName": "Brain Intensity AbNormality Classification Algorithm (BIANCA)",
         "function": "Automated white matter hyperintensity (WMH) segmentation using supervised machine learning (k-nearest neighbor) trained on manually labeled data.",
         "modality": "T1-weighted and FLAIR images (3D NIfTI), plus training data with manual WMH masks.",
         "keyParameters": "--singlefile (input file list), --labelfeaturenum (which feature is the manual label), --brainmaskfeaturenum (brain mask feature), --querysubjectnum (subject to segment), --trainingnums (training subjects)",
         "keyPoints": "Requires training data with manual WMH labels. Uses spatial and intensity features. Performance depends on training data quality and similarity to test data.",
         "typicalUse": "Automated white matter lesion segmentation in aging, small vessel disease, or MS studies.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BIANCA"
+"inputExtensions": {
+            "singlefile": [".txt"]
+        },
+                "outputExtensions": {
+            "wmh_map": [".nii.gz"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BIANCA"
     },
     "robustfov": {
         "cwlPath": "cwl/fsl/robustfov.cwl",
-        "primaryOutputs": [
-            "cropped_image"
-        ],
-        "passthrough": {
-            "input": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "FSL Robust Field of View Reduction",
         "function": "Automatically identifies and removes neck/non-brain tissue by estimating the brain center and reducing the field of view to a standard size.",
         "modality": "T1-weighted 3D NIfTI volume (full head coverage).",
         "keyParameters": "-i (input), -r (output ROI volume), -m (output transformation matrix), -b (brain size estimate in mm, default 170)",
         "keyPoints": "Useful for images with extensive neck coverage. Run before BET for more robust brain extraction. Does not resample, just crops.",
         "typicalUse": "Preprocessing step before brain extraction to remove neck and improve BET robustness.",
-        "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/fsl_anat"
+"inputExtensions": {
+            "input": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "cropped_image": [".nii",".nii.gz"],
+            "transform_matrix": [".mat"]
+        },
+                "docUrl": "https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/fsl_anat"
     },
     "recon-all": {
         "cwlPath": "cwl/freesurfer/recon-all.cwl",
-        "primaryOutputs": [
-            "subjects_output_dir"
-        ],
-        "passthrough": {
-            "input_t1": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz",
-                    ".mgz"
-                ]
-            }
-        },
         "fullName": "FreeSurfer Complete Cortical Reconstruction Pipeline",
         "function": "Fully automated pipeline for cortical surface reconstruction and parcellation, including skull stripping, segmentation, surface tessellation, topology correction, inflation, registration, and parcellation.",
         "modality": "T1-weighted 3D NIfTI or DICOM. Optional T2w or FLAIR for pial surface refinement.",
         "keyParameters": "-s (subject ID), -i (input T1w), -T2 (T2w image for pial), -FLAIR (FLAIR for pial), -all (run full pipeline), -autorecon1/-autorecon2/-autorecon3 (run specific stages)",
         "keyPoints": "Runtime 6-24 hours per subject. Creates cortical surfaces (white, pial), parcellations (Desikan-Killiany, Destrieux), subcortical segmentation (aseg), and morphometric measures. Use -T2pial or -FLAIRpial for improved pial surface placement.",
         "typicalUse": "Complete cortical reconstruction for surface-based morphometry, parcellation-based analysis, and as prerequisite for fMRI surface analysis.",
-        "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/recon-all"
+"inputExtensions": {
+            "input_t1": [".mgz",".mgh",".nii",".nii.gz"],
+            "t2_image": [".mgz",".mgh",".nii",".nii.gz"],
+            "flair_image": [".mgz",".mgh",".nii",".nii.gz"]
+        },
+                "outputExtensions": {},
+                "docUrl": "https://surfer.nmr.mgh.harvard.edu/fswiki/recon-all"
     },
     "wb_command_cifti_create_dense_timeseries": {
         "cwlPath": "cwl/connectome_workbench/wb_command_cifti_create_dense_timeseries.cwl",
-        "primaryOutputs": [
-            "cifti_output"
-        ],
         "fullName": "Connectome Workbench CIFTI Dense Timeseries Creation",
         "function": "Creates a CIFTI dense timeseries file (.dtseries.nii) combining cortical surface data with subcortical volume data in a single grayordinates representation.",
         "modality": "Surface GIFTI files (left/right hemisphere) plus subcortical volume NIfTI, or volume-only input.",
         "keyParameters": "<cifti-out> -volume <volume> <label> -left-metric <metric> -right-metric <metric> -timestep <seconds> -timestart <seconds>",
         "keyPoints": "Core format for HCP-style analysis. Combines cortical surfaces and subcortical volumes. Standard grayordinate space is 91k (32k per hemisphere + subcortical).",
         "typicalUse": "Creating CIFTI format fMRI data for HCP-style surface-based analysis.",
-        "docUrl": "https://www.humanconnectome.org/software/workbench-command/-cifti-create-dense-timeseries"
+"inputExtensions": {
+            "volume_data": [".nii",".nii.gz"],
+            "structure_label_volume": [".nii",".nii.gz"],
+            "left_metric": [".func.gii",".shape.gii"],
+            "roi_left": [".func.gii",".shape.gii"],
+            "right_metric": [".func.gii",".shape.gii"],
+            "roi_right": [".func.gii",".shape.gii"],
+            "cerebellum_metric": [".func.gii",".shape.gii"]
+        },
+                "outputExtensions": {
+            "cifti_output": [".dtseries.nii"]
+        },
+                "docUrl": "https://www.humanconnectome.org/software/workbench-command/-cifti-create-dense-timeseries"
     },
     "wb_command_cifti_separate": {
         "cwlPath": "cwl/connectome_workbench/wb_command_cifti_separate.cwl",
-        "primaryOutputs": [
-            "volume_output"
-        ],
-        "passthrough": {
-            "cifti_in": {
-                "acceptedExtensions": [
-                    ".dtseries.nii",
-                    ".dscalar.nii",
-                    ".dlabel.nii",
-                    ".pconn.nii",
-                    ".ptseries.nii",
-                    ".pscalar.nii"
-                ]
-            }
-        },
         "fullName": "Connectome Workbench CIFTI Separate",
         "function": "Extracts surface or volume components from a CIFTI file into separate GIFTI metric or NIfTI volume files.",
         "modality": "CIFTI dense file (.dscalar.nii, .dtseries.nii, etc.).",
         "keyParameters": "<cifti-in> <direction> -volume-all <volume-out> -metric <structure> <metric-out>",
         "keyPoints": "Opposite of cifti-create operations. Useful for extracting data for tools that do not support CIFTI format.",
         "typicalUse": "Extracting surface or volume data from CIFTI files for further processing.",
-        "docUrl": "https://www.humanconnectome.org/software/workbench-command/-cifti-separate"
+"inputExtensions": {
+            "cifti_in": [".dtseries.nii",".dscalar.nii",".dlabel.nii",".dconn.nii"]
+        },
+                "outputExtensions": {
+            "volume_output": [".nii",".nii.gz"],
+            "left_metric_output": [".func.gii"],
+            "right_metric_output": [".func.gii"]
+        },
+                "docUrl": "https://www.humanconnectome.org/software/workbench-command/-cifti-separate"
     },
     "wb_command_cifti_smoothing": {
         "cwlPath": "cwl/connectome_workbench/wb_command_cifti_smoothing.cwl",
-        "primaryOutputs": [
-            "smoothed_cifti"
-        ],
-        "passthrough": {
-            "cifti_in": {
-                "acceptedExtensions": [
-                    ".dtseries.nii",
-                    ".dscalar.nii",
-                    ".dlabel.nii",
-                    ".pconn.nii",
-                    ".ptseries.nii",
-                    ".pscalar.nii"
-                ]
-            }
-        },
         "fullName": "Connectome Workbench CIFTI Smoothing",
         "function": "Applies geodesic Gaussian smoothing to CIFTI data on cortical surfaces and Euclidean smoothing in subcortical volumes.",
         "modality": "CIFTI dense file plus surface files for each hemisphere.",
         "keyParameters": "<cifti-in> <surface-kernel> <volume-kernel> <direction> <cifti-out> -left-surface <surface> -right-surface <surface> -fix-zeros-volume -fix-zeros-surface",
         "keyPoints": "Surface smoothing follows cortical geometry (geodesic). Typical kernel 4-6mm FWHM. -fix-zeros prevents smoothing across medial wall.",
         "typicalUse": "Spatial smoothing of fMRI data in CIFTI format for HCP-style pipelines.",
-        "docUrl": "https://www.humanconnectome.org/software/workbench-command/-cifti-smoothing"
+"inputExtensions": {
+            "cifti_in": [".dtseries.nii",".dscalar.nii",".dlabel.nii",".dconn.nii"],
+            "left_surface": [".surf.gii"],
+            "right_surface": [".surf.gii"],
+            "cerebellum_surface": [".surf.gii"],
+            "cifti_roi": [".dscalar.nii",".dlabel.nii",".dtseries.nii",".dconn.nii"]
+        },
+                "outputExtensions": {
+            "smoothed_cifti": [".dtseries.nii",".dscalar.nii"]
+        },
+                "docUrl": "https://www.humanconnectome.org/software/workbench-command/-cifti-smoothing"
     },
     "wb_command_metric_smoothing": {
         "cwlPath": "cwl/connectome_workbench/wb_command_metric_smoothing.cwl",
-        "primaryOutputs": [
-            "smoothed_metric"
-        ],
-        "passthrough": {
-            "surface": {
-                "acceptedExtensions": [
-                    ".surf.gii"
-                ]
-            }
-        },
         "fullName": "Connectome Workbench Surface Metric Smoothing",
         "function": "Applies geodesic Gaussian smoothing to surface metric data following the cortical surface geometry.",
         "modality": "Surface GIFTI (.surf.gii) plus metric GIFTI (.func.gii or .shape.gii).",
         "keyParameters": "<surface> <metric-in> <smoothing-kernel> <metric-out> -roi <roi-metric> -fix-zeros",
         "keyPoints": "Smoothing follows cortical folding pattern rather than 3D Euclidean distance. ROI can restrict smoothing to specific regions.",
         "typicalUse": "Smoothing surface-based data (thickness, curvature, fMRI) for visualization or statistics.",
-        "docUrl": "https://www.humanconnectome.org/software/workbench-command/-metric-smoothing"
+"inputExtensions": {
+            "surface": [".surf.gii"],
+            "metric_in": [".func.gii",".shape.gii"],
+            "roi": [".func.gii",".shape.gii"],
+            "corrected_areas": [".func.gii",".shape.gii"]
+        },
+                "outputExtensions": {
+            "smoothed_metric": [".func.gii"]
+        },
+                "docUrl": "https://www.humanconnectome.org/software/workbench-command/-metric-smoothing"
     },
     "wb_command_surface_sphere_project_unproject": {
         "cwlPath": "cwl/connectome_workbench/wb_command_surface_sphere_project_unproject.cwl",
-        "primaryOutputs": [
-            "output_sphere"
-        ],
-        "passthrough": {
-            "sphere_in": {
-                "acceptedExtensions": [
-                    ".surf.gii"
-                ]
-            }
-        },
         "fullName": "Connectome Workbench Surface Registration Transform",
         "function": "Applies MSM or FreeSurfer spherical registration by projecting coordinates through registered sphere to target space.",
         "modality": "Surface GIFTI files (sphere-in, sphere-project-to, sphere-unproject-from).",
         "keyParameters": "<surface-in> <sphere-in> <sphere-project-to> <sphere-unproject-from> <surface-out>",
         "keyPoints": "Core operation for applying surface-based registration. Used to resample surfaces to different template spaces (fsaverage, fs_LR).",
         "typicalUse": "Applying surface registration transforms to resample data between atlas spaces.",
-        "docUrl": "https://www.humanconnectome.org/software/workbench-command/-surface-sphere-project-unproject"
+"inputExtensions": {
+            "sphere_in": [".surf.gii"],
+            "sphere_project_to": [".surf.gii"],
+            "sphere_unproject_from": [".surf.gii"]
+        },
+                "outputExtensions": {
+            "output_sphere": [".surf.gii"]
+        },
+                "docUrl": "https://www.humanconnectome.org/software/workbench-command/-surface-sphere-project-unproject"
     },
     "amico_noddi": {
         "cwlPath": "cwl/amico/amico_noddi.cwl",
-        "primaryOutputs": [
-            "ndi_map"
-        ],
-        "passthrough": {
-            "dwi": {
-                "acceptedExtensions": [
-                    ".nii",
-                    ".nii.gz"
-                ]
-            }
-        },
         "fullName": "AMICO NODDI Fitting",
         "function": "Fits the NODDI (Neurite Orientation Dispersion and Density Imaging) model to multi-shell diffusion MRI data using convex optimization for fast and robust estimation.",
         "modality": "Multi-shell diffusion MRI (4D NIfTI) with b-values and b-vectors, plus brain mask.",
         "keyParameters": "Python: amico.core.setup(), amico.core.load_data(), amico.core.set_model(\"NODDI\"), amico.core.fit()",
         "keyPoints": "Requires multi-shell acquisition (recommended: b=0,1000,2000 s/mm2). Outputs NDI (neurite density), ODI (orientation dispersion), and fISO (isotropic fraction). Much faster than original NODDI MATLAB toolbox.",
         "typicalUse": "Microstructural imaging for neurite density and orientation dispersion in white matter.",
-        "docUrl": "https://github.com/daducci/AMICO"
+"inputExtensions": {
+            "dwi": [".nii",".nii.gz"],
+            "bvals": [".bval"],
+            "bvecs": [".bvec"],
+            "mask": [".nii",".nii.gz"]
+        },
+                "outputExtensions": {
+            "ndi_map": [".nii.gz"],
+            "odi_map": [".nii.gz"],
+            "fiso_map": [".nii.gz"]
+        },
+                "docUrl": "https://github.com/daducci/AMICO"
     }
 };
 

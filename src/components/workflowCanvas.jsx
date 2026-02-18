@@ -13,10 +13,10 @@ import '../styles/workflowCanvas.css';
 import '../styles/actionsBar.css';
 
 import NodeComponent from './NodeComponent';
-import EdgeMappingModal, { checkTypeCompatibility } from './EdgeMappingModal';
-import { getToolConfigSync } from '../utils/toolRegistry.js';
+import EdgeMappingModal from './EdgeMappingModal';
 import { useNodeLookup } from '../hooks/useNodeLookup.js';
 import { ScatterPropagationContext } from '../context/ScatterPropagationContext.jsx';
+import { WiredInputsContext } from '../context/WiredInputsContext.jsx';
 import { computeScatteredNodes } from '../utils/scatterPropagation.js';
 
 // Define node types.
@@ -52,6 +52,25 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
     const { scatteredNodeIds, sourceNodeIds } = computeScatteredNodes(realNodes, realEdges);
     return { propagatedIds: scatteredNodeIds, sourceNodeIds };
   }, [nodes, edges]);
+
+  // Compute which inputs on each node are wired from upstream edge mappings.
+  // Used by NodeComponent via WiredInputsContext to show wired/unwired state.
+  const wiredContext = useMemo(() => {
+    const wiredMap = new Map();
+    edges.forEach(edge => {
+      if (!edge.data?.mappings) return;
+      edge.data.mappings.forEach(mapping => {
+        if (!wiredMap.has(edge.target)) wiredMap.set(edge.target, new Map());
+        const sourceNode = nodeMap.get(edge.source);
+        wiredMap.get(edge.target).set(mapping.targetInput, {
+          sourceNodeId: edge.source,
+          sourceNodeLabel: sourceNode?.data?.label || 'Unknown',
+          sourceOutput: mapping.sourceOutput
+        });
+      });
+    });
+    return wiredMap;
+  }, [edges, nodeMap]);
 
   // Edge mapping modal state
   const [showEdgeModal, setShowEdgeModal] = useState(false);
@@ -139,33 +158,9 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
         const targetNode = nodeMap.get(connection.target);
 
         if (sourceNode && targetNode) {
-          // Check for type compatibility between source outputs and target inputs
-          let hasTypeMismatch = false;
-          const sourceTool = getToolConfigSync(sourceNode.data.label);
-          const targetTool = getToolConfigSync(targetNode.data.label);
-
-          if (sourceTool && targetTool) {
-            // Get primary output type from source
-            const primaryOutput = sourceTool.primaryOutputs?.[0];
-            const outputType = primaryOutput ? sourceTool.outputs[primaryOutput]?.type : null;
-
-            // Find first passthrough input from target
-            const passthroughInput = Object.entries(targetTool.requiredInputs || {})
-              .find(([_, def]) => def.passthrough);
-            const inputType = passthroughInput?.[1]?.type;
-
-            if (outputType && inputType) {
-              const { compatible } = checkTypeCompatibility(outputType, inputType);
-              if (!compatible) {
-                hasTypeMismatch = true;
-              }
-            }
-          }
-
           setEdgeModalData({
             sourceNode: { id: sourceNode.id, label: sourceNode.data.label, isDummy: sourceNode.data.isDummy || false },
             targetNode: { id: targetNode.id, label: targetNode.data.label, isDummy: targetNode.data.isDummy || false },
-            hasTypeMismatch
           });
           setShowEdgeModal(true);
         }
@@ -377,6 +372,7 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
             className="workflow-canvas-container"
         >
           <ScatterPropagationContext.Provider value={scatterContext}>
+          <WiredInputsContext.Provider value={wiredContext}>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -398,6 +394,7 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
               <Background variant="dots" gap={12} size={1} />
               <Controls />
             </ReactFlow>
+          </WiredInputsContext.Provider>
           </ScatterPropagationContext.Provider>
         </div>
 
@@ -409,7 +406,6 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
             sourceNode={edgeModalData?.sourceNode}
             targetNode={edgeModalData?.targetNode}
             existingMappings={edgeModalData?.existingMappings || []}
-            hasTypeMismatch={edgeModalData?.hasTypeMismatch || false}
         />
       </div>
   );

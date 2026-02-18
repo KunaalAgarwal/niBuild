@@ -173,6 +173,20 @@ export function buildCWLWorkflowObject(graph) {
         return isSingleNode ? inputName : `${stepId}_${inputName}`;
     };
 
+    /* ---------- pre-compute wired inputs per node from edge mappings ---------- */
+    // wiredInputsMap: Map<nodeId, Map<inputName, { sourceNodeId, sourceOutput }>>
+    const wiredInputsMap = new Map();
+    for (const edge of edges) {
+        const mappings = edge.data?.mappings || [];
+        for (const m of mappings) {
+            if (!wiredInputsMap.has(edge.target)) wiredInputsMap.set(edge.target, new Map());
+            wiredInputsMap.get(edge.target).set(m.targetInput, {
+                sourceNodeId: edge.source,
+                sourceOutput: m.sourceOutput
+            });
+        }
+    }
+
     /* ---------- walk nodes in topo order ---------- */
     order.forEach((nodeId) => {
         const node = nodeById(nodeId);
@@ -183,9 +197,8 @@ export function buildCWLWorkflowObject(graph) {
         const genericTool = {
             id: label.toLowerCase().replace(/[^a-z0-9]/g, '_'),
             cwlPath: `cwl/generic/${label.toLowerCase().replace(/[^a-z0-9]/g, '_')}.cwl`,
-            primaryOutputs: ['output'],
             requiredInputs: {
-                input: { type: 'File', passthrough: true, label: 'Input' }
+                input: { type: 'File', label: 'Input' }
             },
             optionalInputs: {},
             outputs: { output: { type: 'File', label: 'Output' } }
@@ -207,46 +220,20 @@ export function buildCWLWorkflowObject(graph) {
 
         /* ---------- handle required inputs ---------- */
         Object.entries(effectiveTool.requiredInputs).forEach(([inputName, inputDef]) => {
-            const { type, passthrough } = inputDef;
+            const { type } = inputDef;
+            const wiredInfo = wiredInputsMap.get(nodeId)?.get(inputName);
 
-            if (passthrough) {
-                if (incomingEdges.length > 0) {
-                    const srcEdge = incomingEdges[0];
-                    const srcStepId = getStepId(srcEdge.source);
-
-                    // NEW: Use explicit mapping from edge data if available
-                    const mapping = srcEdge.data?.mappings?.find(m => m.targetInput === inputName);
-
-                    if (mapping) {
-                        // Use explicit mapping
-                        step.in[inputName] = `${srcStepId}/${mapping.sourceOutput}`;
-                    } else {
-                        // Fallback to primary output (for backward compatibility or generic tools)
-                        const srcNode = nodeById(srcEdge.source);
-                        const srcTool = getToolConfigSync(srcNode.data.label);
-                        if (srcTool?.primaryOutputs?.[0]) {
-                            step.in[inputName] = `${srcStepId}/${srcTool.primaryOutputs[0]}`;
-                        } else {
-                            // Generic fallback for undefined tools
-                            step.in[inputName] = `${srcStepId}/output`;
-                        }
-                    }
-                } else {
-                    // Source node - expose as workflow input
-                    const wfInputName = sourceNodeIds.size === 1
-                        ? 'input_file'
-                        : `${stepId}_input_file`;
-                    // If scattered, input becomes an array type
-                    const inputType = scatteredSteps.has(nodeId)
-                        ? toArrayType(type)
-                        : toCWLType(type);
-                    wf.inputs[wfInputName] = { type: inputType };
-                    step.in[inputName] = wfInputName;
-                }
+            if (wiredInfo) {
+                // This input is explicitly wired from an upstream output via edge mapping
+                const srcStepId = getStepId(wiredInfo.sourceNodeId);
+                step.in[inputName] = `${srcStepId}/${wiredInfo.sourceOutput}`;
             } else {
-                // Non-passthrough required input - expose as workflow input
+                // Not wired - expose as workflow input
                 const wfInputName = makeWfInputName(stepId, inputName, isSingleNode);
-                wf.inputs[wfInputName] = { type: toCWLType(type) };
+                const inputType = scatteredSteps.has(nodeId) && (type === 'File' || type === 'Directory')
+                    ? toArrayType(type)
+                    : toCWLType(type);
+                wf.inputs[wfInputName] = { type: inputType };
                 step.in[inputName] = wfInputName;
             }
         });
@@ -307,9 +294,11 @@ export function buildCWLWorkflowObject(graph) {
             const scatterInputs = [];
 
             if (sourceNodeIds.has(nodeId)) {
-                // Source node: scatter on passthrough inputs
+                // Source node: scatter on File/Directory required inputs that are workflow-level inputs
                 Object.entries(effectiveTool.requiredInputs).forEach(([inputName, inputDef]) => {
-                    if (inputDef.passthrough) {
+                    const isFileOrDir = inputDef.type === 'File' || inputDef.type === 'Directory';
+                    const isWired = wiredInputsMap.get(nodeId)?.has(inputName);
+                    if (isFileOrDir && !isWired) {
                         scatterInputs.push(inputName);
                     }
                 });
@@ -318,20 +307,11 @@ export function buildCWLWorkflowObject(graph) {
                 incomingEdges.forEach(edge => {
                     if (!scatteredSteps.has(edge.source)) return;
                     const mappings = edge.data?.mappings || [];
-                    if (mappings.length > 0) {
-                        mappings.forEach(m => {
-                            if (!scatterInputs.includes(m.targetInput)) {
-                                scatterInputs.push(m.targetInput);
-                            }
-                        });
-                    } else {
-                        // Fallback: scatter on passthrough inputs
-                        Object.entries(effectiveTool.requiredInputs).forEach(([inputName, inputDef]) => {
-                            if (inputDef.passthrough && !scatterInputs.includes(inputName)) {
-                                scatterInputs.push(inputName);
-                            }
-                        });
-                    }
+                    mappings.forEach(m => {
+                        if (!scatterInputs.includes(m.targetInput)) {
+                            scatterInputs.push(m.targetInput);
+                        }
+                    });
                 });
             }
 

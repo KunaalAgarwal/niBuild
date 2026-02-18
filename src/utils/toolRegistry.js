@@ -12,10 +12,9 @@ import { getToolDefinitionSync } from './cwlParser.js';
  *   id:              string,
  *   cwlPath:         string,
  *   dockerImage:     string,
- *   primaryOutputs:  string[],
- *   requiredInputs:  { [name]: { type, passthrough, label, acceptedExtensions?, flag? } },
+ *   requiredInputs:  { [name]: { type, label, acceptedExtensions?, flag? } },
  *   optionalInputs:  { [name]: { type, label, flag?, bounds?, options?, isEnum?, enumSymbols? } },
- *   outputs:         { [name]: { type, label, glob, requires? } },
+ *   outputs:         { [name]: { type, label, glob, requires?, extensions? } },
  *   // UI fields:
  *   fullName?, function?, modality?, keyParameters?, keyPoints?, typicalUse?, docUrl?
  * }
@@ -69,8 +68,7 @@ function mergeToolData(toolName, parsed, annotation) {
 
     // Classify parsed CWL inputs as required vs optional
     for (const [inputName, inputDef] of Object.entries(parsed.inputs)) {
-        const isPassthrough = annotation.passthrough?.[inputName] !== undefined;
-        const acceptedExt = annotation.passthrough?.[inputName]?.acceptedExtensions || null;
+        const acceptedExt = annotation.inputExtensions?.[inputName] || null;
         const inputBounds = annotation.bounds?.[inputName] || null;
         const enumHint = annotation.enumHints?.[inputName] || null;
 
@@ -83,11 +81,8 @@ function mergeToolData(toolName, parsed, annotation) {
             flag: inputDef.flag || null,
         };
 
-        // Add passthrough + acceptedExtensions for passthrough inputs
-        if (isPassthrough) {
-            enriched.passthrough = true;
-            if (acceptedExt) enriched.acceptedExtensions = acceptedExt;
-        }
+        // Add acceptedExtensions if present in annotations
+        if (acceptedExt && acceptedExt.length > 0) enriched.acceptedExtensions = acceptedExt;
 
         // Add bounds if present
         if (inputBounds) enriched.bounds = inputBounds;
@@ -119,13 +114,16 @@ function mergeToolData(toolName, parsed, annotation) {
         if (annotation.requires?.[outputName]) {
             outputs[outputName].requires = annotation.requires[outputName];
         }
+        const outputExt = annotation.outputExtensions?.[outputName] || null;
+        if (outputExt && outputExt.length > 0) {
+            outputs[outputName].extensions = outputExt;
+        }
     }
 
     return {
         id: toolName,
         cwlPath: annotation.cwlPath,
         dockerImage: parsed.dockerImage || null,
-        primaryOutputs: annotation.primaryOutputs || [],
         requiredInputs,
         optionalInputs,
         outputs,
@@ -148,7 +146,6 @@ function annotationOnlyFallback(toolName, annotation) {
         id: toolName,
         cwlPath: annotation.cwlPath,
         dockerImage: null,
-        primaryOutputs: annotation.primaryOutputs || [],
         requiredInputs: {},
         optionalInputs: {},
         outputs: {},

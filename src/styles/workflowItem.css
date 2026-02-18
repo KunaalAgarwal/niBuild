@@ -92,6 +92,61 @@
 }
 
 /* ============================================
+   REQUIRED INPUTS (parameter modal)
+   ============================================ */
+.required-inputs-section {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.input-wired {
+  background-color: rgba(74, 144, 226, 0.08);
+}
+
+.input-unwired {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.input-name {
+  font-weight: 600;
+  margin-right: 8px;
+  color: #ccc;
+}
+
+.input-type-badge {
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #999;
+  margin-right: 8px;
+}
+
+.input-source {
+  color: #4a90e2;
+  font-size: 0.75rem;
+  margin-left: auto;
+}
+
+.input-runtime {
+  color: #666;
+  font-style: italic;
+  font-size: 0.75rem;
+  margin-left: auto;
+}
+
+/* ============================================
    NODE STRUCTURE - Streamlined & Responsive
    ============================================ */
 .node-wrapper {

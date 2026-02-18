@@ -7,6 +7,7 @@ import { DOCKER_IMAGES, DOCKER_TAGS, annotationByName } from '../utils/toolAnnot
 import { useToast } from '../context/ToastContext.jsx';
 import TagDropdown from './TagDropdown.jsx';
 import { ScatterPropagationContext } from '../context/ScatterPropagationContext.jsx';
+import { WiredInputsContext } from '../context/WiredInputsContext.jsx';
 import '../styles/workflowItem.css';
 
 // Map DOCKER_IMAGES keys to DOCKER_TAGS keys
@@ -41,6 +42,10 @@ const NodeComponent = ({ data, id }) => {
     const isScatterInherited = propagatedIds.has(id);
     const isSourceNode = sourceNodeIds.has(id);
 
+    // Get wired input state from context
+    const wiredContext = useContext(WiredInputsContext);
+    const wiredInputs = wiredContext.get(id) || new Map();
+
     const { showError, dismissMessage } = useToast();
     const JSON_ERROR_MSG = 'Invalid JSON entered. Please ensure entry is formatted appropriately.';
     const [showModal, setShowModal] = useState(false);
@@ -60,6 +65,15 @@ const NodeComponent = ({ data, id }) => {
     const optionalInputs = tool?.optionalInputs || {};
     const hasDefinedTool = !!tool;
     const dockerImage = tool?.dockerImage || null;
+
+    // Required File/Directory inputs (shown as wired/unwired in modal)
+    const requiredFileInputs = useMemo(() => {
+        if (!tool?.requiredInputs) return {};
+        return Object.fromEntries(
+            Object.entries(tool.requiredInputs)
+                .filter(([_, def]) => def.type === 'File' || def.type === 'Directory')
+        );
+    }, [tool]);
 
     // Get known tags for this tool's docker image
     const library = dockerImage ? getLibraryFromDockerImage(dockerImage) : null;
@@ -334,7 +348,7 @@ const NodeComponent = ({ data, id }) => {
             >
                 <Modal.Header>
                     <Modal.Title style={{ fontFamily: 'Roboto Mono, monospace', fontSize: '1rem' }}>
-                        {data.label} - Optional Parameters
+                        {data.label} - Parameters
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body onClick={(e) => e.stopPropagation()}>
@@ -384,6 +398,29 @@ const NodeComponent = ({ data, id }) => {
                                     : 'Run this step once per input file instead of once total. Enable on the first node to batch-process multiple subjects \u2014 the exported CWL will loop over every file in the input array. Downstream nodes inherit scatter automatically.'}
                             </div>
                         </Form.Group>
+
+                        {/* Required Inputs (File/Directory) */}
+                        {Object.keys(requiredFileInputs).length > 0 && (
+                            <Form.Group className="required-inputs-section">
+                                <Form.Label className="modal-label">Inputs</Form.Label>
+                                {Object.entries(requiredFileInputs).map(([name, def]) => {
+                                    const wiredInfo = wiredInputs.get(name);
+                                    return (
+                                        <div key={name} className={`input-row ${wiredInfo ? 'input-wired' : 'input-unwired'}`}>
+                                            <span className="input-name">{def.label || name}</span>
+                                            <span className="input-type-badge">{def.type}</span>
+                                            {wiredInfo ? (
+                                                <span className="input-source">
+                                                    from {wiredInfo.sourceNodeLabel} / {wiredInfo.sourceOutput}
+                                                </span>
+                                            ) : (
+                                                <span className="input-runtime">supplied at runtime</span>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </Form.Group>
+                        )}
 
                         <Form.Group className="mb-3">
                             <Form.Label className="modal-label">
