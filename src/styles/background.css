@@ -1,15 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&family=Roboto+Mono:wght@400;500&display=swap');
 
+:root {
+  /* Backgrounds */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2a2a2a;
+  --bg-card: #2e2e2e;
+  --bg-header: #252525;
+  --bg-interactive: #3a3a3a;
+  --bg-hover: #444;
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-light: #e0e0e0;
+  --text-medium: #d0d0d0;
+  --text-muted: #888888;
+  --text-secondary: #666666;
+
+  /* Accent */
+  --color-primary: #4a90e2;
+  --color-success: #4CAF50;
+  --color-warning: #ffc107;
+  --color-danger: #e74c3c;
+  --color-cyan: #4ac6e2;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(255, 255, 255, 0.15);
+  --border-focus: rgba(255, 255, 255, 0.25);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  background-color: #1a1a1a;
+  background-color: var(--bg-primary);
   font-family: 'Roboto Mono', monospace;
-  color: white;
-  overflow: auto; 
+  color: var(--text-primary);
+  overflow: auto;
 }
 
 h2 {
@@ -65,17 +100,17 @@ h3 {
   left: 0;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
-  background-color: #2e2e2e;
+  background-color: var(--bg-card);
 }
 
 
 button {
   font-family: 'Work Sans', sans-serif;
   font-weight: 500;
-  font-size: clamp(0.8rem, 1.5vw, 1.2rem); 
+  font-size: clamp(0.8rem, 1.5vw, 1.2rem);
   border-radius: 8px;
-  background-color: #3b3b3b;
-  color: white;
+  background-color: var(--bg-interactive);
+  color: var(--text-primary);
   border: none;
   cursor: pointer;
   padding: clamp(8px, 0.8vw, 12px) clamp(16px, 1.6vw, 24px);
@@ -83,13 +118,13 @@ button {
 }
 
 button:hover {
-  background-color: #4c4c4c;
+  background-color: var(--bg-hover);
   transform: scale(1.05); 
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 button:focus {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--text-primary);
   outline-offset: 2px;
 }
 
@@ -108,7 +143,7 @@ button:focus {
 }
 
 *::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border-subtle);
   border-radius: 8px;
 }
 

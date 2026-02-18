@@ -5,9 +5,9 @@
   padding: clamp(4px, 0.6vw, 8px) clamp(6px, 1vw, 12px);
   background-color: rgba(46, 46, 46, 0.9);
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-md);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   position: absolute;
   right: clamp(8px, 1.5vw, 16px);
 }
@@ -15,7 +15,7 @@
 .workflow-name-input-wrapper {
   display: flex;
   align-items: center;
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   overflow: hidden;
@@ -23,14 +23,14 @@
 }
 
 .workflow-name-input-wrapper:focus-within {
-  border-color: #4a90e2;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
 
 .workflow-name-input {
   font-family: 'Roboto Mono', monospace;
   background: transparent;
-  color: #e0e0e0;
+  color: var(--text-light);
   border: none;
   padding: clamp(3px, 0.5vw, 6px) clamp(6px, 0.8vw, 10px);
   font-size: clamp(0.55rem, 0.8vw, 0.75rem);
@@ -39,14 +39,14 @@
 }
 
 .workflow-name-input::placeholder {
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .workflow-name-suffix {
   font-family: 'Roboto Mono', monospace;
   font-size: clamp(0.55rem, 0.8vw, 0.75rem);
-  color: #666;
+  color: var(--text-secondary);
   padding-right: clamp(4px, 0.6vw, 8px);
   user-select: none;
 }

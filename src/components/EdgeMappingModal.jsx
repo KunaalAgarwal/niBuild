@@ -16,7 +16,7 @@ const getBaseType = (type) => {
 const isArrayType = (type) => type?.includes('[]') || false;
 
 const checkTypeCompatibility = (outputType, inputType, outputExtensions = null, inputAcceptedExtensions = null) => {
-    if (!outputType || !inputType) return { compatible: true };
+    if (!outputType || !inputType) return { compatible: true, warning: true, reason: 'Type information unavailable' };
 
     const outBase = getBaseType(outputType);
     const inBase = getBaseType(inputType);

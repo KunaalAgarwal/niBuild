@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Modal } from 'react-bootstrap';
 import { buildCWLWorkflowObject, buildJobTemplate } from '../hooks/buildWorkflow.js';
+import { useToast } from '../context/ToastContext.jsx';
 import YAML from 'js-yaml';
 import '../styles/cwlPreviewPanel.css';
 
@@ -25,6 +26,7 @@ const highlightYaml = (yaml) => {
 };
 
 function CWLPreviewPanel({ getWorkflowData }) {
+    const { showWarning } = useToast();
     const [cwlOutput, setCwlOutput] = useState('');
     const [jobOutput, setJobOutput] = useState('');
     const [error, setError] = useState(null);
@@ -91,7 +93,7 @@ function CWLPreviewPanel({ getWorkflowData }) {
         navigator.clipboard.writeText(activeContent).then(() => {
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
-        }).catch(() => {});
+        }).catch(() => showWarning('Copy to clipboard failed'));
     }, [activeContent]);
 
     const highlightedHtml = useMemo(() => activeContent ? highlightYaml(activeContent) : '', [activeContent]);

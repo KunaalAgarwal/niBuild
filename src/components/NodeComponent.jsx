@@ -43,7 +43,7 @@ const NodeComponent = ({ data, id }) => {
 
     // Get wired input state from context
     const wiredContext = useContext(WiredInputsContext);
-    const wiredInputs = wiredContext.get(id) || new Map();
+    const wiredInputs = wiredContext?.get(id) || new Map();
 
     const [showModal, setShowModal] = useState(false);
     const [paramValues, setParamValues] = useState({});

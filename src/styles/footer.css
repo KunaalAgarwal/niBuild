@@ -1,7 +1,7 @@
 .footer {
     width: 100%;
-    background-color: #2e2e2e;
-    color: white;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
     font-size: 14px;
     position: relative;
     margin-top: 50px;
@@ -34,5 +34,5 @@
 
 .footer-links {
     text-decoration: none;
-    color: white;
+    color: var(--text-primary);
 }

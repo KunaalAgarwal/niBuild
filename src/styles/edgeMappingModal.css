@@ -1,16 +1,16 @@
 .edge-mapping-modal .modal-content {
     border-radius: 8px;
-    background-color: #1e1e1e;
+    background-color: var(--bg-secondary);
     color: #f5f5f5;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-lg);
     font-family: 'Inter', sans-serif;
 }
 
 .edge-mapping-modal .modal-header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     padding: 16px 20px;
-    background-color: #252525;
+    background-color: var(--bg-header);
     border-radius: 8px 8px 0 0;
 }
 
@@ -18,18 +18,18 @@
     font-family: 'Roboto Mono', monospace;
     font-size: 0.95rem;
     font-weight: 500;
-    color: #e0e0e0;
+    color: var(--text-light);
 }
 
 .edge-mapping-modal .modal-body {
     padding: 20px;
-    background-color: #1e1e1e;
+    background-color: var(--bg-secondary);
 }
 
 .edge-mapping-modal .modal-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding: 14px 20px;
-    background-color: #252525;
+    background-color: var(--bg-header);
     border-radius: 0 0 8px 8px;
     gap: 10px;
 }
@@ -96,7 +96,7 @@
     font-family: 'Roboto Mono', monospace;
     font-weight: 500;
     font-size: 0.75rem;
-    color: #888;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding-bottom: 10px;
@@ -121,7 +121,7 @@
     flex-direction: column;
     gap: 6px;
     padding: 10px 14px;
-    background-color: #2a2a2a;
+    background-color: var(--bg-tertiary);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 6px;
     cursor: pointer;
@@ -135,7 +135,7 @@
 
 .output-item.selected {
     background-color: #1a3a5c;
-    border-color: #4a90e2;
+    border-color: var(--color-primary);
 }
 
 .io-item.mapped {
@@ -154,7 +154,7 @@
 
 .input-item.clickable:hover {
     background-color: #1a3a5c;
-    border-color: #4a90e2;
+    border-color: var(--color-primary);
     border-style: solid;
 }
 
@@ -171,7 +171,7 @@
     font-family: 'Roboto Mono', monospace;
     font-size: 0.8rem;
     font-weight: 500;
-    color: #d0d0d0;
+    color: var(--text-medium);
     flex: 1;
     min-width: 0;
 }
@@ -179,7 +179,7 @@
 .io-type {
     font-family: 'Roboto Mono', monospace;
     font-size: 0.65rem;
-    color: #666;
+    color: var(--text-secondary);
     background-color: rgba(255, 255, 255, 0.04);
     padding: 3px 7px;
     border-radius: 4px;
@@ -212,7 +212,7 @@
 }
 
 .connection-line {
-    stroke: #4CAF50;
+    stroke: var(--color-success);
     stroke-width: 2;
     fill: none;
     stroke-linecap: round;
@@ -228,26 +228,26 @@
 }
 
 .connection-dot {
-    fill: #4CAF50;
-    stroke: #1e1e1e;
+    fill: var(--color-success);
+    stroke: var(--bg-secondary);
     stroke-width: 1.5;
     pointer-events: none;
     transition: fill 0.15s ease;
 }
 
 g:hover .connection-line {
-    stroke: #f44336;
+    stroke: var(--color-danger);
     stroke-width: 2.5;
     stroke-dasharray: 6 3;
     animation: dash-flow 0.4s linear infinite;
 }
 
 g:hover .connection-dot {
-    fill: #f44336;
+    fill: var(--color-danger);
 }
 
 .connection-line-offscreen {
-    stroke: #4CAF50;
+    stroke: var(--color-success);
     stroke-width: 1.5;
     stroke-dasharray: 4 3;
     fill: none;
@@ -256,20 +256,20 @@ g:hover .connection-dot {
 }
 
 .connection-line-offscreen.warning-line-offscreen {
-    stroke: #ffc107;
+    stroke: var(--color-warning);
 }
 
 .connection-label-offscreen {
     font-family: 'Roboto Mono', monospace;
     font-size: clamp(0.45rem, 1.2vw, 0.55rem);
-    fill: #888;
+    fill: var(--text-muted);
     dominant-baseline: middle;
     pointer-events: none;
     transition: fill 0.15s ease;
 }
 
 .connection-label-offscreen.warning-label-offscreen {
-    fill: #ffc107;
+    fill: var(--color-warning);
 }
 
 .offscreen-group {
@@ -277,16 +277,16 @@ g:hover .connection-dot {
 }
 
 .offscreen-group:hover .connection-line-offscreen {
-    stroke: #f44336;
+    stroke: var(--color-danger);
     opacity: 1;
 }
 
 .offscreen-group:hover .connection-dot {
-    fill: #f44336;
+    fill: var(--color-danger);
 }
 
 .offscreen-group:hover .connection-label-offscreen {
-    fill: #f44336;
+    fill: var(--color-danger);
 }
 
 @keyframes dash-flow {
@@ -298,15 +298,15 @@ g:hover .connection-dot {
 .mapping-instructions {
     text-align: center;
     font-size: 0.75rem;
-    color: #666;
+    color: var(--text-secondary);
     margin-top: 16px;
     padding-top: 14px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .edge-mapping-modal .btn-primary {
-    background-color: #4a90e2;
-    border-color: #4a90e2;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
     font-size: 0.85rem;
     padding: 8px 20px;
     border-radius: 5px;
@@ -345,7 +345,7 @@ g:hover .connection-dot {
     align-items: center;
     gap: 10px;
     font-size: 0.8rem;
-    color: #ffc107;
+    color: var(--color-warning);
 }
 
 .type-warning-banner .warning-icon {
@@ -354,12 +354,12 @@ g:hover .connection-dot {
 
 /* Mismatch warning styles - unified for type and extension mismatches */
 .io-item.mismatch-warning {
-    border-color: rgba(255, 193, 7, 0.5) !important;
+    border-color: rgba(255, 193, 7, 0.5);
     background-color: rgba(255, 193, 7, 0.1);
 }
 
 .io-item.mismatch-warning .io-name {
-    color: #ffc107;
+    color: var(--color-warning);
 }
 
 .io-item.mismatch-warning-preview {
@@ -384,7 +384,7 @@ g:hover .connection-dot {
 .io-section-separator {
     font-family: 'Roboto Mono', monospace;
     font-size: 0.6rem;
-    color: #666;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     text-align: center;
@@ -395,19 +395,19 @@ g:hover .connection-dot {
 
 /* Connection line warning style */
 .connection-line.warning-line {
-    stroke: #ffc107;
+    stroke: var(--color-warning);
 }
 
 .connection-dot.warning-dot {
-    fill: #ffc107;
+    fill: var(--color-warning);
 }
 
 g:hover .connection-line.warning-line {
-    stroke: #f44336;
+    stroke: var(--color-danger);
 }
 
 g:hover .connection-dot.warning-dot {
-    fill: #f44336;
+    fill: var(--color-danger);
 }
 
 /* Responsive: medium screens */

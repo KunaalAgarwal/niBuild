@@ -9,7 +9,7 @@
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
 }
 
 .actions-bar .separator {
@@ -23,7 +23,7 @@
 
 .btn-primary {
   background-color: #007bff;
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-primary:hover {
@@ -38,5 +38,5 @@
 .actions-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background-color: #444;
+  background-color: var(--bg-hover);
 }

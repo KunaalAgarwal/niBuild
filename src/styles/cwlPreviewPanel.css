@@ -35,7 +35,7 @@
     font-family: 'Roboto Mono', monospace;
     font-size: 0.75rem;
     font-weight: 600;
-    color: #888;
+    color: var(--text-muted);
     letter-spacing: 2px;
     text-transform: uppercase;
 }
@@ -49,7 +49,7 @@
     align-items: center;
     justify-content: space-between;
     padding: clamp(6px, 0.8vw, 10px) clamp(8px, 1vw, 14px);
-    background-color: #252525;
+    background-color: var(--bg-header);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-wrap: wrap;
     gap: 4px;
@@ -69,7 +69,7 @@
     background-color: transparent;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 4px;
-    color: #888;
+    color: var(--text-muted);
     cursor: pointer;
     transition: all 0.15s ease;
 }
@@ -82,7 +82,7 @@
 }
 
 .cwl-tab.active {
-    color: #e0e0e0;
+    color: var(--text-light);
     background-color: rgba(74, 144, 226, 0.15);
     border-color: rgba(74, 144, 226, 0.4);
 }
@@ -133,8 +133,8 @@
     font-family: 'Roboto Mono', monospace;
     font-size: clamp(0.55rem, 0.8vw, 0.7rem);
     line-height: 1.6;
-    color: #d0d0d0;
-    background-color: #1a1a1a;
+    color: var(--text-medium);
+    background-color: var(--bg-primary);
     padding: clamp(6px, 0.8vw, 12px);
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -149,13 +149,13 @@
     overflow-y: auto;
 }
 
-.cwl-key { color: #4a90e2; }
-.cwl-string { color: #4CAF50; }
-.cwl-comment { color: #666; font-style: italic; }
+.cwl-key { color: var(--color-primary); }
+.cwl-string { color: var(--color-success); }
+.cwl-comment { color: var(--text-secondary); font-style: italic; }
 .cwl-bool { color: #e0a050; }
 
 .cwl-empty-message {
-    color: #666;
+    color: var(--text-secondary);
     font-style: italic;
     font-size: clamp(0.65rem, 0.9vw, 0.8rem);
     text-align: center;
@@ -172,7 +172,7 @@
     align-items: center;
     gap: clamp(6px, 0.7vw, 10px);
     font-size: clamp(0.6rem, 0.8vw, 0.75rem);
-    color: #ffc107;
+    color: var(--color-warning);
 }
 
 .cwl-error-icon {
@@ -190,17 +190,17 @@
 
 .cwl-fullscreen-modal .modal-content {
     border-radius: 8px;
-    background-color: #1e1e1e;
+    background-color: var(--bg-secondary);
     color: #f5f5f5;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-lg);
     font-family: 'Inter', sans-serif;
 }
 
 .cwl-fullscreen-modal .modal-header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     padding: 16px 20px;
-    background-color: #252525;
+    background-color: var(--bg-header);
     border-radius: 8px 8px 0 0;
     display: flex;
     align-items: center;
@@ -211,10 +211,10 @@
     font-family: 'Roboto Mono', monospace;
     font-size: 0.95rem;
     font-weight: 500;
-    color: #e0e0e0;
+    color: var(--text-light);
 }
 
 .cwl-fullscreen-modal .modal-body {
     padding: 20px;
-    background-color: #1e1e1e;
+    background-color: var(--bg-secondary);
 }

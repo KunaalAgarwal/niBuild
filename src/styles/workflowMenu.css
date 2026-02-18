@@ -7,7 +7,7 @@
   padding: 0;
   border-radius: 12px;
   background-color: rgba(46, 46, 46, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
   scroll-behavior: smooth;
@@ -30,23 +30,23 @@
   display: flex;
   align-items: center;
   padding: clamp(6px, 0.8vw, 10px) clamp(8px, 1vw, 12px);
-  background-color: #3a3a3a;
+  background-color: var(--bg-interactive);
   border-radius: 8px;
   font-weight: 700;
-  color: #e0e0e0;
+  color: var(--text-light);
   transition: background-color 0.2s ease;
   user-select: none;
 }
 
 .modality-header:hover {
-  background-color: #454545;
+  background-color: var(--bg-hover);
 }
 
 .modality-header .chevron {
   margin-right: clamp(4px, 0.5vw, 8px);
   font-size: 0.7em;
   transition: transform 0.2s ease;
-  color: #888;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -61,7 +61,7 @@
 
 .modality-header .tool-count {
   font-size: clamp(0.55rem, 0.7vw, 0.75rem);
-  color: #888;
+  color: var(--text-muted);
   background-color: rgba(255, 255, 255, 0.1);
   padding: 2px 6px;
   border-radius: 10px;
@@ -86,23 +86,23 @@
   display: flex;
   align-items: center;
   padding: clamp(6px, 0.8vw, 10px) clamp(8px, 1vw, 12px);
-  background-color: #3a3a3a;
+  background-color: var(--bg-interactive);
   border-radius: 8px;
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   transition: background-color 0.2s ease;
   user-select: none;
 }
 
 .library-header:hover {
-  background-color: #454545;
+  background-color: var(--bg-hover);
 }
 
 .library-header .chevron {
   margin-right: clamp(4px, 0.5vw, 8px);
   font-size: 0.7em;
   transition: transform 0.2s ease;
-  color: #888;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -117,7 +117,7 @@
 
 .library-header .tool-count {
   font-size: clamp(0.55rem, 0.7vw, 0.75rem);
-  color: #888;
+  color: var(--text-muted);
   background-color: rgba(255, 255, 255, 0.1);
   padding: 2px 6px;
   border-radius: 10px;
@@ -132,7 +132,7 @@
 }
 
 .coming-soon {
-  color: #888;
+  color: var(--text-muted);
   font-style: italic;
   padding: 10px 12px;
   font-size: 0.85em;
@@ -146,7 +146,7 @@
 
 .subsection-header {
   font-size: clamp(0.55em, 0.7vw, 0.7em);
-  color: #888;
+  color: var(--text-muted);
   padding: clamp(4px, 0.6vw, 8px) clamp(4px, 0.6vw, 8px) clamp(2px, 0.3vw, 4px);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -178,7 +178,7 @@
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: clamp(4px, 0.5vw, 6px);
-  color: #e0e0e0;
+  color: var(--text-light);
   font-family: 'Roboto Mono', monospace;
   font-size: clamp(0.65rem, 0.9vw, 0.8rem);
   outline: none;
@@ -191,8 +191,8 @@
 }
 
 .workflow-search-input:focus {
-  background-color: #2a2a2a;
-  border-color: rgba(255, 255, 255, 0.25);
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-focus);
 }
 
 /* Search Results */
@@ -202,7 +202,7 @@
 
 .search-result-modality {
   font-size: clamp(0.55rem, 0.7vw, 0.7em);
-  color: #888;
+  color: var(--text-muted);
   padding: clamp(4px, 0.5vw, 6px) clamp(6px, 0.7vw, 8px) clamp(2px, 0.3vw, 4px);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -210,7 +210,7 @@
 }
 
 .workflow-search-empty {
-  color: #888;
+  color: var(--text-muted);
   font-style: italic;
   padding: clamp(12px, 1.5vw, 20px) clamp(8px, 1vw, 12px);
   font-size: clamp(0.7rem, 0.9vw, 0.85em);

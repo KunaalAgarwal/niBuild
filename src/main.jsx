@@ -10,7 +10,7 @@ import Footer from "./components/footer";
 import CWLPreviewPanel from './components/CWLPreviewPanel';
 import { useWorkspaces } from './hooks/useWorkspaces';
 import { useGenerateWorkflow } from './hooks/generateWorkflow';
-import { ToastProvider } from './context/ToastContext.jsx';
+import { ToastProvider, useToast } from './context/ToastContext.jsx';
 import { TOOL_ANNOTATIONS } from './utils/toolAnnotations.js';
 import { preloadAllCWL } from './utils/cwlParser.js';
 import { invalidateMergeCache } from './utils/toolRegistry.js';
@@ -35,6 +35,7 @@ function App() {
     const [getWorkflowData, setGetWorkflowData] = useState(null);
 
     const { generateWorkflow } = useGenerateWorkflow();
+    const { showError } = useToast();
 
     // Preload all CWL files on mount so getToolConfigSync() works synchronously
     useEffect(() => {
@@ -43,7 +44,10 @@ function App() {
             .filter(Boolean);
         preloadAllCWL(cwlPaths)
             .then(() => invalidateMergeCache())
-            .catch(err => console.error('[App] CWL preload failed:', err));
+            .catch(err => {
+                console.error('[App] CWL preload failed:', err);
+                showError('Failed to load tool definitions. Some tools may not work correctly.');
+            });
     }, []);
 
     return (

@@ -2,8 +2,8 @@
     display: flex;
     position: sticky;
     width: 100%;
-    background-color: #2e2e2e;
-    color: white;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
     padding: clamp(8px, 2vw, 15px) 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     z-index: 1000;
@@ -37,5 +37,5 @@
 }
 
 .header-modal {
-    font-weight: 400
+    font-weight: 400;
 }

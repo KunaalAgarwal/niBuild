@@ -393,17 +393,18 @@ function extractDockerImage(doc) {
     const hints = doc.hints || {};
     const reqs = doc.requirements || {};
 
-    const dockerHint = hints.DockerRequirement || reqs.DockerRequirement;
-    if (dockerHint) return dockerHint.dockerPull || null;
+    // CWL spec: requirements override hints
+    const dockerReq = reqs.DockerRequirement || hints.DockerRequirement;
+    if (dockerReq) return dockerReq.dockerPull || null;
 
-    // Array form of hints/requirements
-    if (Array.isArray(doc.hints)) {
-        const h = doc.hints.find(h => h.class === 'DockerRequirement');
-        if (h) return h.dockerPull || null;
-    }
+    // Array form: check requirements first, then hints
     if (Array.isArray(doc.requirements)) {
         const r = doc.requirements.find(r => r.class === 'DockerRequirement');
         if (r) return r.dockerPull || null;
+    }
+    if (Array.isArray(doc.hints)) {
+        const h = doc.hints.find(h => h.class === 'DockerRequirement');
+        if (h) return h.dockerPull || null;
     }
 
     return null;

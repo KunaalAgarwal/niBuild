@@ -6,7 +6,7 @@
 .tag-dropdown-wrapper {
     display: flex;
     align-items: center;
-    background-color: #1e1e1e;
+    background-color: var(--bg-secondary);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     padding: 6px 10px;
@@ -15,12 +15,12 @@
 }
 
 .tag-dropdown-wrapper.focused {
-    border-color: #4a90e2;
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.15);
 }
 
 .tag-dropdown-wrapper.invalid {
-    border-color: #e74c3c;
+    border-color: var(--color-danger);
 }
 
 .tag-dropdown-wrapper.invalid.focused {
@@ -30,7 +30,7 @@
 /* Prefix text (e.g., "brainlife/fsl:") */
 .tag-dropdown-prefix {
     font-family: 'Roboto Mono', monospace;
-    color: #888;
+    color: var(--text-muted);
     font-size: 0.85rem;
     white-space: nowrap;
     user-select: none;
@@ -41,7 +41,7 @@
     font-family: 'Roboto Mono', monospace;
     background-color: transparent;
     border: none;
-    color: #4a90e2;
+    color: var(--color-primary);
     padding: 0 4px;
     flex: 1;
     font-size: 0.85rem;
@@ -54,13 +54,13 @@
 }
 
 .tag-dropdown-input.invalid {
-    color: #e74c3c;
+    color: var(--color-danger);
 }
 
 /* Chevron indicator */
 .tag-dropdown-chevron {
     font-size: 0.6rem;
-    color: #666;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: transform 0.15s ease, color 0.15s ease;
     user-select: none;
@@ -68,7 +68,7 @@
 }
 
 .tag-dropdown-chevron:hover {
-    color: #4a90e2;
+    color: var(--color-primary);
 }
 
 .tag-dropdown-chevron.open {
@@ -78,8 +78,8 @@
 /* Dropdown list (rendered via portal) */
 .tag-dropdown-list {
     position: fixed;
-    background-color: #1a1a1a;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-medium);
     border-radius: 6px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     max-height: 200px;
@@ -98,7 +98,7 @@
 }
 
 .tag-dropdown-list::-webkit-scrollbar-thumb {
-    background-color: #444;
+    background-color: var(--bg-hover);
     border-radius: 3px;
 }
 
@@ -114,7 +114,7 @@
     padding: 8px 12px;
     font-family: 'Roboto Mono', monospace;
     font-size: 0.8rem;
-    color: #e0e0e0;
+    color: var(--text-light);
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.1s ease;
@@ -122,12 +122,12 @@
 
 .tag-dropdown-item:hover,
 .tag-dropdown-item.highlighted {
-    background-color: #2a2a2a;
+    background-color: var(--bg-tertiary);
 }
 
 .tag-dropdown-item.selected {
     background-color: #1a3a5c;
-    color: #4a90e2;
+    color: var(--color-primary);
 }
 
 .tag-dropdown-item.selected.highlighted {
@@ -137,7 +137,7 @@
 /* Badge for special tags */
 .tag-badge {
     font-size: 0.6rem;
-    color: #888;
+    color: var(--text-muted);
     background-color: rgba(255, 255, 255, 0.08);
     padding: 2px 6px;
     border-radius: 3px;
