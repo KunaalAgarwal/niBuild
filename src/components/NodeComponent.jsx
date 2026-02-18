@@ -4,7 +4,6 @@ import { Handle, Position } from 'reactflow';
 import { Modal, Form } from 'react-bootstrap';
 import { getToolConfigSync } from '../utils/toolRegistry.js';
 import { DOCKER_IMAGES, DOCKER_TAGS, annotationByName } from '../utils/toolAnnotations.js';
-import { useToast } from '../context/ToastContext.jsx';
 import TagDropdown from './TagDropdown.jsx';
 import { ScatterPropagationContext } from '../context/ScatterPropagationContext.jsx';
 import { WiredInputsContext } from '../context/WiredInputsContext.jsx';
@@ -46,10 +45,8 @@ const NodeComponent = ({ data, id }) => {
     const wiredContext = useContext(WiredInputsContext);
     const wiredInputs = wiredContext.get(id) || new Map();
 
-    const { showError, dismissMessage } = useToast();
-    const JSON_ERROR_MSG = 'Invalid JSON entered. Please ensure entry is formatted appropriately.';
     const [showModal, setShowModal] = useState(false);
-    const [textInput, setTextInput] = useState(data.parameters || '');
+    const [paramValues, setParamValues] = useState({});
     const [dockerVersion, setDockerVersion] = useState(data.dockerVersion || 'latest');
     const [versionValid, setVersionValid] = useState(true);
     const [versionWarning, setVersionWarning] = useState('');
@@ -60,19 +57,20 @@ const NodeComponent = ({ data, id }) => {
     const [infoTooltipPos, setInfoTooltipPos] = useState({ top: 0, left: 0 });
     const infoIconRef = useRef(null);
 
-    // Get tool definition and optional inputs
+    // Get tool definition
     const tool = getToolConfigSync(data.label);
-    const optionalInputs = tool?.optionalInputs || {};
-    const hasDefinedTool = !!tool;
     const dockerImage = tool?.dockerImage || null;
 
-    // Required File/Directory inputs (shown as wired/unwired in modal)
-    const requiredFileInputs = useMemo(() => {
-        if (!tool?.requiredInputs) return {};
-        return Object.fromEntries(
-            Object.entries(tool.requiredInputs)
-                .filter(([_, def]) => def.type === 'File' || def.type === 'Directory')
-        );
+    // All parameters split into required and optional
+    const allParams = useMemo(() => {
+        if (!tool) return { required: [], optional: [] };
+        const required = Object.entries(tool.requiredInputs || {})
+            .filter(([_, def]) => def.type !== 'record')
+            .map(([name, def]) => ({ name, ...def }));
+        const optional = Object.entries(tool.optionalInputs || {})
+            .filter(([_, def]) => def.type !== 'record')
+            .map(([name, def]) => ({ name, ...def }));
+        return { required, optional };
     }, [tool]);
 
     // Get known tags for this tool's docker image
@@ -106,50 +104,90 @@ const NodeComponent = ({ data, id }) => {
         return annotationByName.get(data.label) || null;
     }, [data.label]);
 
-    // Generate a helpful default JSON showing available optional parameters
-    const defaultJson = useMemo(() => {
-        if (!hasDefinedTool || Object.keys(optionalInputs).length === 0) {
-            return '{\n    \n}';
+    // Update a single parameter value
+    const updateParam = (name, value) => {
+        setParamValues(prev => ({ ...prev, [name]: value }));
+    };
+
+    // Clamp numeric value to bounds on blur
+    const clampToBounds = (name, param) => {
+        const val = paramValues[name];
+        if (val === null || val === undefined || !param.bounds) return;
+        const [min, max] = param.bounds;
+        if (val < min) updateParam(name, min);
+        else if (val > max) updateParam(name, max);
+    };
+
+    // Shared renderer for param inline controls (used by both required and optional sections)
+    const renderParamControl = (param, wiredInfo, isRequired) => {
+        const isFileType = param.type === 'File' || param.type === 'Directory';
+
+        if (isFileType) {
+            // File/Directory: show wired source or runtime placeholder
+            const content = wiredInfo ? (
+                <span className="input-source">
+                    from {wiredInfo.sourceNodeLabel} / {wiredInfo.sourceOutput}
+                </span>
+            ) : (
+                <span className="input-runtime">runtime input</span>
+            );
+            // Required file types render inline (no wrapper div); optional get param-control wrapper
+            return isRequired ? content : <div className="param-control">{content}</div>;
         }
 
-        const exampleParams = {};
-        Object.entries(optionalInputs).forEach(([name, def]) => {
-            // Skip record types in example
-            if (def.type === 'record') return;
+        // Scalar types: render editable control
+        const control = param.type === 'boolean' ? (
+            <Form.Check
+                type="switch"
+                id={`param-${id}-${param.name}`}
+                checked={paramValues[param.name] === true}
+                onChange={(e) => updateParam(param.name, e.target.checked)}
+                className="param-switch"
+            />
+        ) : param.options ? (
+            <Form.Select
+                size="sm"
+                className="param-select"
+                value={paramValues[param.name] ?? ''}
+                onChange={(e) => updateParam(param.name, e.target.value || null)}
+            >
+                <option value="">-- default --</option>
+                {param.options.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                ))}
+            </Form.Select>
+        ) : (param.type === 'int' || param.type === 'double' || param.type === 'float' || param.type === 'long') ? (
+            <Form.Control
+                type="number"
+                size="sm"
+                className="param-number"
+                step={param.type === 'int' || param.type === 'long' ? 1 : 0.01}
+                min={param.bounds ? param.bounds[0] : undefined}
+                max={param.bounds ? param.bounds[1] : undefined}
+                placeholder={param.bounds ? `${param.bounds[0]}..${param.bounds[1]}` : ''}
+                value={paramValues[param.name] ?? ''}
+                onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '') {
+                        updateParam(param.name, null);
+                    } else {
+                        updateParam(param.name, param.type === 'int' || param.type === 'long' ? parseInt(val, 10) : parseFloat(val));
+                    }
+                }}
+                onBlur={() => clampToBounds(param.name, param)}
+            />
+        ) : (
+            <Form.Control
+                type="text"
+                size="sm"
+                className="param-text"
+                value={paramValues[param.name] ?? ''}
+                onChange={(e) => updateParam(param.name, e.target.value || null)}
+            />
+        );
 
-            // Generate example value based on type
-            switch (def.type) {
-                case 'boolean':
-                    exampleParams[name] = false;
-                    break;
-                case 'int':
-                    exampleParams[name] = def.bounds ? def.bounds[0] : 0;
-                    break;
-                case 'double':
-                    exampleParams[name] = def.bounds ? def.bounds[0] : 0.0;
-                    break;
-                case 'string':
-                    exampleParams[name] = '';
-                    break;
-                default:
-                    exampleParams[name] = null;
-            }
-        });
-
-        return JSON.stringify(exampleParams, null, 4);
-    }, [hasDefinedTool, optionalInputs]);
-
-    // Generate help text showing available options
-    const optionsHelpText = useMemo(() => {
-        if (!hasDefinedTool || Object.keys(optionalInputs).length === 0) {
-            return 'No optional parameters defined for this tool.';
-        }
-
-        return Object.entries(optionalInputs)
-            .filter(([_, def]) => def.type !== 'record')
-            .map(([name, def]) => `• ${name} (${def.type}): ${def.label}`)
-            .join('\n');
-    }, [hasDefinedTool, optionalInputs]);
+        return <div className="param-control">{control}</div>;
+    };
 
     const handleOpenModal = () => {
         // Auto-enable scatter toggle if inherited from upstream (non-source node)
@@ -157,17 +195,14 @@ const NodeComponent = ({ data, id }) => {
             setScatterEnabled(true);
         }
 
-        let inputValue = textInput;
-
-        // Ensure inputValue is always a string before calling trim()
-        if (typeof inputValue !== 'string') {
-            inputValue = JSON.stringify(inputValue, null, 4);
-        }
-
-        if (!inputValue.trim()) {
-            setTextInput(defaultJson);
+        // Initialize paramValues from saved data (object or legacy JSON string)
+        const existing = data.parameters;
+        if (existing && typeof existing === 'object' && !Array.isArray(existing)) {
+            setParamValues({ ...existing });
+        } else if (typeof existing === 'string' && existing.trim()) {
+            try { setParamValues(JSON.parse(existing)); } catch { setParamValues({}); }
         } else {
-            setTextInput(inputValue);
+            setParamValues({});
         }
 
         setShowModal(true);
@@ -180,50 +215,15 @@ const NodeComponent = ({ data, id }) => {
             setDockerVersion(finalDockerVersion);
         }
 
-        // Validate JSON before allowing close
         if (typeof data.onSaveParameters === 'function') {
-            let parsed;
-            try {
-                parsed = JSON.parse(textInput);
-            } catch (err) {
-                showError(JSON_ERROR_MSG, 4000);
-                return; // Keep modal open
-            }
-
-            dismissMessage(JSON_ERROR_MSG);
             data.onSaveParameters({
-                params: parsed,
+                params: paramValues,
                 dockerVersion: finalDockerVersion,
                 scatterEnabled: scatterEnabled
             });
         }
 
         setShowModal(false);
-    };
-
-    const handleInputChange = (e) => {
-        setTextInput(e.target.value);
-        dismissMessage(JSON_ERROR_MSG);
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Tab') {
-            e.preventDefault();
-            const tabSpaces = '    '; // Insert 4 spaces
-            const { selectionStart, selectionEnd } = e.target;
-            const newValue =
-                textInput.substring(0, selectionStart) +
-                tabSpaces +
-                textInput.substring(selectionEnd);
-
-            setTextInput(newValue);
-
-            // Move cursor forward
-            setTimeout(() => {
-                e.target.selectionStart = e.target.selectionEnd =
-                    selectionStart + tabSpaces.length;
-            }, 0);
-        }
     };
 
     // Info icon hover handlers (simple tooltip, no click persistence)
@@ -399,65 +399,70 @@ const NodeComponent = ({ data, id }) => {
                             </div>
                         </Form.Group>
 
-                        {/* Required Inputs (File/Directory) */}
-                        {Object.keys(requiredFileInputs).length > 0 && (
-                            <Form.Group className="required-inputs-section">
-                                <Form.Label className="modal-label">Inputs</Form.Label>
-                                {Object.entries(requiredFileInputs).map(([name, def]) => {
-                                    const wiredInfo = wiredInputs.get(name);
-                                    return (
-                                        <div key={name} className={`input-row ${wiredInfo ? 'input-wired' : 'input-unwired'}`}>
-                                            <span className="input-name">{def.label || name}</span>
-                                            <span className="input-type-badge">{def.type}</span>
-                                            {wiredInfo ? (
-                                                <span className="input-source">
-                                                    from {wiredInfo.sourceNodeLabel} / {wiredInfo.sourceOutput}
-                                                </span>
-                                            ) : (
-                                                <span className="input-runtime">supplied at runtime</span>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </Form.Group>
-                        )}
+                        {/* Unified Parameter Pane */}
+                        <div className="params-scroll">
+                            {/* Required Parameters */}
+                            {allParams.required.length > 0 && (
+                                <div className="param-section">
+                                    <div className="param-section-header">Required</div>
+                                    {allParams.required.map((param) => {
+                                        const wiredInfo = wiredInputs.get(param.name);
+                                        const isFileType = param.type === 'File' || param.type === 'Directory';
+                                        return (
+                                            <div key={param.name} className={`param-card ${isFileType ? (wiredInfo ? 'input-wired' : 'input-unwired') : ''}`}>
+                                                <div className="param-card-header">
+                                                    <span className="param-name">{param.name}</span>
+                                                    <span className="param-type-badge">{param.type}</span>
+                                                    {renderParamControl(param, wiredInfo, true)}
+                                                </div>
+                                                {param.label && (
+                                                    <div className="param-description">{param.label}</div>
+                                                )}
+                                                {param.bounds && (
+                                                    <div className="param-bounds">bounds: {param.bounds[0]} – {param.bounds[1]}</div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
 
-                        <Form.Group className="mb-3">
-                            <Form.Label className="modal-label">
-                                Configure optional parameters as JSON.
-                                {!hasDefinedTool && ' (Tool not fully defined - using generic parameters)'}
-                            </Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={8}
-                                value={textInput}
-                                onChange={handleInputChange}
-                                onKeyDown={handleKeyDown}
-                                className="code-input"
-                                spellCheck="false"
-                                autoCorrect="off"
-                                autoCapitalize="off"
-                            />
-                        </Form.Group>
-                        {hasDefinedTool && Object.keys(optionalInputs).length > 0 && (
-                            <Form.Group>
-                                <Form.Label className="modal-label" style={{ fontSize: '0.8rem', color: '#808080' }}>
-                                    Available options:
-                                </Form.Label>
-                                <pre style={{
-                                    fontSize: '0.75rem',
-                                    color: '#a0a0a0',
-                                    backgroundColor: '#1a1a1a',
-                                    padding: '8px',
-                                    borderRadius: '4px',
-                                    maxHeight: '150px',
-                                    overflow: 'auto',
-                                    whiteSpace: 'pre-wrap'
-                                }}>
-                                    {optionsHelpText}
-                                </pre>
-                            </Form.Group>
-                        )}
+                            {/* Optional Parameters */}
+                            {allParams.optional.length > 0 && (
+                                <div className="param-section">
+                                    <div className="param-section-header">Optional</div>
+                                    {allParams.optional.map((param) => {
+                                        const wiredInfo = wiredInputs.get(param.name);
+                                        const isFileType = param.type === 'File' || param.type === 'Directory';
+                                        return (
+                                            <div key={param.name} className={`param-card ${isFileType && wiredInfo ? 'input-wired' : ''}`}>
+                                                <div className="param-card-header">
+                                                    <span className="param-name">{param.name}</span>
+                                                    <span className="param-type-badge">{param.type}</span>
+                                                    {renderParamControl(param, wiredInfo, false)}
+                                                </div>
+                                                {param.label && (
+                                                    <div className="param-description">{param.label}</div>
+                                                )}
+                                                {param.bounds && (
+                                                    <div className="param-bounds">bounds: {param.bounds[0]} – {param.bounds[1]}</div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+
+                            {/* Fallback for unknown tools */}
+                            {!tool && (
+                                <div className="param-section">
+                                    <div className="param-section-header">Parameters</div>
+                                    <div className="param-description" style={{ padding: '8px 0' }}>
+                                        Tool not fully defined — parameters unavailable.
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </Form>
                 </Modal.Body>
             </Modal>

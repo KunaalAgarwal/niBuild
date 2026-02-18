@@ -235,6 +235,15 @@ export function buildCWLWorkflowObject(graph) {
                     : toCWLType(type);
                 wf.inputs[wfInputName] = { type: inputType };
                 step.in[inputName] = wfInputName;
+
+                // Pre-fill jobDefaults for scalar required params if user set a value
+                if (type !== 'File' && type !== 'Directory') {
+                    const params = getUserParams(node.data);
+                    const userValue = params?.[inputName];
+                    if (userValue !== undefined && userValue !== null && userValue !== '' && isSerializable(userValue)) {
+                        jobDefaults[wfInputName] = userValue;
+                    }
+                }
             }
         });
 
