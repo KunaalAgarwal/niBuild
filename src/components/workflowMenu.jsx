@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import WorkflowMenuItem from './workflowMenuItem';
 import ModalityTooltip from './modalityTooltip';
 import { toolsByModality, modalityOrder, modalityDescriptions, libraryOrder, dummyNodes } from '../utils/toolAnnotations';
 import '../styles/workflowMenu.css';
 
-function WorkflowMenu({ workspaces = [], currentWorkspaceIndex = 0 }) {
+function WorkflowMenu() {
   const [expandedSections, setExpandedSections] = useState(() => {
     const initial = { DummyNodes: false };
     modalityOrder.forEach(m => { initial[m] = false; });
@@ -166,7 +166,7 @@ function WorkflowMenu({ workspaces = [], currentWorkspaceIndex = 0 }) {
             {/* I/O (Dummy Nodes) Section */}
             <div className="library-section">
               <div
-                className={`library-header ${expandedSections['DummyNodes'] ? 'expanded' : ''}`}
+                className="library-header"
                 onClick={() => toggleSection('DummyNodes')}
               >
                 <span className="chevron">{expandedSections['DummyNodes'] ? '▼' : '▶'}</span>
@@ -214,7 +214,7 @@ function WorkflowMenu({ workspaces = [], currentWorkspaceIndex = 0 }) {
                 <div key={modality} className="modality-section">
                   <ModalityTooltip name={modality} description={modalityDescriptions[modality]}>
                     <div
-                      className={`modality-header ${isModalityExpanded ? 'expanded' : ''}`}
+                      className="modality-header"
                       onClick={() => toggleSection(modality)}
                     >
                       <span className="chevron">{isModalityExpanded ? '▼' : '▶'}</span>
@@ -237,7 +237,7 @@ function WorkflowMenu({ workspaces = [], currentWorkspaceIndex = 0 }) {
                         return (
                           <div key={libraryKey} className="library-section">
                             <div
-                              className={`library-header ${isLibraryExpanded ? 'expanded' : ''}`}
+                              className="library-header"
                               onClick={() => toggleSection(libraryKey)}
                             >
                               <span className="chevron">{isLibraryExpanded ? '▼' : '▶'}</span>

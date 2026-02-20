@@ -344,7 +344,7 @@ export function useGenerateWorkflow() {
         let jobYml;
         let runtimeInputs;
         try {
-            const result = buildCWLWorkflowObject(graph, allWorkspaces);
+            const result = buildCWLWorkflowObject(graph);
             const { wf, jobDefaults } = result;
             mainCWL = YAML.dump(wf, { noRefs: true });
             jobYml = buildJobTemplate(wf, jobDefaults);
@@ -452,7 +452,7 @@ export function useGenerateWorkflow() {
         /* ---------- generate RO-Crate metadata (Workflow RO-Crate 1.0) ---------- */
         const toolMeta = {};
         for (const p of uniquePaths) {
-            const node = realNodes.find(n => getToolConfigSync(n.data.label)?.cwlPath === p);
+            const node = allRealNodes.find(n => getToolConfigSync(n.data.label)?.cwlPath === p);
             if (node) {
                 const tool = getToolConfigSync(node.data.label);
                 toolMeta[p] = {

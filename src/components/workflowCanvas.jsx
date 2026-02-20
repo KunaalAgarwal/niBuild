@@ -195,12 +195,18 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
         const targetNode = nodeMap.get(edge.target);
 
         if (sourceNode && targetNode) {
+          let adjacencyWarning = null;
+          if (!sourceNode.data.isDummy && !targetNode.data.isDummy) {
+            adjacencyWarning = getInvalidConnectionReason(sourceNode.data.label, targetNode.data.label);
+          }
+
           setEditingEdge(edge);
           setPendingConnection(null);
           setEdgeModalData({
             sourceNode: { id: sourceNode.id, label: sourceNode.data.label, isDummy: sourceNode.data.isDummy || false },
             targetNode: { id: targetNode.id, label: targetNode.data.label, isDummy: targetNode.data.isDummy || false },
-            existingMappings: edge.data?.mappings || []
+            existingMappings: edge.data?.mappings || [],
+            adjacencyWarning,
           });
           setShowEdgeModal(true);
         }

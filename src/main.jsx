@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import ActionsBar from './components/actionsBar';
 import HeaderBar from './components/headerBar';
@@ -51,7 +51,6 @@ function App() {
     }, []);
 
     return (
-        <>
             <div className="app-layout">
                 <HeaderBar />
                 <div className="toolbar-row">
@@ -70,10 +69,7 @@ function App() {
                 </div>
                 <div className="workflow-content">
                     <div className="workflow-content-main">
-                        <WorkflowMenu
-                            workspaces={workspaces}
-                            currentWorkspaceIndex={currentWorkspace}
-                        />
+                        <WorkflowMenu />
                         <WorkflowCanvas
                             workflowItems={workspaces[currentWorkspace]}
                             updateCurrentWorkspaceItems={updateCurrentWorkspaceItems}
@@ -92,7 +88,6 @@ function App() {
                 </div>
                 <Footer />
             </div>
-        </>
     );
 }
 

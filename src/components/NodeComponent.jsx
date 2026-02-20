@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useContext, useEffect, useCallback } from 'react';
+import { useState, useMemo, useRef, useContext, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Handle, Position } from 'reactflow';
 import { Modal, Form } from 'react-bootstrap';
@@ -11,6 +11,8 @@ import { WiredInputsContext } from '../context/WiredInputsContext.jsx';
 import '../styles/workflowItem.css';
 
 // Map DOCKER_IMAGES keys to DOCKER_TAGS keys
+const VALID_OPERATORS = ['==', '!=', '>=', '<=', '>', '<'];
+
 const LIBRARY_MAP = {
     fsl: 'FSL',
     afni: 'AFNI',
@@ -82,7 +84,6 @@ const NodeComponent = ({ data, id }) => {
     }, [tool]);
 
     // Validate conditional (when) expression
-    const VALID_OPERATORS = ['==', '!=', '>=', '<=', '>', '<'];
     const whenWarning = useMemo(() => {
         if (!whenParam) return null;
         const cond = whenCondition.trim();
@@ -173,8 +174,7 @@ const NodeComponent = ({ data, id }) => {
     };
 
     // Shared renderer for param inline controls (used by both required and optional sections)
-    // wiredSources is now an array of { sourceNodeId, sourceNodeLabel, sourceOutput }
-    const renderParamControl = (param, wiredSources, isRequired) => {
+    const renderParamControl = (param) => {
         const isFileType = param.type === 'File' || param.type === 'Directory';
 
         if (isFileType) {
@@ -592,280 +592,147 @@ const NodeComponent = ({ data, id }) => {
 
                         {/* Unified Parameter Pane */}
                         <div className="params-scroll">
-                            {/* Required Parameters */}
-                            {allParams.required.length > 0 && (
-                                <div className="param-section">
-                                    <div className="param-section-header">Required</div>
-                                    {allParams.required.map((param) => {
-                                        const wiredSources = wiredInputs.get(param.name) || [];
-                                        const isFileType = param.type === 'File' || param.type === 'Directory';
-                                        return (
-                                            <div key={param.name} className={`param-card ${isFileType && wiredSources.length > 0 ? 'input-wired' : ''} ${expressionValues[param.name] ? 'has-expression' : ''}`}>
-                                                <div className="param-card-header">
-                                                    <span className="param-name">{param.name}</span>
-                                                    <span className="param-type-badge">{param.type}</span>
-                                                    {renderParamControl(param, wiredSources, true)}
-                                                </div>
-                                                {isFileType && wiredSources.length === 1 && (
-                                                    <div className="input-source-single">
-                                                        <span className="input-source">
-                                                            from {wiredSources[0].sourceNodeLabel} / {wiredSources[0].sourceOutput}
-                                                        </span>
+                            {/* Required & Optional Parameters (shared rendering) */}
+                            {[
+                                { params: allParams.required, label: 'Required' },
+                                { params: allParams.optional, label: 'Optional' },
+                            ].map(({ params: sectionParams, label: sectionLabel }) =>
+                                sectionParams.length > 0 && (
+                                    <div key={sectionLabel} className="param-section">
+                                        <div className="param-section-header">{sectionLabel}</div>
+                                        {sectionParams.map((param) => {
+                                            const wiredSources = wiredInputs.get(param.name) || [];
+                                            const isFileType = param.type === 'File' || param.type === 'Directory';
+                                            return (
+                                                <div key={param.name} className={`param-card ${isFileType && wiredSources.length > 0 ? 'input-wired' : ''} ${expressionValues[param.name] ? 'has-expression' : ''}`}>
+                                                    <div className="param-card-header">
+                                                        <span className="param-name">{param.name}</span>
+                                                        <span className="param-type-badge">{param.type}</span>
+                                                        {renderParamControl(param)}
                                                     </div>
-                                                )}
+                                                    {isFileType && wiredSources.length === 1 && (
+                                                        <div className="input-source-single">
+                                                            <span className="input-source">
+                                                                from {wiredSources[0].sourceNodeLabel} / {wiredSources[0].sourceOutput}
+                                                            </span>
+                                                        </div>
+                                                    )}
 
-                                                {isFileType && wiredSources.length > 1 && (
-                                                    <div className="input-source-multi-details">
-                                                        <div className="input-source-multi-row">
-                                                            <div className="input-source-multi-sources">
-                                                                {wiredSources.map((src, i) => (
-                                                                    <span key={i} className="input-source input-source-detail">
-                                                                        {src.sourceNodeLabel} / {src.sourceOutput}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                            <Form.Select
-                                                                size="sm"
-                                                                className="link-merge-select"
-                                                                value={linkMergeValues[param.name] || 'merge_flattened'}
-                                                                onChange={(e) => updateLinkMerge(param.name, e.target.value)}
-                                                            >
-                                                                <option value="merge_flattened">merge_flattened</option>
-                                                                <option value="merge_nested">merge_nested</option>
-                                                            </Form.Select>
-                                                        </div>
-                                                        <div className="merge-help-text">
-                                                            flattened combines all into one list [x1, x2] — nested preserves grouping per source [[x1], [x2]]
-                                                        </div>
-                                                    </div>
-                                                )}
-                                                {isFileType && expressionToggles[param.name] && (() => {
-                                                    const exprVal = expressionValues[param.name] || '';
-                                                    const exprWarning = expressionWarnings[param.name];
-                                                    const fileTemplates = EXPRESSION_TEMPLATES.filter(t => t.applicableTypes.includes(param.type));
-                                                    return (
-                                                        <div className="expression-file-details">
-                                                            <div className="expression-input-row">
-                                                                <Form.Control type="text" size="sm"
-                                                                    className={`expression-input${exprVal ? ' filled' : ''}${exprWarning ? ' invalid' : ''}`}
-                                                                    placeholder="self.nameroot"
-                                                                    value={exprVal}
-                                                                    onChange={(e) => setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value }))}
-                                                                />
-                                                                {fileTemplates.length > 0 && (
-                                                                    <Form.Select size="sm" className="expression-template-select"
-                                                                        value={fileTemplates.find(t => t.expression === exprVal)?.expression || ''}
-                                                                        onChange={(e) => { if (e.target.value) setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value })); }}>
-                                                                        <option value="">Templates</option>
-                                                                        {fileTemplates.map(t => (
-                                                                            <option key={t.label} value={t.expression} title={t.description}>{t.label}</option>
-                                                                        ))}
-                                                                    </Form.Select>
-                                                                )}
-                                                            </div>
-                                                            {exprVal.trim() && !exprWarning && (
-                                                                <div className="expression-preview">valueFrom: $({exprVal.trim()})</div>
-                                                            )}
-                                                            {exprWarning && (
-                                                                <div className="expression-warning-text">{exprWarning}</div>
-                                                            )}
-                                                            <div className="expression-help-text">
-                                                                self is a {param.type} object — use self.nameroot, self.basename, self.dirname, self.path
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })()}
-                                                {!isFileType && expressionToggles[param.name] && (() => {
-                                                    const exprVal = expressionValues[param.name] || '';
-                                                    const exprWarning = expressionWarnings[param.name];
-                                                    const applicableTemplates = EXPRESSION_TEMPLATES.filter(
-                                                        t => t.applicableTypes.includes(param.type)
-                                                    );
-                                                    return (
-                                                        <div className="expression-scalar-details">
-                                                            <div className="expression-input-row">
-                                                                <Form.Control type="text" size="sm"
-                                                                    className={`expression-input${exprVal ? ' filled' : ''}${exprWarning ? ' invalid' : ''}`}
-                                                                    placeholder={param.type === 'string' ? 'self.toUpperCase()' : 'self + 1'}
-                                                                    value={exprVal}
-                                                                    onChange={(e) => setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value }))}
-                                                                />
-                                                                {applicableTemplates.length > 0 && (
-                                                                    <Form.Select size="sm" className="expression-template-select"
-                                                                        value={applicableTemplates.find(t => t.expression === exprVal)?.expression || ''}
-                                                                        onChange={(e) => { if (e.target.value) setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value })); }}>
-                                                                        <option value="">Templates</option>
-                                                                        {applicableTemplates.map(t => (
-                                                                            <option key={t.label} value={t.expression} title={t.description}>{t.label}</option>
-                                                                        ))}
-                                                                    </Form.Select>
-                                                                )}
-                                                            </div>
-                                                            {exprVal.trim() && !exprWarning && (
-                                                                <div className="expression-preview">valueFrom: $({exprVal.trim()})</div>
-                                                            )}
-                                                            {exprWarning && (
-                                                                <div className="expression-warning-text">{exprWarning}</div>
-                                                            )}
-                                                            {isScatterInherited && (
-                                                                <div className="expression-scatter-note">
-                                                                    In scatter mode, <code>self</code> receives one element per iteration.
+                                                    {isFileType && wiredSources.length > 1 && (
+                                                        <div className="input-source-multi-details">
+                                                            <div className="input-source-multi-row">
+                                                                <div className="input-source-multi-sources">
+                                                                    {wiredSources.map((src, i) => (
+                                                                        <span key={i} className="input-source input-source-detail">
+                                                                            {src.sourceNodeLabel} / {src.sourceOutput}
+                                                                        </span>
+                                                                    ))}
                                                                 </div>
-                                                            )}
-                                                            <div className="expression-help-text">
-                                                                self is the parameter value ({param.type})
+                                                                <Form.Select
+                                                                    size="sm"
+                                                                    className="link-merge-select"
+                                                                    value={linkMergeValues[param.name] || 'merge_flattened'}
+                                                                    onChange={(e) => updateLinkMerge(param.name, e.target.value)}
+                                                                >
+                                                                    <option value="merge_flattened">merge_flattened</option>
+                                                                    <option value="merge_nested">merge_nested</option>
+                                                                </Form.Select>
+                                                            </div>
+                                                            <div className="merge-help-text">
+                                                                flattened combines all into one list [x1, x2] — nested preserves grouping per source [[x1], [x2]]
                                                             </div>
                                                         </div>
-                                                    );
-                                                })()}
-                                                {param.label && (
-                                                    <div className="param-description">{param.label}</div>
-                                                )}
-                                                {param.bounds && (
-                                                    <div className="param-bounds">bounds: {param.bounds[0]} – {param.bounds[1]}</div>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-
-                            {/* Optional Parameters */}
-                            {allParams.optional.length > 0 && (
-                                <div className="param-section">
-                                    <div className="param-section-header">Optional</div>
-                                    {allParams.optional.map((param) => {
-                                        const wiredSources = wiredInputs.get(param.name) || [];
-                                        const isFileType = param.type === 'File' || param.type === 'Directory';
-                                        return (
-                                            <div key={param.name} className={`param-card ${isFileType && wiredSources.length > 0 ? 'input-wired' : ''} ${expressionValues[param.name] ? 'has-expression' : ''}`}>
-                                                <div className="param-card-header">
-                                                    <span className="param-name">{param.name}</span>
-                                                    <span className="param-type-badge">{param.type}</span>
-                                                    {renderParamControl(param, wiredSources, false)}
-                                                </div>
-                                                {isFileType && wiredSources.length === 1 && (
-                                                    <div className="input-source-single">
-                                                        <span className="input-source">
-                                                            from {wiredSources[0].sourceNodeLabel} / {wiredSources[0].sourceOutput}
-                                                        </span>
-                                                    </div>
-                                                )}
-
-                                                {isFileType && wiredSources.length > 1 && (
-                                                    <div className="input-source-multi-details">
-                                                        <div className="input-source-multi-row">
-                                                            <div className="input-source-multi-sources">
-                                                                {wiredSources.map((src, i) => (
-                                                                    <span key={i} className="input-source input-source-detail">
-                                                                        {src.sourceNodeLabel} / {src.sourceOutput}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                            <Form.Select
-                                                                size="sm"
-                                                                className="link-merge-select"
-                                                                value={linkMergeValues[param.name] || 'merge_flattened'}
-                                                                onChange={(e) => updateLinkMerge(param.name, e.target.value)}
-                                                            >
-                                                                <option value="merge_flattened">merge_flattened</option>
-                                                                <option value="merge_nested">merge_nested</option>
-                                                            </Form.Select>
-                                                        </div>
-                                                        <div className="merge-help-text">
-                                                            flattened combines all into one list [x1, x2] — nested preserves grouping per source [[x1], [x2]]
-                                                        </div>
-                                                    </div>
-                                                )}
-                                                {isFileType && expressionToggles[param.name] && (() => {
-                                                    const exprVal = expressionValues[param.name] || '';
-                                                    const exprWarning = expressionWarnings[param.name];
-                                                    const fileTemplates = EXPRESSION_TEMPLATES.filter(t => t.applicableTypes.includes(param.type));
-                                                    return (
-                                                        <div className="expression-file-details">
-                                                            <div className="expression-input-row">
-                                                                <Form.Control type="text" size="sm"
-                                                                    className={`expression-input${exprVal ? ' filled' : ''}${exprWarning ? ' invalid' : ''}`}
-                                                                    placeholder="self.nameroot"
-                                                                    value={exprVal}
-                                                                    onChange={(e) => setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value }))}
-                                                                />
-                                                                {fileTemplates.length > 0 && (
-                                                                    <Form.Select size="sm" className="expression-template-select"
-                                                                        value={fileTemplates.find(t => t.expression === exprVal)?.expression || ''}
-                                                                        onChange={(e) => { if (e.target.value) setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value })); }}>
-                                                                        <option value="">Templates</option>
-                                                                        {fileTemplates.map(t => (
-                                                                            <option key={t.label} value={t.expression} title={t.description}>{t.label}</option>
-                                                                        ))}
-                                                                    </Form.Select>
-                                                                )}
-                                                            </div>
-                                                            {exprVal.trim() && !exprWarning && (
-                                                                <div className="expression-preview">valueFrom: $({exprVal.trim()})</div>
-                                                            )}
-                                                            {exprWarning && (
-                                                                <div className="expression-warning-text">{exprWarning}</div>
-                                                            )}
-                                                            <div className="expression-help-text">
-                                                                self is a {param.type} object — use self.nameroot, self.basename, self.dirname, self.path
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })()}
-                                                {!isFileType && expressionToggles[param.name] && (() => {
-                                                    const exprVal = expressionValues[param.name] || '';
-                                                    const exprWarning = expressionWarnings[param.name];
-                                                    const applicableTemplates = EXPRESSION_TEMPLATES.filter(
-                                                        t => t.applicableTypes.includes(param.type)
-                                                    );
-                                                    return (
-                                                        <div className="expression-scalar-details">
-                                                            <div className="expression-input-row">
-                                                                <Form.Control type="text" size="sm"
-                                                                    className={`expression-input${exprVal ? ' filled' : ''}${exprWarning ? ' invalid' : ''}`}
-                                                                    placeholder={param.type === 'string' ? 'self.toUpperCase()' : 'self + 1'}
-                                                                    value={exprVal}
-                                                                    onChange={(e) => setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value }))}
-                                                                />
-                                                                {applicableTemplates.length > 0 && (
-                                                                    <Form.Select size="sm" className="expression-template-select"
-                                                                        value={applicableTemplates.find(t => t.expression === exprVal)?.expression || ''}
-                                                                        onChange={(e) => { if (e.target.value) setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value })); }}>
-                                                                        <option value="">Templates</option>
-                                                                        {applicableTemplates.map(t => (
-                                                                            <option key={t.label} value={t.expression} title={t.description}>{t.label}</option>
-                                                                        ))}
-                                                                    </Form.Select>
-                                                                )}
-                                                            </div>
-                                                            {exprVal.trim() && !exprWarning && (
-                                                                <div className="expression-preview">valueFrom: $({exprVal.trim()})</div>
-                                                            )}
-                                                            {exprWarning && (
-                                                                <div className="expression-warning-text">{exprWarning}</div>
-                                                            )}
-                                                            {isScatterInherited && (
-                                                                <div className="expression-scatter-note">
-                                                                    In scatter mode, <code>self</code> receives one element per iteration.
+                                                    )}
+                                                    {isFileType && expressionToggles[param.name] && (() => {
+                                                        const exprVal = expressionValues[param.name] || '';
+                                                        const exprWarning = expressionWarnings[param.name];
+                                                        const fileTemplates = EXPRESSION_TEMPLATES.filter(t => t.applicableTypes.includes(param.type));
+                                                        return (
+                                                            <div className="expression-file-details">
+                                                                <div className="expression-input-row">
+                                                                    <Form.Control type="text" size="sm"
+                                                                        className={`expression-input${exprVal ? ' filled' : ''}${exprWarning ? ' invalid' : ''}`}
+                                                                        placeholder="self.nameroot"
+                                                                        value={exprVal}
+                                                                        onChange={(e) => setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value }))}
+                                                                    />
+                                                                    {fileTemplates.length > 0 && (
+                                                                        <Form.Select size="sm" className="expression-template-select"
+                                                                            value={fileTemplates.find(t => t.expression === exprVal)?.expression || ''}
+                                                                            onChange={(e) => { if (e.target.value) setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value })); }}>
+                                                                            <option value="">Templates</option>
+                                                                            {fileTemplates.map(t => (
+                                                                                <option key={t.label} value={t.expression} title={t.description}>{t.label}</option>
+                                                                            ))}
+                                                                        </Form.Select>
+                                                                    )}
                                                                 </div>
-                                                            )}
-                                                            <div className="expression-help-text">
-                                                                self is the parameter value ({param.type})
+                                                                {exprVal.trim() && !exprWarning && (
+                                                                    <div className="expression-preview">valueFrom: $({exprVal.trim()})</div>
+                                                                )}
+                                                                {exprWarning && (
+                                                                    <div className="expression-warning-text">{exprWarning}</div>
+                                                                )}
+                                                                <div className="expression-help-text">
+                                                                    self is a {param.type} object — use self.nameroot, self.basename, self.dirname, self.path
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    );
-                                                })()}
-                                                {param.label && (
-                                                    <div className="param-description">{param.label}</div>
-                                                )}
-                                                {param.bounds && (
-                                                    <div className="param-bounds">bounds: {param.bounds[0]} – {param.bounds[1]}</div>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                                                        );
+                                                    })()}
+                                                    {!isFileType && expressionToggles[param.name] && (() => {
+                                                        const exprVal = expressionValues[param.name] || '';
+                                                        const exprWarning = expressionWarnings[param.name];
+                                                        const applicableTemplates = EXPRESSION_TEMPLATES.filter(
+                                                            t => t.applicableTypes.includes(param.type)
+                                                        );
+                                                        return (
+                                                            <div className="expression-scalar-details">
+                                                                <div className="expression-input-row">
+                                                                    <Form.Control type="text" size="sm"
+                                                                        className={`expression-input${exprVal ? ' filled' : ''}${exprWarning ? ' invalid' : ''}`}
+                                                                        placeholder={param.type === 'string' ? 'self.toUpperCase()' : 'self + 1'}
+                                                                        value={exprVal}
+                                                                        onChange={(e) => setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value }))}
+                                                                    />
+                                                                    {applicableTemplates.length > 0 && (
+                                                                        <Form.Select size="sm" className="expression-template-select"
+                                                                            value={applicableTemplates.find(t => t.expression === exprVal)?.expression || ''}
+                                                                            onChange={(e) => { if (e.target.value) setExpressionValues(prev => ({ ...prev, [param.name]: e.target.value })); }}>
+                                                                            <option value="">Templates</option>
+                                                                            {applicableTemplates.map(t => (
+                                                                                <option key={t.label} value={t.expression} title={t.description}>{t.label}</option>
+                                                                            ))}
+                                                                        </Form.Select>
+                                                                    )}
+                                                                </div>
+                                                                {exprVal.trim() && !exprWarning && (
+                                                                    <div className="expression-preview">valueFrom: $({exprVal.trim()})</div>
+                                                                )}
+                                                                {exprWarning && (
+                                                                    <div className="expression-warning-text">{exprWarning}</div>
+                                                                )}
+                                                                {isScatterInherited && (
+                                                                    <div className="expression-scatter-note">
+                                                                        In scatter mode, <code>self</code> receives one element per iteration.
+                                                                    </div>
+                                                                )}
+                                                                <div className="expression-help-text">
+                                                                    self is the parameter value ({param.type})
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })()}
+                                                    {param.label && (
+                                                        <div className="param-description">{param.label}</div>
+                                                    )}
+                                                    {param.bounds && (
+                                                        <div className="param-bounds">bounds: {param.bounds[0]} – {param.bounds[1]}</div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )
                             )}
 
                             {/* Fallback for unknown tools */}

@@ -131,14 +131,6 @@
   gap: clamp(3px, 0.4vw, 6px);
 }
 
-.coming-soon {
-  color: var(--text-muted);
-  font-style: italic;
-  padding: 10px 12px;
-  font-size: 0.85em;
-  text-align: center;
-}
-
 /* Subsection Styles */
 .subsection {
   margin-bottom: 8px;

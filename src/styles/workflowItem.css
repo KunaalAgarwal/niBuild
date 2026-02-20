@@ -959,19 +959,8 @@
   color: inherit;
 }
 
-/* File expression details (body of param-card when fx toggled on File params) */
-.expression-file-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
-  padding: 6px 8px;
-  background-color: rgba(74, 144, 226, 0.04);
-  border: 1px solid rgba(74, 144, 226, 0.1);
-  border-radius: 4px;
-}
-
-/* Scalar expression details (body of param-card when fx toggled on scalar params) */
+/* Expression details (body of param-card when fx toggled on) */
+.expression-file-details,
 .expression-scalar-details {
   display: flex;
   flex-direction: column;

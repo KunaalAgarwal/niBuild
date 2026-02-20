@@ -3,19 +3,10 @@ import { getToolConfigSync } from '../utils/toolRegistry.js';
 import { computeScatteredNodes } from '../utils/scatterPropagation.js';
 
 /**
- * Convert the React-Flow graph into a CWL Workflow YAML string.
- * Uses CWL-derived tool configs to wire inputs/outputs correctly.
- *
- * - Exposes all required inputs as workflow inputs
- * - Exposes all optional inputs as nullable workflow inputs
- * - Exposes all outputs from terminal nodes
- * - Excludes dummy nodes (visual-only) from CWL generation
- */
-/**
  * Convert the React-Flow graph into a CWL Workflow JS object.
  * Returns the raw object before YAML serialization.
  */
-export function buildCWLWorkflowObject(graph, allWorkspaces = null) {
+export function buildCWLWorkflowObject(graph) {
     // Filter out dummy nodes before processing
     const dummyNodeIds = new Set(
         graph.nodes.filter(n => n.data?.isDummy).map(n => n.id)
@@ -340,23 +331,37 @@ export function buildCWLWorkflowObject(graph, allWorkspaces = null) {
                     return;
                 }
 
-                const wfInputName = makeWfInputName(stepId, inputName, isSingleNode);
+                // Check wired sources for non-expression optional inputs
+                const wiredSources = wiredInputsMap.get(nodeId)?.get(inputName) || [];
 
-                // Make optional inputs nullable (no default in CWL — values go to jobDefaults)
-                const inputEntry = { type: toCWLType(type, true) };
-                const params = getUserParams(node.data);
-                const userValue = params?.[inputName];
-                let value;
-                if (userValue !== undefined && userValue !== null && userValue !== '' && isSerializable(userValue)) {
-                    value = userValue;
+                if (wiredSources.length === 1) {
+                    const srcStepId = getStepId(wiredSources[0].sourceNodeId);
+                    step.in[inputName] = `${srcStepId}/${wiredSources[0].sourceOutput}`;
+                } else if (wiredSources.length > 1) {
+                    const linkMerge = node.data.linkMergeOverrides?.[inputName] || 'merge_flattened';
+                    step.in[inputName] = {
+                        source: wiredSources.map(ws => `${getStepId(ws.sourceNodeId)}/${ws.sourceOutput}`),
+                        linkMerge,
+                    };
+                    needsMultipleInputFeature = true;
                 } else {
-                    value = defaultForType(type, inputDef);
+                    // Not wired — expose as nullable workflow input with job default
+                    const wfInputName = makeWfInputName(stepId, inputName, isSingleNode);
+                    const inputEntry = { type: toCWLType(type, true) };
+                    const params = getUserParams(node.data);
+                    const userValue = params?.[inputName];
+                    let value;
+                    if (userValue !== undefined && userValue !== null && userValue !== '' && isSerializable(userValue)) {
+                        value = userValue;
+                    } else {
+                        value = defaultForType(type, inputDef);
+                    }
+                    if (value !== null && value !== undefined) {
+                        jobDefaults[wfInputName] = value;
+                    }
+                    wf.inputs[wfInputName] = inputEntry;
+                    step.in[inputName] = wfInputName;
                 }
-                if (value !== null && value !== undefined) {
-                    jobDefaults[wfInputName] = value;
-                }
-                wf.inputs[wfInputName] = inputEntry;
-                step.in[inputName] = wfInputName;
             });
         }
 
@@ -460,8 +465,9 @@ export function buildCWLWorkflowObject(graph, allWorkspaces = null) {
                 outputSource: `${stepId}/${outputName}`
             };
 
-            // Conditional terminal nodes need pickValue to handle null outputs
+            // Conditional terminal nodes: output may be null when step is skipped
             if (conditionalStepIds.has(node.id)) {
+                outputEntry.type = ['null', outputType];
                 outputEntry.pickValue = 'first_non_null';
             }
 
@@ -472,13 +478,7 @@ export function buildCWLWorkflowObject(graph, allWorkspaces = null) {
     return { wf, jobDefaults };
 }
 
-/**
- * Convert the React-Flow graph into a CWL Workflow YAML string.
- */
-export function buildCWLWorkflow(graph) {
-    const { wf } = buildCWLWorkflowObject(graph);
-    return YAML.dump(wf, { noRefs: true });
-}
+
 
 /**
  * Generate a job input template from a CWL workflow object.
