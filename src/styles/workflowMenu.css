@@ -328,6 +328,12 @@
   white-space: nowrap;
 }
 
+.delete-confirm-subtext {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
 
 .delete-confirm-buttons {
   display: flex;

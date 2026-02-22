@@ -113,6 +113,29 @@ export function useWorkspaces() {
     });
   };
 
+  const removeWorkflowNodesFromAll = (workflowId) => {
+    setWorkspaces((prev) => {
+      let anyChanged = false;
+      const updated = prev.map(ws => {
+        const removedIds = new Set();
+        const filteredNodes = ws.nodes.filter(n => {
+          if (n.data?.isCustomWorkflow && n.data?.customWorkflowId === workflowId) {
+            removedIds.add(n.id);
+            return false;
+          }
+          return true;
+        });
+        if (removedIds.size === 0) return ws;
+        anyChanged = true;
+        const filteredEdges = ws.edges.filter(
+          e => !removedIds.has(e.source) && !removedIds.has(e.target)
+        );
+        return { ...ws, nodes: filteredNodes, edges: filteredEdges };
+      });
+      return anyChanged ? updated : prev;
+    });
+  };
+
   return {
     workspaces,
     currentWorkspace,
@@ -123,6 +146,7 @@ export function useWorkspaces() {
     updateCurrentWorkspaceItems,
     removeCurrentWorkspace,
     updateWorkspaceName,
-    updateWorkflowName
+    updateWorkflowName,
+    removeWorkflowNodesFromAll
   };
 }

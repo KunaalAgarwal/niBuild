@@ -102,15 +102,22 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
     return wiredMap;
   }, [edges, nodeMap]);
 
-  // Sync on-canvas custom workflow nodes when saved workflows change
+  // Sync on-canvas custom workflow nodes when saved workflows change.
+  // Also removes orphaned nodes whose workflow was deleted.
   useEffect(() => {
-    if (!customWorkflows || customWorkflows.length === 0) return;
+    if (!customWorkflows) return;
 
     let changed = false;
+    const removedIds = new Set();
     const updatedNodes = nodes.map(node => {
       if (!node.data?.isCustomWorkflow || !node.data?.customWorkflowId) return node;
       const saved = customWorkflows.find(w => w.id === node.data.customWorkflowId);
-      if (!saved) return node;
+      if (!saved) {
+        // Workflow was deleted — mark node for removal
+        changed = true;
+        removedIds.add(node.id);
+        return null;
+      }
 
       // Compare serialized internal data to detect changes
       const currentInternal = JSON.stringify(node.data.internalNodes);
@@ -133,9 +140,12 @@ function WorkflowCanvas({ workflowItems, updateCurrentWorkspaceItems, onSetWorkf
           hasValidationWarnings: saved.hasValidationWarnings,
         }
       };
-    });
+    }).filter(Boolean);
 
     if (changed) {
+      if (removedIds.size > 0) {
+        setEdges(prev => prev.filter(e => !removedIds.has(e.source) && !removedIds.has(e.target)));
+      }
       setNodes(updatedNodes);
       markForSync();
     }

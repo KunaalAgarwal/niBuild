@@ -6,7 +6,7 @@ import { toolsByModality, modalityOrder, modalityDescriptions, libraryOrder, dum
 import { useCustomWorkflowsContext } from '../context/CustomWorkflowsContext.jsx';
 import '../styles/workflowMenu.css';
 
-function WorkflowMenu({ onEditWorkflow }) {
+function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow }) {
   const { customWorkflows, deleteWorkflow } = useCustomWorkflowsContext();
 
   const [expandedSections, setExpandedSections] = useState(() => {
@@ -215,11 +215,12 @@ function WorkflowMenu({ onEditWorkflow }) {
           }}
         >
           <span className="delete-confirm-text">Delete &lsquo;{deleteConfirm.wfName}&rsquo;?</span>
+          <span className="delete-confirm-subtext">All canvas instances will be removed.</span>
           <div className="delete-confirm-buttons">
             <button
               className="delete-confirm-btn delete-confirm-yes"
               onClick={() => {
-                deleteWorkflow(deleteConfirm.wfId);
+                if (onDeleteWorkflow) onDeleteWorkflow(deleteConfirm.wfId);
                 setDeleteConfirm(null);
               }}
             >

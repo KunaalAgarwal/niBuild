@@ -27,9 +27,13 @@ const checkTypeCompatibility = (outputType, inputType, outputExtensions = null, 
     const outArray = isArrayType(outputType);
     const inArray = isArrayType(inputType);
 
-    // Array mismatch check
-    if (outArray !== inArray) {
-        return { compatible: false, reason: `Array mismatch: ${outputType} → ${inputType}` };
+    // Array → scalar: valid when scatter is involved (scatter unwraps the array)
+    if (outArray && !inArray) {
+        return { compatible: true, warning: true, reason: `${outputType} will be scattered across ${inputType} inputs` };
+    }
+    // Scalar → array: incompatible (single value can't fill an array requirement)
+    if (!outArray && inArray) {
+        return { compatible: false, reason: `Type mismatch: ${outputType} cannot satisfy ${inputType}` };
     }
 
     // Base type check (File vs non-File)

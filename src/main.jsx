@@ -146,7 +146,8 @@ function App() {
         updateCurrentWorkspaceItems,
         removeCurrentWorkspace,
         updateWorkspaceName,
-        updateWorkflowName
+        updateWorkflowName,
+        removeWorkflowNodesFromAll
     } = useWorkspaces();
 
     const currentOutputName = workspaces[currentWorkspace]?.name || '';
@@ -157,7 +158,7 @@ function App() {
 
     const { generateWorkflow } = useGenerateWorkflow();
     const { showError, showSuccess, showWarning, showInfo } = useToast();
-    const { saveWorkflow, getNextDefaultName, customWorkflows } = useCustomWorkflowsContext();
+    const { saveWorkflow, deleteWorkflow, getNextDefaultName, customWorkflows } = useCustomWorkflowsContext();
 
     // Preload all CWL files on mount so getToolConfigSync() works synchronously
     useEffect(() => {
@@ -171,6 +172,11 @@ function App() {
                 showError('Failed to load tool definitions. Some tools may not work correctly.');
             });
     }, []);
+
+    const handleDeleteWorkflow = useCallback((wfId) => {
+        deleteWorkflow(wfId);
+        removeWorkflowNodesFromAll(wfId);
+    }, [deleteWorkflow, removeWorkflowNodesFromAll]);
 
     const handleSaveAsCustomNode = useCallback(() => {
         if (!getWorkflowData) {
@@ -321,7 +327,7 @@ function App() {
                 </div>
                 <div className="workflow-content">
                     <div className="workflow-content-main">
-                        <WorkflowMenu onEditWorkflow={handleEditWorkflow} />
+                        <WorkflowMenu onEditWorkflow={handleEditWorkflow} onDeleteWorkflow={handleDeleteWorkflow} />
                         <WorkflowCanvas
                             workflowItems={workspaces[currentWorkspace]}
                             updateCurrentWorkspaceItems={updateCurrentWorkspaceItems}
