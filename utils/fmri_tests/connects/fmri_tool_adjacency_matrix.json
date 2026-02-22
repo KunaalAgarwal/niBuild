@@ -1,8 +1,7 @@
 {
-  "generatedAt": "2026-02-22T02:30:39+00:00",
+  "generatedAt": "2026-02-22T06:29:46+00:00",
   "sources": {
-    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\fmri_tests\\connects\\fmri_subsection_graph.mmd",
-    "mapping": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\fmri_tests\\connects\\fmri_tool_to_subsection_map.json"
+    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\fmri_tests\\connects\\fmri_tool_graph.mmd"
   },
   "toolOrder": [
     "3dANOVA",
@@ -110,448 +109,2374 @@
     "wb_command_cifti_smoothing": 49,
     "wb_command_metric_smoothing": 50
   },
-  "subsectionByTool": {
-    "3dANOVA": "afni / statistical analysis",
-    "3dANOVA2": "afni / statistical analysis",
-    "3dANOVA3": "afni / statistical analysis",
-    "3dAutomask": "afni / masking",
-    "3dBandpass": "afni / temporal filtering",
-    "3dBlurToFWHM": "afni / smoothing",
-    "3dClustSim": "afni / multiple comparisons",
-    "3dDeconvolve": "afni / statistical analysis",
-    "3dDespike": "afni / despiking",
-    "3dFWHMx": "afni / multiple comparisons",
-    "3dLME": "afni / statistical analysis",
-    "3dLMEr": "afni / statistical analysis",
-    "3dMEMA": "afni / statistical analysis",
-    "3dMVM": "afni / statistical analysis",
-    "3dNetCorr": "afni / connectivity",
-    "3dREMLfit": "afni / statistical analysis",
-    "3dROIstats": "afni / roi analysis",
-    "3dRSFC": "afni / connectivity",
-    "3dTcorr1D": "afni / connectivity",
-    "3dTcorrMap": "afni / connectivity",
-    "3dTshift": "afni / slice timing",
-    "3dmaskave": "afni / roi analysis",
-    "3dmerge": "afni / smoothing",
-    "3dttest++": "afni / statistical analysis",
-    "3dvolreg": "afni / motion correction",
-    "align_epi_anat": "afni / registration",
-    "antsMotionCorr": "ants / motion correction",
-    "applytopup": "fsl / distortion correction",
-    "bbregister": "freesurfer / functional analysis",
-    "dual_regression": "fsl / ica denoising",
-    "film_gls": "fsl / statistical analysis",
-    "flameo": "fsl / statistical analysis",
-    "fmriprep": "fmriprep / pipeline",
-    "fsl_prepare_fieldmap": "fsl / distortion correction",
-    "fugue": "fsl / distortion correction",
-    "mcflirt": "fsl / motion correction",
-    "melodic": "fsl / ica denoising",
-    "mri_glmfit": "freesurfer / functional analysis",
-    "mri_surf2vol": "freesurfer / functional analysis",
-    "mri_vol2surf": "freesurfer / functional analysis",
-    "mriqc": "mriqc / pipeline",
-    "mris_preproc": "freesurfer / functional analysis",
-    "prelude": "fsl / distortion correction",
-    "randomise": "fsl / statistical analysis",
-    "slicetimer": "fsl / slice timing",
-    "susan": "fsl / smoothing",
-    "topup": "fsl / distortion correction",
-    "wb_command_cifti_create_dense_timeseries": "connectome workbench / cifti operations",
-    "wb_command_cifti_separate": "connectome workbench / cifti operations",
-    "wb_command_cifti_smoothing": "connectome workbench / surface smoothing",
-    "wb_command_metric_smoothing": "connectome workbench / surface smoothing"
-  },
-  "subsectionByToolOriginal": {
-    "3dANOVA": "AFNI / Statistical Analysis",
-    "3dANOVA2": "AFNI / Statistical Analysis",
-    "3dANOVA3": "AFNI / Statistical Analysis",
-    "3dAutomask": "AFNI / Masking",
-    "3dBandpass": "AFNI / Temporal Filtering",
-    "3dBlurToFWHM": "AFNI / Smoothing",
-    "3dClustSim": "AFNI / Multiple Comparisons",
-    "3dDeconvolve": "AFNI / Statistical Analysis",
-    "3dDespike": "AFNI / Despiking",
-    "3dFWHMx": "AFNI / Multiple Comparisons",
-    "3dLME": "AFNI / Statistical Analysis",
-    "3dLMEr": "AFNI / Statistical Analysis",
-    "3dMEMA": "AFNI / Statistical Analysis",
-    "3dMVM": "AFNI / Statistical Analysis",
-    "3dNetCorr": "AFNI / Connectivity",
-    "3dREMLfit": "AFNI / Statistical Analysis",
-    "3dROIstats": "AFNI / ROI Analysis",
-    "3dRSFC": "AFNI / Connectivity",
-    "3dTcorr1D": "AFNI / Connectivity",
-    "3dTcorrMap": "AFNI / Connectivity",
-    "3dTshift": "AFNI / Slice Timing",
-    "3dmaskave": "AFNI / ROI Analysis",
-    "3dmerge": "AFNI / Smoothing",
-    "3dttest++": "AFNI / Statistical Analysis",
-    "3dvolreg": "AFNI / Motion Correction",
-    "align_epi_anat": "AFNI / Registration",
-    "antsMotionCorr": "ANTs / Motion Correction",
-    "applytopup": "FSL / Distortion Correction",
-    "bbregister": "FreeSurfer / Functional Analysis",
-    "dual_regression": "FSL / ICA/Denoising",
-    "film_gls": "FSL / Statistical Analysis",
-    "flameo": "FSL / Statistical Analysis",
-    "fmriprep": "fMRIPrep / Pipeline",
-    "fsl_prepare_fieldmap": "FSL / Distortion Correction",
-    "fugue": "FSL / Distortion Correction",
-    "mcflirt": "FSL / Motion Correction",
-    "melodic": "FSL / ICA/Denoising",
-    "mri_glmfit": "FreeSurfer / Functional Analysis",
-    "mri_surf2vol": "FreeSurfer / Functional Analysis",
-    "mri_vol2surf": "FreeSurfer / Functional Analysis",
-    "mriqc": "MRIQC / Pipeline",
-    "mris_preproc": "FreeSurfer / Functional Analysis",
-    "prelude": "FSL / Distortion Correction",
-    "randomise": "FSL / Statistical Analysis",
-    "slicetimer": "FSL / Slice Timing",
-    "susan": "FSL / Smoothing",
-    "topup": "FSL / Distortion Correction",
-    "wb_command_cifti_create_dense_timeseries": "Connectome Workbench / CIFTI Operations",
-    "wb_command_cifti_separate": "Connectome Workbench / CIFTI Operations",
-    "wb_command_cifti_smoothing": "Connectome Workbench / Surface Smoothing",
-    "wb_command_metric_smoothing": "Connectome Workbench / Surface Smoothing"
-  },
-  "subsectionEdges": [
+  "toolEdges": [
     {
-      "source": "afni / connectivity",
-      "target": "afni / connectivity"
+      "source": "3dANOVA",
+      "target": "3dANOVA"
     },
     {
-      "source": "afni / connectivity",
-      "target": "afni / multiple comparisons"
+      "source": "3dANOVA",
+      "target": "3dANOVA2"
     },
     {
-      "source": "afni / connectivity",
-      "target": "afni / roi analysis"
+      "source": "3dANOVA",
+      "target": "3dANOVA3"
     },
     {
-      "source": "afni / despiking",
-      "target": "afni / motion correction"
+      "source": "3dANOVA",
+      "target": "3dClustSim"
     },
     {
-      "source": "afni / despiking",
-      "target": "afni / slice timing"
+      "source": "3dANOVA",
+      "target": "3dDeconvolve"
     },
     {
-      "source": "afni / masking",
-      "target": "afni / connectivity"
+      "source": "3dANOVA",
+      "target": "3dFWHMx"
     },
     {
-      "source": "afni / masking",
-      "target": "afni / statistical analysis"
+      "source": "3dANOVA",
+      "target": "3dLME"
     },
     {
-      "source": "afni / masking",
-      "target": "afni / temporal filtering"
+      "source": "3dANOVA",
+      "target": "3dLMEr"
     },
     {
-      "source": "afni / motion correction",
-      "target": "afni / masking"
+      "source": "3dANOVA",
+      "target": "3dMEMA"
     },
     {
-      "source": "afni / motion correction",
-      "target": "afni / smoothing"
+      "source": "3dANOVA",
+      "target": "3dMVM"
     },
     {
-      "source": "afni / motion correction",
-      "target": "afni / temporal filtering"
+      "source": "3dANOVA",
+      "target": "3dNetCorr"
     },
     {
-      "source": "afni / multiple comparisons",
-      "target": "afni / multiple comparisons"
+      "source": "3dANOVA",
+      "target": "3dREMLfit"
     },
     {
-      "source": "afni / registration",
-      "target": "afni / masking"
+      "source": "3dANOVA",
+      "target": "3dROIstats"
     },
     {
-      "source": "afni / registration",
-      "target": "afni / motion correction"
+      "source": "3dANOVA",
+      "target": "3dRSFC"
     },
     {
-      "source": "afni / registration",
-      "target": "afni / smoothing"
+      "source": "3dANOVA",
+      "target": "3dTcorr1D"
     },
     {
-      "source": "afni / roi analysis",
-      "target": "afni / connectivity"
+      "source": "3dANOVA",
+      "target": "3dTcorrMap"
     },
     {
-      "source": "afni / roi analysis",
-      "target": "afni / roi analysis"
+      "source": "3dANOVA",
+      "target": "3dmaskave"
     },
     {
-      "source": "afni / roi analysis",
-      "target": "afni / statistical analysis"
+      "source": "3dANOVA",
+      "target": "3dttest++"
     },
     {
-      "source": "afni / slice timing",
-      "target": "afni / registration"
+      "source": "3dANOVA",
+      "target": "film_gls"
     },
     {
-      "source": "afni / smoothing",
-      "target": "afni / masking"
+      "source": "3dANOVA",
+      "target": "flameo"
     },
     {
-      "source": "afni / smoothing",
-      "target": "afni / smoothing"
+      "source": "3dANOVA",
+      "target": "randomise"
     },
     {
-      "source": "afni / smoothing",
-      "target": "afni / statistical analysis"
+      "source": "3dANOVA2",
+      "target": "3dANOVA"
     },
     {
-      "source": "afni / smoothing",
-      "target": "afni / temporal filtering"
+      "source": "3dANOVA2",
+      "target": "3dANOVA2"
     },
     {
-      "source": "afni / statistical analysis",
-      "target": "afni / connectivity"
+      "source": "3dANOVA2",
+      "target": "3dANOVA3"
     },
     {
-      "source": "afni / statistical analysis",
-      "target": "afni / multiple comparisons"
+      "source": "3dANOVA2",
+      "target": "3dClustSim"
     },
     {
-      "source": "afni / statistical analysis",
-      "target": "afni / roi analysis"
+      "source": "3dANOVA2",
+      "target": "3dDeconvolve"
     },
     {
-      "source": "afni / statistical analysis",
-      "target": "afni / statistical analysis"
+      "source": "3dANOVA2",
+      "target": "3dFWHMx"
     },
     {
-      "source": "afni / statistical analysis",
-      "target": "fsl / statistical analysis"
+      "source": "3dANOVA2",
+      "target": "3dLME"
     },
     {
-      "source": "afni / temporal filtering",
-      "target": "afni / connectivity"
+      "source": "3dANOVA2",
+      "target": "3dLMEr"
     },
     {
-      "source": "afni / temporal filtering",
-      "target": "afni / masking"
+      "source": "3dANOVA2",
+      "target": "3dMEMA"
     },
     {
-      "source": "afni / temporal filtering",
-      "target": "afni / multiple comparisons"
+      "source": "3dANOVA2",
+      "target": "3dMVM"
     },
     {
-      "source": "afni / temporal filtering",
-      "target": "afni / roi analysis"
+      "source": "3dANOVA2",
+      "target": "3dNetCorr"
     },
     {
-      "source": "afni / temporal filtering",
-      "target": "afni / smoothing"
+      "source": "3dANOVA2",
+      "target": "3dREMLfit"
     },
     {
-      "source": "afni / temporal filtering",
-      "target": "afni / statistical analysis"
+      "source": "3dANOVA2",
+      "target": "3dROIstats"
     },
     {
-      "source": "ants / motion correction",
-      "target": "afni / despiking"
+      "source": "3dANOVA2",
+      "target": "3dRSFC"
     },
     {
-      "source": "ants / motion correction",
-      "target": "afni / masking"
+      "source": "3dANOVA2",
+      "target": "3dTcorr1D"
     },
     {
-      "source": "ants / motion correction",
-      "target": "afni / smoothing"
+      "source": "3dANOVA2",
+      "target": "3dTcorrMap"
     },
     {
-      "source": "ants / motion correction",
-      "target": "fsl / ica denoising"
+      "source": "3dANOVA2",
+      "target": "3dmaskave"
     },
     {
-      "source": "ants / motion correction",
-      "target": "fsl / smoothing"
+      "source": "3dANOVA2",
+      "target": "3dttest++"
     },
     {
-      "source": "ants / motion correction",
-      "target": "fsl / statistical analysis"
+      "source": "3dANOVA2",
+      "target": "film_gls"
     },
     {
-      "source": "connectome workbench / cifti operations",
-      "target": "connectome workbench / cifti operations"
+      "source": "3dANOVA2",
+      "target": "flameo"
     },
     {
-      "source": "connectome workbench / cifti operations",
-      "target": "connectome workbench / surface smoothing"
+      "source": "3dANOVA2",
+      "target": "randomise"
     },
     {
-      "source": "connectome workbench / surface smoothing",
-      "target": "connectome workbench / surface smoothing"
+      "source": "3dANOVA3",
+      "target": "3dANOVA"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "afni / connectivity"
+      "source": "3dANOVA3",
+      "target": "3dANOVA2"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "afni / masking"
+      "source": "3dANOVA3",
+      "target": "3dANOVA3"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "afni / multiple comparisons"
+      "source": "3dANOVA3",
+      "target": "3dClustSim"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "afni / roi analysis"
+      "source": "3dANOVA3",
+      "target": "3dDeconvolve"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "afni / smoothing"
+      "source": "3dANOVA3",
+      "target": "3dFWHMx"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "afni / statistical analysis"
+      "source": "3dANOVA3",
+      "target": "3dLME"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "afni / temporal filtering"
+      "source": "3dANOVA3",
+      "target": "3dLMEr"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "connectome workbench / cifti operations"
+      "source": "3dANOVA3",
+      "target": "3dMEMA"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "connectome workbench / surface smoothing"
+      "source": "3dANOVA3",
+      "target": "3dMVM"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "freesurfer / functional analysis"
+      "source": "3dANOVA3",
+      "target": "3dNetCorr"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "fsl / ica denoising"
+      "source": "3dANOVA3",
+      "target": "3dREMLfit"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "fsl / smoothing"
+      "source": "3dANOVA3",
+      "target": "3dROIstats"
     },
     {
-      "source": "fmriprep / pipeline",
-      "target": "fsl / statistical analysis"
+      "source": "3dANOVA3",
+      "target": "3dRSFC"
     },
     {
-      "source": "freesurfer / functional analysis",
-      "target": "connectome workbench / cifti operations"
+      "source": "3dANOVA3",
+      "target": "3dTcorr1D"
     },
     {
-      "source": "freesurfer / functional analysis",
-      "target": "freesurfer / functional analysis"
+      "source": "3dANOVA3",
+      "target": "3dTcorrMap"
     },
     {
-      "source": "fsl / distortion correction",
-      "target": "afni / despiking"
+      "source": "3dANOVA3",
+      "target": "3dmaskave"
     },
     {
-      "source": "fsl / distortion correction",
-      "target": "afni / motion correction"
+      "source": "3dANOVA3",
+      "target": "3dttest++"
     },
     {
-      "source": "fsl / distortion correction",
-      "target": "afni / registration"
+      "source": "3dANOVA3",
+      "target": "film_gls"
     },
     {
-      "source": "fsl / distortion correction",
-      "target": "afni / slice timing"
+      "source": "3dANOVA3",
+      "target": "flameo"
     },
     {
-      "source": "fsl / distortion correction",
-      "target": "afni / smoothing"
+      "source": "3dANOVA3",
+      "target": "randomise"
     },
     {
-      "source": "fsl / distortion correction",
-      "target": "ants / motion correction"
+      "source": "3dAutomask",
+      "target": "3dANOVA"
     },
     {
-      "source": "fsl / distortion correction",
-      "target": "fsl / distortion correction"
+      "source": "3dAutomask",
+      "target": "3dANOVA2"
     },
     {
-      "source": "fsl / distortion correction",
-      "target": "fsl / motion correction"
+      "source": "3dAutomask",
+      "target": "3dANOVA3"
     },
     {
-      "source": "fsl / ica denoising",
-      "target": "afni / smoothing"
+      "source": "3dAutomask",
+      "target": "3dBandpass"
     },
     {
-      "source": "fsl / ica denoising",
-      "target": "afni / statistical analysis"
+      "source": "3dAutomask",
+      "target": "3dDeconvolve"
     },
     {
-      "source": "fsl / ica denoising",
-      "target": "fsl / ica denoising"
+      "source": "3dAutomask",
+      "target": "3dLME"
     },
     {
-      "source": "fsl / ica denoising",
-      "target": "fsl / smoothing"
+      "source": "3dAutomask",
+      "target": "3dLMEr"
     },
     {
-      "source": "fsl / ica denoising",
-      "target": "fsl / statistical analysis"
+      "source": "3dAutomask",
+      "target": "3dMEMA"
     },
     {
-      "source": "fsl / motion correction",
-      "target": "afni / masking"
+      "source": "3dAutomask",
+      "target": "3dMVM"
     },
     {
-      "source": "fsl / motion correction",
-      "target": "afni / smoothing"
+      "source": "3dAutomask",
+      "target": "3dNetCorr"
     },
     {
-      "source": "fsl / motion correction",
-      "target": "afni / statistical analysis"
+      "source": "3dAutomask",
+      "target": "3dREMLfit"
     },
     {
-      "source": "fsl / motion correction",
-      "target": "fsl / ica denoising"
+      "source": "3dAutomask",
+      "target": "3dRSFC"
     },
     {
-      "source": "fsl / motion correction",
-      "target": "fsl / slice timing"
+      "source": "3dAutomask",
+      "target": "3dTcorr1D"
     },
     {
-      "source": "fsl / motion correction",
-      "target": "fsl / smoothing"
+      "source": "3dAutomask",
+      "target": "3dTcorrMap"
     },
     {
-      "source": "fsl / motion correction",
-      "target": "fsl / statistical analysis"
+      "source": "3dAutomask",
+      "target": "3dttest++"
     },
     {
-      "source": "fsl / slice timing",
-      "target": "fsl / smoothing"
+      "source": "3dBandpass",
+      "target": "3dANOVA"
     },
     {
-      "source": "fsl / slice timing",
-      "target": "fsl / statistical analysis"
+      "source": "3dBandpass",
+      "target": "3dANOVA2"
     },
     {
-      "source": "fsl / smoothing",
-      "target": "fsl / ica denoising"
+      "source": "3dBandpass",
+      "target": "3dANOVA3"
     },
     {
-      "source": "fsl / smoothing",
-      "target": "fsl / statistical analysis"
+      "source": "3dBandpass",
+      "target": "3dAutomask"
     },
     {
-      "source": "fsl / statistical analysis",
-      "target": "afni / multiple comparisons"
+      "source": "3dBandpass",
+      "target": "3dBlurToFWHM"
     },
     {
-      "source": "fsl / statistical analysis",
-      "target": "fsl / statistical analysis"
+      "source": "3dBandpass",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dmerge"
+    },
+    {
+      "source": "3dBandpass",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dAutomask"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dBandpass"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dmerge"
+    },
+    {
+      "source": "3dBlurToFWHM",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dClustSim",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dClustSim",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "film_gls"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "flameo"
+    },
+    {
+      "source": "3dDeconvolve",
+      "target": "randomise"
+    },
+    {
+      "source": "3dDespike",
+      "target": "3dTshift"
+    },
+    {
+      "source": "3dDespike",
+      "target": "3dvolreg"
+    },
+    {
+      "source": "3dFWHMx",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dFWHMx",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dLME",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dLME",
+      "target": "film_gls"
+    },
+    {
+      "source": "3dLME",
+      "target": "flameo"
+    },
+    {
+      "source": "3dLME",
+      "target": "randomise"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "film_gls"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "flameo"
+    },
+    {
+      "source": "3dLMEr",
+      "target": "randomise"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "film_gls"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "flameo"
+    },
+    {
+      "source": "3dMEMA",
+      "target": "randomise"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dMVM",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dMVM",
+      "target": "film_gls"
+    },
+    {
+      "source": "3dMVM",
+      "target": "flameo"
+    },
+    {
+      "source": "3dMVM",
+      "target": "randomise"
+    },
+    {
+      "source": "3dNetCorr",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dNetCorr",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dNetCorr",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dNetCorr",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dNetCorr",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dNetCorr",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dNetCorr",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dNetCorr",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "film_gls"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "flameo"
+    },
+    {
+      "source": "3dREMLfit",
+      "target": "randomise"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dROIstats",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dRSFC",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dRSFC",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dRSFC",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dRSFC",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dRSFC",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dRSFC",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dRSFC",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dRSFC",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dTcorr1D",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dTcorr1D",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dTcorr1D",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dTcorr1D",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dTcorr1D",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dTcorr1D",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dTcorr1D",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dTcorr1D",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dTcorrMap",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dTcorrMap",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dTcorrMap",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dTcorrMap",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dTcorrMap",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dTcorrMap",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dTcorrMap",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dTcorrMap",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dTshift",
+      "target": "align_epi_anat"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dmaskave",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dAutomask"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dBandpass"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dmerge"
+    },
+    {
+      "source": "3dmerge",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dLME"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dMVM"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "3dttest++",
+      "target": "3dttest++"
+    },
+    {
+      "source": "3dttest++",
+      "target": "film_gls"
+    },
+    {
+      "source": "3dttest++",
+      "target": "flameo"
+    },
+    {
+      "source": "3dttest++",
+      "target": "randomise"
+    },
+    {
+      "source": "3dvolreg",
+      "target": "3dAutomask"
+    },
+    {
+      "source": "3dvolreg",
+      "target": "3dBandpass"
+    },
+    {
+      "source": "3dvolreg",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "3dvolreg",
+      "target": "3dmerge"
+    },
+    {
+      "source": "align_epi_anat",
+      "target": "3dAutomask"
+    },
+    {
+      "source": "align_epi_anat",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "align_epi_anat",
+      "target": "3dmerge"
+    },
+    {
+      "source": "align_epi_anat",
+      "target": "3dvolreg"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "3dAutomask"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "3dDespike"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "3dmerge"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "dual_regression"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "film_gls"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "flameo"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "melodic"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "randomise"
+    },
+    {
+      "source": "antsMotionCorr",
+      "target": "susan"
+    },
+    {
+      "source": "applytopup",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "applytopup",
+      "target": "3dDespike"
+    },
+    {
+      "source": "applytopup",
+      "target": "3dTshift"
+    },
+    {
+      "source": "applytopup",
+      "target": "3dmerge"
+    },
+    {
+      "source": "applytopup",
+      "target": "3dvolreg"
+    },
+    {
+      "source": "applytopup",
+      "target": "align_epi_anat"
+    },
+    {
+      "source": "applytopup",
+      "target": "antsMotionCorr"
+    },
+    {
+      "source": "applytopup",
+      "target": "applytopup"
+    },
+    {
+      "source": "applytopup",
+      "target": "fsl_prepare_fieldmap"
+    },
+    {
+      "source": "applytopup",
+      "target": "fugue"
+    },
+    {
+      "source": "applytopup",
+      "target": "mcflirt"
+    },
+    {
+      "source": "applytopup",
+      "target": "prelude"
+    },
+    {
+      "source": "applytopup",
+      "target": "topup"
+    },
+    {
+      "source": "bbregister",
+      "target": "bbregister"
+    },
+    {
+      "source": "bbregister",
+      "target": "mri_glmfit"
+    },
+    {
+      "source": "bbregister",
+      "target": "mri_surf2vol"
+    },
+    {
+      "source": "bbregister",
+      "target": "mri_vol2surf"
+    },
+    {
+      "source": "bbregister",
+      "target": "mris_preproc"
+    },
+    {
+      "source": "bbregister",
+      "target": "wb_command_cifti_create_dense_timeseries"
+    },
+    {
+      "source": "bbregister",
+      "target": "wb_command_cifti_separate"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dLME"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dMVM"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dmerge"
+    },
+    {
+      "source": "dual_regression",
+      "target": "3dttest++"
+    },
+    {
+      "source": "dual_regression",
+      "target": "dual_regression"
+    },
+    {
+      "source": "dual_regression",
+      "target": "film_gls"
+    },
+    {
+      "source": "dual_regression",
+      "target": "flameo"
+    },
+    {
+      "source": "dual_regression",
+      "target": "melodic"
+    },
+    {
+      "source": "dual_regression",
+      "target": "randomise"
+    },
+    {
+      "source": "dual_regression",
+      "target": "susan"
+    },
+    {
+      "source": "film_gls",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "film_gls",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "film_gls",
+      "target": "film_gls"
+    },
+    {
+      "source": "film_gls",
+      "target": "flameo"
+    },
+    {
+      "source": "film_gls",
+      "target": "randomise"
+    },
+    {
+      "source": "flameo",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "flameo",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "flameo",
+      "target": "film_gls"
+    },
+    {
+      "source": "flameo",
+      "target": "flameo"
+    },
+    {
+      "source": "flameo",
+      "target": "randomise"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dAutomask"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dBandpass"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dLME"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dMVM"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dNetCorr"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dROIstats"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dRSFC"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dTcorr1D"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dTcorrMap"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dmaskave"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dmerge"
+    },
+    {
+      "source": "fmriprep",
+      "target": "3dttest++"
+    },
+    {
+      "source": "fmriprep",
+      "target": "bbregister"
+    },
+    {
+      "source": "fmriprep",
+      "target": "dual_regression"
+    },
+    {
+      "source": "fmriprep",
+      "target": "film_gls"
+    },
+    {
+      "source": "fmriprep",
+      "target": "flameo"
+    },
+    {
+      "source": "fmriprep",
+      "target": "melodic"
+    },
+    {
+      "source": "fmriprep",
+      "target": "mri_glmfit"
+    },
+    {
+      "source": "fmriprep",
+      "target": "mri_surf2vol"
+    },
+    {
+      "source": "fmriprep",
+      "target": "mri_vol2surf"
+    },
+    {
+      "source": "fmriprep",
+      "target": "mris_preproc"
+    },
+    {
+      "source": "fmriprep",
+      "target": "randomise"
+    },
+    {
+      "source": "fmriprep",
+      "target": "susan"
+    },
+    {
+      "source": "fmriprep",
+      "target": "wb_command_cifti_create_dense_timeseries"
+    },
+    {
+      "source": "fmriprep",
+      "target": "wb_command_cifti_separate"
+    },
+    {
+      "source": "fmriprep",
+      "target": "wb_command_cifti_smoothing"
+    },
+    {
+      "source": "fmriprep",
+      "target": "wb_command_metric_smoothing"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "3dDespike"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "3dTshift"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "3dmerge"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "3dvolreg"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "align_epi_anat"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "antsMotionCorr"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "applytopup"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "fsl_prepare_fieldmap"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "fugue"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "mcflirt"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "prelude"
+    },
+    {
+      "source": "fsl_prepare_fieldmap",
+      "target": "topup"
+    },
+    {
+      "source": "fugue",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "fugue",
+      "target": "3dDespike"
+    },
+    {
+      "source": "fugue",
+      "target": "3dTshift"
+    },
+    {
+      "source": "fugue",
+      "target": "3dmerge"
+    },
+    {
+      "source": "fugue",
+      "target": "3dvolreg"
+    },
+    {
+      "source": "fugue",
+      "target": "align_epi_anat"
+    },
+    {
+      "source": "fugue",
+      "target": "antsMotionCorr"
+    },
+    {
+      "source": "fugue",
+      "target": "applytopup"
+    },
+    {
+      "source": "fugue",
+      "target": "fsl_prepare_fieldmap"
+    },
+    {
+      "source": "fugue",
+      "target": "fugue"
+    },
+    {
+      "source": "fugue",
+      "target": "mcflirt"
+    },
+    {
+      "source": "fugue",
+      "target": "prelude"
+    },
+    {
+      "source": "fugue",
+      "target": "topup"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dAutomask"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dLME"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dMVM"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dmerge"
+    },
+    {
+      "source": "mcflirt",
+      "target": "3dttest++"
+    },
+    {
+      "source": "mcflirt",
+      "target": "dual_regression"
+    },
+    {
+      "source": "mcflirt",
+      "target": "film_gls"
+    },
+    {
+      "source": "mcflirt",
+      "target": "flameo"
+    },
+    {
+      "source": "mcflirt",
+      "target": "melodic"
+    },
+    {
+      "source": "mcflirt",
+      "target": "randomise"
+    },
+    {
+      "source": "mcflirt",
+      "target": "slicetimer"
+    },
+    {
+      "source": "mcflirt",
+      "target": "susan"
+    },
+    {
+      "source": "melodic",
+      "target": "3dANOVA"
+    },
+    {
+      "source": "melodic",
+      "target": "3dANOVA2"
+    },
+    {
+      "source": "melodic",
+      "target": "3dANOVA3"
+    },
+    {
+      "source": "melodic",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "melodic",
+      "target": "3dDeconvolve"
+    },
+    {
+      "source": "melodic",
+      "target": "3dLME"
+    },
+    {
+      "source": "melodic",
+      "target": "3dLMEr"
+    },
+    {
+      "source": "melodic",
+      "target": "3dMEMA"
+    },
+    {
+      "source": "melodic",
+      "target": "3dMVM"
+    },
+    {
+      "source": "melodic",
+      "target": "3dREMLfit"
+    },
+    {
+      "source": "melodic",
+      "target": "3dmerge"
+    },
+    {
+      "source": "melodic",
+      "target": "3dttest++"
+    },
+    {
+      "source": "melodic",
+      "target": "dual_regression"
+    },
+    {
+      "source": "melodic",
+      "target": "film_gls"
+    },
+    {
+      "source": "melodic",
+      "target": "flameo"
+    },
+    {
+      "source": "melodic",
+      "target": "melodic"
+    },
+    {
+      "source": "melodic",
+      "target": "randomise"
+    },
+    {
+      "source": "melodic",
+      "target": "susan"
+    },
+    {
+      "source": "mri_glmfit",
+      "target": "bbregister"
+    },
+    {
+      "source": "mri_glmfit",
+      "target": "mri_glmfit"
+    },
+    {
+      "source": "mri_glmfit",
+      "target": "mri_surf2vol"
+    },
+    {
+      "source": "mri_glmfit",
+      "target": "mri_vol2surf"
+    },
+    {
+      "source": "mri_glmfit",
+      "target": "mris_preproc"
+    },
+    {
+      "source": "mri_glmfit",
+      "target": "wb_command_cifti_create_dense_timeseries"
+    },
+    {
+      "source": "mri_glmfit",
+      "target": "wb_command_cifti_separate"
+    },
+    {
+      "source": "mri_surf2vol",
+      "target": "bbregister"
+    },
+    {
+      "source": "mri_surf2vol",
+      "target": "mri_glmfit"
+    },
+    {
+      "source": "mri_surf2vol",
+      "target": "mri_surf2vol"
+    },
+    {
+      "source": "mri_surf2vol",
+      "target": "mri_vol2surf"
+    },
+    {
+      "source": "mri_surf2vol",
+      "target": "mris_preproc"
+    },
+    {
+      "source": "mri_surf2vol",
+      "target": "wb_command_cifti_create_dense_timeseries"
+    },
+    {
+      "source": "mri_surf2vol",
+      "target": "wb_command_cifti_separate"
+    },
+    {
+      "source": "mri_vol2surf",
+      "target": "bbregister"
+    },
+    {
+      "source": "mri_vol2surf",
+      "target": "mri_glmfit"
+    },
+    {
+      "source": "mri_vol2surf",
+      "target": "mri_surf2vol"
+    },
+    {
+      "source": "mri_vol2surf",
+      "target": "mri_vol2surf"
+    },
+    {
+      "source": "mri_vol2surf",
+      "target": "mris_preproc"
+    },
+    {
+      "source": "mri_vol2surf",
+      "target": "wb_command_cifti_create_dense_timeseries"
+    },
+    {
+      "source": "mri_vol2surf",
+      "target": "wb_command_cifti_separate"
+    },
+    {
+      "source": "mris_preproc",
+      "target": "bbregister"
+    },
+    {
+      "source": "mris_preproc",
+      "target": "mri_glmfit"
+    },
+    {
+      "source": "mris_preproc",
+      "target": "mri_surf2vol"
+    },
+    {
+      "source": "mris_preproc",
+      "target": "mri_vol2surf"
+    },
+    {
+      "source": "mris_preproc",
+      "target": "mris_preproc"
+    },
+    {
+      "source": "mris_preproc",
+      "target": "wb_command_cifti_create_dense_timeseries"
+    },
+    {
+      "source": "mris_preproc",
+      "target": "wb_command_cifti_separate"
+    },
+    {
+      "source": "prelude",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "prelude",
+      "target": "3dDespike"
+    },
+    {
+      "source": "prelude",
+      "target": "3dTshift"
+    },
+    {
+      "source": "prelude",
+      "target": "3dmerge"
+    },
+    {
+      "source": "prelude",
+      "target": "3dvolreg"
+    },
+    {
+      "source": "prelude",
+      "target": "align_epi_anat"
+    },
+    {
+      "source": "prelude",
+      "target": "antsMotionCorr"
+    },
+    {
+      "source": "prelude",
+      "target": "applytopup"
+    },
+    {
+      "source": "prelude",
+      "target": "fsl_prepare_fieldmap"
+    },
+    {
+      "source": "prelude",
+      "target": "fugue"
+    },
+    {
+      "source": "prelude",
+      "target": "mcflirt"
+    },
+    {
+      "source": "prelude",
+      "target": "prelude"
+    },
+    {
+      "source": "prelude",
+      "target": "topup"
+    },
+    {
+      "source": "randomise",
+      "target": "3dClustSim"
+    },
+    {
+      "source": "randomise",
+      "target": "3dFWHMx"
+    },
+    {
+      "source": "randomise",
+      "target": "film_gls"
+    },
+    {
+      "source": "randomise",
+      "target": "flameo"
+    },
+    {
+      "source": "randomise",
+      "target": "randomise"
+    },
+    {
+      "source": "slicetimer",
+      "target": "film_gls"
+    },
+    {
+      "source": "slicetimer",
+      "target": "flameo"
+    },
+    {
+      "source": "slicetimer",
+      "target": "randomise"
+    },
+    {
+      "source": "slicetimer",
+      "target": "susan"
+    },
+    {
+      "source": "susan",
+      "target": "dual_regression"
+    },
+    {
+      "source": "susan",
+      "target": "film_gls"
+    },
+    {
+      "source": "susan",
+      "target": "flameo"
+    },
+    {
+      "source": "susan",
+      "target": "melodic"
+    },
+    {
+      "source": "susan",
+      "target": "randomise"
+    },
+    {
+      "source": "topup",
+      "target": "3dBlurToFWHM"
+    },
+    {
+      "source": "topup",
+      "target": "3dDespike"
+    },
+    {
+      "source": "topup",
+      "target": "3dTshift"
+    },
+    {
+      "source": "topup",
+      "target": "3dmerge"
+    },
+    {
+      "source": "topup",
+      "target": "3dvolreg"
+    },
+    {
+      "source": "topup",
+      "target": "align_epi_anat"
+    },
+    {
+      "source": "topup",
+      "target": "antsMotionCorr"
+    },
+    {
+      "source": "topup",
+      "target": "applytopup"
+    },
+    {
+      "source": "topup",
+      "target": "fsl_prepare_fieldmap"
+    },
+    {
+      "source": "topup",
+      "target": "fugue"
+    },
+    {
+      "source": "topup",
+      "target": "mcflirt"
+    },
+    {
+      "source": "topup",
+      "target": "prelude"
+    },
+    {
+      "source": "topup",
+      "target": "topup"
+    },
+    {
+      "source": "wb_command_cifti_create_dense_timeseries",
+      "target": "wb_command_cifti_create_dense_timeseries"
+    },
+    {
+      "source": "wb_command_cifti_create_dense_timeseries",
+      "target": "wb_command_cifti_separate"
+    },
+    {
+      "source": "wb_command_cifti_create_dense_timeseries",
+      "target": "wb_command_cifti_smoothing"
+    },
+    {
+      "source": "wb_command_cifti_create_dense_timeseries",
+      "target": "wb_command_metric_smoothing"
+    },
+    {
+      "source": "wb_command_cifti_separate",
+      "target": "wb_command_cifti_create_dense_timeseries"
+    },
+    {
+      "source": "wb_command_cifti_separate",
+      "target": "wb_command_cifti_separate"
+    },
+    {
+      "source": "wb_command_cifti_separate",
+      "target": "wb_command_cifti_smoothing"
+    },
+    {
+      "source": "wb_command_cifti_separate",
+      "target": "wb_command_metric_smoothing"
+    },
+    {
+      "source": "wb_command_cifti_smoothing",
+      "target": "wb_command_cifti_smoothing"
+    },
+    {
+      "source": "wb_command_cifti_smoothing",
+      "target": "wb_command_metric_smoothing"
+    },
+    {
+      "source": "wb_command_metric_smoothing",
+      "target": "wb_command_cifti_smoothing"
+    },
+    {
+      "source": "wb_command_metric_smoothing",
+      "target": "wb_command_metric_smoothing"
     }
   ],
   "matrix": [
@@ -3260,14 +5185,5 @@
     ]
   ],
   "edgeCount": 592,
-  "toolCount": 51,
-  "normalization": {
-    "canonicalLabelFormat": "library / subsection",
-    "rules": [
-      "lowercase",
-      "trim and collapse whitespace",
-      "normalize '&' to 'and'",
-      "treat '-' and '/' equivalently in subsection text"
-    ]
-  }
+  "toolCount": 51
 }

@@ -241,12 +241,16 @@ export function buildCWLWorkflowObject(graph) {
         steps: {}
     };
 
-    // Generate workflow-level File[] inputs from BIDS node selections
-    for (const bidsNode of bidsNodes) {
-        const selections = bidsNode.data.bidsSelections.selections;
-        for (const [selKey] of Object.entries(selections)) {
-            wf.inputs[selKey] = { type: { type: 'array', items: 'File' } };
+    // Generate workflow-level File[] inputs only for BIDS selections consumed by non-dummy nodes
+    const consumedBidsSelections = new Set();
+    for (const edge of bidsEdges) {
+        if (dummyNodeIds.has(edge.target)) continue;
+        for (const m of (edge.data?.mappings || [])) {
+            consumedBidsSelections.add(m.sourceOutput);
         }
+    }
+    for (const selKey of consumedBidsSelections) {
+        wf.inputs[selKey] = { type: { type: 'array', items: 'File' } };
     }
 
     // Requirement flags — assembled after the node walk loop

@@ -1,8 +1,7 @@
 {
-  "generatedAt": "2026-02-22T01:44:48+00:00",
+  "generatedAt": "2026-02-22T06:29:47+00:00",
   "sources": {
-    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\utils_tests\\connects\\utils_subsection_graph.mmd",
-    "mapping": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\utils_tests\\connects\\utils_tool_to_subsection_map.json"
+    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\utils_tests\\connects\\utils_tool_graph.mmd"
   },
   "toolOrder": [
     "3dNwarpApply",
@@ -72,462 +71,2390 @@
     "robustfov": 30,
     "whereami": 31
   },
-  "subsectionByTool": {
-    "3dNwarpApply": "afni / warp utilities",
-    "3dNwarpCat": "afni / warp utilities",
-    "3dTcat": "afni / dataset operations",
-    "3dTstat": "afni / image math",
-    "3dUndump": "afni / roi utilities",
-    "3dZeropad": "afni / dataset operations",
-    "3dcalc": "afni / image math",
-    "3dcopy": "afni / dataset operations",
-    "3dfractionize": "afni / roi utilities",
-    "3dinfo": "afni / dataset operations",
-    "3dresample": "afni / roi utilities",
-    "DenoiseImage": "ants / preprocessing utilities",
-    "ImageMath": "ants / image operations",
-    "LabelGeometryMeasures": "ants / label analysis",
-    "N4BiasFieldCorrection": "ants / preprocessing utilities",
-    "ThresholdImage": "ants / image operations",
-    "antsApplyTransforms": "ants / transform utilities",
-    "antsJointLabelFusion.sh": "ants / label analysis",
-    "applywarp": "fsl / warp utilities",
-    "cluster": "fsl / clustering",
-    "convertwarp": "fsl / warp utilities",
-    "fslmaths": "fsl / image math",
-    "fslmeants": "fsl / image math",
-    "fslmerge": "fsl / volume operations",
-    "fslreorient2std": "fsl / volume operations",
-    "fslroi": "fsl / image math",
-    "fslsplit": "fsl / volume operations",
-    "fslstats": "fsl / image math",
-    "invwarp": "fsl / warp utilities",
-    "mri_convert": "freesurfer / format conversion",
-    "robustfov": "fsl / volume operations",
-    "whereami": "afni / roi utilities"
-  },
-  "subsectionByToolOriginal": {
-    "3dNwarpApply": "AFNI / Warp Utilities",
-    "3dNwarpCat": "AFNI / Warp Utilities",
-    "3dTcat": "AFNI / Dataset Operations",
-    "3dTstat": "AFNI / Image Math",
-    "3dUndump": "AFNI / ROI Utilities",
-    "3dZeropad": "AFNI / Dataset Operations",
-    "3dcalc": "AFNI / Image Math",
-    "3dcopy": "AFNI / Dataset Operations",
-    "3dfractionize": "AFNI / ROI Utilities",
-    "3dinfo": "AFNI / Dataset Operations",
-    "3dresample": "AFNI / ROI Utilities",
-    "DenoiseImage": "ANTs / Preprocessing Utilities",
-    "ImageMath": "ANTs / Image Operations",
-    "LabelGeometryMeasures": "ANTs / Label Analysis",
-    "N4BiasFieldCorrection": "ANTs / Preprocessing Utilities",
-    "ThresholdImage": "ANTs / Image Operations",
-    "antsApplyTransforms": "ANTs / Transform Utilities",
-    "antsJointLabelFusion.sh": "ANTs / Label Analysis",
-    "applywarp": "FSL / Warp Utilities",
-    "cluster": "FSL / Clustering",
-    "convertwarp": "FSL / Warp Utilities",
-    "fslmaths": "FSL / Image Math",
-    "fslmeants": "FSL / Image Math",
-    "fslmerge": "FSL / Volume Operations",
-    "fslreorient2std": "FSL / Volume Operations",
-    "fslroi": "FSL / Image Math",
-    "fslsplit": "FSL / Volume Operations",
-    "fslstats": "FSL / Image Math",
-    "invwarp": "FSL / Warp Utilities",
-    "mri_convert": "FreeSurfer / Format Conversion",
-    "robustfov": "FSL / Volume Operations",
-    "whereami": "AFNI / ROI Utilities"
-  },
-  "subsectionEdges": [
+  "toolEdges": [
     {
-      "source": "afni / dataset operations",
-      "target": "afni / dataset operations"
+      "source": "3dNwarpApply",
+      "target": "3dNwarpApply"
     },
     {
-      "source": "afni / dataset operations",
-      "target": "afni / image math"
+      "source": "3dNwarpApply",
+      "target": "3dNwarpCat"
     },
     {
-      "source": "afni / dataset operations",
-      "target": "afni / roi utilities"
+      "source": "3dNwarpApply",
+      "target": "3dTstat"
     },
     {
-      "source": "afni / dataset operations",
-      "target": "afni / warp utilities"
+      "source": "3dNwarpApply",
+      "target": "3dUndump"
     },
     {
-      "source": "afni / dataset operations",
-      "target": "ants / image operations"
+      "source": "3dNwarpApply",
+      "target": "3dcalc"
     },
     {
-      "source": "afni / dataset operations",
-      "target": "ants / transform utilities"
+      "source": "3dNwarpApply",
+      "target": "3dfractionize"
     },
     {
-      "source": "afni / dataset operations",
-      "target": "fsl / clustering"
+      "source": "3dNwarpApply",
+      "target": "3dresample"
     },
     {
-      "source": "afni / dataset operations",
-      "target": "fsl / image math"
+      "source": "3dNwarpApply",
+      "target": "LabelGeometryMeasures"
     },
     {
-      "source": "afni / dataset operations",
-      "target": "fsl / warp utilities"
+      "source": "3dNwarpApply",
+      "target": "antsJointLabelFusion.sh"
     },
     {
-      "source": "afni / image math",
-      "target": "afni / image math"
+      "source": "3dNwarpApply",
+      "target": "cluster"
     },
     {
-      "source": "afni / image math",
-      "target": "afni / roi utilities"
+      "source": "3dNwarpApply",
+      "target": "whereami"
     },
     {
-      "source": "afni / image math",
-      "target": "afni / warp utilities"
+      "source": "3dNwarpCat",
+      "target": "3dNwarpApply"
     },
     {
-      "source": "afni / image math",
-      "target": "ants / label analysis"
+      "source": "3dNwarpCat",
+      "target": "3dNwarpCat"
     },
     {
-      "source": "afni / image math",
-      "target": "ants / transform utilities"
+      "source": "3dNwarpCat",
+      "target": "3dTstat"
     },
     {
-      "source": "afni / image math",
-      "target": "fsl / clustering"
+      "source": "3dNwarpCat",
+      "target": "3dUndump"
     },
     {
-      "source": "afni / image math",
-      "target": "fsl / warp utilities"
+      "source": "3dNwarpCat",
+      "target": "3dcalc"
     },
     {
-      "source": "afni / roi utilities",
-      "target": "afni / image math"
+      "source": "3dNwarpCat",
+      "target": "3dfractionize"
     },
     {
-      "source": "afni / roi utilities",
-      "target": "afni / roi utilities"
+      "source": "3dNwarpCat",
+      "target": "3dresample"
     },
     {
-      "source": "afni / roi utilities",
-      "target": "afni / warp utilities"
+      "source": "3dNwarpCat",
+      "target": "LabelGeometryMeasures"
     },
     {
-      "source": "afni / roi utilities",
-      "target": "ants / image operations"
+      "source": "3dNwarpCat",
+      "target": "antsJointLabelFusion.sh"
     },
     {
-      "source": "afni / roi utilities",
-      "target": "ants / transform utilities"
+      "source": "3dNwarpCat",
+      "target": "cluster"
     },
     {
-      "source": "afni / roi utilities",
-      "target": "fsl / clustering"
+      "source": "3dNwarpCat",
+      "target": "whereami"
     },
     {
-      "source": "afni / roi utilities",
-      "target": "fsl / image math"
+      "source": "3dTcat",
+      "target": "3dNwarpApply"
     },
     {
-      "source": "afni / roi utilities",
-      "target": "fsl / warp utilities"
+      "source": "3dTcat",
+      "target": "3dNwarpCat"
     },
     {
-      "source": "afni / warp utilities",
-      "target": "afni / image math"
+      "source": "3dTcat",
+      "target": "3dTcat"
     },
     {
-      "source": "afni / warp utilities",
-      "target": "afni / roi utilities"
+      "source": "3dTcat",
+      "target": "3dTstat"
     },
     {
-      "source": "afni / warp utilities",
-      "target": "afni / warp utilities"
+      "source": "3dTcat",
+      "target": "3dUndump"
     },
     {
-      "source": "afni / warp utilities",
-      "target": "ants / label analysis"
+      "source": "3dTcat",
+      "target": "3dZeropad"
     },
     {
-      "source": "afni / warp utilities",
-      "target": "fsl / clustering"
+      "source": "3dTcat",
+      "target": "3dcalc"
     },
     {
-      "source": "ants / image operations",
-      "target": "afni / roi utilities"
+      "source": "3dTcat",
+      "target": "3dcopy"
     },
     {
-      "source": "ants / image operations",
-      "target": "afni / warp utilities"
+      "source": "3dTcat",
+      "target": "3dfractionize"
     },
     {
-      "source": "ants / image operations",
-      "target": "ants / image operations"
+      "source": "3dTcat",
+      "target": "3dinfo"
     },
     {
-      "source": "ants / image operations",
-      "target": "ants / label analysis"
+      "source": "3dTcat",
+      "target": "3dresample"
     },
     {
-      "source": "ants / image operations",
-      "target": "ants / transform utilities"
+      "source": "3dTcat",
+      "target": "ImageMath"
     },
     {
-      "source": "ants / image operations",
-      "target": "fsl / clustering"
+      "source": "3dTcat",
+      "target": "ThresholdImage"
     },
     {
-      "source": "ants / image operations",
-      "target": "fsl / warp utilities"
+      "source": "3dTcat",
+      "target": "antsApplyTransforms"
     },
     {
-      "source": "ants / label analysis",
-      "target": "afni / image math"
+      "source": "3dTcat",
+      "target": "applywarp"
     },
     {
-      "source": "ants / label analysis",
-      "target": "afni / roi utilities"
+      "source": "3dTcat",
+      "target": "cluster"
     },
     {
-      "source": "ants / label analysis",
-      "target": "afni / warp utilities"
+      "source": "3dTcat",
+      "target": "convertwarp"
     },
     {
-      "source": "ants / label analysis",
-      "target": "ants / image operations"
+      "source": "3dTcat",
+      "target": "fslmaths"
     },
     {
-      "source": "ants / label analysis",
-      "target": "ants / label analysis"
+      "source": "3dTcat",
+      "target": "fslmeants"
     },
     {
-      "source": "ants / label analysis",
-      "target": "ants / transform utilities"
+      "source": "3dTcat",
+      "target": "fslroi"
     },
     {
-      "source": "ants / label analysis",
-      "target": "fsl / clustering"
+      "source": "3dTcat",
+      "target": "fslstats"
     },
     {
-      "source": "ants / label analysis",
-      "target": "fsl / image math"
+      "source": "3dTcat",
+      "target": "invwarp"
     },
     {
-      "source": "ants / label analysis",
-      "target": "fsl / warp utilities"
+      "source": "3dTcat",
+      "target": "whereami"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "afni / dataset operations"
+      "source": "3dTstat",
+      "target": "3dNwarpApply"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "afni / image math"
+      "source": "3dTstat",
+      "target": "3dNwarpCat"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "afni / warp utilities"
+      "source": "3dTstat",
+      "target": "3dTstat"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "ants / image operations"
+      "source": "3dTstat",
+      "target": "3dUndump"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "ants / preprocessing utilities"
+      "source": "3dTstat",
+      "target": "3dcalc"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "ants / transform utilities"
+      "source": "3dTstat",
+      "target": "3dfractionize"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "freesurfer / format conversion"
+      "source": "3dTstat",
+      "target": "3dresample"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "fsl / image math"
+      "source": "3dTstat",
+      "target": "LabelGeometryMeasures"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "fsl / volume operations"
+      "source": "3dTstat",
+      "target": "antsApplyTransforms"
     },
     {
-      "source": "ants / preprocessing utilities",
-      "target": "fsl / warp utilities"
+      "source": "3dTstat",
+      "target": "antsJointLabelFusion.sh"
     },
     {
-      "source": "ants / transform utilities",
-      "target": "afni / roi utilities"
+      "source": "3dTstat",
+      "target": "applywarp"
     },
     {
-      "source": "ants / transform utilities",
-      "target": "ants / image operations"
+      "source": "3dTstat",
+      "target": "cluster"
     },
     {
-      "source": "ants / transform utilities",
-      "target": "ants / label analysis"
+      "source": "3dTstat",
+      "target": "convertwarp"
     },
     {
-      "source": "ants / transform utilities",
-      "target": "fsl / clustering"
+      "source": "3dTstat",
+      "target": "invwarp"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "afni / dataset operations"
+      "source": "3dTstat",
+      "target": "whereami"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "afni / image math"
+      "source": "3dUndump",
+      "target": "3dNwarpApply"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "afni / roi utilities"
+      "source": "3dUndump",
+      "target": "3dNwarpCat"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "afni / warp utilities"
+      "source": "3dUndump",
+      "target": "3dTstat"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "ants / image operations"
+      "source": "3dUndump",
+      "target": "3dUndump"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "ants / label analysis"
+      "source": "3dUndump",
+      "target": "3dcalc"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "ants / transform utilities"
+      "source": "3dUndump",
+      "target": "3dfractionize"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "fsl / clustering"
+      "source": "3dUndump",
+      "target": "3dresample"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "fsl / image math"
+      "source": "3dUndump",
+      "target": "ImageMath"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "fsl / volume operations"
+      "source": "3dUndump",
+      "target": "ThresholdImage"
     },
     {
-      "source": "freesurfer / format conversion",
-      "target": "fsl / warp utilities"
+      "source": "3dUndump",
+      "target": "antsApplyTransforms"
     },
     {
-      "source": "fsl / clustering",
-      "target": "afni / image math"
+      "source": "3dUndump",
+      "target": "applywarp"
     },
     {
-      "source": "fsl / clustering",
-      "target": "afni / warp utilities"
+      "source": "3dUndump",
+      "target": "cluster"
     },
     {
-      "source": "fsl / clustering",
-      "target": "ants / image operations"
+      "source": "3dUndump",
+      "target": "convertwarp"
     },
     {
-      "source": "fsl / clustering",
-      "target": "ants / transform utilities"
+      "source": "3dUndump",
+      "target": "fslmaths"
     },
     {
-      "source": "fsl / clustering",
-      "target": "fsl / image math"
+      "source": "3dUndump",
+      "target": "fslmeants"
     },
     {
-      "source": "fsl / clustering",
-      "target": "fsl / warp utilities"
+      "source": "3dUndump",
+      "target": "fslroi"
     },
     {
-      "source": "fsl / image math",
-      "target": "afni / roi utilities"
+      "source": "3dUndump",
+      "target": "fslstats"
     },
     {
-      "source": "fsl / image math",
-      "target": "afni / warp utilities"
+      "source": "3dUndump",
+      "target": "invwarp"
     },
     {
-      "source": "fsl / image math",
-      "target": "ants / label analysis"
+      "source": "3dUndump",
+      "target": "whereami"
     },
     {
-      "source": "fsl / image math",
-      "target": "ants / transform utilities"
+      "source": "3dZeropad",
+      "target": "3dNwarpApply"
     },
     {
-      "source": "fsl / image math",
-      "target": "fsl / clustering"
+      "source": "3dZeropad",
+      "target": "3dNwarpCat"
     },
     {
-      "source": "fsl / image math",
-      "target": "fsl / image math"
+      "source": "3dZeropad",
+      "target": "3dTcat"
     },
     {
-      "source": "fsl / image math",
-      "target": "fsl / volume operations"
+      "source": "3dZeropad",
+      "target": "3dTstat"
     },
     {
-      "source": "fsl / image math",
-      "target": "fsl / warp utilities"
+      "source": "3dZeropad",
+      "target": "3dUndump"
     },
     {
-      "source": "fsl / volume operations",
-      "target": "afni / image math"
+      "source": "3dZeropad",
+      "target": "3dZeropad"
     },
     {
-      "source": "fsl / volume operations",
-      "target": "afni / warp utilities"
+      "source": "3dZeropad",
+      "target": "3dcalc"
     },
     {
-      "source": "fsl / volume operations",
-      "target": "ants / image operations"
+      "source": "3dZeropad",
+      "target": "3dcopy"
     },
     {
-      "source": "fsl / volume operations",
-      "target": "ants / transform utilities"
+      "source": "3dZeropad",
+      "target": "3dfractionize"
     },
     {
-      "source": "fsl / volume operations",
-      "target": "fsl / clustering"
+      "source": "3dZeropad",
+      "target": "3dinfo"
     },
     {
-      "source": "fsl / volume operations",
-      "target": "fsl / image math"
+      "source": "3dZeropad",
+      "target": "3dresample"
     },
     {
-      "source": "fsl / volume operations",
-      "target": "fsl / volume operations"
+      "source": "3dZeropad",
+      "target": "ImageMath"
     },
     {
-      "source": "fsl / volume operations",
-      "target": "fsl / warp utilities"
+      "source": "3dZeropad",
+      "target": "ThresholdImage"
     },
     {
-      "source": "fsl / warp utilities",
-      "target": "afni / roi utilities"
+      "source": "3dZeropad",
+      "target": "antsApplyTransforms"
     },
     {
-      "source": "fsl / warp utilities",
-      "target": "ants / label analysis"
+      "source": "3dZeropad",
+      "target": "applywarp"
     },
     {
-      "source": "fsl / warp utilities",
-      "target": "fsl / clustering"
+      "source": "3dZeropad",
+      "target": "cluster"
     },
     {
-      "source": "fsl / warp utilities",
-      "target": "fsl / image math"
+      "source": "3dZeropad",
+      "target": "convertwarp"
     },
     {
-      "source": "fsl / warp utilities",
-      "target": "fsl / warp utilities"
+      "source": "3dZeropad",
+      "target": "fslmaths"
+    },
+    {
+      "source": "3dZeropad",
+      "target": "fslmeants"
+    },
+    {
+      "source": "3dZeropad",
+      "target": "fslroi"
+    },
+    {
+      "source": "3dZeropad",
+      "target": "fslstats"
+    },
+    {
+      "source": "3dZeropad",
+      "target": "invwarp"
+    },
+    {
+      "source": "3dZeropad",
+      "target": "whereami"
+    },
+    {
+      "source": "3dcalc",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "3dcalc",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "3dcalc",
+      "target": "3dTstat"
+    },
+    {
+      "source": "3dcalc",
+      "target": "3dUndump"
+    },
+    {
+      "source": "3dcalc",
+      "target": "3dcalc"
+    },
+    {
+      "source": "3dcalc",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "3dcalc",
+      "target": "3dresample"
+    },
+    {
+      "source": "3dcalc",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "3dcalc",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "3dcalc",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "3dcalc",
+      "target": "applywarp"
+    },
+    {
+      "source": "3dcalc",
+      "target": "cluster"
+    },
+    {
+      "source": "3dcalc",
+      "target": "convertwarp"
+    },
+    {
+      "source": "3dcalc",
+      "target": "invwarp"
+    },
+    {
+      "source": "3dcalc",
+      "target": "whereami"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dTcat"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dTstat"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dUndump"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dZeropad"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dcalc"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dcopy"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dinfo"
+    },
+    {
+      "source": "3dcopy",
+      "target": "3dresample"
+    },
+    {
+      "source": "3dcopy",
+      "target": "ImageMath"
+    },
+    {
+      "source": "3dcopy",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "3dcopy",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "3dcopy",
+      "target": "applywarp"
+    },
+    {
+      "source": "3dcopy",
+      "target": "cluster"
+    },
+    {
+      "source": "3dcopy",
+      "target": "convertwarp"
+    },
+    {
+      "source": "3dcopy",
+      "target": "fslmaths"
+    },
+    {
+      "source": "3dcopy",
+      "target": "fslmeants"
+    },
+    {
+      "source": "3dcopy",
+      "target": "fslroi"
+    },
+    {
+      "source": "3dcopy",
+      "target": "fslstats"
+    },
+    {
+      "source": "3dcopy",
+      "target": "invwarp"
+    },
+    {
+      "source": "3dcopy",
+      "target": "whereami"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "3dTstat"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "3dUndump"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "3dcalc"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "3dresample"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "ImageMath"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "applywarp"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "cluster"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "convertwarp"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "fslmaths"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "fslmeants"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "fslroi"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "fslstats"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "invwarp"
+    },
+    {
+      "source": "3dfractionize",
+      "target": "whereami"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dTcat"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dTstat"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dUndump"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dZeropad"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dcalc"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dcopy"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dinfo"
+    },
+    {
+      "source": "3dinfo",
+      "target": "3dresample"
+    },
+    {
+      "source": "3dinfo",
+      "target": "ImageMath"
+    },
+    {
+      "source": "3dinfo",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "3dinfo",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "3dinfo",
+      "target": "applywarp"
+    },
+    {
+      "source": "3dinfo",
+      "target": "cluster"
+    },
+    {
+      "source": "3dinfo",
+      "target": "convertwarp"
+    },
+    {
+      "source": "3dinfo",
+      "target": "fslmaths"
+    },
+    {
+      "source": "3dinfo",
+      "target": "fslmeants"
+    },
+    {
+      "source": "3dinfo",
+      "target": "fslroi"
+    },
+    {
+      "source": "3dinfo",
+      "target": "fslstats"
+    },
+    {
+      "source": "3dinfo",
+      "target": "invwarp"
+    },
+    {
+      "source": "3dinfo",
+      "target": "whereami"
+    },
+    {
+      "source": "3dresample",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "3dresample",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "3dresample",
+      "target": "3dTstat"
+    },
+    {
+      "source": "3dresample",
+      "target": "3dUndump"
+    },
+    {
+      "source": "3dresample",
+      "target": "3dcalc"
+    },
+    {
+      "source": "3dresample",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "3dresample",
+      "target": "3dresample"
+    },
+    {
+      "source": "3dresample",
+      "target": "ImageMath"
+    },
+    {
+      "source": "3dresample",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "3dresample",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "3dresample",
+      "target": "applywarp"
+    },
+    {
+      "source": "3dresample",
+      "target": "cluster"
+    },
+    {
+      "source": "3dresample",
+      "target": "convertwarp"
+    },
+    {
+      "source": "3dresample",
+      "target": "fslmaths"
+    },
+    {
+      "source": "3dresample",
+      "target": "fslmeants"
+    },
+    {
+      "source": "3dresample",
+      "target": "fslroi"
+    },
+    {
+      "source": "3dresample",
+      "target": "fslstats"
+    },
+    {
+      "source": "3dresample",
+      "target": "invwarp"
+    },
+    {
+      "source": "3dresample",
+      "target": "whereami"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "3dTcat"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "3dTstat"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "3dZeropad"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "3dcalc"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "3dcopy"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "3dinfo"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "DenoiseImage"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "ImageMath"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "N4BiasFieldCorrection"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "applywarp"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "convertwarp"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "fslmaths"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "fslmeants"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "fslmerge"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "fslroi"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "fslsplit"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "fslstats"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "invwarp"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "mri_convert"
+    },
+    {
+      "source": "DenoiseImage",
+      "target": "robustfov"
+    },
+    {
+      "source": "ImageMath",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "ImageMath",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "ImageMath",
+      "target": "3dUndump"
+    },
+    {
+      "source": "ImageMath",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "ImageMath",
+      "target": "3dresample"
+    },
+    {
+      "source": "ImageMath",
+      "target": "ImageMath"
+    },
+    {
+      "source": "ImageMath",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "ImageMath",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "ImageMath",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "ImageMath",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "ImageMath",
+      "target": "applywarp"
+    },
+    {
+      "source": "ImageMath",
+      "target": "cluster"
+    },
+    {
+      "source": "ImageMath",
+      "target": "convertwarp"
+    },
+    {
+      "source": "ImageMath",
+      "target": "invwarp"
+    },
+    {
+      "source": "ImageMath",
+      "target": "whereami"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "3dTstat"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "3dUndump"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "3dcalc"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "3dresample"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "ImageMath"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "applywarp"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "cluster"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "convertwarp"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "fslmaths"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "fslmeants"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "fslroi"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "fslstats"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "invwarp"
+    },
+    {
+      "source": "LabelGeometryMeasures",
+      "target": "whereami"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "3dTcat"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "3dTstat"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "3dZeropad"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "3dcalc"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "3dcopy"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "3dinfo"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "DenoiseImage"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "ImageMath"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "N4BiasFieldCorrection"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "applywarp"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "convertwarp"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "fslmaths"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "fslmeants"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "fslmerge"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "fslroi"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "fslsplit"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "fslstats"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "invwarp"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "mri_convert"
+    },
+    {
+      "source": "N4BiasFieldCorrection",
+      "target": "robustfov"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "3dUndump"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "3dresample"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "ImageMath"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "applywarp"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "cluster"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "convertwarp"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "invwarp"
+    },
+    {
+      "source": "ThresholdImage",
+      "target": "whereami"
+    },
+    {
+      "source": "antsApplyTransforms",
+      "target": "3dUndump"
+    },
+    {
+      "source": "antsApplyTransforms",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "antsApplyTransforms",
+      "target": "3dresample"
+    },
+    {
+      "source": "antsApplyTransforms",
+      "target": "ImageMath"
+    },
+    {
+      "source": "antsApplyTransforms",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "antsApplyTransforms",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "antsApplyTransforms",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "antsApplyTransforms",
+      "target": "cluster"
+    },
+    {
+      "source": "antsApplyTransforms",
+      "target": "whereami"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "3dTstat"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "3dUndump"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "3dcalc"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "3dresample"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "ImageMath"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "applywarp"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "cluster"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "convertwarp"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "fslmaths"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "fslmeants"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "fslroi"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "fslstats"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "invwarp"
+    },
+    {
+      "source": "antsJointLabelFusion.sh",
+      "target": "whereami"
+    },
+    {
+      "source": "applywarp",
+      "target": "3dUndump"
+    },
+    {
+      "source": "applywarp",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "applywarp",
+      "target": "3dresample"
+    },
+    {
+      "source": "applywarp",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "applywarp",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "applywarp",
+      "target": "applywarp"
+    },
+    {
+      "source": "applywarp",
+      "target": "cluster"
+    },
+    {
+      "source": "applywarp",
+      "target": "convertwarp"
+    },
+    {
+      "source": "applywarp",
+      "target": "fslmaths"
+    },
+    {
+      "source": "applywarp",
+      "target": "fslmeants"
+    },
+    {
+      "source": "applywarp",
+      "target": "fslroi"
+    },
+    {
+      "source": "applywarp",
+      "target": "fslstats"
+    },
+    {
+      "source": "applywarp",
+      "target": "invwarp"
+    },
+    {
+      "source": "applywarp",
+      "target": "whereami"
+    },
+    {
+      "source": "cluster",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "cluster",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "cluster",
+      "target": "3dTstat"
+    },
+    {
+      "source": "cluster",
+      "target": "3dcalc"
+    },
+    {
+      "source": "cluster",
+      "target": "ImageMath"
+    },
+    {
+      "source": "cluster",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "cluster",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "cluster",
+      "target": "applywarp"
+    },
+    {
+      "source": "cluster",
+      "target": "convertwarp"
+    },
+    {
+      "source": "cluster",
+      "target": "fslmaths"
+    },
+    {
+      "source": "cluster",
+      "target": "fslmeants"
+    },
+    {
+      "source": "cluster",
+      "target": "fslroi"
+    },
+    {
+      "source": "cluster",
+      "target": "fslstats"
+    },
+    {
+      "source": "cluster",
+      "target": "invwarp"
+    },
+    {
+      "source": "convertwarp",
+      "target": "3dUndump"
+    },
+    {
+      "source": "convertwarp",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "convertwarp",
+      "target": "3dresample"
+    },
+    {
+      "source": "convertwarp",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "convertwarp",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "convertwarp",
+      "target": "applywarp"
+    },
+    {
+      "source": "convertwarp",
+      "target": "cluster"
+    },
+    {
+      "source": "convertwarp",
+      "target": "convertwarp"
+    },
+    {
+      "source": "convertwarp",
+      "target": "fslmaths"
+    },
+    {
+      "source": "convertwarp",
+      "target": "fslmeants"
+    },
+    {
+      "source": "convertwarp",
+      "target": "fslroi"
+    },
+    {
+      "source": "convertwarp",
+      "target": "fslstats"
+    },
+    {
+      "source": "convertwarp",
+      "target": "invwarp"
+    },
+    {
+      "source": "convertwarp",
+      "target": "whereami"
+    },
+    {
+      "source": "fslmaths",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "fslmaths",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "fslmaths",
+      "target": "3dUndump"
+    },
+    {
+      "source": "fslmaths",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "fslmaths",
+      "target": "3dresample"
+    },
+    {
+      "source": "fslmaths",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "fslmaths",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "fslmaths",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "fslmaths",
+      "target": "applywarp"
+    },
+    {
+      "source": "fslmaths",
+      "target": "cluster"
+    },
+    {
+      "source": "fslmaths",
+      "target": "convertwarp"
+    },
+    {
+      "source": "fslmaths",
+      "target": "fslmaths"
+    },
+    {
+      "source": "fslmaths",
+      "target": "fslmeants"
+    },
+    {
+      "source": "fslmaths",
+      "target": "fslmerge"
+    },
+    {
+      "source": "fslmaths",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "fslmaths",
+      "target": "fslroi"
+    },
+    {
+      "source": "fslmaths",
+      "target": "fslsplit"
+    },
+    {
+      "source": "fslmaths",
+      "target": "fslstats"
+    },
+    {
+      "source": "fslmaths",
+      "target": "invwarp"
+    },
+    {
+      "source": "fslmaths",
+      "target": "robustfov"
+    },
+    {
+      "source": "fslmaths",
+      "target": "whereami"
+    },
+    {
+      "source": "fslmeants",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "fslmeants",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "fslmeants",
+      "target": "3dUndump"
+    },
+    {
+      "source": "fslmeants",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "fslmeants",
+      "target": "3dresample"
+    },
+    {
+      "source": "fslmeants",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "fslmeants",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "fslmeants",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "fslmeants",
+      "target": "applywarp"
+    },
+    {
+      "source": "fslmeants",
+      "target": "cluster"
+    },
+    {
+      "source": "fslmeants",
+      "target": "convertwarp"
+    },
+    {
+      "source": "fslmeants",
+      "target": "fslmaths"
+    },
+    {
+      "source": "fslmeants",
+      "target": "fslmeants"
+    },
+    {
+      "source": "fslmeants",
+      "target": "fslmerge"
+    },
+    {
+      "source": "fslmeants",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "fslmeants",
+      "target": "fslroi"
+    },
+    {
+      "source": "fslmeants",
+      "target": "fslsplit"
+    },
+    {
+      "source": "fslmeants",
+      "target": "fslstats"
+    },
+    {
+      "source": "fslmeants",
+      "target": "invwarp"
+    },
+    {
+      "source": "fslmeants",
+      "target": "robustfov"
+    },
+    {
+      "source": "fslmeants",
+      "target": "whereami"
+    },
+    {
+      "source": "fslmerge",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "fslmerge",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "fslmerge",
+      "target": "3dTstat"
+    },
+    {
+      "source": "fslmerge",
+      "target": "3dcalc"
+    },
+    {
+      "source": "fslmerge",
+      "target": "ImageMath"
+    },
+    {
+      "source": "fslmerge",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "fslmerge",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "fslmerge",
+      "target": "applywarp"
+    },
+    {
+      "source": "fslmerge",
+      "target": "cluster"
+    },
+    {
+      "source": "fslmerge",
+      "target": "convertwarp"
+    },
+    {
+      "source": "fslmerge",
+      "target": "fslmaths"
+    },
+    {
+      "source": "fslmerge",
+      "target": "fslmeants"
+    },
+    {
+      "source": "fslmerge",
+      "target": "fslmerge"
+    },
+    {
+      "source": "fslmerge",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "fslmerge",
+      "target": "fslroi"
+    },
+    {
+      "source": "fslmerge",
+      "target": "fslsplit"
+    },
+    {
+      "source": "fslmerge",
+      "target": "fslstats"
+    },
+    {
+      "source": "fslmerge",
+      "target": "invwarp"
+    },
+    {
+      "source": "fslmerge",
+      "target": "robustfov"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "3dTstat"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "3dcalc"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "ImageMath"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "applywarp"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "cluster"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "convertwarp"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "fslmaths"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "fslmeants"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "fslmerge"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "fslroi"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "fslsplit"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "fslstats"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "invwarp"
+    },
+    {
+      "source": "fslreorient2std",
+      "target": "robustfov"
+    },
+    {
+      "source": "fslroi",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "fslroi",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "fslroi",
+      "target": "3dUndump"
+    },
+    {
+      "source": "fslroi",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "fslroi",
+      "target": "3dresample"
+    },
+    {
+      "source": "fslroi",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "fslroi",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "fslroi",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "fslroi",
+      "target": "applywarp"
+    },
+    {
+      "source": "fslroi",
+      "target": "cluster"
+    },
+    {
+      "source": "fslroi",
+      "target": "convertwarp"
+    },
+    {
+      "source": "fslroi",
+      "target": "fslmaths"
+    },
+    {
+      "source": "fslroi",
+      "target": "fslmeants"
+    },
+    {
+      "source": "fslroi",
+      "target": "fslmerge"
+    },
+    {
+      "source": "fslroi",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "fslroi",
+      "target": "fslroi"
+    },
+    {
+      "source": "fslroi",
+      "target": "fslsplit"
+    },
+    {
+      "source": "fslroi",
+      "target": "fslstats"
+    },
+    {
+      "source": "fslroi",
+      "target": "invwarp"
+    },
+    {
+      "source": "fslroi",
+      "target": "robustfov"
+    },
+    {
+      "source": "fslroi",
+      "target": "whereami"
+    },
+    {
+      "source": "fslsplit",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "fslsplit",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "fslsplit",
+      "target": "3dTstat"
+    },
+    {
+      "source": "fslsplit",
+      "target": "3dcalc"
+    },
+    {
+      "source": "fslsplit",
+      "target": "ImageMath"
+    },
+    {
+      "source": "fslsplit",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "fslsplit",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "fslsplit",
+      "target": "applywarp"
+    },
+    {
+      "source": "fslsplit",
+      "target": "cluster"
+    },
+    {
+      "source": "fslsplit",
+      "target": "convertwarp"
+    },
+    {
+      "source": "fslsplit",
+      "target": "fslmaths"
+    },
+    {
+      "source": "fslsplit",
+      "target": "fslmeants"
+    },
+    {
+      "source": "fslsplit",
+      "target": "fslmerge"
+    },
+    {
+      "source": "fslsplit",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "fslsplit",
+      "target": "fslroi"
+    },
+    {
+      "source": "fslsplit",
+      "target": "fslsplit"
+    },
+    {
+      "source": "fslsplit",
+      "target": "fslstats"
+    },
+    {
+      "source": "fslsplit",
+      "target": "invwarp"
+    },
+    {
+      "source": "fslsplit",
+      "target": "robustfov"
+    },
+    {
+      "source": "fslstats",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "fslstats",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "fslstats",
+      "target": "3dUndump"
+    },
+    {
+      "source": "fslstats",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "fslstats",
+      "target": "3dresample"
+    },
+    {
+      "source": "fslstats",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "fslstats",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "fslstats",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "fslstats",
+      "target": "applywarp"
+    },
+    {
+      "source": "fslstats",
+      "target": "cluster"
+    },
+    {
+      "source": "fslstats",
+      "target": "convertwarp"
+    },
+    {
+      "source": "fslstats",
+      "target": "fslmaths"
+    },
+    {
+      "source": "fslstats",
+      "target": "fslmeants"
+    },
+    {
+      "source": "fslstats",
+      "target": "fslmerge"
+    },
+    {
+      "source": "fslstats",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "fslstats",
+      "target": "fslroi"
+    },
+    {
+      "source": "fslstats",
+      "target": "fslsplit"
+    },
+    {
+      "source": "fslstats",
+      "target": "fslstats"
+    },
+    {
+      "source": "fslstats",
+      "target": "invwarp"
+    },
+    {
+      "source": "fslstats",
+      "target": "robustfov"
+    },
+    {
+      "source": "fslstats",
+      "target": "whereami"
+    },
+    {
+      "source": "invwarp",
+      "target": "3dUndump"
+    },
+    {
+      "source": "invwarp",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "invwarp",
+      "target": "3dresample"
+    },
+    {
+      "source": "invwarp",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "invwarp",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "invwarp",
+      "target": "applywarp"
+    },
+    {
+      "source": "invwarp",
+      "target": "cluster"
+    },
+    {
+      "source": "invwarp",
+      "target": "convertwarp"
+    },
+    {
+      "source": "invwarp",
+      "target": "fslmaths"
+    },
+    {
+      "source": "invwarp",
+      "target": "fslmeants"
+    },
+    {
+      "source": "invwarp",
+      "target": "fslroi"
+    },
+    {
+      "source": "invwarp",
+      "target": "fslstats"
+    },
+    {
+      "source": "invwarp",
+      "target": "invwarp"
+    },
+    {
+      "source": "invwarp",
+      "target": "whereami"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dTcat"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dTstat"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dUndump"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dZeropad"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dcalc"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dcopy"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dinfo"
+    },
+    {
+      "source": "mri_convert",
+      "target": "3dresample"
+    },
+    {
+      "source": "mri_convert",
+      "target": "ImageMath"
+    },
+    {
+      "source": "mri_convert",
+      "target": "LabelGeometryMeasures"
+    },
+    {
+      "source": "mri_convert",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "mri_convert",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "mri_convert",
+      "target": "antsJointLabelFusion.sh"
+    },
+    {
+      "source": "mri_convert",
+      "target": "applywarp"
+    },
+    {
+      "source": "mri_convert",
+      "target": "cluster"
+    },
+    {
+      "source": "mri_convert",
+      "target": "convertwarp"
+    },
+    {
+      "source": "mri_convert",
+      "target": "fslmaths"
+    },
+    {
+      "source": "mri_convert",
+      "target": "fslmeants"
+    },
+    {
+      "source": "mri_convert",
+      "target": "fslmerge"
+    },
+    {
+      "source": "mri_convert",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "mri_convert",
+      "target": "fslroi"
+    },
+    {
+      "source": "mri_convert",
+      "target": "fslsplit"
+    },
+    {
+      "source": "mri_convert",
+      "target": "fslstats"
+    },
+    {
+      "source": "mri_convert",
+      "target": "invwarp"
+    },
+    {
+      "source": "mri_convert",
+      "target": "robustfov"
+    },
+    {
+      "source": "mri_convert",
+      "target": "whereami"
+    },
+    {
+      "source": "robustfov",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "robustfov",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "robustfov",
+      "target": "3dTstat"
+    },
+    {
+      "source": "robustfov",
+      "target": "3dcalc"
+    },
+    {
+      "source": "robustfov",
+      "target": "ImageMath"
+    },
+    {
+      "source": "robustfov",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "robustfov",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "robustfov",
+      "target": "applywarp"
+    },
+    {
+      "source": "robustfov",
+      "target": "cluster"
+    },
+    {
+      "source": "robustfov",
+      "target": "convertwarp"
+    },
+    {
+      "source": "robustfov",
+      "target": "fslmaths"
+    },
+    {
+      "source": "robustfov",
+      "target": "fslmeants"
+    },
+    {
+      "source": "robustfov",
+      "target": "fslmerge"
+    },
+    {
+      "source": "robustfov",
+      "target": "fslreorient2std"
+    },
+    {
+      "source": "robustfov",
+      "target": "fslroi"
+    },
+    {
+      "source": "robustfov",
+      "target": "fslsplit"
+    },
+    {
+      "source": "robustfov",
+      "target": "fslstats"
+    },
+    {
+      "source": "robustfov",
+      "target": "invwarp"
+    },
+    {
+      "source": "robustfov",
+      "target": "robustfov"
+    },
+    {
+      "source": "whereami",
+      "target": "3dNwarpApply"
+    },
+    {
+      "source": "whereami",
+      "target": "3dNwarpCat"
+    },
+    {
+      "source": "whereami",
+      "target": "3dTstat"
+    },
+    {
+      "source": "whereami",
+      "target": "3dUndump"
+    },
+    {
+      "source": "whereami",
+      "target": "3dcalc"
+    },
+    {
+      "source": "whereami",
+      "target": "3dfractionize"
+    },
+    {
+      "source": "whereami",
+      "target": "3dresample"
+    },
+    {
+      "source": "whereami",
+      "target": "ImageMath"
+    },
+    {
+      "source": "whereami",
+      "target": "ThresholdImage"
+    },
+    {
+      "source": "whereami",
+      "target": "antsApplyTransforms"
+    },
+    {
+      "source": "whereami",
+      "target": "applywarp"
+    },
+    {
+      "source": "whereami",
+      "target": "cluster"
+    },
+    {
+      "source": "whereami",
+      "target": "convertwarp"
+    },
+    {
+      "source": "whereami",
+      "target": "fslmaths"
+    },
+    {
+      "source": "whereami",
+      "target": "fslmeants"
+    },
+    {
+      "source": "whereami",
+      "target": "fslroi"
+    },
+    {
+      "source": "whereami",
+      "target": "fslstats"
+    },
+    {
+      "source": "whereami",
+      "target": "invwarp"
+    },
+    {
+      "source": "whereami",
+      "target": "whereami"
     }
   ],
   "matrix": [
@@ -1621,14 +3548,5 @@
     ]
   ],
   "edgeCount": 596,
-  "toolCount": 32,
-  "normalization": {
-    "canonicalLabelFormat": "library / subsection",
-    "rules": [
-      "lowercase",
-      "trim and collapse whitespace",
-      "normalize '&' to 'and'",
-      "treat '-' and '/' equivalently in subsection text"
-    ]
-  }
+  "toolCount": 32
 }

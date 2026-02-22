@@ -2,6 +2,76 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import '../styles/bidsDataModal.css';
 
+/** Official BIDS datatype definitions */
+const DATATYPE_DEFS = {
+  func: 'Task-based and resting state functional MRI',
+  dwi: 'Diffusion weighted imaging',
+  fmap: 'Field inhomogeneity mapping data (field maps)',
+  anat: 'Structural imaging (T1, T2, PD, etc.)',
+  perf: 'Perfusion imaging',
+  meg: 'Magnetoencephalography',
+  eeg: 'Electroencephalography',
+  ieeg: 'Intracranial electroencephalography',
+  beh: 'Behavioral data',
+  pet: 'Positron emission tomography',
+  micr: 'Microscopy',
+  nirs: 'Near infrared spectroscopy',
+  emg: 'Electromyography',
+  motion: 'Motion capture',
+};
+
+/** Common BIDS suffix definitions */
+const SUFFIX_DEFS = {
+  // anat
+  T1w: 'T1-weighted image',
+  T2w: 'T2-weighted image',
+  T1map: 'T1 relaxation time map',
+  T2map: 'T2 relaxation time map',
+  T2starw: 'T2*-weighted image',
+  T2starmap: 'T2* relaxation time map',
+  FLAIR: 'Fluid-attenuated inversion recovery',
+  PDw: 'Proton density weighted image',
+  PDmap: 'Proton density map',
+  defacemask: 'Defacing mask',
+  // func
+  bold: 'Blood oxygen level dependent (fMRI)',
+  boldref: 'BOLD reference image',
+  sbref: 'Single-band reference image',
+  // dwi
+  dwi: 'Diffusion weighted image',
+  // fmap
+  magnitude: 'Magnitude image',
+  magnitude1: 'First magnitude image',
+  magnitude2: 'Second magnitude image',
+  phasediff: 'Phase difference map',
+  fieldmap: 'Field map',
+  epi: 'EPI field map',
+  // perf
+  asl: 'Arterial spin labeling',
+  m0scan: 'M0 calibration scan',
+  // pet
+  pet: 'PET image',
+  // eeg/meg/ieeg
+  eeg: 'EEG recording',
+  meg: 'MEG recording',
+  ieeg: 'Intracranial EEG recording',
+  // micr
+  SEM: 'Scanning electron microscopy',
+  SPIM: 'Selective plane illumination microscopy',
+  // nirs
+  nirs: 'NIRS recording',
+  // qMRI
+  MP2RAGE: 'Magnetization prepared 2 rapid gradient echoes',
+  UNIT1: 'Unified T1 image',
+  VFA: 'Variable flip angle',
+  MTsat: 'Magnetization transfer saturation',
+  MTS: 'Magnetization transfer saturation',
+  TB1TFL: 'B1 map (TurboFLASH)',
+  MEGRE: 'Multi-echo gradient echo',
+  MESE: 'Multi-echo spin echo',
+  IRT1: 'Inversion recovery T1 mapping',
+};
+
 /**
  * Auto-generate an output port label from a selection group config.
  */
@@ -37,9 +107,6 @@ const BIDSDataModal = ({ show, onClose, bidsStructure }) => {
   // --- Output groups state ---
   const [outputGroups, setOutputGroups] = useState([]);
 
-  // --- Path preview toggle ---
-  const [showPreview, setShowPreview] = useState(false);
-
   // Derived: all subject IDs
   const allSubjectIds = useMemo(() => {
     if (!bidsStructure?.subjects) return [];
@@ -57,7 +124,6 @@ const BIDSDataModal = ({ show, onClose, bidsStructure }) => {
       // Default: select all subjects
       setSelectedSubjects(new Set(allSubjectIds));
       setSubjectSearch('');
-      setShowPreview(false);
 
       // Discover all data types across all subjects
       const allDatatypes = new Set();
@@ -184,6 +250,15 @@ const BIDSDataModal = ({ show, onClose, bidsStructure }) => {
     }
     return paths;
   }, [bidsStructure, selectedSubjects, outputGroups]);
+
+  // Derived: file count per output group label
+  const groupFileCounts = useMemo(() => {
+    const counts = {};
+    for (const p of resolvedPaths) {
+      counts[p.group] = (counts[p.group] || 0) + 1;
+    }
+    return counts;
+  }, [resolvedPaths]);
 
   // --- Subject handlers ---
   const toggleSubject = useCallback((subId) => {
@@ -384,17 +459,23 @@ const BIDSDataModal = ({ show, onClose, bidsStructure }) => {
                       key={dt}
                       className={`bids-datatype-chip${isSelected ? ' selected' : ''}${!isAvailable ? ' unavailable' : ''}`}
                       onClick={() => isAvailable && toggleDataType(dt)}
+                      title={DATATYPE_DEFS[dt] || dt}
                     >
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        disabled={!isAvailable}
-                        onChange={() => {}}
-                      />
-                      <span>{dt}</span>
-                      <span className="bids-availability-badge">
-                        ({count}/{selectedSubjects.size})
-                      </span>
+                      <div className="bids-datatype-chip-top">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          disabled={!isAvailable}
+                          onChange={() => {}}
+                        />
+                        <span>{dt}</span>
+                        <span className="bids-availability-badge">
+                          ({count}/{selectedSubjects.size})
+                        </span>
+                      </div>
+                      {DATATYPE_DEFS[dt] && (
+                        <span className="bids-datatype-desc">{DATATYPE_DEFS[dt]}</span>
+                      )}
                     </div>
                   );
                 })}
@@ -404,6 +485,9 @@ const BIDSDataModal = ({ show, onClose, bidsStructure }) => {
             {/* ---- Level 3: Output Groups ---- */}
             <div className="bids-outputs-section">
               <div className="bids-section-label">Output Ports</div>
+              <div className="bids-outputs-subtitle">
+                Each group becomes an output on the BIDS node. Connect outputs to downstream tools.
+              </div>
 
               {outputGroups.length === 0 && (
                 <div className="bids-empty-state">
@@ -425,6 +509,9 @@ const BIDSDataModal = ({ show, onClose, bidsStructure }) => {
                         placeholder="output label"
                       />
                       <span className="bids-output-type-badge">File[]</span>
+                      <span className="bids-output-count-badge">
+                        {groupFileCounts[group.label] || 0} file{(groupFileCounts[group.label] || 0) !== 1 ? 's' : ''}
+                      </span>
                       <button
                         className="bids-remove-group-btn"
                         onClick={() => removeGroup(group.id)}
@@ -464,9 +551,12 @@ const BIDSDataModal = ({ show, onClose, bidsStructure }) => {
                         onChange={e => updateGroup(group.id, { suffix: e.target.value })}
                       >
                         {(filters.suffixes || []).map(s => (
-                          <option key={s} value={s}>{s}</option>
+                          <option key={s} value={s} title={SUFFIX_DEFS[s] || s}>{s}</option>
                         ))}
                       </select>
+                      {SUFFIX_DEFS[group.suffix] && (
+                        <span className="bids-suffix-desc">{SUFFIX_DEFS[group.suffix]}</span>
+                      )}
 
                       {/* Task filter (func only) */}
                       {isFunc && (filters.tasks || []).length > 0 && (
@@ -527,36 +617,29 @@ const BIDSDataModal = ({ show, onClose, bidsStructure }) => {
           </div>
         </div>
 
-        {/* ---- Path Preview ---- */}
+        {/* ---- Path Preview (always visible) ---- */}
         <div className="bids-path-preview">
-          <div
-            className="bids-preview-toggle"
-            onClick={() => setShowPreview(prev => !prev)}
-          >
-            <span>{showPreview ? '\u25BC' : '\u25B6'}</span>
-            <span>Preview resolved paths ({resolvedPaths.length} files)</span>
+          <div className="bids-preview-header">
+            Resolved paths ({resolvedPaths.length} files)
           </div>
-
-          {showPreview && (
-            <div className="bids-preview-list">
-              {resolvedPaths.slice(0, 30).map((p, i) => (
-                <div key={i} className="bids-preview-path">
-                  <span style={{ color: 'var(--color-cyan)' }}>[{p.group}]</span>{' '}
-                  {p.path}
-                </div>
-              ))}
-              {resolvedPaths.length > 30 && (
-                <div className="bids-preview-more">
-                  ...and {resolvedPaths.length - 30} more
-                </div>
-              )}
-              {resolvedPaths.length === 0 && (
-                <div className="bids-preview-path" style={{ fontStyle: 'italic' }}>
-                  No files match current selections
-                </div>
-              )}
-            </div>
-          )}
+          <div className="bids-preview-list">
+            {resolvedPaths.slice(0, 50).map((p, i) => (
+              <div key={i} className="bids-preview-path">
+                <span style={{ color: 'var(--color-cyan)' }}>[{p.group}]</span>{' '}
+                {p.path}
+              </div>
+            ))}
+            {resolvedPaths.length > 50 && (
+              <div className="bids-preview-more">
+                ...and {resolvedPaths.length - 50} more
+              </div>
+            )}
+            {resolvedPaths.length === 0 && (
+              <div className="bids-preview-path" style={{ fontStyle: 'italic' }}>
+                No files match current selections
+              </div>
+            )}
+          </div>
         </div>
       </Modal.Body>
 

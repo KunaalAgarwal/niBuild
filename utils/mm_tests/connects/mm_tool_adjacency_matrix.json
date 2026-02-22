@@ -1,8 +1,7 @@
 {
-  "generatedAt": "2026-02-19T07:33:55+00:00",
+  "generatedAt": "2026-02-22T06:29:46+00:00",
   "sources": {
-    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\mm_tests\\connects\\mm_subsection_graph.mmd",
-    "mapping": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\mm_tests\\connects\\mm_tool_to_subsection_map.json"
+    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\mm_tests\\connects\\mm_tool_graph.mmd"
   },
   "toolOrder": [
     "antsIntermodalityIntrasubject.sh"
@@ -10,16 +9,10 @@
   "toolToIndex": {
     "antsIntermodalityIntrasubject.sh": 0
   },
-  "subsectionByTool": {
-    "antsIntermodalityIntrasubject.sh": "ants / intermodal registration"
-  },
-  "subsectionByToolOriginal": {
-    "antsIntermodalityIntrasubject.sh": "ANTs / Intermodal Registration"
-  },
-  "subsectionEdges": [
+  "toolEdges": [
     {
-      "source": "ants / intermodal registration",
-      "target": "ants / intermodal registration"
+      "source": "antsIntermodalityIntrasubject.sh",
+      "target": "antsIntermodalityIntrasubject.sh"
     }
   ],
   "matrix": [
@@ -28,14 +21,5 @@
     ]
   ],
   "edgeCount": 1,
-  "toolCount": 1,
-  "normalization": {
-    "canonicalLabelFormat": "library / subsection",
-    "rules": [
-      "lowercase",
-      "trim and collapse whitespace",
-      "normalize '&' to 'and'",
-      "treat '-' and '/' equivalently in subsection text"
-    ]
-  }
+  "toolCount": 1
 }

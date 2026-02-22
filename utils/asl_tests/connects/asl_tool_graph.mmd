@@ -1,0 +1,21 @@
+flowchart LR
+
+  %% === Node Definitions ===
+
+  %% FSL / ASL Processing
+  asl_calib["asl_calib"]
+  basil["basil"]
+  oxford_asl["oxford_asl"]
+
+  %% === Edges ===
+
+  %% FSL / ASL Processing (intra-subsection)
+  asl_calib --> asl_calib
+  asl_calib --> basil
+  asl_calib --> oxford_asl
+  basil --> asl_calib
+  basil --> basil
+  basil --> oxford_asl
+  oxford_asl --> asl_calib
+  oxford_asl --> basil
+  oxford_asl --> oxford_asl

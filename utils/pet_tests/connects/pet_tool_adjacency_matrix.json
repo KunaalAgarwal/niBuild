@@ -1,8 +1,7 @@
 {
-  "generatedAt": "2026-02-19T07:33:46+00:00",
+  "generatedAt": "2026-02-22T06:29:46+00:00",
   "sources": {
-    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\pet_tests\\connects\\pet_subsection_graph.mmd",
-    "mapping": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\pet_tests\\connects\\pet_tool_to_subsection_map.json"
+    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\pet_tests\\connects\\pet_tool_graph.mmd"
   },
   "toolOrder": [
     "mri_gtmpvc"
@@ -10,16 +9,10 @@
   "toolToIndex": {
     "mri_gtmpvc": 0
   },
-  "subsectionByTool": {
-    "mri_gtmpvc": "freesurfer / pet processing"
-  },
-  "subsectionByToolOriginal": {
-    "mri_gtmpvc": "FreeSurfer / PET Processing"
-  },
-  "subsectionEdges": [
+  "toolEdges": [
     {
-      "source": "freesurfer / pet processing",
-      "target": "freesurfer / pet processing"
+      "source": "mri_gtmpvc",
+      "target": "mri_gtmpvc"
     }
   ],
   "matrix": [
@@ -28,14 +21,5 @@
     ]
   ],
   "edgeCount": 1,
-  "toolCount": 1,
-  "normalization": {
-    "canonicalLabelFormat": "library / subsection",
-    "rules": [
-      "lowercase",
-      "trim and collapse whitespace",
-      "normalize '&' to 'and'",
-      "treat '-' and '/' equivalently in subsection text"
-    ]
-  }
+  "toolCount": 1
 }

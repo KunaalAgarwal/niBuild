@@ -19,7 +19,10 @@ const ENTITY_REGEX = new RegExp(
 );
 
 const NIFTI_REGEX = /\.(nii\.gz|nii)$/;
-const DATATYPE_NAMES = new Set(['anat', 'func', 'dwi', 'fmap', 'perf']);
+const DATATYPE_NAMES = new Set([
+  'anat', 'func', 'dwi', 'fmap', 'perf',
+  'meg', 'eeg', 'ieeg', 'beh', 'pet', 'micr', 'nirs', 'emg', 'motion',
+]);
 
 /**
  * Parse BIDS entities and suffix from a filename (without directory prefix).

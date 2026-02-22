@@ -189,8 +189,8 @@
 
 .bids-datatype-chip {
   display: flex;
-  align-items: center;
-  gap: 4px;
+  flex-direction: column;
+  gap: 1px;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
@@ -199,6 +199,22 @@
   font-size: 0.68rem;
   cursor: pointer;
   user-select: none;
+}
+
+.bids-datatype-chip-top {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bids-datatype-desc {
+  font-size: 0.55rem;
+  color: var(--text-secondary);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
 }
 
 .bids-datatype-chip.selected {
@@ -220,6 +236,14 @@
   font-size: 0.58rem;
   color: var(--text-muted);
   margin-left: 2px;
+}
+
+.bids-outputs-subtitle {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-style: italic;
 }
 
 /* ---- Output Groups / File Selection ---- */
@@ -280,6 +304,16 @@
   padding: 1px 4px;
 }
 
+.bids-output-count-badge {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  padding: 1px 4px;
+}
+
 .bids-remove-group-btn {
   font-size: 0.62rem;
   color: var(--color-danger);
@@ -330,6 +364,13 @@
   accent-color: var(--color-primary);
 }
 
+.bids-suffix-desc {
+  font-size: 0.58rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-left: 4px;
+}
+
 .bids-add-group-btn {
   font-family: 'Roboto Mono', monospace;
   font-size: 0.64rem;
@@ -353,20 +394,12 @@
   border-radius: 4px;
 }
 
-.bids-preview-toggle {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.bids-preview-header {
   padding: 4px 8px;
-  cursor: pointer;
   font-family: 'Roboto Mono', monospace;
   font-size: 0.65rem;
   color: var(--text-muted);
-  user-select: none;
-}
-
-.bids-preview-toggle:hover {
-  color: var(--text-light);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .bids-preview-list {

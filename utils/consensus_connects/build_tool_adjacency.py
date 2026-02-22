@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Build a directed tool-to-tool adjacency matrix for any modality.
+"""Build a directed tool-to-tool adjacency matrix from a tool-level Mermaid graph.
 
 Inputs:
-- Mermaid subsection graph (.mmd) with node labels and directed edges
-- Tool mapping JSON containing byTool -> subsectionKey
+- Tool-level Mermaid graph (.mmd) with node labels (tool names) and directed edges
 
 Outputs:
 - JSON adjacency artifact
@@ -13,10 +12,8 @@ Usage:
     # Auto-discover files from a modality's connects directory:
     python build_tool_adjacency.py --connects-dir ../fmri_tests/connects
 
-    # Or specify files explicitly:
-    python build_tool_adjacency.py \
-        --graph ../fmri_tests/connects/fmri_subsection_graph.mmd \
-        --mapping ../fmri_tests/connects/fmri_tool_to_subsection_map.json
+    # Or specify the graph file explicitly:
+    python build_tool_adjacency.py --graph ../fmri_tests/connects/fmri_tool_graph.mmd
 """
 
 from __future__ import annotations
@@ -35,42 +32,15 @@ NODE_RE = re.compile(r'^\s*([A-Za-z0-9_]+)\s*\["([^"]+)"\]\s*$')
 EDGE_RE = re.compile(r"^\s*([A-Za-z0-9_]+)\s*-->\s*([A-Za-z0-9_]+)\s*$")
 
 
-def _collapse_ws(text: str) -> str:
-    return " ".join(text.strip().split())
-
-
-def _normalize_component(text: str, normalize_separators: bool) -> str:
-    value = text.lower()
-    value = value.replace("&", " and ")
-    if normalize_separators:
-        value = re.sub(r"[-/]+", " ", value)
-    else:
-        value = re.sub(r"-+", " ", value)
-    return _collapse_ws(value)
-
-
-def canonicalize_subsection_label(label: str) -> str:
-    """Canonicalize subsection labels from graph and mapping JSON.
-
-    Normalization rules:
-    - lowercase
-    - trim/collapse whitespace
-    - normalize '&' to 'and'
-    - treat '-' and '/' equivalently in subsection portion
-    """
-    raw = _collapse_ws(label.replace("&", " and "))
-    parts = re.split(r"\s*/\s*", raw, maxsplit=1)
-    if len(parts) == 2:
-        library, subsection = parts
-        library_norm = _normalize_component(library, normalize_separators=False)
-        subsection_norm = _normalize_component(subsection, normalize_separators=True)
-        return f"{library_norm} / {subsection_norm}"
-    return _normalize_component(raw, normalize_separators=True)
-
-
-def parse_mermaid_graph(
+def parse_tool_graph(
     graph_path: Path,
-) -> Tuple[Dict[str, str], Set[Tuple[str, str]], Set[Tuple[str, str]]]:
+) -> Tuple[Dict[str, str], Set[Tuple[str, str]]]:
+    """Parse a tool-level Mermaid graph.
+
+    Returns:
+        node_id_to_label: mapping from sanitized node IDs to tool names
+        tool_edges: set of (source_tool_name, target_tool_name) pairs
+    """
     if not graph_path.exists():
         raise FileNotFoundError(f"Graph file not found: {graph_path}")
 
@@ -111,65 +81,24 @@ def parse_mermaid_graph(
             + ", ".join([f"{src}->{dst}" for src, dst in sorted(missing_node_refs)])
         )
 
-    # Keep original label edges for reporting, plus canonicalized edges for matrix logic.
-    label_edges_original: Set[Tuple[str, str]] = set()
-    label_edges_canonical: Set[Tuple[str, str]] = set()
+    # Map edge IDs to tool names (labels)
+    tool_edges: Set[Tuple[str, str]] = set()
     for src_id, dst_id in directed_edges_by_id:
-        src_label = node_id_to_label[src_id]
-        dst_label = node_id_to_label[dst_id]
-        label_edges_original.add((src_label, dst_label))
-        label_edges_canonical.add(
-            (canonicalize_subsection_label(src_label), canonicalize_subsection_label(dst_label))
-        )
+        tool_edges.add((node_id_to_label[src_id], node_id_to_label[dst_id]))
 
-    return node_id_to_label, label_edges_original, label_edges_canonical
-
-
-def load_tool_mapping(mapping_path: Path) -> Tuple[Dict[str, str], Dict[str, str]]:
-    if not mapping_path.exists():
-        raise FileNotFoundError(f"Mapping file not found: {mapping_path}")
-
-    try:
-        payload = json.loads(mapping_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"Invalid JSON in mapping file {mapping_path}: {exc}") from exc
-
-    by_tool = payload.get("byTool")
-    if not isinstance(by_tool, dict):
-        raise ValueError(
-            f"Mapping file {mapping_path} must contain object field 'byTool' with tool mappings."
-        )
-    if not by_tool:
-        raise ValueError(f"Mapping file {mapping_path} has empty 'byTool' mapping.")
-
-    tool_to_subsection_original: Dict[str, str] = {}
-    tool_to_subsection_canonical: Dict[str, str] = {}
-    for tool_name, tool_meta in by_tool.items():
-        if not isinstance(tool_meta, dict):
-            raise ValueError(f"Tool mapping for '{tool_name}' must be an object.")
-        subsection = tool_meta.get("subsectionKey")
-        if not isinstance(subsection, str) or not subsection.strip():
-            raise ValueError(
-                f"Tool mapping for '{tool_name}' must include non-empty string 'subsectionKey'."
-            )
-        tool_to_subsection_original[tool_name] = subsection
-        tool_to_subsection_canonical[tool_name] = canonicalize_subsection_label(subsection)
-
-    return tool_to_subsection_original, tool_to_subsection_canonical
+    return node_id_to_label, tool_edges
 
 
 def build_matrix(
     tool_order: List[str],
-    tool_to_subsection_canonical: Dict[str, str],
-    subsection_edges_canonical: Set[Tuple[str, str]],
+    tool_edges: Set[Tuple[str, str]],
 ) -> List[List[int]]:
+    """Build a binary adjacency matrix from direct tool-to-tool edges."""
     matrix: List[List[int]] = []
     for src_tool in tool_order:
-        src_subsection = tool_to_subsection_canonical[src_tool]
         row: List[int] = []
         for dst_tool in tool_order:
-            dst_subsection = tool_to_subsection_canonical[dst_tool]
-            row.append(1 if (src_subsection, dst_subsection) in subsection_edges_canonical else 0)
+            row.append(1 if (src_tool, dst_tool) in tool_edges else 0)
         matrix.append(row)
     return matrix
 
@@ -183,91 +112,51 @@ def write_csv_matrix(csv_path: Path, tool_order: List[str], matrix: List[List[in
             writer.writerow([tool_name, *row])
 
 
-def _warn_unmapped_graph_subsections(
-    graph_labels_by_id: Dict[str, str], tool_subsections_canonical: Set[str]
-) -> None:
-    graph_subsections_canonical = {canonicalize_subsection_label(label) for label in graph_labels_by_id.values()}
-    graph_only = sorted(graph_subsections_canonical - tool_subsections_canonical)
-    if graph_only:
-        print(
-            "WARN: graph contains subsection nodes with no mapped tools: "
-            + ", ".join(graph_only),
-            file=sys.stderr,
-        )
-
-
-def _validate_mapping_subsections_covered(
-    graph_labels_by_id: Dict[str, str], tool_to_subsection_canonical: Dict[str, str]
-) -> None:
-    graph_subsections_canonical = {canonicalize_subsection_label(label) for label in graph_labels_by_id.values()}
-    mapping_subsections_canonical = sorted(set(tool_to_subsection_canonical.values()))
-    missing = [sub for sub in mapping_subsections_canonical if sub not in graph_subsections_canonical]
-    if missing:
-        raise ValueError(
-            "Mapped subsection labels not found in graph after normalization: "
-            + ", ".join(missing)
-        )
-
-
-def _discover_modality_files(connects_dir: Path) -> Tuple[Path, Path, str]:
-    """Discover the graph and mapping files in a connects directory.
+def _discover_modality_files(connects_dir: Path) -> Tuple[Path, str]:
+    """Discover the tool graph file in a connects directory.
 
     Expects files matching:
-        {modality}_subsection_graph.mmd
-        {modality}_tool_to_subsection_map.json
+        {modality}_tool_graph.mmd
     """
-    graphs = sorted(connects_dir.glob("*_subsection_graph.mmd"))
-    mappings = sorted(connects_dir.glob("*_tool_to_subsection_map.json"))
+    graphs = sorted(connects_dir.glob("*_tool_graph.mmd"))
 
     if len(graphs) != 1:
         raise FileNotFoundError(
-            f"Expected exactly 1 *_subsection_graph.mmd in {connects_dir}, found {len(graphs)}: "
+            f"Expected exactly 1 *_tool_graph.mmd in {connects_dir}, found {len(graphs)}: "
             + ", ".join(p.name for p in graphs)
-        )
-    if len(mappings) != 1:
-        raise FileNotFoundError(
-            f"Expected exactly 1 *_tool_to_subsection_map.json in {connects_dir}, found {len(mappings)}: "
-            + ", ".join(p.name for p in mappings)
         )
 
     graph_path = graphs[0]
-    mapping_path = mappings[0]
 
     # Derive modality key from the graph filename
     stem = graph_path.stem
-    suffix = "_subsection_graph"
+    suffix = "_tool_graph"
     if stem.endswith(suffix):
         modality_key = stem[: -len(suffix)]
     else:
         modality_key = stem
 
-    return graph_path, mapping_path, modality_key
+    return graph_path, modality_key
 
 
 def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build a directed tool adjacency matrix from a subsection graph and tool mapping JSON."
+        description="Build a directed tool adjacency matrix from a tool-level Mermaid graph."
     )
     parser.add_argument(
         "--connects-dir",
         type=Path,
         default=None,
         help=(
-            "Path to a modality's connects directory. Auto-discovers the graph and mapping files. "
-            "Mutually exclusive with --graph/--mapping."
+            "Path to a modality's connects directory. Auto-discovers the graph file. "
+            "Mutually exclusive with --graph."
         ),
     )
     parser.add_argument(
         "--graph",
         type=Path,
         default=None,
-        help="Path to Mermaid subsection graph (.mmd).",
-    )
-    parser.add_argument(
-        "--mapping",
-        type=Path,
-        default=None,
-        help="Path to tool mapping JSON (must include byTool).",
+        help="Path to tool-level Mermaid graph (.mmd).",
     )
     parser.add_argument(
         "--out-json",
@@ -286,10 +175,9 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
 
 def _resolve_paths(
     args: argparse.Namespace,
-) -> Tuple[Path, Path, Path, Path]:
-    """Resolve graph, mapping, and output paths from CLI arguments."""
+) -> Tuple[Path, Path, Path]:
+    """Resolve graph and output paths from CLI arguments."""
     graph_path: Optional[Path] = args.graph
-    mapping_path: Optional[Path] = args.mapping
     out_json: Optional[Path] = args.out_json
     out_csv: Optional[Path] = args.out_csv
 
@@ -298,81 +186,57 @@ def _resolve_paths(
         if not connects_dir.is_dir():
             raise FileNotFoundError(f"--connects-dir is not a directory: {connects_dir}")
 
-        discovered_graph, discovered_mapping, modality_key = _discover_modality_files(connects_dir)
+        discovered_graph, modality_key = _discover_modality_files(connects_dir)
 
         graph_path = graph_path or discovered_graph
-        mapping_path = mapping_path or discovered_mapping
         out_json = out_json or (connects_dir / f"{modality_key}_tool_adjacency_matrix.json")
         out_csv = out_csv or (connects_dir / f"{modality_key}_tool_adjacency_matrix.csv")
 
-    if graph_path is None or mapping_path is None:
+    if graph_path is None:
         raise ValueError(
-            "Must provide either --connects-dir or both --graph and --mapping."
+            "Must provide either --connects-dir or --graph."
         )
 
     # Default output paths next to the graph file
     if out_json is None:
-        out_json = graph_path.parent / (graph_path.stem.replace("_subsection_graph", "") + "_tool_adjacency_matrix.json")
+        out_json = graph_path.parent / (graph_path.stem.replace("_tool_graph", "") + "_tool_adjacency_matrix.json")
     if out_csv is None:
-        out_csv = graph_path.parent / (graph_path.stem.replace("_subsection_graph", "") + "_tool_adjacency_matrix.csv")
+        out_csv = graph_path.parent / (graph_path.stem.replace("_tool_graph", "") + "_tool_adjacency_matrix.csv")
 
-    return graph_path.resolve(), mapping_path.resolve(), out_json.resolve(), out_csv.resolve()
+    return graph_path.resolve(), out_json.resolve(), out_csv.resolve()
 
 
 def main(argv: Iterable[str]) -> int:
     args = parse_args(argv)
-    graph_path, mapping_path, out_json_path, out_csv_path = _resolve_paths(args)
+    graph_path, out_json_path, out_csv_path = _resolve_paths(args)
 
-    node_id_to_label, subsection_edges_original, subsection_edges_canonical = parse_mermaid_graph(graph_path)
-    tool_to_subsection_original, tool_to_subsection_canonical = load_tool_mapping(mapping_path)
+    node_id_to_label, tool_edges = parse_tool_graph(graph_path)
 
-    _validate_mapping_subsections_covered(node_id_to_label, tool_to_subsection_canonical)
-    _warn_unmapped_graph_subsections(node_id_to_label, set(tool_to_subsection_canonical.values()))
-
-    tool_order = sorted(tool_to_subsection_canonical.keys())
+    tool_order = sorted(set(node_id_to_label.values()))
     if not tool_order:
-        raise ValueError("No tools found in mapping file after parsing.")
+        raise ValueError("No tools found in graph file after parsing.")
 
     tool_to_index = {tool_name: idx for idx, tool_name in enumerate(tool_order)}
-    matrix = build_matrix(tool_order, tool_to_subsection_canonical, subsection_edges_canonical)
+    matrix = build_matrix(tool_order, tool_edges)
     edge_count = sum(sum(row) for row in matrix)
 
-    # Sorted for deterministic artifact diffs.
-    subsection_edges_for_output = [
+    # Sorted edge list for the JSON artifact
+    tool_edges_for_output = [
         {"source": src, "target": dst}
-        for src, dst in sorted(
-            (canonicalize_subsection_label(s), canonicalize_subsection_label(d))
-            for s, d in subsection_edges_original
-        )
+        for src, dst in sorted(tool_edges)
     ]
 
     payload = {
         "generatedAt": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
         "sources": {
             "graph": str(graph_path),
-            "mapping": str(mapping_path),
         },
         "toolOrder": tool_order,
         "toolToIndex": tool_to_index,
-        "subsectionByTool": {
-            tool_name: tool_to_subsection_canonical[tool_name] for tool_name in tool_order
-        },
-        "subsectionByToolOriginal": {
-            tool_name: tool_to_subsection_original[tool_name] for tool_name in tool_order
-        },
-        "subsectionEdges": subsection_edges_for_output,
+        "toolEdges": tool_edges_for_output,
         "matrix": matrix,
         "edgeCount": edge_count,
         "toolCount": len(tool_order),
-        "normalization": {
-            "canonicalLabelFormat": "library / subsection",
-            "rules": [
-                "lowercase",
-                "trim and collapse whitespace",
-                "normalize '&' to 'and'",
-                "treat '-' and '/' equivalently in subsection text",
-            ],
-        },
     }
 
     out_json_path.parent.mkdir(parents=True, exist_ok=True)
@@ -381,8 +245,7 @@ def main(argv: Iterable[str]) -> int:
 
     print("Built directed tool adjacency matrix.")
     print(f"  tools: {len(tool_order)}")
-    print(f"  subsection nodes: {len(node_id_to_label)}")
-    print(f"  subsection directed edges: {len(subsection_edges_canonical)}")
+    print(f"  graph nodes: {len(node_id_to_label)}")
     print(f"  tool directed edges (matrix 1s): {edge_count}")
     print(f"  json: {out_json_path}")
     print(f"  csv:  {out_csv_path}")

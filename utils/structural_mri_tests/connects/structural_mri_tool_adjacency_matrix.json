@@ -1,8 +1,7 @@
 {
-  "generatedAt": "2026-02-22T01:44:47+00:00",
+  "generatedAt": "2026-02-22T06:29:46+00:00",
   "sources": {
-    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\structural_mri_tests\\connects\\structural_mri_subsection_graph.mmd",
-    "mapping": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\structural_mri_tests\\connects\\structural_mri_tool_to_subsection_map.json"
+    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\structural_mri_tests\\connects\\structural_mri_tool_graph.mmd"
   },
   "toolOrder": [
     "3dAllineate",
@@ -84,266 +83,1170 @@
     "sienax": 36,
     "wb_command_surface_sphere_project_unproject": 37
   },
-  "subsectionByTool": {
-    "3dAllineate": "afni / registration",
-    "3dQwarp": "afni / registration",
-    "3dSkullStrip": "afni / brain extraction",
-    "3dUnifize": "afni / bias correction",
-    "@SSwarper": "afni / brain extraction",
-    "@auto_tlrc": "afni / registration",
-    "Atropos": "ants / segmentation",
-    "KellyKapowski": "ants / cortical thickness",
-    "antsAtroposN4.sh": "ants / segmentation",
-    "antsBrainExtraction.sh": "ants / brain extraction",
-    "antsCorticalThickness.sh": "ants / cortical thickness",
-    "antsRegistration": "ants / registration",
-    "antsRegistrationSyN.sh": "ants / registration",
-    "antsRegistrationSyNQuick.sh": "ants / registration",
-    "aparcstats2table": "freesurfer / morphometry",
-    "asegstats2table": "freesurfer / morphometry",
-    "bet": "fsl / brain extraction",
-    "bianca": "fsl / lesion segmentation",
-    "fast": "fsl / tissue segmentation",
-    "flirt": "fsl / registration",
-    "fnirt": "fsl / registration",
-    "fsl_anat": "fsl / pipelines",
-    "mri_annotation2label": "freesurfer / parcellation",
-    "mri_aparc2aseg": "freesurfer / parcellation",
-    "mri_label2vol": "freesurfer / parcellation",
-    "mri_normalize": "freesurfer / surface reconstruction",
-    "mri_segment": "freesurfer / surface reconstruction",
-    "mri_segstats": "freesurfer / morphometry",
-    "mri_watershed": "freesurfer / surface reconstruction",
-    "mris_anatomical_stats": "freesurfer / morphometry",
-    "mris_ca_label": "freesurfer / parcellation",
-    "mris_inflate": "freesurfer / surface reconstruction",
-    "mris_sphere": "freesurfer / surface reconstruction",
-    "recon-all": "freesurfer / surface reconstruction",
-    "run_first_all": "fsl / tissue segmentation",
-    "siena": "fsl / pipelines",
-    "sienax": "fsl / pipelines",
-    "wb_command_surface_sphere_project_unproject": "connectome workbench / surface registration"
-  },
-  "subsectionByToolOriginal": {
-    "3dAllineate": "AFNI / Registration",
-    "3dQwarp": "AFNI / Registration",
-    "3dSkullStrip": "AFNI / Brain Extraction",
-    "3dUnifize": "AFNI / Bias Correction",
-    "@SSwarper": "AFNI / Brain Extraction",
-    "@auto_tlrc": "AFNI / Registration",
-    "Atropos": "ANTs / Segmentation",
-    "KellyKapowski": "ANTs / Cortical Thickness",
-    "antsAtroposN4.sh": "ANTs / Segmentation",
-    "antsBrainExtraction.sh": "ANTs / Brain Extraction",
-    "antsCorticalThickness.sh": "ANTs / Cortical Thickness",
-    "antsRegistration": "ANTs / Registration",
-    "antsRegistrationSyN.sh": "ANTs / Registration",
-    "antsRegistrationSyNQuick.sh": "ANTs / Registration",
-    "aparcstats2table": "FreeSurfer / Morphometry",
-    "asegstats2table": "FreeSurfer / Morphometry",
-    "bet": "FSL / Brain Extraction",
-    "bianca": "FSL / Lesion Segmentation",
-    "fast": "FSL / Tissue Segmentation",
-    "flirt": "FSL / Registration",
-    "fnirt": "FSL / Registration",
-    "fsl_anat": "FSL / Pipelines",
-    "mri_annotation2label": "FreeSurfer / Parcellation",
-    "mri_aparc2aseg": "FreeSurfer / Parcellation",
-    "mri_label2vol": "FreeSurfer / Parcellation",
-    "mri_normalize": "FreeSurfer / Surface Reconstruction",
-    "mri_segment": "FreeSurfer / Surface Reconstruction",
-    "mri_segstats": "FreeSurfer / Morphometry",
-    "mri_watershed": "FreeSurfer / Surface Reconstruction",
-    "mris_anatomical_stats": "FreeSurfer / Morphometry",
-    "mris_ca_label": "FreeSurfer / Parcellation",
-    "mris_inflate": "FreeSurfer / Surface Reconstruction",
-    "mris_sphere": "FreeSurfer / Surface Reconstruction",
-    "recon-all": "FreeSurfer / Surface Reconstruction",
-    "run_first_all": "FSL / Tissue Segmentation",
-    "siena": "FSL / Pipelines",
-    "sienax": "FSL / Pipelines",
-    "wb_command_surface_sphere_project_unproject": "Connectome Workbench / Surface Registration"
-  },
-  "subsectionEdges": [
+  "toolEdges": [
     {
-      "source": "afni / bias correction",
-      "target": "afni / brain extraction"
+      "source": "3dAllineate",
+      "target": "3dAllineate"
     },
     {
-      "source": "afni / bias correction",
-      "target": "afni / registration"
+      "source": "3dAllineate",
+      "target": "3dQwarp"
     },
     {
-      "source": "afni / brain extraction",
-      "target": "afni / bias correction"
+      "source": "3dAllineate",
+      "target": "@auto_tlrc"
     },
     {
-      "source": "afni / brain extraction",
-      "target": "afni / brain extraction"
+      "source": "3dQwarp",
+      "target": "3dAllineate"
     },
     {
-      "source": "afni / brain extraction",
-      "target": "afni / registration"
+      "source": "3dQwarp",
+      "target": "3dQwarp"
     },
     {
-      "source": "afni / brain extraction",
-      "target": "ants / registration"
+      "source": "3dQwarp",
+      "target": "@auto_tlrc"
     },
     {
-      "source": "afni / brain extraction",
-      "target": "ants / segmentation"
+      "source": "3dSkullStrip",
+      "target": "3dAllineate"
     },
     {
-      "source": "afni / brain extraction",
-      "target": "fsl / tissue segmentation"
+      "source": "3dSkullStrip",
+      "target": "3dQwarp"
     },
     {
-      "source": "afni / registration",
-      "target": "afni / registration"
+      "source": "3dSkullStrip",
+      "target": "3dSkullStrip"
     },
     {
-      "source": "ants / brain extraction",
-      "target": "ants / cortical thickness"
+      "source": "3dSkullStrip",
+      "target": "3dUnifize"
     },
     {
-      "source": "ants / brain extraction",
-      "target": "ants / registration"
+      "source": "3dSkullStrip",
+      "target": "@SSwarper"
     },
     {
-      "source": "ants / brain extraction",
-      "target": "ants / segmentation"
+      "source": "3dSkullStrip",
+      "target": "@auto_tlrc"
     },
     {
-      "source": "ants / brain extraction",
-      "target": "fsl / registration"
+      "source": "3dSkullStrip",
+      "target": "Atropos"
     },
     {
-      "source": "ants / brain extraction",
-      "target": "fsl / tissue segmentation"
+      "source": "3dSkullStrip",
+      "target": "antsAtroposN4.sh"
     },
     {
-      "source": "ants / cortical thickness",
-      "target": "ants / cortical thickness"
+      "source": "3dSkullStrip",
+      "target": "antsRegistration"
     },
     {
-      "source": "ants / registration",
-      "target": "ants / cortical thickness"
+      "source": "3dSkullStrip",
+      "target": "antsRegistrationSyN.sh"
     },
     {
-      "source": "ants / registration",
-      "target": "ants / registration"
+      "source": "3dSkullStrip",
+      "target": "antsRegistrationSyNQuick.sh"
     },
     {
-      "source": "ants / registration",
-      "target": "ants / segmentation"
+      "source": "3dSkullStrip",
+      "target": "fast"
     },
     {
-      "source": "ants / segmentation",
-      "target": "ants / cortical thickness"
+      "source": "3dSkullStrip",
+      "target": "run_first_all"
     },
     {
-      "source": "ants / segmentation",
-      "target": "ants / registration"
+      "source": "3dUnifize",
+      "target": "3dAllineate"
     },
     {
-      "source": "ants / segmentation",
-      "target": "ants / segmentation"
+      "source": "3dUnifize",
+      "target": "3dQwarp"
     },
     {
-      "source": "freesurfer / morphometry",
-      "target": "freesurfer / morphometry"
+      "source": "3dUnifize",
+      "target": "3dSkullStrip"
     },
     {
-      "source": "freesurfer / parcellation",
-      "target": "freesurfer / morphometry"
+      "source": "3dUnifize",
+      "target": "@SSwarper"
     },
     {
-      "source": "freesurfer / parcellation",
-      "target": "freesurfer / parcellation"
+      "source": "3dUnifize",
+      "target": "@auto_tlrc"
     },
     {
-      "source": "freesurfer / surface reconstruction",
-      "target": "connectome workbench / surface registration"
+      "source": "@SSwarper",
+      "target": "3dAllineate"
     },
     {
-      "source": "freesurfer / surface reconstruction",
-      "target": "freesurfer / morphometry"
+      "source": "@SSwarper",
+      "target": "3dQwarp"
     },
     {
-      "source": "freesurfer / surface reconstruction",
-      "target": "freesurfer / parcellation"
+      "source": "@SSwarper",
+      "target": "3dSkullStrip"
     },
     {
-      "source": "freesurfer / surface reconstruction",
-      "target": "freesurfer / surface reconstruction"
+      "source": "@SSwarper",
+      "target": "3dUnifize"
     },
     {
-      "source": "fsl / brain extraction",
-      "target": "ants / registration"
+      "source": "@SSwarper",
+      "target": "@SSwarper"
     },
     {
-      "source": "fsl / brain extraction",
-      "target": "ants / segmentation"
+      "source": "@SSwarper",
+      "target": "@auto_tlrc"
     },
     {
-      "source": "fsl / brain extraction",
-      "target": "fsl / lesion segmentation"
+      "source": "@SSwarper",
+      "target": "Atropos"
     },
     {
-      "source": "fsl / brain extraction",
-      "target": "fsl / pipelines"
+      "source": "@SSwarper",
+      "target": "antsAtroposN4.sh"
     },
     {
-      "source": "fsl / brain extraction",
-      "target": "fsl / registration"
+      "source": "@SSwarper",
+      "target": "antsRegistration"
     },
     {
-      "source": "fsl / brain extraction",
-      "target": "fsl / tissue segmentation"
+      "source": "@SSwarper",
+      "target": "antsRegistrationSyN.sh"
     },
     {
-      "source": "fsl / pipelines",
-      "target": "fsl / lesion segmentation"
+      "source": "@SSwarper",
+      "target": "antsRegistrationSyNQuick.sh"
     },
     {
-      "source": "fsl / pipelines",
-      "target": "fsl / pipelines"
+      "source": "@SSwarper",
+      "target": "fast"
     },
     {
-      "source": "fsl / pipelines",
-      "target": "fsl / registration"
+      "source": "@SSwarper",
+      "target": "run_first_all"
     },
     {
-      "source": "fsl / pipelines",
-      "target": "fsl / tissue segmentation"
+      "source": "@auto_tlrc",
+      "target": "3dAllineate"
     },
     {
-      "source": "fsl / registration",
-      "target": "ants / registration"
+      "source": "@auto_tlrc",
+      "target": "3dQwarp"
     },
     {
-      "source": "fsl / registration",
-      "target": "fsl / lesion segmentation"
+      "source": "@auto_tlrc",
+      "target": "@auto_tlrc"
     },
     {
-      "source": "fsl / registration",
-      "target": "fsl / registration"
+      "source": "Atropos",
+      "target": "Atropos"
     },
     {
-      "source": "fsl / registration",
-      "target": "fsl / tissue segmentation"
+      "source": "Atropos",
+      "target": "KellyKapowski"
     },
     {
-      "source": "fsl / tissue segmentation",
-      "target": "fsl / lesion segmentation"
+      "source": "Atropos",
+      "target": "antsAtroposN4.sh"
     },
     {
-      "source": "fsl / tissue segmentation",
-      "target": "fsl / registration"
+      "source": "Atropos",
+      "target": "antsCorticalThickness.sh"
     },
     {
-      "source": "fsl / tissue segmentation",
-      "target": "fsl / tissue segmentation"
+      "source": "Atropos",
+      "target": "antsRegistration"
+    },
+    {
+      "source": "Atropos",
+      "target": "antsRegistrationSyN.sh"
+    },
+    {
+      "source": "Atropos",
+      "target": "antsRegistrationSyNQuick.sh"
+    },
+    {
+      "source": "KellyKapowski",
+      "target": "KellyKapowski"
+    },
+    {
+      "source": "KellyKapowski",
+      "target": "antsCorticalThickness.sh"
+    },
+    {
+      "source": "antsAtroposN4.sh",
+      "target": "Atropos"
+    },
+    {
+      "source": "antsAtroposN4.sh",
+      "target": "KellyKapowski"
+    },
+    {
+      "source": "antsAtroposN4.sh",
+      "target": "antsAtroposN4.sh"
+    },
+    {
+      "source": "antsAtroposN4.sh",
+      "target": "antsCorticalThickness.sh"
+    },
+    {
+      "source": "antsAtroposN4.sh",
+      "target": "antsRegistration"
+    },
+    {
+      "source": "antsAtroposN4.sh",
+      "target": "antsRegistrationSyN.sh"
+    },
+    {
+      "source": "antsAtroposN4.sh",
+      "target": "antsRegistrationSyNQuick.sh"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "Atropos"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "KellyKapowski"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "antsAtroposN4.sh"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "antsCorticalThickness.sh"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "antsRegistration"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "antsRegistrationSyN.sh"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "antsRegistrationSyNQuick.sh"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "fast"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "flirt"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "fnirt"
+    },
+    {
+      "source": "antsBrainExtraction.sh",
+      "target": "run_first_all"
+    },
+    {
+      "source": "antsCorticalThickness.sh",
+      "target": "KellyKapowski"
+    },
+    {
+      "source": "antsCorticalThickness.sh",
+      "target": "antsCorticalThickness.sh"
+    },
+    {
+      "source": "antsRegistration",
+      "target": "Atropos"
+    },
+    {
+      "source": "antsRegistration",
+      "target": "KellyKapowski"
+    },
+    {
+      "source": "antsRegistration",
+      "target": "antsAtroposN4.sh"
+    },
+    {
+      "source": "antsRegistration",
+      "target": "antsCorticalThickness.sh"
+    },
+    {
+      "source": "antsRegistration",
+      "target": "antsRegistration"
+    },
+    {
+      "source": "antsRegistration",
+      "target": "antsRegistrationSyN.sh"
+    },
+    {
+      "source": "antsRegistration",
+      "target": "antsRegistrationSyNQuick.sh"
+    },
+    {
+      "source": "antsRegistrationSyN.sh",
+      "target": "Atropos"
+    },
+    {
+      "source": "antsRegistrationSyN.sh",
+      "target": "KellyKapowski"
+    },
+    {
+      "source": "antsRegistrationSyN.sh",
+      "target": "antsAtroposN4.sh"
+    },
+    {
+      "source": "antsRegistrationSyN.sh",
+      "target": "antsCorticalThickness.sh"
+    },
+    {
+      "source": "antsRegistrationSyN.sh",
+      "target": "antsRegistration"
+    },
+    {
+      "source": "antsRegistrationSyN.sh",
+      "target": "antsRegistrationSyN.sh"
+    },
+    {
+      "source": "antsRegistrationSyN.sh",
+      "target": "antsRegistrationSyNQuick.sh"
+    },
+    {
+      "source": "antsRegistrationSyNQuick.sh",
+      "target": "Atropos"
+    },
+    {
+      "source": "antsRegistrationSyNQuick.sh",
+      "target": "KellyKapowski"
+    },
+    {
+      "source": "antsRegistrationSyNQuick.sh",
+      "target": "antsAtroposN4.sh"
+    },
+    {
+      "source": "antsRegistrationSyNQuick.sh",
+      "target": "antsCorticalThickness.sh"
+    },
+    {
+      "source": "antsRegistrationSyNQuick.sh",
+      "target": "antsRegistration"
+    },
+    {
+      "source": "antsRegistrationSyNQuick.sh",
+      "target": "antsRegistrationSyN.sh"
+    },
+    {
+      "source": "antsRegistrationSyNQuick.sh",
+      "target": "antsRegistrationSyNQuick.sh"
+    },
+    {
+      "source": "aparcstats2table",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "aparcstats2table",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "aparcstats2table",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "aparcstats2table",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "asegstats2table",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "asegstats2table",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "asegstats2table",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "asegstats2table",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "bet",
+      "target": "Atropos"
+    },
+    {
+      "source": "bet",
+      "target": "antsAtroposN4.sh"
+    },
+    {
+      "source": "bet",
+      "target": "antsRegistration"
+    },
+    {
+      "source": "bet",
+      "target": "antsRegistrationSyN.sh"
+    },
+    {
+      "source": "bet",
+      "target": "antsRegistrationSyNQuick.sh"
+    },
+    {
+      "source": "bet",
+      "target": "bianca"
+    },
+    {
+      "source": "bet",
+      "target": "fast"
+    },
+    {
+      "source": "bet",
+      "target": "flirt"
+    },
+    {
+      "source": "bet",
+      "target": "fnirt"
+    },
+    {
+      "source": "bet",
+      "target": "fsl_anat"
+    },
+    {
+      "source": "bet",
+      "target": "run_first_all"
+    },
+    {
+      "source": "bet",
+      "target": "siena"
+    },
+    {
+      "source": "bet",
+      "target": "sienax"
+    },
+    {
+      "source": "fast",
+      "target": "bianca"
+    },
+    {
+      "source": "fast",
+      "target": "fast"
+    },
+    {
+      "source": "fast",
+      "target": "flirt"
+    },
+    {
+      "source": "fast",
+      "target": "fnirt"
+    },
+    {
+      "source": "fast",
+      "target": "run_first_all"
+    },
+    {
+      "source": "flirt",
+      "target": "antsRegistration"
+    },
+    {
+      "source": "flirt",
+      "target": "antsRegistrationSyN.sh"
+    },
+    {
+      "source": "flirt",
+      "target": "antsRegistrationSyNQuick.sh"
+    },
+    {
+      "source": "flirt",
+      "target": "bianca"
+    },
+    {
+      "source": "flirt",
+      "target": "fast"
+    },
+    {
+      "source": "flirt",
+      "target": "flirt"
+    },
+    {
+      "source": "flirt",
+      "target": "fnirt"
+    },
+    {
+      "source": "flirt",
+      "target": "run_first_all"
+    },
+    {
+      "source": "fnirt",
+      "target": "antsRegistration"
+    },
+    {
+      "source": "fnirt",
+      "target": "antsRegistrationSyN.sh"
+    },
+    {
+      "source": "fnirt",
+      "target": "antsRegistrationSyNQuick.sh"
+    },
+    {
+      "source": "fnirt",
+      "target": "bianca"
+    },
+    {
+      "source": "fnirt",
+      "target": "fast"
+    },
+    {
+      "source": "fnirt",
+      "target": "flirt"
+    },
+    {
+      "source": "fnirt",
+      "target": "fnirt"
+    },
+    {
+      "source": "fnirt",
+      "target": "run_first_all"
+    },
+    {
+      "source": "fsl_anat",
+      "target": "bianca"
+    },
+    {
+      "source": "fsl_anat",
+      "target": "fast"
+    },
+    {
+      "source": "fsl_anat",
+      "target": "flirt"
+    },
+    {
+      "source": "fsl_anat",
+      "target": "fnirt"
+    },
+    {
+      "source": "fsl_anat",
+      "target": "fsl_anat"
+    },
+    {
+      "source": "fsl_anat",
+      "target": "run_first_all"
+    },
+    {
+      "source": "fsl_anat",
+      "target": "siena"
+    },
+    {
+      "source": "fsl_anat",
+      "target": "sienax"
+    },
+    {
+      "source": "mri_annotation2label",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mri_annotation2label",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mri_annotation2label",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "mri_annotation2label",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "mri_annotation2label",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "mri_annotation2label",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mri_annotation2label",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mri_annotation2label",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "mri_aparc2aseg",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mri_aparc2aseg",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mri_aparc2aseg",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "mri_aparc2aseg",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "mri_aparc2aseg",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "mri_aparc2aseg",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mri_aparc2aseg",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mri_aparc2aseg",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "mri_label2vol",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mri_label2vol",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mri_label2vol",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "mri_label2vol",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "mri_label2vol",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "mri_label2vol",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mri_label2vol",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mri_label2vol",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mri_normalize"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mri_segment"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mri_watershed"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mris_inflate"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "mris_sphere"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "recon-all"
+    },
+    {
+      "source": "mri_normalize",
+      "target": "wb_command_surface_sphere_project_unproject"
+    },
+    {
+      "source": "mri_segment",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mri_segment",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mri_normalize"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mri_segment"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mri_watershed"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mris_inflate"
+    },
+    {
+      "source": "mri_segment",
+      "target": "mris_sphere"
+    },
+    {
+      "source": "mri_segment",
+      "target": "recon-all"
+    },
+    {
+      "source": "mri_segment",
+      "target": "wb_command_surface_sphere_project_unproject"
+    },
+    {
+      "source": "mri_segstats",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mri_segstats",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mri_segstats",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mri_segstats",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mri_normalize"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mri_segment"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mri_watershed"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mris_inflate"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "mris_sphere"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "recon-all"
+    },
+    {
+      "source": "mri_watershed",
+      "target": "wb_command_surface_sphere_project_unproject"
+    },
+    {
+      "source": "mris_anatomical_stats",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mris_anatomical_stats",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mris_anatomical_stats",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mris_anatomical_stats",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mris_ca_label",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mris_ca_label",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mris_ca_label",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "mris_ca_label",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "mris_ca_label",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "mris_ca_label",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mris_ca_label",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mris_ca_label",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mri_normalize"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mri_segment"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mri_watershed"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mris_inflate"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "mris_sphere"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "recon-all"
+    },
+    {
+      "source": "mris_inflate",
+      "target": "wb_command_surface_sphere_project_unproject"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mri_normalize"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mri_segment"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mri_watershed"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mris_inflate"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "mris_sphere"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "recon-all"
+    },
+    {
+      "source": "mris_sphere",
+      "target": "wb_command_surface_sphere_project_unproject"
+    },
+    {
+      "source": "recon-all",
+      "target": "aparcstats2table"
+    },
+    {
+      "source": "recon-all",
+      "target": "asegstats2table"
+    },
+    {
+      "source": "recon-all",
+      "target": "mri_annotation2label"
+    },
+    {
+      "source": "recon-all",
+      "target": "mri_aparc2aseg"
+    },
+    {
+      "source": "recon-all",
+      "target": "mri_label2vol"
+    },
+    {
+      "source": "recon-all",
+      "target": "mri_normalize"
+    },
+    {
+      "source": "recon-all",
+      "target": "mri_segment"
+    },
+    {
+      "source": "recon-all",
+      "target": "mri_segstats"
+    },
+    {
+      "source": "recon-all",
+      "target": "mri_watershed"
+    },
+    {
+      "source": "recon-all",
+      "target": "mris_anatomical_stats"
+    },
+    {
+      "source": "recon-all",
+      "target": "mris_ca_label"
+    },
+    {
+      "source": "recon-all",
+      "target": "mris_inflate"
+    },
+    {
+      "source": "recon-all",
+      "target": "mris_sphere"
+    },
+    {
+      "source": "recon-all",
+      "target": "recon-all"
+    },
+    {
+      "source": "recon-all",
+      "target": "wb_command_surface_sphere_project_unproject"
+    },
+    {
+      "source": "run_first_all",
+      "target": "bianca"
+    },
+    {
+      "source": "run_first_all",
+      "target": "fast"
+    },
+    {
+      "source": "run_first_all",
+      "target": "flirt"
+    },
+    {
+      "source": "run_first_all",
+      "target": "fnirt"
+    },
+    {
+      "source": "run_first_all",
+      "target": "run_first_all"
+    },
+    {
+      "source": "siena",
+      "target": "bianca"
+    },
+    {
+      "source": "siena",
+      "target": "fast"
+    },
+    {
+      "source": "siena",
+      "target": "flirt"
+    },
+    {
+      "source": "siena",
+      "target": "fnirt"
+    },
+    {
+      "source": "siena",
+      "target": "fsl_anat"
+    },
+    {
+      "source": "siena",
+      "target": "run_first_all"
+    },
+    {
+      "source": "siena",
+      "target": "siena"
+    },
+    {
+      "source": "siena",
+      "target": "sienax"
+    },
+    {
+      "source": "sienax",
+      "target": "bianca"
+    },
+    {
+      "source": "sienax",
+      "target": "fast"
+    },
+    {
+      "source": "sienax",
+      "target": "flirt"
+    },
+    {
+      "source": "sienax",
+      "target": "fnirt"
+    },
+    {
+      "source": "sienax",
+      "target": "fsl_anat"
+    },
+    {
+      "source": "sienax",
+      "target": "run_first_all"
+    },
+    {
+      "source": "sienax",
+      "target": "siena"
+    },
+    {
+      "source": "sienax",
+      "target": "sienax"
     }
   ],
   "matrix": [
@@ -1869,14 +2772,5 @@
     ]
   ],
   "edgeCount": 291,
-  "toolCount": 38,
-  "normalization": {
-    "canonicalLabelFormat": "library / subsection",
-    "rules": [
-      "lowercase",
-      "trim and collapse whitespace",
-      "normalize '&' to 'and'",
-      "treat '-' and '/' equivalently in subsection text"
-    ]
-  }
+  "toolCount": 38
 }

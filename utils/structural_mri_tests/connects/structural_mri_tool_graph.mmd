@@ -1,0 +1,456 @@
+flowchart LR
+
+  %% === Node Definitions ===
+
+  %% AFNI / Bias Correction
+  _3dUnifize["3dUnifize"]
+
+  %% AFNI / Brain Extraction
+  _3dSkullStrip["3dSkullStrip"]
+  at_SSwarper["@SSwarper"]
+
+  %% AFNI / Registration
+  _3dAllineate["3dAllineate"]
+  _3dQwarp["3dQwarp"]
+  at_auto_tlrc["@auto_tlrc"]
+
+  %% ANTs / Brain Extraction
+  antsBrainExtraction_sh["antsBrainExtraction.sh"]
+
+  %% ANTs / Cortical Thickness
+  KellyKapowski["KellyKapowski"]
+  antsCorticalThickness_sh["antsCorticalThickness.sh"]
+
+  %% ANTs / Registration
+  antsRegistration["antsRegistration"]
+  antsRegistrationSyN_sh["antsRegistrationSyN.sh"]
+  antsRegistrationSyNQuick_sh["antsRegistrationSyNQuick.sh"]
+
+  %% ANTs / Segmentation
+  Atropos["Atropos"]
+  antsAtroposN4_sh["antsAtroposN4.sh"]
+
+  %% Connectome Workbench / Surface Registration
+  wb_command_surface_sphere_project_unproject["wb_command_surface_sphere_project_unproject"]
+
+  %% FSL / Brain Extraction
+  bet["bet"]
+
+  %% FSL / Lesion Segmentation
+  bianca["bianca"]
+
+  %% FSL / Pipelines
+  fsl_anat["fsl_anat"]
+  siena["siena"]
+  sienax["sienax"]
+
+  %% FSL / Registration
+  flirt["flirt"]
+  fnirt["fnirt"]
+
+  %% FSL / Tissue Segmentation
+  fast["fast"]
+  run_first_all["run_first_all"]
+
+  %% FreeSurfer / Morphometry
+  aparcstats2table["aparcstats2table"]
+  asegstats2table["asegstats2table"]
+  mri_segstats["mri_segstats"]
+  mris_anatomical_stats["mris_anatomical_stats"]
+
+  %% FreeSurfer / Parcellation
+  mri_annotation2label["mri_annotation2label"]
+  mri_aparc2aseg["mri_aparc2aseg"]
+  mri_label2vol["mri_label2vol"]
+  mris_ca_label["mris_ca_label"]
+
+  %% FreeSurfer / Surface Reconstruction
+  mri_normalize["mri_normalize"]
+  mri_segment["mri_segment"]
+  mri_watershed["mri_watershed"]
+  mris_inflate["mris_inflate"]
+  mris_sphere["mris_sphere"]
+  recon_all["recon-all"]
+
+  %% === Edges ===
+
+  %% AFNI / Bias Correction --> AFNI / Brain Extraction
+  _3dUnifize --> _3dSkullStrip
+  _3dUnifize --> at_SSwarper
+
+  %% AFNI / Bias Correction --> AFNI / Registration
+  _3dUnifize --> _3dAllineate
+  _3dUnifize --> _3dQwarp
+  _3dUnifize --> at_auto_tlrc
+
+  %% AFNI / Brain Extraction --> AFNI / Bias Correction
+  _3dSkullStrip --> _3dUnifize
+  at_SSwarper --> _3dUnifize
+
+  %% AFNI / Brain Extraction (intra-subsection)
+  _3dSkullStrip --> _3dSkullStrip
+  _3dSkullStrip --> at_SSwarper
+  at_SSwarper --> _3dSkullStrip
+  at_SSwarper --> at_SSwarper
+
+  %% AFNI / Brain Extraction --> AFNI / Registration
+  _3dSkullStrip --> _3dAllineate
+  _3dSkullStrip --> _3dQwarp
+  _3dSkullStrip --> at_auto_tlrc
+  at_SSwarper --> _3dAllineate
+  at_SSwarper --> _3dQwarp
+  at_SSwarper --> at_auto_tlrc
+
+  %% AFNI / Brain Extraction --> ANTs / Registration
+  _3dSkullStrip --> antsRegistration
+  _3dSkullStrip --> antsRegistrationSyN_sh
+  _3dSkullStrip --> antsRegistrationSyNQuick_sh
+  at_SSwarper --> antsRegistration
+  at_SSwarper --> antsRegistrationSyN_sh
+  at_SSwarper --> antsRegistrationSyNQuick_sh
+
+  %% AFNI / Brain Extraction --> ANTs / Segmentation
+  _3dSkullStrip --> Atropos
+  _3dSkullStrip --> antsAtroposN4_sh
+  at_SSwarper --> Atropos
+  at_SSwarper --> antsAtroposN4_sh
+
+  %% AFNI / Brain Extraction --> FSL / Tissue Segmentation
+  _3dSkullStrip --> fast
+  _3dSkullStrip --> run_first_all
+  at_SSwarper --> fast
+  at_SSwarper --> run_first_all
+
+  %% AFNI / Registration (intra-subsection)
+  _3dAllineate --> _3dAllineate
+  _3dAllineate --> _3dQwarp
+  _3dAllineate --> at_auto_tlrc
+  _3dQwarp --> _3dAllineate
+  _3dQwarp --> _3dQwarp
+  _3dQwarp --> at_auto_tlrc
+  at_auto_tlrc --> _3dAllineate
+  at_auto_tlrc --> _3dQwarp
+  at_auto_tlrc --> at_auto_tlrc
+
+  %% ANTs / Brain Extraction --> ANTs / Cortical Thickness
+  antsBrainExtraction_sh --> KellyKapowski
+  antsBrainExtraction_sh --> antsCorticalThickness_sh
+
+  %% ANTs / Brain Extraction --> ANTs / Registration
+  antsBrainExtraction_sh --> antsRegistration
+  antsBrainExtraction_sh --> antsRegistrationSyN_sh
+  antsBrainExtraction_sh --> antsRegistrationSyNQuick_sh
+
+  %% ANTs / Brain Extraction --> ANTs / Segmentation
+  antsBrainExtraction_sh --> Atropos
+  antsBrainExtraction_sh --> antsAtroposN4_sh
+
+  %% ANTs / Brain Extraction --> FSL / Registration
+  antsBrainExtraction_sh --> flirt
+  antsBrainExtraction_sh --> fnirt
+
+  %% ANTs / Brain Extraction --> FSL / Tissue Segmentation
+  antsBrainExtraction_sh --> fast
+  antsBrainExtraction_sh --> run_first_all
+
+  %% ANTs / Cortical Thickness (intra-subsection)
+  KellyKapowski --> KellyKapowski
+  KellyKapowski --> antsCorticalThickness_sh
+  antsCorticalThickness_sh --> KellyKapowski
+  antsCorticalThickness_sh --> antsCorticalThickness_sh
+
+  %% ANTs / Registration --> ANTs / Cortical Thickness
+  antsRegistration --> KellyKapowski
+  antsRegistration --> antsCorticalThickness_sh
+  antsRegistrationSyN_sh --> KellyKapowski
+  antsRegistrationSyN_sh --> antsCorticalThickness_sh
+  antsRegistrationSyNQuick_sh --> KellyKapowski
+  antsRegistrationSyNQuick_sh --> antsCorticalThickness_sh
+
+  %% ANTs / Registration (intra-subsection)
+  antsRegistration --> antsRegistration
+  antsRegistration --> antsRegistrationSyN_sh
+  antsRegistration --> antsRegistrationSyNQuick_sh
+  antsRegistrationSyN_sh --> antsRegistration
+  antsRegistrationSyN_sh --> antsRegistrationSyN_sh
+  antsRegistrationSyN_sh --> antsRegistrationSyNQuick_sh
+  antsRegistrationSyNQuick_sh --> antsRegistration
+  antsRegistrationSyNQuick_sh --> antsRegistrationSyN_sh
+  antsRegistrationSyNQuick_sh --> antsRegistrationSyNQuick_sh
+
+  %% ANTs / Registration --> ANTs / Segmentation
+  antsRegistration --> Atropos
+  antsRegistration --> antsAtroposN4_sh
+  antsRegistrationSyN_sh --> Atropos
+  antsRegistrationSyN_sh --> antsAtroposN4_sh
+  antsRegistrationSyNQuick_sh --> Atropos
+  antsRegistrationSyNQuick_sh --> antsAtroposN4_sh
+
+  %% ANTs / Segmentation --> ANTs / Cortical Thickness
+  Atropos --> KellyKapowski
+  Atropos --> antsCorticalThickness_sh
+  antsAtroposN4_sh --> KellyKapowski
+  antsAtroposN4_sh --> antsCorticalThickness_sh
+
+  %% ANTs / Segmentation --> ANTs / Registration
+  Atropos --> antsRegistration
+  Atropos --> antsRegistrationSyN_sh
+  Atropos --> antsRegistrationSyNQuick_sh
+  antsAtroposN4_sh --> antsRegistration
+  antsAtroposN4_sh --> antsRegistrationSyN_sh
+  antsAtroposN4_sh --> antsRegistrationSyNQuick_sh
+
+  %% ANTs / Segmentation (intra-subsection)
+  Atropos --> Atropos
+  Atropos --> antsAtroposN4_sh
+  antsAtroposN4_sh --> Atropos
+  antsAtroposN4_sh --> antsAtroposN4_sh
+
+  %% FSL / Brain Extraction --> ANTs / Registration
+  bet --> antsRegistration
+  bet --> antsRegistrationSyN_sh
+  bet --> antsRegistrationSyNQuick_sh
+
+  %% FSL / Brain Extraction --> ANTs / Segmentation
+  bet --> Atropos
+  bet --> antsAtroposN4_sh
+
+  %% FSL / Brain Extraction --> FSL / Lesion Segmentation
+  bet --> bianca
+
+  %% FSL / Brain Extraction --> FSL / Pipelines
+  bet --> fsl_anat
+  bet --> siena
+  bet --> sienax
+
+  %% FSL / Brain Extraction --> FSL / Registration
+  bet --> flirt
+  bet --> fnirt
+
+  %% FSL / Brain Extraction --> FSL / Tissue Segmentation
+  bet --> fast
+  bet --> run_first_all
+
+  %% FSL / Pipelines --> FSL / Lesion Segmentation
+  fsl_anat --> bianca
+  siena --> bianca
+  sienax --> bianca
+
+  %% FSL / Pipelines (intra-subsection)
+  fsl_anat --> fsl_anat
+  fsl_anat --> siena
+  fsl_anat --> sienax
+  siena --> fsl_anat
+  siena --> siena
+  siena --> sienax
+  sienax --> fsl_anat
+  sienax --> siena
+  sienax --> sienax
+
+  %% FSL / Pipelines --> FSL / Registration
+  fsl_anat --> flirt
+  fsl_anat --> fnirt
+  siena --> flirt
+  siena --> fnirt
+  sienax --> flirt
+  sienax --> fnirt
+
+  %% FSL / Pipelines --> FSL / Tissue Segmentation
+  fsl_anat --> fast
+  fsl_anat --> run_first_all
+  siena --> fast
+  siena --> run_first_all
+  sienax --> fast
+  sienax --> run_first_all
+
+  %% FSL / Registration --> ANTs / Registration
+  flirt --> antsRegistration
+  flirt --> antsRegistrationSyN_sh
+  flirt --> antsRegistrationSyNQuick_sh
+  fnirt --> antsRegistration
+  fnirt --> antsRegistrationSyN_sh
+  fnirt --> antsRegistrationSyNQuick_sh
+
+  %% FSL / Registration --> FSL / Lesion Segmentation
+  flirt --> bianca
+  fnirt --> bianca
+
+  %% FSL / Registration (intra-subsection)
+  flirt --> flirt
+  flirt --> fnirt
+  fnirt --> flirt
+  fnirt --> fnirt
+
+  %% FSL / Registration --> FSL / Tissue Segmentation
+  flirt --> fast
+  flirt --> run_first_all
+  fnirt --> fast
+  fnirt --> run_first_all
+
+  %% FSL / Tissue Segmentation --> FSL / Lesion Segmentation
+  fast --> bianca
+  run_first_all --> bianca
+
+  %% FSL / Tissue Segmentation --> FSL / Registration
+  fast --> flirt
+  fast --> fnirt
+  run_first_all --> flirt
+  run_first_all --> fnirt
+
+  %% FSL / Tissue Segmentation (intra-subsection)
+  fast --> fast
+  fast --> run_first_all
+  run_first_all --> fast
+  run_first_all --> run_first_all
+
+  %% FreeSurfer / Morphometry (intra-subsection)
+  aparcstats2table --> aparcstats2table
+  aparcstats2table --> asegstats2table
+  aparcstats2table --> mri_segstats
+  aparcstats2table --> mris_anatomical_stats
+  asegstats2table --> aparcstats2table
+  asegstats2table --> asegstats2table
+  asegstats2table --> mri_segstats
+  asegstats2table --> mris_anatomical_stats
+  mri_segstats --> aparcstats2table
+  mri_segstats --> asegstats2table
+  mri_segstats --> mri_segstats
+  mri_segstats --> mris_anatomical_stats
+  mris_anatomical_stats --> aparcstats2table
+  mris_anatomical_stats --> asegstats2table
+  mris_anatomical_stats --> mri_segstats
+  mris_anatomical_stats --> mris_anatomical_stats
+
+  %% FreeSurfer / Parcellation --> FreeSurfer / Morphometry
+  mri_annotation2label --> aparcstats2table
+  mri_annotation2label --> asegstats2table
+  mri_annotation2label --> mri_segstats
+  mri_annotation2label --> mris_anatomical_stats
+  mri_aparc2aseg --> aparcstats2table
+  mri_aparc2aseg --> asegstats2table
+  mri_aparc2aseg --> mri_segstats
+  mri_aparc2aseg --> mris_anatomical_stats
+  mri_label2vol --> aparcstats2table
+  mri_label2vol --> asegstats2table
+  mri_label2vol --> mri_segstats
+  mri_label2vol --> mris_anatomical_stats
+  mris_ca_label --> aparcstats2table
+  mris_ca_label --> asegstats2table
+  mris_ca_label --> mri_segstats
+  mris_ca_label --> mris_anatomical_stats
+
+  %% FreeSurfer / Parcellation (intra-subsection)
+  mri_annotation2label --> mri_annotation2label
+  mri_annotation2label --> mri_aparc2aseg
+  mri_annotation2label --> mri_label2vol
+  mri_annotation2label --> mris_ca_label
+  mri_aparc2aseg --> mri_annotation2label
+  mri_aparc2aseg --> mri_aparc2aseg
+  mri_aparc2aseg --> mri_label2vol
+  mri_aparc2aseg --> mris_ca_label
+  mri_label2vol --> mri_annotation2label
+  mri_label2vol --> mri_aparc2aseg
+  mri_label2vol --> mri_label2vol
+  mri_label2vol --> mris_ca_label
+  mris_ca_label --> mri_annotation2label
+  mris_ca_label --> mri_aparc2aseg
+  mris_ca_label --> mri_label2vol
+  mris_ca_label --> mris_ca_label
+
+  %% FreeSurfer / Surface Reconstruction --> Connectome Workbench / Surface Registration
+  mri_normalize --> wb_command_surface_sphere_project_unproject
+  mri_segment --> wb_command_surface_sphere_project_unproject
+  mri_watershed --> wb_command_surface_sphere_project_unproject
+  mris_inflate --> wb_command_surface_sphere_project_unproject
+  mris_sphere --> wb_command_surface_sphere_project_unproject
+  recon_all --> wb_command_surface_sphere_project_unproject
+
+  %% FreeSurfer / Surface Reconstruction --> FreeSurfer / Morphometry
+  mri_normalize --> aparcstats2table
+  mri_normalize --> asegstats2table
+  mri_normalize --> mri_segstats
+  mri_normalize --> mris_anatomical_stats
+  mri_segment --> aparcstats2table
+  mri_segment --> asegstats2table
+  mri_segment --> mri_segstats
+  mri_segment --> mris_anatomical_stats
+  mri_watershed --> aparcstats2table
+  mri_watershed --> asegstats2table
+  mri_watershed --> mri_segstats
+  mri_watershed --> mris_anatomical_stats
+  mris_inflate --> aparcstats2table
+  mris_inflate --> asegstats2table
+  mris_inflate --> mri_segstats
+  mris_inflate --> mris_anatomical_stats
+  mris_sphere --> aparcstats2table
+  mris_sphere --> asegstats2table
+  mris_sphere --> mri_segstats
+  mris_sphere --> mris_anatomical_stats
+  recon_all --> aparcstats2table
+  recon_all --> asegstats2table
+  recon_all --> mri_segstats
+  recon_all --> mris_anatomical_stats
+
+  %% FreeSurfer / Surface Reconstruction --> FreeSurfer / Parcellation
+  mri_normalize --> mri_annotation2label
+  mri_normalize --> mri_aparc2aseg
+  mri_normalize --> mri_label2vol
+  mri_normalize --> mris_ca_label
+  mri_segment --> mri_annotation2label
+  mri_segment --> mri_aparc2aseg
+  mri_segment --> mri_label2vol
+  mri_segment --> mris_ca_label
+  mri_watershed --> mri_annotation2label
+  mri_watershed --> mri_aparc2aseg
+  mri_watershed --> mri_label2vol
+  mri_watershed --> mris_ca_label
+  mris_inflate --> mri_annotation2label
+  mris_inflate --> mri_aparc2aseg
+  mris_inflate --> mri_label2vol
+  mris_inflate --> mris_ca_label
+  mris_sphere --> mri_annotation2label
+  mris_sphere --> mri_aparc2aseg
+  mris_sphere --> mri_label2vol
+  mris_sphere --> mris_ca_label
+  recon_all --> mri_annotation2label
+  recon_all --> mri_aparc2aseg
+  recon_all --> mri_label2vol
+  recon_all --> mris_ca_label
+
+  %% FreeSurfer / Surface Reconstruction (intra-subsection)
+  mri_normalize --> mri_normalize
+  mri_normalize --> mri_segment
+  mri_normalize --> mri_watershed
+  mri_normalize --> mris_inflate
+  mri_normalize --> mris_sphere
+  mri_normalize --> recon_all
+  mri_segment --> mri_normalize
+  mri_segment --> mri_segment
+  mri_segment --> mri_watershed
+  mri_segment --> mris_inflate
+  mri_segment --> mris_sphere
+  mri_segment --> recon_all
+  mri_watershed --> mri_normalize
+  mri_watershed --> mri_segment
+  mri_watershed --> mri_watershed
+  mri_watershed --> mris_inflate
+  mri_watershed --> mris_sphere
+  mri_watershed --> recon_all
+  mris_inflate --> mri_normalize
+  mris_inflate --> mri_segment
+  mris_inflate --> mri_watershed
+  mris_inflate --> mris_inflate
+  mris_inflate --> mris_sphere
+  mris_inflate --> recon_all
+  mris_sphere --> mri_normalize
+  mris_sphere --> mri_segment
+  mris_sphere --> mri_watershed
+  mris_sphere --> mris_inflate
+  mris_sphere --> mris_sphere
+  mris_sphere --> recon_all
+  recon_all --> mri_normalize
+  recon_all --> mri_segment
+  recon_all --> mri_watershed
+  recon_all --> mris_inflate
+  recon_all --> mris_sphere
+  recon_all --> recon_all

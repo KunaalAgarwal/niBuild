@@ -1,8 +1,7 @@
 {
-  "generatedAt": "2026-02-19T07:33:50+00:00",
+  "generatedAt": "2026-02-22T06:29:46+00:00",
   "sources": {
-    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\amico_tests\\connects\\amico_subsection_graph.mmd",
-    "mapping": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\amico_tests\\connects\\amico_tool_to_subsection_map.json"
+    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\amico_tests\\connects\\amico_tool_graph.mmd"
   },
   "toolOrder": [
     "amico_noddi"
@@ -10,16 +9,10 @@
   "toolToIndex": {
     "amico_noddi": 0
   },
-  "subsectionByTool": {
-    "amico_noddi": "amico / microstructure modeling"
-  },
-  "subsectionByToolOriginal": {
-    "amico_noddi": "AMICO / Microstructure Modeling"
-  },
-  "subsectionEdges": [
+  "toolEdges": [
     {
-      "source": "amico / microstructure modeling",
-      "target": "amico / microstructure modeling"
+      "source": "amico_noddi",
+      "target": "amico_noddi"
     }
   ],
   "matrix": [
@@ -28,14 +21,5 @@
     ]
   ],
   "edgeCount": 1,
-  "toolCount": 1,
-  "normalization": {
-    "canonicalLabelFormat": "library / subsection",
-    "rules": [
-      "lowercase",
-      "trim and collapse whitespace",
-      "normalize '&' to 'and'",
-      "treat '-' and '/' equivalently in subsection text"
-    ]
-  }
+  "toolCount": 1
 }

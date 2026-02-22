@@ -1,0 +1,197 @@
+flowchart LR
+
+  %% === Node Definitions ===
+
+  %% AMICO / Microstructure Modeling
+  amico_noddi["amico_noddi"]
+
+  %% FSL / Fiber Modeling
+  bedpostx["bedpostx"]
+
+  %% FSL / Preprocessing
+  eddy["eddy"]
+  topup["topup"]
+
+  %% FSL / TBSS
+  tbss_1_preproc["tbss_1_preproc"]
+  tbss_2_reg["tbss_2_reg"]
+  tbss_3_postreg["tbss_3_postreg"]
+  tbss_4_prestats["tbss_4_prestats"]
+  tbss_non_FA["tbss_non_FA"]
+
+  %% FSL / Tensor Fitting
+  dtifit["dtifit"]
+
+  %% FSL / Tractography
+  probtrackx2["probtrackx2"]
+
+  %% FreeSurfer / Diffusion
+  dmri_postreg["dmri_postreg"]
+
+  %% MRtrix3 / Preprocessing
+  dwidenoise["dwidenoise"]
+  mrdegibbs["mrdegibbs"]
+
+  %% MRtrix3 / Tensor/FOD
+  dwi2fod["dwi2fod"]
+  dwi2tensor["dwi2tensor"]
+  tensor2metric["tensor2metric"]
+
+  %% MRtrix3 / Tractography
+  tck2connectome["tck2connectome"]
+  tckgen["tckgen"]
+  tcksift["tcksift"]
+
+  %% === Edges ===
+
+  %% FSL / Fiber Modeling --> FSL / Tractography
+  bedpostx --> probtrackx2
+
+  %% FSL / Preprocessing --> AMICO / Microstructure Modeling
+  eddy --> amico_noddi
+  topup --> amico_noddi
+
+  %% FSL / Preprocessing --> FSL / Fiber Modeling
+  eddy --> bedpostx
+  topup --> bedpostx
+
+  %% FSL / Preprocessing (intra-subsection)
+  eddy --> eddy
+  eddy --> topup
+  topup --> eddy
+  topup --> topup
+
+  %% FSL / Preprocessing --> FSL / Tensor Fitting
+  eddy --> dtifit
+  topup --> dtifit
+
+  %% FSL / Preprocessing --> FreeSurfer / Diffusion
+  eddy --> dmri_postreg
+  topup --> dmri_postreg
+
+  %% FSL / Preprocessing --> MRtrix3 / Tensor/FOD
+  eddy --> dwi2fod
+  eddy --> dwi2tensor
+  eddy --> tensor2metric
+  topup --> dwi2fod
+  topup --> dwi2tensor
+  topup --> tensor2metric
+
+  %% FSL / Preprocessing --> MRtrix3 / Tractography
+  eddy --> tck2connectome
+  eddy --> tckgen
+  eddy --> tcksift
+  topup --> tck2connectome
+  topup --> tckgen
+  topup --> tcksift
+
+  %% FSL / TBSS (intra-subsection)
+  tbss_1_preproc --> tbss_1_preproc
+  tbss_1_preproc --> tbss_2_reg
+  tbss_1_preproc --> tbss_3_postreg
+  tbss_1_preproc --> tbss_4_prestats
+  tbss_1_preproc --> tbss_non_FA
+  tbss_2_reg --> tbss_1_preproc
+  tbss_2_reg --> tbss_2_reg
+  tbss_2_reg --> tbss_3_postreg
+  tbss_2_reg --> tbss_4_prestats
+  tbss_2_reg --> tbss_non_FA
+  tbss_3_postreg --> tbss_1_preproc
+  tbss_3_postreg --> tbss_2_reg
+  tbss_3_postreg --> tbss_3_postreg
+  tbss_3_postreg --> tbss_4_prestats
+  tbss_3_postreg --> tbss_non_FA
+  tbss_4_prestats --> tbss_1_preproc
+  tbss_4_prestats --> tbss_2_reg
+  tbss_4_prestats --> tbss_3_postreg
+  tbss_4_prestats --> tbss_4_prestats
+  tbss_4_prestats --> tbss_non_FA
+  tbss_non_FA --> tbss_1_preproc
+  tbss_non_FA --> tbss_2_reg
+  tbss_non_FA --> tbss_3_postreg
+  tbss_non_FA --> tbss_4_prestats
+  tbss_non_FA --> tbss_non_FA
+
+  %% FSL / Tensor Fitting --> FSL / TBSS
+  dtifit --> tbss_1_preproc
+  dtifit --> tbss_2_reg
+  dtifit --> tbss_3_postreg
+  dtifit --> tbss_4_prestats
+  dtifit --> tbss_non_FA
+
+  %% FSL / Tensor Fitting --> FSL / Tractography
+  dtifit --> probtrackx2
+
+  %% FSL / Tensor Fitting --> MRtrix3 / Tractography
+  dtifit --> tck2connectome
+  dtifit --> tckgen
+  dtifit --> tcksift
+
+  %% MRtrix3 / Preprocessing --> AMICO / Microstructure Modeling
+  dwidenoise --> amico_noddi
+  mrdegibbs --> amico_noddi
+
+  %% MRtrix3 / Preprocessing --> FSL / Fiber Modeling
+  dwidenoise --> bedpostx
+  mrdegibbs --> bedpostx
+
+  %% MRtrix3 / Preprocessing --> FSL / Preprocessing
+  dwidenoise --> eddy
+  dwidenoise --> topup
+  mrdegibbs --> eddy
+  mrdegibbs --> topup
+
+  %% MRtrix3 / Preprocessing --> FSL / Tensor Fitting
+  dwidenoise --> dtifit
+  mrdegibbs --> dtifit
+
+  %% MRtrix3 / Preprocessing --> FreeSurfer / Diffusion
+  dwidenoise --> dmri_postreg
+  mrdegibbs --> dmri_postreg
+
+  %% MRtrix3 / Preprocessing (intra-subsection)
+  dwidenoise --> dwidenoise
+  dwidenoise --> mrdegibbs
+  mrdegibbs --> dwidenoise
+  mrdegibbs --> mrdegibbs
+
+  %% MRtrix3 / Preprocessing --> MRtrix3 / Tensor/FOD
+  dwidenoise --> dwi2fod
+  dwidenoise --> dwi2tensor
+  dwidenoise --> tensor2metric
+  mrdegibbs --> dwi2fod
+  mrdegibbs --> dwi2tensor
+  mrdegibbs --> tensor2metric
+
+  %% MRtrix3 / Tensor/FOD (intra-subsection)
+  dwi2fod --> dwi2fod
+  dwi2fod --> dwi2tensor
+  dwi2fod --> tensor2metric
+  dwi2tensor --> dwi2fod
+  dwi2tensor --> dwi2tensor
+  dwi2tensor --> tensor2metric
+  tensor2metric --> dwi2fod
+  tensor2metric --> dwi2tensor
+  tensor2metric --> tensor2metric
+
+  %% MRtrix3 / Tensor/FOD --> MRtrix3 / Tractography
+  dwi2fod --> tck2connectome
+  dwi2fod --> tckgen
+  dwi2fod --> tcksift
+  dwi2tensor --> tck2connectome
+  dwi2tensor --> tckgen
+  dwi2tensor --> tcksift
+  tensor2metric --> tck2connectome
+  tensor2metric --> tckgen
+  tensor2metric --> tcksift
+
+  %% MRtrix3 / Tractography (intra-subsection)
+  tck2connectome --> tck2connectome
+  tck2connectome --> tckgen
+  tck2connectome --> tcksift
+  tckgen --> tck2connectome
+  tckgen --> tckgen
+  tckgen --> tcksift
+  tcksift --> tck2connectome
+  tcksift --> tckgen
+  tcksift --> tcksift

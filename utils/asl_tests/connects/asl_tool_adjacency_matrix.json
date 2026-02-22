@@ -1,8 +1,7 @@
 {
-  "generatedAt": "2026-02-19T07:33:41+00:00",
+  "generatedAt": "2026-02-22T06:29:46+00:00",
   "sources": {
-    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\asl_tests\\connects\\asl_subsection_graph.mmd",
-    "mapping": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\asl_tests\\connects\\asl_tool_to_subsection_map.json"
+    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\asl_tests\\connects\\asl_tool_graph.mmd"
   },
   "toolOrder": [
     "asl_calib",
@@ -14,20 +13,42 @@
     "basil": 1,
     "oxford_asl": 2
   },
-  "subsectionByTool": {
-    "asl_calib": "fsl / asl processing",
-    "basil": "fsl / asl processing",
-    "oxford_asl": "fsl / asl processing"
-  },
-  "subsectionByToolOriginal": {
-    "asl_calib": "FSL / ASL Processing",
-    "basil": "FSL / ASL Processing",
-    "oxford_asl": "FSL / ASL Processing"
-  },
-  "subsectionEdges": [
+  "toolEdges": [
     {
-      "source": "fsl / asl processing",
-      "target": "fsl / asl processing"
+      "source": "asl_calib",
+      "target": "asl_calib"
+    },
+    {
+      "source": "asl_calib",
+      "target": "basil"
+    },
+    {
+      "source": "asl_calib",
+      "target": "oxford_asl"
+    },
+    {
+      "source": "basil",
+      "target": "asl_calib"
+    },
+    {
+      "source": "basil",
+      "target": "basil"
+    },
+    {
+      "source": "basil",
+      "target": "oxford_asl"
+    },
+    {
+      "source": "oxford_asl",
+      "target": "asl_calib"
+    },
+    {
+      "source": "oxford_asl",
+      "target": "basil"
+    },
+    {
+      "source": "oxford_asl",
+      "target": "oxford_asl"
     }
   ],
   "matrix": [
@@ -48,14 +69,5 @@
     ]
   ],
   "edgeCount": 9,
-  "toolCount": 3,
-  "normalization": {
-    "canonicalLabelFormat": "library / subsection",
-    "rules": [
-      "lowercase",
-      "trim and collapse whitespace",
-      "normalize '&' to 'and'",
-      "treat '-' and '/' equivalently in subsection text"
-    ]
-  }
+  "toolCount": 3
 }

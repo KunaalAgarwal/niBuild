@@ -1,0 +1,853 @@
+flowchart LR
+
+  %% === Node Definitions ===
+
+  %% AFNI / Dataset Operations
+  _3dTcat["3dTcat"]
+  _3dZeropad["3dZeropad"]
+  _3dcopy["3dcopy"]
+  _3dinfo["3dinfo"]
+
+  %% AFNI / Image Math
+  _3dTstat["3dTstat"]
+  _3dcalc["3dcalc"]
+
+  %% AFNI / ROI Utilities
+  _3dUndump["3dUndump"]
+  _3dfractionize["3dfractionize"]
+  _3dresample["3dresample"]
+  whereami["whereami"]
+
+  %% AFNI / Warp Utilities
+  _3dNwarpApply["3dNwarpApply"]
+  _3dNwarpCat["3dNwarpCat"]
+
+  %% ANTs / Image Operations
+  ImageMath["ImageMath"]
+  ThresholdImage["ThresholdImage"]
+
+  %% ANTs / Label Analysis
+  LabelGeometryMeasures["LabelGeometryMeasures"]
+  antsJointLabelFusion_sh["antsJointLabelFusion.sh"]
+
+  %% ANTs / Preprocessing Utilities
+  DenoiseImage["DenoiseImage"]
+  N4BiasFieldCorrection["N4BiasFieldCorrection"]
+
+  %% ANTs / Transform Utilities
+  antsApplyTransforms["antsApplyTransforms"]
+
+  %% FSL / Clustering
+  cluster["cluster"]
+
+  %% FSL / Image Math
+  fslmaths["fslmaths"]
+  fslmeants["fslmeants"]
+  fslroi["fslroi"]
+  fslstats["fslstats"]
+
+  %% FSL / Volume Operations
+  fslmerge["fslmerge"]
+  fslreorient2std["fslreorient2std"]
+  fslsplit["fslsplit"]
+  robustfov["robustfov"]
+
+  %% FSL / Warp Utilities
+  applywarp["applywarp"]
+  convertwarp["convertwarp"]
+  invwarp["invwarp"]
+
+  %% FreeSurfer / Format Conversion
+  mri_convert["mri_convert"]
+
+  %% === Edges ===
+
+  %% AFNI / Dataset Operations (intra-subsection)
+  _3dTcat --> _3dTcat
+  _3dTcat --> _3dZeropad
+  _3dTcat --> _3dcopy
+  _3dTcat --> _3dinfo
+  _3dZeropad --> _3dTcat
+  _3dZeropad --> _3dZeropad
+  _3dZeropad --> _3dcopy
+  _3dZeropad --> _3dinfo
+  _3dcopy --> _3dTcat
+  _3dcopy --> _3dZeropad
+  _3dcopy --> _3dcopy
+  _3dcopy --> _3dinfo
+  _3dinfo --> _3dTcat
+  _3dinfo --> _3dZeropad
+  _3dinfo --> _3dcopy
+  _3dinfo --> _3dinfo
+
+  %% AFNI / Dataset Operations --> AFNI / Image Math
+  _3dTcat --> _3dTstat
+  _3dTcat --> _3dcalc
+  _3dZeropad --> _3dTstat
+  _3dZeropad --> _3dcalc
+  _3dcopy --> _3dTstat
+  _3dcopy --> _3dcalc
+  _3dinfo --> _3dTstat
+  _3dinfo --> _3dcalc
+
+  %% AFNI / Dataset Operations --> AFNI / ROI Utilities
+  _3dTcat --> _3dUndump
+  _3dTcat --> _3dfractionize
+  _3dTcat --> _3dresample
+  _3dTcat --> whereami
+  _3dZeropad --> _3dUndump
+  _3dZeropad --> _3dfractionize
+  _3dZeropad --> _3dresample
+  _3dZeropad --> whereami
+  _3dcopy --> _3dUndump
+  _3dcopy --> _3dfractionize
+  _3dcopy --> _3dresample
+  _3dcopy --> whereami
+  _3dinfo --> _3dUndump
+  _3dinfo --> _3dfractionize
+  _3dinfo --> _3dresample
+  _3dinfo --> whereami
+
+  %% AFNI / Dataset Operations --> AFNI / Warp Utilities
+  _3dTcat --> _3dNwarpApply
+  _3dTcat --> _3dNwarpCat
+  _3dZeropad --> _3dNwarpApply
+  _3dZeropad --> _3dNwarpCat
+  _3dcopy --> _3dNwarpApply
+  _3dcopy --> _3dNwarpCat
+  _3dinfo --> _3dNwarpApply
+  _3dinfo --> _3dNwarpCat
+
+  %% AFNI / Dataset Operations --> ANTs / Image Operations
+  _3dTcat --> ImageMath
+  _3dTcat --> ThresholdImage
+  _3dZeropad --> ImageMath
+  _3dZeropad --> ThresholdImage
+  _3dcopy --> ImageMath
+  _3dcopy --> ThresholdImage
+  _3dinfo --> ImageMath
+  _3dinfo --> ThresholdImage
+
+  %% AFNI / Dataset Operations --> ANTs / Transform Utilities
+  _3dTcat --> antsApplyTransforms
+  _3dZeropad --> antsApplyTransforms
+  _3dcopy --> antsApplyTransforms
+  _3dinfo --> antsApplyTransforms
+
+  %% AFNI / Dataset Operations --> FSL / Clustering
+  _3dTcat --> cluster
+  _3dZeropad --> cluster
+  _3dcopy --> cluster
+  _3dinfo --> cluster
+
+  %% AFNI / Dataset Operations --> FSL / Image Math
+  _3dTcat --> fslmaths
+  _3dTcat --> fslmeants
+  _3dTcat --> fslroi
+  _3dTcat --> fslstats
+  _3dZeropad --> fslmaths
+  _3dZeropad --> fslmeants
+  _3dZeropad --> fslroi
+  _3dZeropad --> fslstats
+  _3dcopy --> fslmaths
+  _3dcopy --> fslmeants
+  _3dcopy --> fslroi
+  _3dcopy --> fslstats
+  _3dinfo --> fslmaths
+  _3dinfo --> fslmeants
+  _3dinfo --> fslroi
+  _3dinfo --> fslstats
+
+  %% AFNI / Dataset Operations --> FSL / Warp Utilities
+  _3dTcat --> applywarp
+  _3dTcat --> convertwarp
+  _3dTcat --> invwarp
+  _3dZeropad --> applywarp
+  _3dZeropad --> convertwarp
+  _3dZeropad --> invwarp
+  _3dcopy --> applywarp
+  _3dcopy --> convertwarp
+  _3dcopy --> invwarp
+  _3dinfo --> applywarp
+  _3dinfo --> convertwarp
+  _3dinfo --> invwarp
+
+  %% AFNI / Image Math (intra-subsection)
+  _3dTstat --> _3dTstat
+  _3dTstat --> _3dcalc
+  _3dcalc --> _3dTstat
+  _3dcalc --> _3dcalc
+
+  %% AFNI / Image Math --> AFNI / ROI Utilities
+  _3dTstat --> _3dUndump
+  _3dTstat --> _3dfractionize
+  _3dTstat --> _3dresample
+  _3dTstat --> whereami
+  _3dcalc --> _3dUndump
+  _3dcalc --> _3dfractionize
+  _3dcalc --> _3dresample
+  _3dcalc --> whereami
+
+  %% AFNI / Image Math --> AFNI / Warp Utilities
+  _3dTstat --> _3dNwarpApply
+  _3dTstat --> _3dNwarpCat
+  _3dcalc --> _3dNwarpApply
+  _3dcalc --> _3dNwarpCat
+
+  %% AFNI / Image Math --> ANTs / Label Analysis
+  _3dTstat --> LabelGeometryMeasures
+  _3dTstat --> antsJointLabelFusion_sh
+  _3dcalc --> LabelGeometryMeasures
+  _3dcalc --> antsJointLabelFusion_sh
+
+  %% AFNI / Image Math --> ANTs / Transform Utilities
+  _3dTstat --> antsApplyTransforms
+  _3dcalc --> antsApplyTransforms
+
+  %% AFNI / Image Math --> FSL / Clustering
+  _3dTstat --> cluster
+  _3dcalc --> cluster
+
+  %% AFNI / Image Math --> FSL / Warp Utilities
+  _3dTstat --> applywarp
+  _3dTstat --> convertwarp
+  _3dTstat --> invwarp
+  _3dcalc --> applywarp
+  _3dcalc --> convertwarp
+  _3dcalc --> invwarp
+
+  %% AFNI / ROI Utilities --> AFNI / Image Math
+  _3dUndump --> _3dTstat
+  _3dUndump --> _3dcalc
+  _3dfractionize --> _3dTstat
+  _3dfractionize --> _3dcalc
+  _3dresample --> _3dTstat
+  _3dresample --> _3dcalc
+  whereami --> _3dTstat
+  whereami --> _3dcalc
+
+  %% AFNI / ROI Utilities (intra-subsection)
+  _3dUndump --> _3dUndump
+  _3dUndump --> _3dfractionize
+  _3dUndump --> _3dresample
+  _3dUndump --> whereami
+  _3dfractionize --> _3dUndump
+  _3dfractionize --> _3dfractionize
+  _3dfractionize --> _3dresample
+  _3dfractionize --> whereami
+  _3dresample --> _3dUndump
+  _3dresample --> _3dfractionize
+  _3dresample --> _3dresample
+  _3dresample --> whereami
+  whereami --> _3dUndump
+  whereami --> _3dfractionize
+  whereami --> _3dresample
+  whereami --> whereami
+
+  %% AFNI / ROI Utilities --> AFNI / Warp Utilities
+  _3dUndump --> _3dNwarpApply
+  _3dUndump --> _3dNwarpCat
+  _3dfractionize --> _3dNwarpApply
+  _3dfractionize --> _3dNwarpCat
+  _3dresample --> _3dNwarpApply
+  _3dresample --> _3dNwarpCat
+  whereami --> _3dNwarpApply
+  whereami --> _3dNwarpCat
+
+  %% AFNI / ROI Utilities --> ANTs / Image Operations
+  _3dUndump --> ImageMath
+  _3dUndump --> ThresholdImage
+  _3dfractionize --> ImageMath
+  _3dfractionize --> ThresholdImage
+  _3dresample --> ImageMath
+  _3dresample --> ThresholdImage
+  whereami --> ImageMath
+  whereami --> ThresholdImage
+
+  %% AFNI / ROI Utilities --> ANTs / Transform Utilities
+  _3dUndump --> antsApplyTransforms
+  _3dfractionize --> antsApplyTransforms
+  _3dresample --> antsApplyTransforms
+  whereami --> antsApplyTransforms
+
+  %% AFNI / ROI Utilities --> FSL / Clustering
+  _3dUndump --> cluster
+  _3dfractionize --> cluster
+  _3dresample --> cluster
+  whereami --> cluster
+
+  %% AFNI / ROI Utilities --> FSL / Image Math
+  _3dUndump --> fslmaths
+  _3dUndump --> fslmeants
+  _3dUndump --> fslroi
+  _3dUndump --> fslstats
+  _3dfractionize --> fslmaths
+  _3dfractionize --> fslmeants
+  _3dfractionize --> fslroi
+  _3dfractionize --> fslstats
+  _3dresample --> fslmaths
+  _3dresample --> fslmeants
+  _3dresample --> fslroi
+  _3dresample --> fslstats
+  whereami --> fslmaths
+  whereami --> fslmeants
+  whereami --> fslroi
+  whereami --> fslstats
+
+  %% AFNI / ROI Utilities --> FSL / Warp Utilities
+  _3dUndump --> applywarp
+  _3dUndump --> convertwarp
+  _3dUndump --> invwarp
+  _3dfractionize --> applywarp
+  _3dfractionize --> convertwarp
+  _3dfractionize --> invwarp
+  _3dresample --> applywarp
+  _3dresample --> convertwarp
+  _3dresample --> invwarp
+  whereami --> applywarp
+  whereami --> convertwarp
+  whereami --> invwarp
+
+  %% AFNI / Warp Utilities --> AFNI / Image Math
+  _3dNwarpApply --> _3dTstat
+  _3dNwarpApply --> _3dcalc
+  _3dNwarpCat --> _3dTstat
+  _3dNwarpCat --> _3dcalc
+
+  %% AFNI / Warp Utilities --> AFNI / ROI Utilities
+  _3dNwarpApply --> _3dUndump
+  _3dNwarpApply --> _3dfractionize
+  _3dNwarpApply --> _3dresample
+  _3dNwarpApply --> whereami
+  _3dNwarpCat --> _3dUndump
+  _3dNwarpCat --> _3dfractionize
+  _3dNwarpCat --> _3dresample
+  _3dNwarpCat --> whereami
+
+  %% AFNI / Warp Utilities (intra-subsection)
+  _3dNwarpApply --> _3dNwarpApply
+  _3dNwarpApply --> _3dNwarpCat
+  _3dNwarpCat --> _3dNwarpApply
+  _3dNwarpCat --> _3dNwarpCat
+
+  %% AFNI / Warp Utilities --> ANTs / Label Analysis
+  _3dNwarpApply --> LabelGeometryMeasures
+  _3dNwarpApply --> antsJointLabelFusion_sh
+  _3dNwarpCat --> LabelGeometryMeasures
+  _3dNwarpCat --> antsJointLabelFusion_sh
+
+  %% AFNI / Warp Utilities --> FSL / Clustering
+  _3dNwarpApply --> cluster
+  _3dNwarpCat --> cluster
+
+  %% ANTs / Image Operations --> AFNI / ROI Utilities
+  ImageMath --> _3dUndump
+  ImageMath --> _3dfractionize
+  ImageMath --> _3dresample
+  ImageMath --> whereami
+  ThresholdImage --> _3dUndump
+  ThresholdImage --> _3dfractionize
+  ThresholdImage --> _3dresample
+  ThresholdImage --> whereami
+
+  %% ANTs / Image Operations --> AFNI / Warp Utilities
+  ImageMath --> _3dNwarpApply
+  ImageMath --> _3dNwarpCat
+  ThresholdImage --> _3dNwarpApply
+  ThresholdImage --> _3dNwarpCat
+
+  %% ANTs / Image Operations (intra-subsection)
+  ImageMath --> ImageMath
+  ImageMath --> ThresholdImage
+  ThresholdImage --> ImageMath
+  ThresholdImage --> ThresholdImage
+
+  %% ANTs / Image Operations --> ANTs / Label Analysis
+  ImageMath --> LabelGeometryMeasures
+  ImageMath --> antsJointLabelFusion_sh
+  ThresholdImage --> LabelGeometryMeasures
+  ThresholdImage --> antsJointLabelFusion_sh
+
+  %% ANTs / Image Operations --> ANTs / Transform Utilities
+  ImageMath --> antsApplyTransforms
+  ThresholdImage --> antsApplyTransforms
+
+  %% ANTs / Image Operations --> FSL / Clustering
+  ImageMath --> cluster
+  ThresholdImage --> cluster
+
+  %% ANTs / Image Operations --> FSL / Warp Utilities
+  ImageMath --> applywarp
+  ImageMath --> convertwarp
+  ImageMath --> invwarp
+  ThresholdImage --> applywarp
+  ThresholdImage --> convertwarp
+  ThresholdImage --> invwarp
+
+  %% ANTs / Label Analysis --> AFNI / Image Math
+  LabelGeometryMeasures --> _3dTstat
+  LabelGeometryMeasures --> _3dcalc
+  antsJointLabelFusion_sh --> _3dTstat
+  antsJointLabelFusion_sh --> _3dcalc
+
+  %% ANTs / Label Analysis --> AFNI / ROI Utilities
+  LabelGeometryMeasures --> _3dUndump
+  LabelGeometryMeasures --> _3dfractionize
+  LabelGeometryMeasures --> _3dresample
+  LabelGeometryMeasures --> whereami
+  antsJointLabelFusion_sh --> _3dUndump
+  antsJointLabelFusion_sh --> _3dfractionize
+  antsJointLabelFusion_sh --> _3dresample
+  antsJointLabelFusion_sh --> whereami
+
+  %% ANTs / Label Analysis --> AFNI / Warp Utilities
+  LabelGeometryMeasures --> _3dNwarpApply
+  LabelGeometryMeasures --> _3dNwarpCat
+  antsJointLabelFusion_sh --> _3dNwarpApply
+  antsJointLabelFusion_sh --> _3dNwarpCat
+
+  %% ANTs / Label Analysis --> ANTs / Image Operations
+  LabelGeometryMeasures --> ImageMath
+  LabelGeometryMeasures --> ThresholdImage
+  antsJointLabelFusion_sh --> ImageMath
+  antsJointLabelFusion_sh --> ThresholdImage
+
+  %% ANTs / Label Analysis (intra-subsection)
+  LabelGeometryMeasures --> LabelGeometryMeasures
+  LabelGeometryMeasures --> antsJointLabelFusion_sh
+  antsJointLabelFusion_sh --> LabelGeometryMeasures
+  antsJointLabelFusion_sh --> antsJointLabelFusion_sh
+
+  %% ANTs / Label Analysis --> ANTs / Transform Utilities
+  LabelGeometryMeasures --> antsApplyTransforms
+  antsJointLabelFusion_sh --> antsApplyTransforms
+
+  %% ANTs / Label Analysis --> FSL / Clustering
+  LabelGeometryMeasures --> cluster
+  antsJointLabelFusion_sh --> cluster
+
+  %% ANTs / Label Analysis --> FSL / Image Math
+  LabelGeometryMeasures --> fslmaths
+  LabelGeometryMeasures --> fslmeants
+  LabelGeometryMeasures --> fslroi
+  LabelGeometryMeasures --> fslstats
+  antsJointLabelFusion_sh --> fslmaths
+  antsJointLabelFusion_sh --> fslmeants
+  antsJointLabelFusion_sh --> fslroi
+  antsJointLabelFusion_sh --> fslstats
+
+  %% ANTs / Label Analysis --> FSL / Warp Utilities
+  LabelGeometryMeasures --> applywarp
+  LabelGeometryMeasures --> convertwarp
+  LabelGeometryMeasures --> invwarp
+  antsJointLabelFusion_sh --> applywarp
+  antsJointLabelFusion_sh --> convertwarp
+  antsJointLabelFusion_sh --> invwarp
+
+  %% ANTs / Preprocessing Utilities --> AFNI / Dataset Operations
+  DenoiseImage --> _3dTcat
+  DenoiseImage --> _3dZeropad
+  DenoiseImage --> _3dcopy
+  DenoiseImage --> _3dinfo
+  N4BiasFieldCorrection --> _3dTcat
+  N4BiasFieldCorrection --> _3dZeropad
+  N4BiasFieldCorrection --> _3dcopy
+  N4BiasFieldCorrection --> _3dinfo
+
+  %% ANTs / Preprocessing Utilities --> AFNI / Image Math
+  DenoiseImage --> _3dTstat
+  DenoiseImage --> _3dcalc
+  N4BiasFieldCorrection --> _3dTstat
+  N4BiasFieldCorrection --> _3dcalc
+
+  %% ANTs / Preprocessing Utilities --> AFNI / Warp Utilities
+  DenoiseImage --> _3dNwarpApply
+  DenoiseImage --> _3dNwarpCat
+  N4BiasFieldCorrection --> _3dNwarpApply
+  N4BiasFieldCorrection --> _3dNwarpCat
+
+  %% ANTs / Preprocessing Utilities --> ANTs / Image Operations
+  DenoiseImage --> ImageMath
+  DenoiseImage --> ThresholdImage
+  N4BiasFieldCorrection --> ImageMath
+  N4BiasFieldCorrection --> ThresholdImage
+
+  %% ANTs / Preprocessing Utilities (intra-subsection)
+  DenoiseImage --> DenoiseImage
+  DenoiseImage --> N4BiasFieldCorrection
+  N4BiasFieldCorrection --> DenoiseImage
+  N4BiasFieldCorrection --> N4BiasFieldCorrection
+
+  %% ANTs / Preprocessing Utilities --> ANTs / Transform Utilities
+  DenoiseImage --> antsApplyTransforms
+  N4BiasFieldCorrection --> antsApplyTransforms
+
+  %% ANTs / Preprocessing Utilities --> FSL / Image Math
+  DenoiseImage --> fslmaths
+  DenoiseImage --> fslmeants
+  DenoiseImage --> fslroi
+  DenoiseImage --> fslstats
+  N4BiasFieldCorrection --> fslmaths
+  N4BiasFieldCorrection --> fslmeants
+  N4BiasFieldCorrection --> fslroi
+  N4BiasFieldCorrection --> fslstats
+
+  %% ANTs / Preprocessing Utilities --> FSL / Volume Operations
+  DenoiseImage --> fslmerge
+  DenoiseImage --> fslreorient2std
+  DenoiseImage --> fslsplit
+  DenoiseImage --> robustfov
+  N4BiasFieldCorrection --> fslmerge
+  N4BiasFieldCorrection --> fslreorient2std
+  N4BiasFieldCorrection --> fslsplit
+  N4BiasFieldCorrection --> robustfov
+
+  %% ANTs / Preprocessing Utilities --> FSL / Warp Utilities
+  DenoiseImage --> applywarp
+  DenoiseImage --> convertwarp
+  DenoiseImage --> invwarp
+  N4BiasFieldCorrection --> applywarp
+  N4BiasFieldCorrection --> convertwarp
+  N4BiasFieldCorrection --> invwarp
+
+  %% ANTs / Preprocessing Utilities --> FreeSurfer / Format Conversion
+  DenoiseImage --> mri_convert
+  N4BiasFieldCorrection --> mri_convert
+
+  %% ANTs / Transform Utilities --> AFNI / ROI Utilities
+  antsApplyTransforms --> _3dUndump
+  antsApplyTransforms --> _3dfractionize
+  antsApplyTransforms --> _3dresample
+  antsApplyTransforms --> whereami
+
+  %% ANTs / Transform Utilities --> ANTs / Image Operations
+  antsApplyTransforms --> ImageMath
+  antsApplyTransforms --> ThresholdImage
+
+  %% ANTs / Transform Utilities --> ANTs / Label Analysis
+  antsApplyTransforms --> LabelGeometryMeasures
+  antsApplyTransforms --> antsJointLabelFusion_sh
+
+  %% ANTs / Transform Utilities --> FSL / Clustering
+  antsApplyTransforms --> cluster
+
+  %% FSL / Clustering --> AFNI / Image Math
+  cluster --> _3dTstat
+  cluster --> _3dcalc
+
+  %% FSL / Clustering --> AFNI / Warp Utilities
+  cluster --> _3dNwarpApply
+  cluster --> _3dNwarpCat
+
+  %% FSL / Clustering --> ANTs / Image Operations
+  cluster --> ImageMath
+  cluster --> ThresholdImage
+
+  %% FSL / Clustering --> ANTs / Transform Utilities
+  cluster --> antsApplyTransforms
+
+  %% FSL / Clustering --> FSL / Image Math
+  cluster --> fslmaths
+  cluster --> fslmeants
+  cluster --> fslroi
+  cluster --> fslstats
+
+  %% FSL / Clustering --> FSL / Warp Utilities
+  cluster --> applywarp
+  cluster --> convertwarp
+  cluster --> invwarp
+
+  %% FSL / Image Math --> AFNI / ROI Utilities
+  fslmaths --> _3dUndump
+  fslmaths --> _3dfractionize
+  fslmaths --> _3dresample
+  fslmaths --> whereami
+  fslmeants --> _3dUndump
+  fslmeants --> _3dfractionize
+  fslmeants --> _3dresample
+  fslmeants --> whereami
+  fslroi --> _3dUndump
+  fslroi --> _3dfractionize
+  fslroi --> _3dresample
+  fslroi --> whereami
+  fslstats --> _3dUndump
+  fslstats --> _3dfractionize
+  fslstats --> _3dresample
+  fslstats --> whereami
+
+  %% FSL / Image Math --> AFNI / Warp Utilities
+  fslmaths --> _3dNwarpApply
+  fslmaths --> _3dNwarpCat
+  fslmeants --> _3dNwarpApply
+  fslmeants --> _3dNwarpCat
+  fslroi --> _3dNwarpApply
+  fslroi --> _3dNwarpCat
+  fslstats --> _3dNwarpApply
+  fslstats --> _3dNwarpCat
+
+  %% FSL / Image Math --> ANTs / Label Analysis
+  fslmaths --> LabelGeometryMeasures
+  fslmaths --> antsJointLabelFusion_sh
+  fslmeants --> LabelGeometryMeasures
+  fslmeants --> antsJointLabelFusion_sh
+  fslroi --> LabelGeometryMeasures
+  fslroi --> antsJointLabelFusion_sh
+  fslstats --> LabelGeometryMeasures
+  fslstats --> antsJointLabelFusion_sh
+
+  %% FSL / Image Math --> ANTs / Transform Utilities
+  fslmaths --> antsApplyTransforms
+  fslmeants --> antsApplyTransforms
+  fslroi --> antsApplyTransforms
+  fslstats --> antsApplyTransforms
+
+  %% FSL / Image Math --> FSL / Clustering
+  fslmaths --> cluster
+  fslmeants --> cluster
+  fslroi --> cluster
+  fslstats --> cluster
+
+  %% FSL / Image Math (intra-subsection)
+  fslmaths --> fslmaths
+  fslmaths --> fslmeants
+  fslmaths --> fslroi
+  fslmaths --> fslstats
+  fslmeants --> fslmaths
+  fslmeants --> fslmeants
+  fslmeants --> fslroi
+  fslmeants --> fslstats
+  fslroi --> fslmaths
+  fslroi --> fslmeants
+  fslroi --> fslroi
+  fslroi --> fslstats
+  fslstats --> fslmaths
+  fslstats --> fslmeants
+  fslstats --> fslroi
+  fslstats --> fslstats
+
+  %% FSL / Image Math --> FSL / Volume Operations
+  fslmaths --> fslmerge
+  fslmaths --> fslreorient2std
+  fslmaths --> fslsplit
+  fslmaths --> robustfov
+  fslmeants --> fslmerge
+  fslmeants --> fslreorient2std
+  fslmeants --> fslsplit
+  fslmeants --> robustfov
+  fslroi --> fslmerge
+  fslroi --> fslreorient2std
+  fslroi --> fslsplit
+  fslroi --> robustfov
+  fslstats --> fslmerge
+  fslstats --> fslreorient2std
+  fslstats --> fslsplit
+  fslstats --> robustfov
+
+  %% FSL / Image Math --> FSL / Warp Utilities
+  fslmaths --> applywarp
+  fslmaths --> convertwarp
+  fslmaths --> invwarp
+  fslmeants --> applywarp
+  fslmeants --> convertwarp
+  fslmeants --> invwarp
+  fslroi --> applywarp
+  fslroi --> convertwarp
+  fslroi --> invwarp
+  fslstats --> applywarp
+  fslstats --> convertwarp
+  fslstats --> invwarp
+
+  %% FSL / Volume Operations --> AFNI / Image Math
+  fslmerge --> _3dTstat
+  fslmerge --> _3dcalc
+  fslreorient2std --> _3dTstat
+  fslreorient2std --> _3dcalc
+  fslsplit --> _3dTstat
+  fslsplit --> _3dcalc
+  robustfov --> _3dTstat
+  robustfov --> _3dcalc
+
+  %% FSL / Volume Operations --> AFNI / Warp Utilities
+  fslmerge --> _3dNwarpApply
+  fslmerge --> _3dNwarpCat
+  fslreorient2std --> _3dNwarpApply
+  fslreorient2std --> _3dNwarpCat
+  fslsplit --> _3dNwarpApply
+  fslsplit --> _3dNwarpCat
+  robustfov --> _3dNwarpApply
+  robustfov --> _3dNwarpCat
+
+  %% FSL / Volume Operations --> ANTs / Image Operations
+  fslmerge --> ImageMath
+  fslmerge --> ThresholdImage
+  fslreorient2std --> ImageMath
+  fslreorient2std --> ThresholdImage
+  fslsplit --> ImageMath
+  fslsplit --> ThresholdImage
+  robustfov --> ImageMath
+  robustfov --> ThresholdImage
+
+  %% FSL / Volume Operations --> ANTs / Transform Utilities
+  fslmerge --> antsApplyTransforms
+  fslreorient2std --> antsApplyTransforms
+  fslsplit --> antsApplyTransforms
+  robustfov --> antsApplyTransforms
+
+  %% FSL / Volume Operations --> FSL / Clustering
+  fslmerge --> cluster
+  fslreorient2std --> cluster
+  fslsplit --> cluster
+  robustfov --> cluster
+
+  %% FSL / Volume Operations --> FSL / Image Math
+  fslmerge --> fslmaths
+  fslmerge --> fslmeants
+  fslmerge --> fslroi
+  fslmerge --> fslstats
+  fslreorient2std --> fslmaths
+  fslreorient2std --> fslmeants
+  fslreorient2std --> fslroi
+  fslreorient2std --> fslstats
+  fslsplit --> fslmaths
+  fslsplit --> fslmeants
+  fslsplit --> fslroi
+  fslsplit --> fslstats
+  robustfov --> fslmaths
+  robustfov --> fslmeants
+  robustfov --> fslroi
+  robustfov --> fslstats
+
+  %% FSL / Volume Operations (intra-subsection)
+  fslmerge --> fslmerge
+  fslmerge --> fslreorient2std
+  fslmerge --> fslsplit
+  fslmerge --> robustfov
+  fslreorient2std --> fslmerge
+  fslreorient2std --> fslreorient2std
+  fslreorient2std --> fslsplit
+  fslreorient2std --> robustfov
+  fslsplit --> fslmerge
+  fslsplit --> fslreorient2std
+  fslsplit --> fslsplit
+  fslsplit --> robustfov
+  robustfov --> fslmerge
+  robustfov --> fslreorient2std
+  robustfov --> fslsplit
+  robustfov --> robustfov
+
+  %% FSL / Volume Operations --> FSL / Warp Utilities
+  fslmerge --> applywarp
+  fslmerge --> convertwarp
+  fslmerge --> invwarp
+  fslreorient2std --> applywarp
+  fslreorient2std --> convertwarp
+  fslreorient2std --> invwarp
+  fslsplit --> applywarp
+  fslsplit --> convertwarp
+  fslsplit --> invwarp
+  robustfov --> applywarp
+  robustfov --> convertwarp
+  robustfov --> invwarp
+
+  %% FSL / Warp Utilities --> AFNI / ROI Utilities
+  applywarp --> _3dUndump
+  applywarp --> _3dfractionize
+  applywarp --> _3dresample
+  applywarp --> whereami
+  convertwarp --> _3dUndump
+  convertwarp --> _3dfractionize
+  convertwarp --> _3dresample
+  convertwarp --> whereami
+  invwarp --> _3dUndump
+  invwarp --> _3dfractionize
+  invwarp --> _3dresample
+  invwarp --> whereami
+
+  %% FSL / Warp Utilities --> ANTs / Label Analysis
+  applywarp --> LabelGeometryMeasures
+  applywarp --> antsJointLabelFusion_sh
+  convertwarp --> LabelGeometryMeasures
+  convertwarp --> antsJointLabelFusion_sh
+  invwarp --> LabelGeometryMeasures
+  invwarp --> antsJointLabelFusion_sh
+
+  %% FSL / Warp Utilities --> FSL / Clustering
+  applywarp --> cluster
+  convertwarp --> cluster
+  invwarp --> cluster
+
+  %% FSL / Warp Utilities --> FSL / Image Math
+  applywarp --> fslmaths
+  applywarp --> fslmeants
+  applywarp --> fslroi
+  applywarp --> fslstats
+  convertwarp --> fslmaths
+  convertwarp --> fslmeants
+  convertwarp --> fslroi
+  convertwarp --> fslstats
+  invwarp --> fslmaths
+  invwarp --> fslmeants
+  invwarp --> fslroi
+  invwarp --> fslstats
+
+  %% FSL / Warp Utilities (intra-subsection)
+  applywarp --> applywarp
+  applywarp --> convertwarp
+  applywarp --> invwarp
+  convertwarp --> applywarp
+  convertwarp --> convertwarp
+  convertwarp --> invwarp
+  invwarp --> applywarp
+  invwarp --> convertwarp
+  invwarp --> invwarp
+
+  %% FreeSurfer / Format Conversion --> AFNI / Dataset Operations
+  mri_convert --> _3dTcat
+  mri_convert --> _3dZeropad
+  mri_convert --> _3dcopy
+  mri_convert --> _3dinfo
+
+  %% FreeSurfer / Format Conversion --> AFNI / Image Math
+  mri_convert --> _3dTstat
+  mri_convert --> _3dcalc
+
+  %% FreeSurfer / Format Conversion --> AFNI / ROI Utilities
+  mri_convert --> _3dUndump
+  mri_convert --> _3dfractionize
+  mri_convert --> _3dresample
+  mri_convert --> whereami
+
+  %% FreeSurfer / Format Conversion --> AFNI / Warp Utilities
+  mri_convert --> _3dNwarpApply
+  mri_convert --> _3dNwarpCat
+
+  %% FreeSurfer / Format Conversion --> ANTs / Image Operations
+  mri_convert --> ImageMath
+  mri_convert --> ThresholdImage
+
+  %% FreeSurfer / Format Conversion --> ANTs / Label Analysis
+  mri_convert --> LabelGeometryMeasures
+  mri_convert --> antsJointLabelFusion_sh
+
+  %% FreeSurfer / Format Conversion --> ANTs / Transform Utilities
+  mri_convert --> antsApplyTransforms
+
+  %% FreeSurfer / Format Conversion --> FSL / Clustering
+  mri_convert --> cluster
+
+  %% FreeSurfer / Format Conversion --> FSL / Image Math
+  mri_convert --> fslmaths
+  mri_convert --> fslmeants
+  mri_convert --> fslroi
+  mri_convert --> fslstats
+
+  %% FreeSurfer / Format Conversion --> FSL / Volume Operations
+  mri_convert --> fslmerge
+  mri_convert --> fslreorient2std
+  mri_convert --> fslsplit
+  mri_convert --> robustfov
+
+  %% FreeSurfer / Format Conversion --> FSL / Warp Utilities
+  mri_convert --> applywarp
+  mri_convert --> convertwarp
+  mri_convert --> invwarp

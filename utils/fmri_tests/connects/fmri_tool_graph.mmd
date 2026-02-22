@@ -1,0 +1,862 @@
+flowchart LR
+
+  %% === Node Definitions ===
+
+  %% AFNI / Connectivity
+  _3dNetCorr["3dNetCorr"]
+  _3dRSFC["3dRSFC"]
+  _3dTcorr1D["3dTcorr1D"]
+  _3dTcorrMap["3dTcorrMap"]
+
+  %% AFNI / Despiking
+  _3dDespike["3dDespike"]
+
+  %% AFNI / Masking
+  _3dAutomask["3dAutomask"]
+
+  %% AFNI / Motion Correction
+  _3dvolreg["3dvolreg"]
+
+  %% AFNI / Multiple Comparisons
+  _3dClustSim["3dClustSim"]
+  _3dFWHMx["3dFWHMx"]
+
+  %% AFNI / ROI Analysis
+  _3dROIstats["3dROIstats"]
+  _3dmaskave["3dmaskave"]
+
+  %% AFNI / Registration
+  align_epi_anat["align_epi_anat"]
+
+  %% AFNI / Slice Timing
+  _3dTshift["3dTshift"]
+
+  %% AFNI / Smoothing
+  _3dBlurToFWHM["3dBlurToFWHM"]
+  _3dmerge["3dmerge"]
+
+  %% AFNI / Statistical Analysis
+  _3dANOVA["3dANOVA"]
+  _3dANOVA2["3dANOVA2"]
+  _3dANOVA3["3dANOVA3"]
+  _3dDeconvolve["3dDeconvolve"]
+  _3dLME["3dLME"]
+  _3dLMEr["3dLMEr"]
+  _3dMEMA["3dMEMA"]
+  _3dMVM["3dMVM"]
+  _3dREMLfit["3dREMLfit"]
+  _3dttestpp["3dttest++"]
+
+  %% AFNI / Temporal Filtering
+  _3dBandpass["3dBandpass"]
+
+  %% ANTs / Motion Correction
+  antsMotionCorr["antsMotionCorr"]
+
+  %% Connectome Workbench / CIFTI Operations
+  wb_command_cifti_create_dense_timeseries["wb_command_cifti_create_dense_timeseries"]
+  wb_command_cifti_separate["wb_command_cifti_separate"]
+
+  %% Connectome Workbench / Surface Smoothing
+  wb_command_cifti_smoothing["wb_command_cifti_smoothing"]
+  wb_command_metric_smoothing["wb_command_metric_smoothing"]
+
+  %% FSL / Distortion Correction
+  applytopup["applytopup"]
+  fsl_prepare_fieldmap["fsl_prepare_fieldmap"]
+  fugue["fugue"]
+  prelude["prelude"]
+  topup["topup"]
+
+  %% FSL / ICA/Denoising
+  dual_regression["dual_regression"]
+  melodic["melodic"]
+
+  %% FSL / Motion Correction
+  mcflirt["mcflirt"]
+
+  %% FSL / Slice Timing
+  slicetimer["slicetimer"]
+
+  %% FSL / Smoothing
+  susan["susan"]
+
+  %% FSL / Statistical Analysis
+  film_gls["film_gls"]
+  flameo["flameo"]
+  randomise["randomise"]
+
+  %% FreeSurfer / Functional Analysis
+  bbregister["bbregister"]
+  mri_glmfit["mri_glmfit"]
+  mri_surf2vol["mri_surf2vol"]
+  mri_vol2surf["mri_vol2surf"]
+  mris_preproc["mris_preproc"]
+
+  %% MRIQC / Pipeline
+  mriqc["mriqc"]
+
+  %% fMRIPrep / Pipeline
+  fmriprep["fmriprep"]
+
+  %% === Edges ===
+
+  %% AFNI / Connectivity (intra-subsection)
+  _3dNetCorr --> _3dNetCorr
+  _3dNetCorr --> _3dRSFC
+  _3dNetCorr --> _3dTcorr1D
+  _3dNetCorr --> _3dTcorrMap
+  _3dRSFC --> _3dNetCorr
+  _3dRSFC --> _3dRSFC
+  _3dRSFC --> _3dTcorr1D
+  _3dRSFC --> _3dTcorrMap
+  _3dTcorr1D --> _3dNetCorr
+  _3dTcorr1D --> _3dRSFC
+  _3dTcorr1D --> _3dTcorr1D
+  _3dTcorr1D --> _3dTcorrMap
+  _3dTcorrMap --> _3dNetCorr
+  _3dTcorrMap --> _3dRSFC
+  _3dTcorrMap --> _3dTcorr1D
+  _3dTcorrMap --> _3dTcorrMap
+
+  %% AFNI / Connectivity --> AFNI / Multiple Comparisons
+  _3dNetCorr --> _3dClustSim
+  _3dNetCorr --> _3dFWHMx
+  _3dRSFC --> _3dClustSim
+  _3dRSFC --> _3dFWHMx
+  _3dTcorr1D --> _3dClustSim
+  _3dTcorr1D --> _3dFWHMx
+  _3dTcorrMap --> _3dClustSim
+  _3dTcorrMap --> _3dFWHMx
+
+  %% AFNI / Connectivity --> AFNI / ROI Analysis
+  _3dNetCorr --> _3dROIstats
+  _3dNetCorr --> _3dmaskave
+  _3dRSFC --> _3dROIstats
+  _3dRSFC --> _3dmaskave
+  _3dTcorr1D --> _3dROIstats
+  _3dTcorr1D --> _3dmaskave
+  _3dTcorrMap --> _3dROIstats
+  _3dTcorrMap --> _3dmaskave
+
+  %% AFNI / Despiking --> AFNI / Motion Correction
+  _3dDespike --> _3dvolreg
+
+  %% AFNI / Despiking --> AFNI / Slice Timing
+  _3dDespike --> _3dTshift
+
+  %% AFNI / Masking --> AFNI / Connectivity
+  _3dAutomask --> _3dNetCorr
+  _3dAutomask --> _3dRSFC
+  _3dAutomask --> _3dTcorr1D
+  _3dAutomask --> _3dTcorrMap
+
+  %% AFNI / Masking --> AFNI / Statistical Analysis
+  _3dAutomask --> _3dANOVA
+  _3dAutomask --> _3dANOVA2
+  _3dAutomask --> _3dANOVA3
+  _3dAutomask --> _3dDeconvolve
+  _3dAutomask --> _3dLME
+  _3dAutomask --> _3dLMEr
+  _3dAutomask --> _3dMEMA
+  _3dAutomask --> _3dMVM
+  _3dAutomask --> _3dREMLfit
+  _3dAutomask --> _3dttestpp
+
+  %% AFNI / Masking --> AFNI / Temporal Filtering
+  _3dAutomask --> _3dBandpass
+
+  %% AFNI / Motion Correction --> AFNI / Masking
+  _3dvolreg --> _3dAutomask
+
+  %% AFNI / Motion Correction --> AFNI / Smoothing
+  _3dvolreg --> _3dBlurToFWHM
+  _3dvolreg --> _3dmerge
+
+  %% AFNI / Motion Correction --> AFNI / Temporal Filtering
+  _3dvolreg --> _3dBandpass
+
+  %% AFNI / Multiple Comparisons (intra-subsection)
+  _3dClustSim --> _3dClustSim
+  _3dClustSim --> _3dFWHMx
+  _3dFWHMx --> _3dClustSim
+  _3dFWHMx --> _3dFWHMx
+
+  %% AFNI / ROI Analysis --> AFNI / Connectivity
+  _3dROIstats --> _3dNetCorr
+  _3dROIstats --> _3dRSFC
+  _3dROIstats --> _3dTcorr1D
+  _3dROIstats --> _3dTcorrMap
+  _3dmaskave --> _3dNetCorr
+  _3dmaskave --> _3dRSFC
+  _3dmaskave --> _3dTcorr1D
+  _3dmaskave --> _3dTcorrMap
+
+  %% AFNI / ROI Analysis (intra-subsection)
+  _3dROIstats --> _3dROIstats
+  _3dROIstats --> _3dmaskave
+  _3dmaskave --> _3dROIstats
+  _3dmaskave --> _3dmaskave
+
+  %% AFNI / ROI Analysis --> AFNI / Statistical Analysis
+  _3dROIstats --> _3dANOVA
+  _3dROIstats --> _3dANOVA2
+  _3dROIstats --> _3dANOVA3
+  _3dROIstats --> _3dDeconvolve
+  _3dROIstats --> _3dLME
+  _3dROIstats --> _3dLMEr
+  _3dROIstats --> _3dMEMA
+  _3dROIstats --> _3dMVM
+  _3dROIstats --> _3dREMLfit
+  _3dROIstats --> _3dttestpp
+  _3dmaskave --> _3dANOVA
+  _3dmaskave --> _3dANOVA2
+  _3dmaskave --> _3dANOVA3
+  _3dmaskave --> _3dDeconvolve
+  _3dmaskave --> _3dLME
+  _3dmaskave --> _3dLMEr
+  _3dmaskave --> _3dMEMA
+  _3dmaskave --> _3dMVM
+  _3dmaskave --> _3dREMLfit
+  _3dmaskave --> _3dttestpp
+
+  %% AFNI / Registration --> AFNI / Masking
+  align_epi_anat --> _3dAutomask
+
+  %% AFNI / Registration --> AFNI / Motion Correction
+  align_epi_anat --> _3dvolreg
+
+  %% AFNI / Registration --> AFNI / Smoothing
+  align_epi_anat --> _3dBlurToFWHM
+  align_epi_anat --> _3dmerge
+
+  %% AFNI / Slice Timing --> AFNI / Registration
+  _3dTshift --> align_epi_anat
+
+  %% AFNI / Smoothing --> AFNI / Masking
+  _3dBlurToFWHM --> _3dAutomask
+  _3dmerge --> _3dAutomask
+
+  %% AFNI / Smoothing (intra-subsection)
+  _3dBlurToFWHM --> _3dBlurToFWHM
+  _3dBlurToFWHM --> _3dmerge
+  _3dmerge --> _3dBlurToFWHM
+  _3dmerge --> _3dmerge
+
+  %% AFNI / Smoothing --> AFNI / Statistical Analysis
+  _3dBlurToFWHM --> _3dANOVA
+  _3dBlurToFWHM --> _3dANOVA2
+  _3dBlurToFWHM --> _3dANOVA3
+  _3dBlurToFWHM --> _3dDeconvolve
+  _3dBlurToFWHM --> _3dLME
+  _3dBlurToFWHM --> _3dLMEr
+  _3dBlurToFWHM --> _3dMEMA
+  _3dBlurToFWHM --> _3dMVM
+  _3dBlurToFWHM --> _3dREMLfit
+  _3dBlurToFWHM --> _3dttestpp
+  _3dmerge --> _3dANOVA
+  _3dmerge --> _3dANOVA2
+  _3dmerge --> _3dANOVA3
+  _3dmerge --> _3dDeconvolve
+  _3dmerge --> _3dLME
+  _3dmerge --> _3dLMEr
+  _3dmerge --> _3dMEMA
+  _3dmerge --> _3dMVM
+  _3dmerge --> _3dREMLfit
+  _3dmerge --> _3dttestpp
+
+  %% AFNI / Smoothing --> AFNI / Temporal Filtering
+  _3dBlurToFWHM --> _3dBandpass
+  _3dmerge --> _3dBandpass
+
+  %% AFNI / Statistical Analysis --> AFNI / Connectivity
+  _3dANOVA --> _3dNetCorr
+  _3dANOVA --> _3dRSFC
+  _3dANOVA --> _3dTcorr1D
+  _3dANOVA --> _3dTcorrMap
+  _3dANOVA2 --> _3dNetCorr
+  _3dANOVA2 --> _3dRSFC
+  _3dANOVA2 --> _3dTcorr1D
+  _3dANOVA2 --> _3dTcorrMap
+  _3dANOVA3 --> _3dNetCorr
+  _3dANOVA3 --> _3dRSFC
+  _3dANOVA3 --> _3dTcorr1D
+  _3dANOVA3 --> _3dTcorrMap
+  _3dDeconvolve --> _3dNetCorr
+  _3dDeconvolve --> _3dRSFC
+  _3dDeconvolve --> _3dTcorr1D
+  _3dDeconvolve --> _3dTcorrMap
+  _3dLME --> _3dNetCorr
+  _3dLME --> _3dRSFC
+  _3dLME --> _3dTcorr1D
+  _3dLME --> _3dTcorrMap
+  _3dLMEr --> _3dNetCorr
+  _3dLMEr --> _3dRSFC
+  _3dLMEr --> _3dTcorr1D
+  _3dLMEr --> _3dTcorrMap
+  _3dMEMA --> _3dNetCorr
+  _3dMEMA --> _3dRSFC
+  _3dMEMA --> _3dTcorr1D
+  _3dMEMA --> _3dTcorrMap
+  _3dMVM --> _3dNetCorr
+  _3dMVM --> _3dRSFC
+  _3dMVM --> _3dTcorr1D
+  _3dMVM --> _3dTcorrMap
+  _3dREMLfit --> _3dNetCorr
+  _3dREMLfit --> _3dRSFC
+  _3dREMLfit --> _3dTcorr1D
+  _3dREMLfit --> _3dTcorrMap
+  _3dttestpp --> _3dNetCorr
+  _3dttestpp --> _3dRSFC
+  _3dttestpp --> _3dTcorr1D
+  _3dttestpp --> _3dTcorrMap
+
+  %% AFNI / Statistical Analysis --> AFNI / Multiple Comparisons
+  _3dANOVA --> _3dClustSim
+  _3dANOVA --> _3dFWHMx
+  _3dANOVA2 --> _3dClustSim
+  _3dANOVA2 --> _3dFWHMx
+  _3dANOVA3 --> _3dClustSim
+  _3dANOVA3 --> _3dFWHMx
+  _3dDeconvolve --> _3dClustSim
+  _3dDeconvolve --> _3dFWHMx
+  _3dLME --> _3dClustSim
+  _3dLME --> _3dFWHMx
+  _3dLMEr --> _3dClustSim
+  _3dLMEr --> _3dFWHMx
+  _3dMEMA --> _3dClustSim
+  _3dMEMA --> _3dFWHMx
+  _3dMVM --> _3dClustSim
+  _3dMVM --> _3dFWHMx
+  _3dREMLfit --> _3dClustSim
+  _3dREMLfit --> _3dFWHMx
+  _3dttestpp --> _3dClustSim
+  _3dttestpp --> _3dFWHMx
+
+  %% AFNI / Statistical Analysis --> AFNI / ROI Analysis
+  _3dANOVA --> _3dROIstats
+  _3dANOVA --> _3dmaskave
+  _3dANOVA2 --> _3dROIstats
+  _3dANOVA2 --> _3dmaskave
+  _3dANOVA3 --> _3dROIstats
+  _3dANOVA3 --> _3dmaskave
+  _3dDeconvolve --> _3dROIstats
+  _3dDeconvolve --> _3dmaskave
+  _3dLME --> _3dROIstats
+  _3dLME --> _3dmaskave
+  _3dLMEr --> _3dROIstats
+  _3dLMEr --> _3dmaskave
+  _3dMEMA --> _3dROIstats
+  _3dMEMA --> _3dmaskave
+  _3dMVM --> _3dROIstats
+  _3dMVM --> _3dmaskave
+  _3dREMLfit --> _3dROIstats
+  _3dREMLfit --> _3dmaskave
+  _3dttestpp --> _3dROIstats
+  _3dttestpp --> _3dmaskave
+
+  %% AFNI / Statistical Analysis (intra-subsection)
+  _3dANOVA --> _3dANOVA
+  _3dANOVA --> _3dANOVA2
+  _3dANOVA --> _3dANOVA3
+  _3dANOVA --> _3dDeconvolve
+  _3dANOVA --> _3dLME
+  _3dANOVA --> _3dLMEr
+  _3dANOVA --> _3dMEMA
+  _3dANOVA --> _3dMVM
+  _3dANOVA --> _3dREMLfit
+  _3dANOVA --> _3dttestpp
+  _3dANOVA2 --> _3dANOVA
+  _3dANOVA2 --> _3dANOVA2
+  _3dANOVA2 --> _3dANOVA3
+  _3dANOVA2 --> _3dDeconvolve
+  _3dANOVA2 --> _3dLME
+  _3dANOVA2 --> _3dLMEr
+  _3dANOVA2 --> _3dMEMA
+  _3dANOVA2 --> _3dMVM
+  _3dANOVA2 --> _3dREMLfit
+  _3dANOVA2 --> _3dttestpp
+  _3dANOVA3 --> _3dANOVA
+  _3dANOVA3 --> _3dANOVA2
+  _3dANOVA3 --> _3dANOVA3
+  _3dANOVA3 --> _3dDeconvolve
+  _3dANOVA3 --> _3dLME
+  _3dANOVA3 --> _3dLMEr
+  _3dANOVA3 --> _3dMEMA
+  _3dANOVA3 --> _3dMVM
+  _3dANOVA3 --> _3dREMLfit
+  _3dANOVA3 --> _3dttestpp
+  _3dDeconvolve --> _3dANOVA
+  _3dDeconvolve --> _3dANOVA2
+  _3dDeconvolve --> _3dANOVA3
+  _3dDeconvolve --> _3dDeconvolve
+  _3dDeconvolve --> _3dLME
+  _3dDeconvolve --> _3dLMEr
+  _3dDeconvolve --> _3dMEMA
+  _3dDeconvolve --> _3dMVM
+  _3dDeconvolve --> _3dREMLfit
+  _3dDeconvolve --> _3dttestpp
+  _3dLME --> _3dANOVA
+  _3dLME --> _3dANOVA2
+  _3dLME --> _3dANOVA3
+  _3dLME --> _3dDeconvolve
+  _3dLME --> _3dLME
+  _3dLME --> _3dLMEr
+  _3dLME --> _3dMEMA
+  _3dLME --> _3dMVM
+  _3dLME --> _3dREMLfit
+  _3dLME --> _3dttestpp
+  _3dLMEr --> _3dANOVA
+  _3dLMEr --> _3dANOVA2
+  _3dLMEr --> _3dANOVA3
+  _3dLMEr --> _3dDeconvolve
+  _3dLMEr --> _3dLME
+  _3dLMEr --> _3dLMEr
+  _3dLMEr --> _3dMEMA
+  _3dLMEr --> _3dMVM
+  _3dLMEr --> _3dREMLfit
+  _3dLMEr --> _3dttestpp
+  _3dMEMA --> _3dANOVA
+  _3dMEMA --> _3dANOVA2
+  _3dMEMA --> _3dANOVA3
+  _3dMEMA --> _3dDeconvolve
+  _3dMEMA --> _3dLME
+  _3dMEMA --> _3dLMEr
+  _3dMEMA --> _3dMEMA
+  _3dMEMA --> _3dMVM
+  _3dMEMA --> _3dREMLfit
+  _3dMEMA --> _3dttestpp
+  _3dMVM --> _3dANOVA
+  _3dMVM --> _3dANOVA2
+  _3dMVM --> _3dANOVA3
+  _3dMVM --> _3dDeconvolve
+  _3dMVM --> _3dLME
+  _3dMVM --> _3dLMEr
+  _3dMVM --> _3dMEMA
+  _3dMVM --> _3dMVM
+  _3dMVM --> _3dREMLfit
+  _3dMVM --> _3dttestpp
+  _3dREMLfit --> _3dANOVA
+  _3dREMLfit --> _3dANOVA2
+  _3dREMLfit --> _3dANOVA3
+  _3dREMLfit --> _3dDeconvolve
+  _3dREMLfit --> _3dLME
+  _3dREMLfit --> _3dLMEr
+  _3dREMLfit --> _3dMEMA
+  _3dREMLfit --> _3dMVM
+  _3dREMLfit --> _3dREMLfit
+  _3dREMLfit --> _3dttestpp
+  _3dttestpp --> _3dANOVA
+  _3dttestpp --> _3dANOVA2
+  _3dttestpp --> _3dANOVA3
+  _3dttestpp --> _3dDeconvolve
+  _3dttestpp --> _3dLME
+  _3dttestpp --> _3dLMEr
+  _3dttestpp --> _3dMEMA
+  _3dttestpp --> _3dMVM
+  _3dttestpp --> _3dREMLfit
+  _3dttestpp --> _3dttestpp
+
+  %% AFNI / Statistical Analysis --> FSL / Statistical Analysis
+  _3dANOVA --> film_gls
+  _3dANOVA --> flameo
+  _3dANOVA --> randomise
+  _3dANOVA2 --> film_gls
+  _3dANOVA2 --> flameo
+  _3dANOVA2 --> randomise
+  _3dANOVA3 --> film_gls
+  _3dANOVA3 --> flameo
+  _3dANOVA3 --> randomise
+  _3dDeconvolve --> film_gls
+  _3dDeconvolve --> flameo
+  _3dDeconvolve --> randomise
+  _3dLME --> film_gls
+  _3dLME --> flameo
+  _3dLME --> randomise
+  _3dLMEr --> film_gls
+  _3dLMEr --> flameo
+  _3dLMEr --> randomise
+  _3dMEMA --> film_gls
+  _3dMEMA --> flameo
+  _3dMEMA --> randomise
+  _3dMVM --> film_gls
+  _3dMVM --> flameo
+  _3dMVM --> randomise
+  _3dREMLfit --> film_gls
+  _3dREMLfit --> flameo
+  _3dREMLfit --> randomise
+  _3dttestpp --> film_gls
+  _3dttestpp --> flameo
+  _3dttestpp --> randomise
+
+  %% AFNI / Temporal Filtering --> AFNI / Connectivity
+  _3dBandpass --> _3dNetCorr
+  _3dBandpass --> _3dRSFC
+  _3dBandpass --> _3dTcorr1D
+  _3dBandpass --> _3dTcorrMap
+
+  %% AFNI / Temporal Filtering --> AFNI / Masking
+  _3dBandpass --> _3dAutomask
+
+  %% AFNI / Temporal Filtering --> AFNI / Multiple Comparisons
+  _3dBandpass --> _3dClustSim
+  _3dBandpass --> _3dFWHMx
+
+  %% AFNI / Temporal Filtering --> AFNI / ROI Analysis
+  _3dBandpass --> _3dROIstats
+  _3dBandpass --> _3dmaskave
+
+  %% AFNI / Temporal Filtering --> AFNI / Smoothing
+  _3dBandpass --> _3dBlurToFWHM
+  _3dBandpass --> _3dmerge
+
+  %% AFNI / Temporal Filtering --> AFNI / Statistical Analysis
+  _3dBandpass --> _3dANOVA
+  _3dBandpass --> _3dANOVA2
+  _3dBandpass --> _3dANOVA3
+  _3dBandpass --> _3dDeconvolve
+  _3dBandpass --> _3dLME
+  _3dBandpass --> _3dLMEr
+  _3dBandpass --> _3dMEMA
+  _3dBandpass --> _3dMVM
+  _3dBandpass --> _3dREMLfit
+  _3dBandpass --> _3dttestpp
+
+  %% ANTs / Motion Correction --> AFNI / Despiking
+  antsMotionCorr --> _3dDespike
+
+  %% ANTs / Motion Correction --> AFNI / Masking
+  antsMotionCorr --> _3dAutomask
+
+  %% ANTs / Motion Correction --> AFNI / Smoothing
+  antsMotionCorr --> _3dBlurToFWHM
+  antsMotionCorr --> _3dmerge
+
+  %% ANTs / Motion Correction --> FSL / ICA/Denoising
+  antsMotionCorr --> dual_regression
+  antsMotionCorr --> melodic
+
+  %% ANTs / Motion Correction --> FSL / Smoothing
+  antsMotionCorr --> susan
+
+  %% ANTs / Motion Correction --> FSL / Statistical Analysis
+  antsMotionCorr --> film_gls
+  antsMotionCorr --> flameo
+  antsMotionCorr --> randomise
+
+  %% Connectome Workbench / CIFTI Operations (intra-subsection)
+  wb_command_cifti_create_dense_timeseries --> wb_command_cifti_create_dense_timeseries
+  wb_command_cifti_create_dense_timeseries --> wb_command_cifti_separate
+  wb_command_cifti_separate --> wb_command_cifti_create_dense_timeseries
+  wb_command_cifti_separate --> wb_command_cifti_separate
+
+  %% Connectome Workbench / CIFTI Operations --> Connectome Workbench / Surface Smoothing
+  wb_command_cifti_create_dense_timeseries --> wb_command_cifti_smoothing
+  wb_command_cifti_create_dense_timeseries --> wb_command_metric_smoothing
+  wb_command_cifti_separate --> wb_command_cifti_smoothing
+  wb_command_cifti_separate --> wb_command_metric_smoothing
+
+  %% Connectome Workbench / Surface Smoothing (intra-subsection)
+  wb_command_cifti_smoothing --> wb_command_cifti_smoothing
+  wb_command_cifti_smoothing --> wb_command_metric_smoothing
+  wb_command_metric_smoothing --> wb_command_cifti_smoothing
+  wb_command_metric_smoothing --> wb_command_metric_smoothing
+
+  %% FSL / Distortion Correction --> AFNI / Despiking
+  applytopup --> _3dDespike
+  fsl_prepare_fieldmap --> _3dDespike
+  fugue --> _3dDespike
+  prelude --> _3dDespike
+  topup --> _3dDespike
+
+  %% FSL / Distortion Correction --> AFNI / Motion Correction
+  applytopup --> _3dvolreg
+  fsl_prepare_fieldmap --> _3dvolreg
+  fugue --> _3dvolreg
+  prelude --> _3dvolreg
+  topup --> _3dvolreg
+
+  %% FSL / Distortion Correction --> AFNI / Registration
+  applytopup --> align_epi_anat
+  fsl_prepare_fieldmap --> align_epi_anat
+  fugue --> align_epi_anat
+  prelude --> align_epi_anat
+  topup --> align_epi_anat
+
+  %% FSL / Distortion Correction --> AFNI / Slice Timing
+  applytopup --> _3dTshift
+  fsl_prepare_fieldmap --> _3dTshift
+  fugue --> _3dTshift
+  prelude --> _3dTshift
+  topup --> _3dTshift
+
+  %% FSL / Distortion Correction --> AFNI / Smoothing
+  applytopup --> _3dBlurToFWHM
+  applytopup --> _3dmerge
+  fsl_prepare_fieldmap --> _3dBlurToFWHM
+  fsl_prepare_fieldmap --> _3dmerge
+  fugue --> _3dBlurToFWHM
+  fugue --> _3dmerge
+  prelude --> _3dBlurToFWHM
+  prelude --> _3dmerge
+  topup --> _3dBlurToFWHM
+  topup --> _3dmerge
+
+  %% FSL / Distortion Correction --> ANTs / Motion Correction
+  applytopup --> antsMotionCorr
+  fsl_prepare_fieldmap --> antsMotionCorr
+  fugue --> antsMotionCorr
+  prelude --> antsMotionCorr
+  topup --> antsMotionCorr
+
+  %% FSL / Distortion Correction (intra-subsection)
+  applytopup --> applytopup
+  applytopup --> fsl_prepare_fieldmap
+  applytopup --> fugue
+  applytopup --> prelude
+  applytopup --> topup
+  fsl_prepare_fieldmap --> applytopup
+  fsl_prepare_fieldmap --> fsl_prepare_fieldmap
+  fsl_prepare_fieldmap --> fugue
+  fsl_prepare_fieldmap --> prelude
+  fsl_prepare_fieldmap --> topup
+  fugue --> applytopup
+  fugue --> fsl_prepare_fieldmap
+  fugue --> fugue
+  fugue --> prelude
+  fugue --> topup
+  prelude --> applytopup
+  prelude --> fsl_prepare_fieldmap
+  prelude --> fugue
+  prelude --> prelude
+  prelude --> topup
+  topup --> applytopup
+  topup --> fsl_prepare_fieldmap
+  topup --> fugue
+  topup --> prelude
+  topup --> topup
+
+  %% FSL / Distortion Correction --> FSL / Motion Correction
+  applytopup --> mcflirt
+  fsl_prepare_fieldmap --> mcflirt
+  fugue --> mcflirt
+  prelude --> mcflirt
+  topup --> mcflirt
+
+  %% FSL / ICA/Denoising --> AFNI / Smoothing
+  dual_regression --> _3dBlurToFWHM
+  dual_regression --> _3dmerge
+  melodic --> _3dBlurToFWHM
+  melodic --> _3dmerge
+
+  %% FSL / ICA/Denoising --> AFNI / Statistical Analysis
+  dual_regression --> _3dANOVA
+  dual_regression --> _3dANOVA2
+  dual_regression --> _3dANOVA3
+  dual_regression --> _3dDeconvolve
+  dual_regression --> _3dLME
+  dual_regression --> _3dLMEr
+  dual_regression --> _3dMEMA
+  dual_regression --> _3dMVM
+  dual_regression --> _3dREMLfit
+  dual_regression --> _3dttestpp
+  melodic --> _3dANOVA
+  melodic --> _3dANOVA2
+  melodic --> _3dANOVA3
+  melodic --> _3dDeconvolve
+  melodic --> _3dLME
+  melodic --> _3dLMEr
+  melodic --> _3dMEMA
+  melodic --> _3dMVM
+  melodic --> _3dREMLfit
+  melodic --> _3dttestpp
+
+  %% FSL / ICA/Denoising (intra-subsection)
+  dual_regression --> dual_regression
+  dual_regression --> melodic
+  melodic --> dual_regression
+  melodic --> melodic
+
+  %% FSL / ICA/Denoising --> FSL / Smoothing
+  dual_regression --> susan
+  melodic --> susan
+
+  %% FSL / ICA/Denoising --> FSL / Statistical Analysis
+  dual_regression --> film_gls
+  dual_regression --> flameo
+  dual_regression --> randomise
+  melodic --> film_gls
+  melodic --> flameo
+  melodic --> randomise
+
+  %% FSL / Motion Correction --> AFNI / Masking
+  mcflirt --> _3dAutomask
+
+  %% FSL / Motion Correction --> AFNI / Smoothing
+  mcflirt --> _3dBlurToFWHM
+  mcflirt --> _3dmerge
+
+  %% FSL / Motion Correction --> AFNI / Statistical Analysis
+  mcflirt --> _3dANOVA
+  mcflirt --> _3dANOVA2
+  mcflirt --> _3dANOVA3
+  mcflirt --> _3dDeconvolve
+  mcflirt --> _3dLME
+  mcflirt --> _3dLMEr
+  mcflirt --> _3dMEMA
+  mcflirt --> _3dMVM
+  mcflirt --> _3dREMLfit
+  mcflirt --> _3dttestpp
+
+  %% FSL / Motion Correction --> FSL / ICA/Denoising
+  mcflirt --> dual_regression
+  mcflirt --> melodic
+
+  %% FSL / Motion Correction --> FSL / Slice Timing
+  mcflirt --> slicetimer
+
+  %% FSL / Motion Correction --> FSL / Smoothing
+  mcflirt --> susan
+
+  %% FSL / Motion Correction --> FSL / Statistical Analysis
+  mcflirt --> film_gls
+  mcflirt --> flameo
+  mcflirt --> randomise
+
+  %% FSL / Slice Timing --> FSL / Smoothing
+  slicetimer --> susan
+
+  %% FSL / Slice Timing --> FSL / Statistical Analysis
+  slicetimer --> film_gls
+  slicetimer --> flameo
+  slicetimer --> randomise
+
+  %% FSL / Smoothing --> FSL / ICA/Denoising
+  susan --> dual_regression
+  susan --> melodic
+
+  %% FSL / Smoothing --> FSL / Statistical Analysis
+  susan --> film_gls
+  susan --> flameo
+  susan --> randomise
+
+  %% FSL / Statistical Analysis --> AFNI / Multiple Comparisons
+  film_gls --> _3dClustSim
+  film_gls --> _3dFWHMx
+  flameo --> _3dClustSim
+  flameo --> _3dFWHMx
+  randomise --> _3dClustSim
+  randomise --> _3dFWHMx
+
+  %% FSL / Statistical Analysis (intra-subsection)
+  film_gls --> film_gls
+  film_gls --> flameo
+  film_gls --> randomise
+  flameo --> film_gls
+  flameo --> flameo
+  flameo --> randomise
+  randomise --> film_gls
+  randomise --> flameo
+  randomise --> randomise
+
+  %% FreeSurfer / Functional Analysis --> Connectome Workbench / CIFTI Operations
+  bbregister --> wb_command_cifti_create_dense_timeseries
+  bbregister --> wb_command_cifti_separate
+  mri_glmfit --> wb_command_cifti_create_dense_timeseries
+  mri_glmfit --> wb_command_cifti_separate
+  mri_surf2vol --> wb_command_cifti_create_dense_timeseries
+  mri_surf2vol --> wb_command_cifti_separate
+  mri_vol2surf --> wb_command_cifti_create_dense_timeseries
+  mri_vol2surf --> wb_command_cifti_separate
+  mris_preproc --> wb_command_cifti_create_dense_timeseries
+  mris_preproc --> wb_command_cifti_separate
+
+  %% FreeSurfer / Functional Analysis (intra-subsection)
+  bbregister --> bbregister
+  bbregister --> mri_glmfit
+  bbregister --> mri_surf2vol
+  bbregister --> mri_vol2surf
+  bbregister --> mris_preproc
+  mri_glmfit --> bbregister
+  mri_glmfit --> mri_glmfit
+  mri_glmfit --> mri_surf2vol
+  mri_glmfit --> mri_vol2surf
+  mri_glmfit --> mris_preproc
+  mri_surf2vol --> bbregister
+  mri_surf2vol --> mri_glmfit
+  mri_surf2vol --> mri_surf2vol
+  mri_surf2vol --> mri_vol2surf
+  mri_surf2vol --> mris_preproc
+  mri_vol2surf --> bbregister
+  mri_vol2surf --> mri_glmfit
+  mri_vol2surf --> mri_surf2vol
+  mri_vol2surf --> mri_vol2surf
+  mri_vol2surf --> mris_preproc
+  mris_preproc --> bbregister
+  mris_preproc --> mri_glmfit
+  mris_preproc --> mri_surf2vol
+  mris_preproc --> mri_vol2surf
+  mris_preproc --> mris_preproc
+
+  %% fMRIPrep / Pipeline --> AFNI / Connectivity
+  fmriprep --> _3dNetCorr
+  fmriprep --> _3dRSFC
+  fmriprep --> _3dTcorr1D
+  fmriprep --> _3dTcorrMap
+
+  %% fMRIPrep / Pipeline --> AFNI / Masking
+  fmriprep --> _3dAutomask
+
+  %% fMRIPrep / Pipeline --> AFNI / Multiple Comparisons
+  fmriprep --> _3dClustSim
+  fmriprep --> _3dFWHMx
+
+  %% fMRIPrep / Pipeline --> AFNI / ROI Analysis
+  fmriprep --> _3dROIstats
+  fmriprep --> _3dmaskave
+
+  %% fMRIPrep / Pipeline --> AFNI / Smoothing
+  fmriprep --> _3dBlurToFWHM
+  fmriprep --> _3dmerge
+
+  %% fMRIPrep / Pipeline --> AFNI / Statistical Analysis
+  fmriprep --> _3dANOVA
+  fmriprep --> _3dANOVA2
+  fmriprep --> _3dANOVA3
+  fmriprep --> _3dDeconvolve
+  fmriprep --> _3dLME
+  fmriprep --> _3dLMEr
+  fmriprep --> _3dMEMA
+  fmriprep --> _3dMVM
+  fmriprep --> _3dREMLfit
+  fmriprep --> _3dttestpp
+
+  %% fMRIPrep / Pipeline --> AFNI / Temporal Filtering
+  fmriprep --> _3dBandpass
+
+  %% fMRIPrep / Pipeline --> Connectome Workbench / CIFTI Operations
+  fmriprep --> wb_command_cifti_create_dense_timeseries
+  fmriprep --> wb_command_cifti_separate
+
+  %% fMRIPrep / Pipeline --> Connectome Workbench / Surface Smoothing
+  fmriprep --> wb_command_cifti_smoothing
+  fmriprep --> wb_command_metric_smoothing
+
+  %% fMRIPrep / Pipeline --> FSL / ICA/Denoising
+  fmriprep --> dual_regression
+  fmriprep --> melodic
+
+  %% fMRIPrep / Pipeline --> FSL / Smoothing
+  fmriprep --> susan
+
+  %% fMRIPrep / Pipeline --> FSL / Statistical Analysis
+  fmriprep --> film_gls
+  fmriprep --> flameo
+  fmriprep --> randomise
+
+  %% fMRIPrep / Pipeline --> FreeSurfer / Functional Analysis
+  fmriprep --> bbregister
+  fmriprep --> mri_glmfit
+  fmriprep --> mri_surf2vol
+  fmriprep --> mri_vol2surf
+  fmriprep --> mris_preproc

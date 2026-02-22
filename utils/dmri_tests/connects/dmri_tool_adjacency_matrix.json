@@ -1,8 +1,7 @@
 {
-  "generatedAt": "2026-02-22T01:44:46+00:00",
+  "generatedAt": "2026-02-22T06:29:46+00:00",
   "sources": {
-    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\dmri_tests\\connects\\dmri_subsection_graph.mmd",
-    "mapping": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\dmri_tests\\connects\\dmri_tool_to_subsection_map.json"
+    "graph": "C:\\Users\\kuna8\\personal_projects\\niBuild\\utils\\dmri_tests\\connects\\dmri_tool_graph.mmd"
   },
   "toolOrder": [
     "amico_noddi",
@@ -48,138 +47,438 @@
     "tensor2metric": 18,
     "topup": 19
   },
-  "subsectionByTool": {
-    "amico_noddi": "amico / microstructure modeling",
-    "bedpostx": "fsl / fiber modeling",
-    "dmri_postreg": "freesurfer / diffusion",
-    "dtifit": "fsl / tensor fitting",
-    "dwi2fod": "mrtrix3 / tensor fod",
-    "dwi2tensor": "mrtrix3 / tensor fod",
-    "dwidenoise": "mrtrix3 / preprocessing",
-    "eddy": "fsl / preprocessing",
-    "mrdegibbs": "mrtrix3 / preprocessing",
-    "probtrackx2": "fsl / tractography",
-    "tbss_1_preproc": "fsl / tbss",
-    "tbss_2_reg": "fsl / tbss",
-    "tbss_3_postreg": "fsl / tbss",
-    "tbss_4_prestats": "fsl / tbss",
-    "tbss_non_FA": "fsl / tbss",
-    "tck2connectome": "mrtrix3 / tractography",
-    "tckgen": "mrtrix3 / tractography",
-    "tcksift": "mrtrix3 / tractography",
-    "tensor2metric": "mrtrix3 / tensor fod",
-    "topup": "fsl / preprocessing"
-  },
-  "subsectionByToolOriginal": {
-    "amico_noddi": "AMICO / Microstructure Modeling",
-    "bedpostx": "FSL / Fiber Modeling",
-    "dmri_postreg": "FreeSurfer / Diffusion",
-    "dtifit": "FSL / Tensor Fitting",
-    "dwi2fod": "MRtrix3 / Tensor/FOD",
-    "dwi2tensor": "MRtrix3 / Tensor/FOD",
-    "dwidenoise": "MRtrix3 / Preprocessing",
-    "eddy": "FSL / Preprocessing",
-    "mrdegibbs": "MRtrix3 / Preprocessing",
-    "probtrackx2": "FSL / Tractography",
-    "tbss_1_preproc": "FSL / TBSS",
-    "tbss_2_reg": "FSL / TBSS",
-    "tbss_3_postreg": "FSL / TBSS",
-    "tbss_4_prestats": "FSL / TBSS",
-    "tbss_non_FA": "FSL / TBSS",
-    "tck2connectome": "MRtrix3 / Tractography",
-    "tckgen": "MRtrix3 / Tractography",
-    "tcksift": "MRtrix3 / Tractography",
-    "tensor2metric": "MRtrix3 / Tensor/FOD",
-    "topup": "FSL / Preprocessing"
-  },
-  "subsectionEdges": [
+  "toolEdges": [
     {
-      "source": "fsl / fiber modeling",
-      "target": "fsl / tractography"
+      "source": "bedpostx",
+      "target": "probtrackx2"
     },
     {
-      "source": "fsl / preprocessing",
-      "target": "amico / microstructure modeling"
+      "source": "dtifit",
+      "target": "probtrackx2"
     },
     {
-      "source": "fsl / preprocessing",
-      "target": "freesurfer / diffusion"
+      "source": "dtifit",
+      "target": "tbss_1_preproc"
     },
     {
-      "source": "fsl / preprocessing",
-      "target": "fsl / fiber modeling"
+      "source": "dtifit",
+      "target": "tbss_2_reg"
     },
     {
-      "source": "fsl / preprocessing",
-      "target": "fsl / preprocessing"
+      "source": "dtifit",
+      "target": "tbss_3_postreg"
     },
     {
-      "source": "fsl / preprocessing",
-      "target": "fsl / tensor fitting"
+      "source": "dtifit",
+      "target": "tbss_4_prestats"
     },
     {
-      "source": "fsl / preprocessing",
-      "target": "mrtrix3 / tensor fod"
+      "source": "dtifit",
+      "target": "tbss_non_FA"
     },
     {
-      "source": "fsl / preprocessing",
-      "target": "mrtrix3 / tractography"
+      "source": "dtifit",
+      "target": "tck2connectome"
     },
     {
-      "source": "fsl / tbss",
-      "target": "fsl / tbss"
+      "source": "dtifit",
+      "target": "tckgen"
     },
     {
-      "source": "fsl / tensor fitting",
-      "target": "fsl / tbss"
+      "source": "dtifit",
+      "target": "tcksift"
     },
     {
-      "source": "fsl / tensor fitting",
-      "target": "fsl / tractography"
+      "source": "dwi2fod",
+      "target": "dwi2fod"
     },
     {
-      "source": "fsl / tensor fitting",
-      "target": "mrtrix3 / tractography"
+      "source": "dwi2fod",
+      "target": "dwi2tensor"
     },
     {
-      "source": "mrtrix3 / preprocessing",
-      "target": "amico / microstructure modeling"
+      "source": "dwi2fod",
+      "target": "tck2connectome"
     },
     {
-      "source": "mrtrix3 / preprocessing",
-      "target": "freesurfer / diffusion"
+      "source": "dwi2fod",
+      "target": "tckgen"
     },
     {
-      "source": "mrtrix3 / preprocessing",
-      "target": "fsl / fiber modeling"
+      "source": "dwi2fod",
+      "target": "tcksift"
     },
     {
-      "source": "mrtrix3 / preprocessing",
-      "target": "fsl / preprocessing"
+      "source": "dwi2fod",
+      "target": "tensor2metric"
     },
     {
-      "source": "mrtrix3 / preprocessing",
-      "target": "fsl / tensor fitting"
+      "source": "dwi2tensor",
+      "target": "dwi2fod"
     },
     {
-      "source": "mrtrix3 / preprocessing",
-      "target": "mrtrix3 / preprocessing"
+      "source": "dwi2tensor",
+      "target": "dwi2tensor"
     },
     {
-      "source": "mrtrix3 / preprocessing",
-      "target": "mrtrix3 / tensor fod"
+      "source": "dwi2tensor",
+      "target": "tck2connectome"
     },
     {
-      "source": "mrtrix3 / tensor fod",
-      "target": "mrtrix3 / tensor fod"
+      "source": "dwi2tensor",
+      "target": "tckgen"
     },
     {
-      "source": "mrtrix3 / tensor fod",
-      "target": "mrtrix3 / tractography"
+      "source": "dwi2tensor",
+      "target": "tcksift"
     },
     {
-      "source": "mrtrix3 / tractography",
-      "target": "mrtrix3 / tractography"
+      "source": "dwi2tensor",
+      "target": "tensor2metric"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "amico_noddi"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "bedpostx"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "dmri_postreg"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "dtifit"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "dwi2fod"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "dwi2tensor"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "dwidenoise"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "eddy"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "mrdegibbs"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "tensor2metric"
+    },
+    {
+      "source": "dwidenoise",
+      "target": "topup"
+    },
+    {
+      "source": "eddy",
+      "target": "amico_noddi"
+    },
+    {
+      "source": "eddy",
+      "target": "bedpostx"
+    },
+    {
+      "source": "eddy",
+      "target": "dmri_postreg"
+    },
+    {
+      "source": "eddy",
+      "target": "dtifit"
+    },
+    {
+      "source": "eddy",
+      "target": "dwi2fod"
+    },
+    {
+      "source": "eddy",
+      "target": "dwi2tensor"
+    },
+    {
+      "source": "eddy",
+      "target": "eddy"
+    },
+    {
+      "source": "eddy",
+      "target": "tck2connectome"
+    },
+    {
+      "source": "eddy",
+      "target": "tckgen"
+    },
+    {
+      "source": "eddy",
+      "target": "tcksift"
+    },
+    {
+      "source": "eddy",
+      "target": "tensor2metric"
+    },
+    {
+      "source": "eddy",
+      "target": "topup"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "amico_noddi"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "bedpostx"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "dmri_postreg"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "dtifit"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "dwi2fod"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "dwi2tensor"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "dwidenoise"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "eddy"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "mrdegibbs"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "tensor2metric"
+    },
+    {
+      "source": "mrdegibbs",
+      "target": "topup"
+    },
+    {
+      "source": "tbss_1_preproc",
+      "target": "tbss_1_preproc"
+    },
+    {
+      "source": "tbss_1_preproc",
+      "target": "tbss_2_reg"
+    },
+    {
+      "source": "tbss_1_preproc",
+      "target": "tbss_3_postreg"
+    },
+    {
+      "source": "tbss_1_preproc",
+      "target": "tbss_4_prestats"
+    },
+    {
+      "source": "tbss_1_preproc",
+      "target": "tbss_non_FA"
+    },
+    {
+      "source": "tbss_2_reg",
+      "target": "tbss_1_preproc"
+    },
+    {
+      "source": "tbss_2_reg",
+      "target": "tbss_2_reg"
+    },
+    {
+      "source": "tbss_2_reg",
+      "target": "tbss_3_postreg"
+    },
+    {
+      "source": "tbss_2_reg",
+      "target": "tbss_4_prestats"
+    },
+    {
+      "source": "tbss_2_reg",
+      "target": "tbss_non_FA"
+    },
+    {
+      "source": "tbss_3_postreg",
+      "target": "tbss_1_preproc"
+    },
+    {
+      "source": "tbss_3_postreg",
+      "target": "tbss_2_reg"
+    },
+    {
+      "source": "tbss_3_postreg",
+      "target": "tbss_3_postreg"
+    },
+    {
+      "source": "tbss_3_postreg",
+      "target": "tbss_4_prestats"
+    },
+    {
+      "source": "tbss_3_postreg",
+      "target": "tbss_non_FA"
+    },
+    {
+      "source": "tbss_4_prestats",
+      "target": "tbss_1_preproc"
+    },
+    {
+      "source": "tbss_4_prestats",
+      "target": "tbss_2_reg"
+    },
+    {
+      "source": "tbss_4_prestats",
+      "target": "tbss_3_postreg"
+    },
+    {
+      "source": "tbss_4_prestats",
+      "target": "tbss_4_prestats"
+    },
+    {
+      "source": "tbss_4_prestats",
+      "target": "tbss_non_FA"
+    },
+    {
+      "source": "tbss_non_FA",
+      "target": "tbss_1_preproc"
+    },
+    {
+      "source": "tbss_non_FA",
+      "target": "tbss_2_reg"
+    },
+    {
+      "source": "tbss_non_FA",
+      "target": "tbss_3_postreg"
+    },
+    {
+      "source": "tbss_non_FA",
+      "target": "tbss_4_prestats"
+    },
+    {
+      "source": "tbss_non_FA",
+      "target": "tbss_non_FA"
+    },
+    {
+      "source": "tck2connectome",
+      "target": "tck2connectome"
+    },
+    {
+      "source": "tck2connectome",
+      "target": "tckgen"
+    },
+    {
+      "source": "tck2connectome",
+      "target": "tcksift"
+    },
+    {
+      "source": "tckgen",
+      "target": "tck2connectome"
+    },
+    {
+      "source": "tckgen",
+      "target": "tckgen"
+    },
+    {
+      "source": "tckgen",
+      "target": "tcksift"
+    },
+    {
+      "source": "tcksift",
+      "target": "tck2connectome"
+    },
+    {
+      "source": "tcksift",
+      "target": "tckgen"
+    },
+    {
+      "source": "tcksift",
+      "target": "tcksift"
+    },
+    {
+      "source": "tensor2metric",
+      "target": "dwi2fod"
+    },
+    {
+      "source": "tensor2metric",
+      "target": "dwi2tensor"
+    },
+    {
+      "source": "tensor2metric",
+      "target": "tck2connectome"
+    },
+    {
+      "source": "tensor2metric",
+      "target": "tckgen"
+    },
+    {
+      "source": "tensor2metric",
+      "target": "tcksift"
+    },
+    {
+      "source": "tensor2metric",
+      "target": "tensor2metric"
+    },
+    {
+      "source": "topup",
+      "target": "amico_noddi"
+    },
+    {
+      "source": "topup",
+      "target": "bedpostx"
+    },
+    {
+      "source": "topup",
+      "target": "dmri_postreg"
+    },
+    {
+      "source": "topup",
+      "target": "dtifit"
+    },
+    {
+      "source": "topup",
+      "target": "dwi2fod"
+    },
+    {
+      "source": "topup",
+      "target": "dwi2tensor"
+    },
+    {
+      "source": "topup",
+      "target": "eddy"
+    },
+    {
+      "source": "topup",
+      "target": "tck2connectome"
+    },
+    {
+      "source": "topup",
+      "target": "tckgen"
+    },
+    {
+      "source": "topup",
+      "target": "tcksift"
+    },
+    {
+      "source": "topup",
+      "target": "tensor2metric"
+    },
+    {
+      "source": "topup",
+      "target": "topup"
     }
   ],
   "matrix": [
@@ -625,14 +924,5 @@
     ]
   ],
   "edgeCount": 108,
-  "toolCount": 20,
-  "normalization": {
-    "canonicalLabelFormat": "library / subsection",
-    "rules": [
-      "lowercase",
-      "trim and collapse whitespace",
-      "normalize '&' to 'and'",
-      "treat '-' and '/' equivalently in subsection text"
-    ]
-  }
+  "toolCount": 20
 }
