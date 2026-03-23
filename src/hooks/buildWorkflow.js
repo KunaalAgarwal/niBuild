@@ -652,11 +652,13 @@ export function buildCWLWorkflowObject(graph) {
     const order = topoSort(nodes, edges);
 
     /* ---------- generate readable step IDs ---------- */
+    // Assign sequential numbers using the original graph node order (not topo order)
+    // so that step IDs (fslmaths_1, fslmaths_2) match the display labels shown on
+    // the canvas (fslmaths (1), fslmaths (2)), which also use graph array order.
     const toolCounts = {};
     const nodeIdToStepId = {};
 
-    order.forEach((nodeId) => {
-        const node = nodeById(nodeId);
+    nodes.forEach((node) => {
         const tool = getToolConfigSync(node.data.label);
         const toolId = tool?.id || node.data.label.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
@@ -665,7 +667,7 @@ export function buildCWLWorkflowObject(graph) {
         }
         toolCounts[toolId]++;
 
-        nodeIdToStepId[nodeId] = { toolId, count: toolCounts[toolId] };
+        nodeIdToStepId[node.id] = { toolId, count: toolCounts[toolId] };
     });
 
     const getStepId = (nodeId) => {
@@ -686,7 +688,7 @@ export function buildCWLWorkflowObject(graph) {
 
     const arrayTypedInputs = buildArrayTypedInputs(nodes);
 
-    const { scatteredNodeIds: scatteredSteps, sourceNodeIds } = computeScatteredNodes(
+    const { scatteredNodeIds: scatteredSteps } = computeScatteredNodes(
         scatterNodes,
         scatterEdges,
         arrayTypedInputs,

@@ -88,6 +88,16 @@
 
 .canvas-bottom-btn:disabled {
     opacity: 0.35;
+    color: var(--text-muted, #666);
+    background-color: rgba(46, 46, 46, 0.5);
+    border-color: rgba(100, 100, 100, 0.3);
+    cursor: not-allowed;
+}
+
+.canvas-bottom-btn:disabled:hover {
+    background-color: rgba(46, 46, 46, 0.5);
+    border-color: rgba(100, 100, 100, 0.3);
+    color: var(--text-muted, #666);
     cursor: not-allowed;
 }
 
