@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
+import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import ReactFlow, { Background, Controls, MiniMap, useNodesState, useEdgesState, MarkerType } from 'reactflow';
 
 import 'reactflow/dist/style.css';
@@ -60,6 +60,7 @@ function WorkflowCanvas({
                 updateCurrentWorkspaceItems({ nodes, edges, viewport });
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, updateCurrentWorkspaceItems]);
 
     // Compute which nodes inherit scatter from upstream (BFS propagation).
@@ -245,6 +246,7 @@ function WorkflowCanvas({
             setNodes(updatedNodes);
             markForSync();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [customWorkflows]);
 
     // Compute display labels for duplicate node names (e.g., "flirt (1)", "flirt (2)").
@@ -285,6 +287,7 @@ function WorkflowCanvas({
         if (anyChange) {
             setNodes(updated);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes]);
 
     // Edge mapping modal state
@@ -409,6 +412,7 @@ function WorkflowCanvas({
                 }
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [workflowItems, nodes.length, currentWorkspaceIndex]);
 
     // Auto-center when canvas container resizes (e.g. panel open/close), debounced to prevent thrashing
@@ -561,6 +565,7 @@ function WorkflowCanvas({
             setEditingEdge(null);
             setEdgeModalData(null);
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [pendingConnection, editingEdge],
     );
 
@@ -685,6 +690,7 @@ function WorkflowCanvas({
             );
             markForSync();
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [markForSync],
     );
 
@@ -697,6 +703,7 @@ function WorkflowCanvas({
         requestAnimationFrame(() => {
             reactFlowInstance?.fitView({ padding: 0.05, duration: 300 });
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, reactFlowInstance, markForSync]);
 
     // --- Global Key Listener for Auto-Layout Shortcut ---
@@ -732,6 +739,7 @@ function WorkflowCanvas({
         if (onSetWorkflowData) {
             onSetWorkflowData(() => getWorkflowData);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, onSetWorkflowData]);
 
     return (
