@@ -1,29 +1,15 @@
 import { useMemo } from 'react';
 import { Form } from 'react-bootstrap';
-import { FIXED_POSITION_PARAMS } from '../utils/toolAnnotations.js';
+import { getActiveOperations } from '../utils/getActiveOperations.js';
 
 /**
  * Compact reorderable list of enabled fslmaths operations.
  * Shows only when the tool is orderSensitive and >= 2 operations are active.
  */
 const OperationOrderPanel = ({ allParams, paramValues, wiredInputs, operationOrder, onOrderChange }) => {
-    // Determine which operations are "active"
+    // Determine which operations are "active", sorted by user's operationOrder
     const activeOps = useMemo(() => {
-        const active = allParams.filter((p) => {
-            if (FIXED_POSITION_PARAMS.has(p.name)) return false;
-            if (!p.flag) return false; // no CLI flag = not a reorderable operation
-            // Wired file inputs are automatically active
-            const wiredSources = wiredInputs?.get(p.name) || [];
-            if (wiredSources.length > 0) return true;
-            // Unwired file inputs manually added via + button
-            if (/^(File|Directory)/.test(p.type) && operationOrder.includes(p.name)) return true;
-            // Scalar/boolean with a value set
-            const val = paramValues[p.name];
-            if (val === undefined || val === null || val === '' || val === false) return false;
-            return true;
-        });
-
-        // Sort by user's operationOrder, then by CWL position for unordered params
+        const active = getActiveOperations(allParams, paramValues, wiredInputs, operationOrder);
         const orderIndex = new Map(operationOrder.map((name, i) => [name, i]));
         return active.sort((a, b) => {
             const ai = orderIndex.has(a.name) ? orderIndex.get(a.name) : 1000 + (a.position ?? 99);

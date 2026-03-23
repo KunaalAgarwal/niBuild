@@ -27,6 +27,17 @@ const EDGE_ARROW = { type: MarkerType.ArrowClosed, width: 10, height: 10 };
 // Consistent default viewport so every workspace starts with the same canvas size
 const DEFAULT_VIEWPORT = { x: 0, y: 0, zoom: 1 };
 
+/** Resolve BIDS node data by key, handling both direct and custom-workflow-embedded BIDS nodes. */
+function resolveBIDSNodeData(key, bidsModalNodeId, bidsPickerTargetRef, nodeMap) {
+    if (!bidsModalNodeId) return null;
+    const target = bidsPickerTargetRef.current;
+    if (target !== null && typeof target === 'object' && target.cwNodeId) {
+        const cwNode = nodeMap.get(target.cwNodeId);
+        return cwNode?.data?.internalNodes?.find((n) => n.isBIDS)?.[key] || null;
+    }
+    return nodeMap.get(bidsModalNodeId)?.data?.[key] || null;
+}
+
 function WorkflowCanvas({
     workflowItems,
     updateCurrentWorkspaceItems,
@@ -833,24 +844,8 @@ function WorkflowCanvas({
             <BIDSDataModal
                 show={showBIDSModal}
                 onClose={handleBIDSModalClose}
-                bidsStructure={(() => {
-                    if (!bidsModalNodeId) return null;
-                    const target = bidsPickerTargetRef.current;
-                    if (target !== null && typeof target === 'object' && target.cwNodeId) {
-                        const cwNode = nodeMap.get(target.cwNodeId);
-                        return cwNode?.data?.internalNodes?.find((n) => n.isBIDS)?.bidsStructure || null;
-                    }
-                    return nodeMap.get(bidsModalNodeId)?.data?.bidsStructure || null;
-                })()}
-                bidsSelections={(() => {
-                    if (!bidsModalNodeId) return null;
-                    const target = bidsPickerTargetRef.current;
-                    if (target !== null && typeof target === 'object' && target.cwNodeId) {
-                        const cwNode = nodeMap.get(target.cwNodeId);
-                        return cwNode?.data?.internalNodes?.find((n) => n.isBIDS)?.bidsSelections || null;
-                    }
-                    return nodeMap.get(bidsModalNodeId)?.data?.bidsSelections || null;
-                })()}
+                bidsStructure={resolveBIDSNodeData('bidsStructure', bidsModalNodeId, bidsPickerTargetRef, nodeMap)}
+                bidsSelections={resolveBIDSNodeData('bidsSelections', bidsModalNodeId, bidsPickerTargetRef, nodeMap)}
             />
         </div>
     );

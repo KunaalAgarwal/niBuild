@@ -20,11 +20,9 @@ const NodeComponent = ({ data, id }) => {
     }, []);
 
     // Check scatter propagation and source-node status
-    const { propagatedIds, sourceNodeIds, scatteredUpstreamInputs, gatherNodeIds } =
-        useContext(ScatterPropagationContext);
+    const { propagatedIds, scatteredUpstreamInputs, gatherNodeIds } = useContext(ScatterPropagationContext);
     const isScatterInherited = propagatedIds.has(id);
     const isGatherNode = gatherNodeIds?.has(id) || false;
-    const isSourceNode = sourceNodeIds.has(id);
     const upstreamScatterInputs = scatteredUpstreamInputs.get(id) || new Set();
 
     // Get wired input state from context
@@ -70,10 +68,8 @@ const NodeComponent = ({ data, id }) => {
             id={id}
             isScatterInherited={isScatterInherited}
             isGatherNode={isGatherNode}
-            isSourceNode={isSourceNode}
             upstreamScatterInputs={upstreamScatterInputs}
             wiredInputs={wiredInputs}
-            propagatedIds={propagatedIds}
         />
     );
 };

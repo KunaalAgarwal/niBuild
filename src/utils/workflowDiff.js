@@ -3,6 +3,38 @@
  * Moved from main.jsx and extended with structured diff computation.
  */
 import { computeScatteredNodes, buildArrayTypedInputs } from './scatterPropagation.js';
+import { topoSort } from './topoSort.js';
+
+/** Get the Set of IDs for dummy nodes (supports both flat and data-nested shapes). */
+export const getDummyIds = (nodes) => new Set(nodes.filter((n) => n.isDummy || n.data?.isDummy).map((n) => n.id));
+
+/**
+ * Compute boundary nodes (first/last non-dummy in topological order)
+ * for a set of internal nodes and edges.
+ */
+export function computeBoundaryNodes(nodes, edges) {
+    const nonDummyNodes = nodes.filter((n) => !n.isDummy && !n.data?.isDummy);
+    if (nonDummyNodes.length === 0) return { firstNonDummy: null, lastNonDummy: null };
+
+    const dummyIds = getDummyIds(nodes);
+    const realEdges = edges.filter((e) => !dummyIds.has(e.source) && !dummyIds.has(e.target));
+
+    let order;
+    try {
+        order = topoSort(nonDummyNodes, realEdges);
+    } catch {
+        return { firstNonDummy: null, lastNonDummy: null };
+    }
+
+    const nodeById = new Map(nonDummyNodes.map((n) => [n.id, n]));
+    const firstNode = nodeById.get(order[0]);
+    const lastNode = nodeById.get(order[order.length - 1]);
+
+    return {
+        firstNonDummy: firstNode?.label || firstNode?.data?.label || null,
+        lastNonDummy: lastNode?.label || lastNode?.data?.label || null,
+    };
+}
 
 /**
  * Serialize workspace nodes for saving as a custom workflow.
