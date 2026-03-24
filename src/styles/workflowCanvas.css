@@ -98,7 +98,6 @@
     background-color: rgba(46, 46, 46, 0.5);
     border-color: rgba(100, 100, 100, 0.3);
     color: var(--text-muted, #666);
-    cursor: not-allowed;
 }
 
 /* Collapsible buttons animate in/out */

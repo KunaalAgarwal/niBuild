@@ -300,7 +300,7 @@ export function useGenerateWorkflow() {
         }
 
         /* ---------- detect BIDS nodes ---------- */
-        const bidsNodes = graph.nodes.filter((n) => n.data?.isBIDS && n.data?.bidsSelections);
+        const bidsNodes = expandedGraph.nodes.filter((n) => n.data?.isBIDS && n.data?.bidsSelections);
         const hasBIDS = bidsNodes.length > 0;
 
         if (hasBIDS) {
