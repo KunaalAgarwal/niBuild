@@ -1,7 +1,7 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import YAML from 'js-yaml';
-import { buildCWLWorkflowObject, buildJobTemplate } from './buildWorkflow.js';
+import { buildCWLWorkflowObject, buildJobTemplate, expandCustomWorkflowNodes } from './buildWorkflow.js';
 import { getToolConfigSync } from '../utils/toolRegistry.js';
 import { FIXED_POSITION_PARAMS } from '../utils/toolAnnotations.js';
 import { buildROCrateMetadata } from '../utils/buildROCrateMetadata.js';
@@ -189,8 +189,10 @@ export function useGenerateWorkflow() {
         const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
 
         /* ---------- build Docker version map for each tool path ---------- */
+        // Expand custom workflow nodes so their internal tools are visible
+        const expandedGraph = expandCustomWorkflowNodes(graph);
         // Filter dummy nodes — they have no tool definitions
-        const realNodes = graph.nodes.filter((n) => !n.data?.isDummy);
+        const realNodes = expandedGraph.nodes.filter((n) => !n.data?.isDummy);
         // Maps cwlPath -> { dockerImage, dockerVersion }
         const dockerVersionMap = {};
         const versionConflicts = [];

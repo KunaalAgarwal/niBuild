@@ -10,7 +10,7 @@ import { deserializeNode } from '../utils/workflowDiff.js';
  * point to the correct expanded internal node with plain ioName.
  * Returns a flat graph with no custom workflow nodes.
  */
-function expandCustomWorkflowNodes(graph) {
+export function expandCustomWorkflowNodes(graph) {
     const { nodes, edges } = graph;
     const customNodes = nodes.filter((n) => n.data?.isCustomWorkflow);
 
@@ -688,11 +688,7 @@ export function buildCWLWorkflowObject(graph) {
 
     const arrayTypedInputs = buildArrayTypedInputs(nodes);
 
-    const { scatteredNodeIds: scatteredSteps } = computeScatteredNodes(
-        scatterNodes,
-        scatterEdges,
-        arrayTypedInputs,
-    );
+    const { scatteredNodeIds: scatteredSteps } = computeScatteredNodes(scatterNodes, scatterEdges, arrayTypedInputs);
 
     /* ---------- build CWL skeleton ---------- */
     const wf = {
