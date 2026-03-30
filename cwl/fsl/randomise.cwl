@@ -56,6 +56,7 @@ inputs:
   # Permutation options
   num_perm:
     type: ['null', int]
+    default: 5000
     label: Number of permutations (default 5000)
     inputBinding:
       prefix: -n
