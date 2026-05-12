@@ -65,5 +65,23 @@
     box-shadow: var(--shadow-md);
     border: 1px solid var(--border-subtle);
     text-align: left;
-    pointer-events: none;
+}
+
+.tooltip-close-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.tooltip-close-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
 }

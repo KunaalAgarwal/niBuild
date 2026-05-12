@@ -100,13 +100,7 @@ const CustomWorkflowNodeComponent = ({ data, isScatterInherited, isGatherNode, w
                             </>
                         )}
                     </span>
-                    <span
-                        ref={customInfoTip.iconRef}
-                        className="node-info-btn"
-                        onMouseEnter={customInfoTip.onMouseEnter}
-                        onMouseLeave={customInfoTip.onMouseLeave}
-                        onClick={customInfoTip.onClick}
-                    >
+                    <span ref={customInfoTip.iconRef} className="node-info-btn" onClick={customInfoTip.onClick}>
                         Info
                     </span>
                 </div>
@@ -123,6 +117,9 @@ const CustomWorkflowNodeComponent = ({ data, isScatterInherited, isGatherNode, w
                             transform: 'translateY(-50%)',
                         }}
                     >
+                        <button className="tooltip-close-btn" onClick={customInfoTip.close}>
+                            &times;
+                        </button>
                         <div className="tooltip-section tooltip-fullname">
                             <span className="tooltip-text">{data.label}</span>
                         </div>

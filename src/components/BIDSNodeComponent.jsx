@@ -58,13 +58,7 @@ const BIDSNodeComponent = ({ data, isScatterInherited, isGatherNode }) => {
                         {isGatherNode && <span className="node-gather-badge">G</span>}
                         {data.notes && <span className="node-notes-badge">N</span>}
                     </span>
-                    <span
-                        ref={infoTip.iconRef}
-                        className="node-info-btn"
-                        onMouseEnter={infoTip.onMouseEnter}
-                        onMouseLeave={infoTip.onMouseLeave}
-                        onClick={infoTip.onClick}
-                    >
+                    <span ref={infoTip.iconRef} className="node-info-btn" onClick={infoTip.onClick}>
                         Info
                     </span>
                 </div>
@@ -82,6 +76,9 @@ const BIDSNodeComponent = ({ data, isScatterInherited, isGatherNode }) => {
                             transform: 'translateY(-50%)',
                         }}
                     >
+                        <button className="tooltip-close-btn" onClick={infoTip.close}>
+                            &times;
+                        </button>
                         <div className="tooltip-section tooltip-fullname">
                             <span className="tooltip-text">BIDS Dataset Input</span>
                         </div>

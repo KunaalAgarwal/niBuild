@@ -311,13 +311,7 @@ const ToolNodeComponent = ({ data, id, isScatterInherited, isGatherNode, upstrea
                         )}
                     </span>
                     {toolInfo ? (
-                        <span
-                            ref={infoTip.iconRef}
-                            className="node-info-btn"
-                            onMouseEnter={infoTip.onMouseEnter}
-                            onMouseLeave={infoTip.onMouseLeave}
-                            onClick={infoTip.onClick}
-                        >
+                        <span ref={infoTip.iconRef} className="node-info-btn" onClick={infoTip.onClick}>
                             Info
                         </span>
                     ) : (
@@ -339,6 +333,9 @@ const ToolNodeComponent = ({ data, id, isScatterInherited, isGatherNode, upstrea
                             transform: 'translateY(-50%)',
                         }}
                     >
+                        <button className="tooltip-close-btn" onClick={infoTip.close}>
+                            &times;
+                        </button>
                         {toolInfo.fullName && (
                             <div className="tooltip-section tooltip-fullname">
                                 <span className="tooltip-text">{toolInfo.fullName}</span>
