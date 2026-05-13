@@ -20,12 +20,14 @@ function IDELayout({
     sidebarContent,
     canvasContent,
     cwlPreviewContent,
+    workflowManagerContent,
     workspaces,
     onWorkspaceSwitch,
     onRemoveWorkspaceAt,
     onRenameWorkspace,
     workspaceStatuses,
     validationProblems = [],
+    workflowIO = { inputs: [], outputs: [] },
     sidebarRef,
     cwlRef,
     utilityRef,
@@ -330,37 +332,7 @@ function IDELayout({
                                                 </button>
                                             </div>
                                             <div className="ide-canvas-wrapper">
-                                                {isManagerActive ? (
-                                                    <div className="ide-workflow-manager-placeholder">
-                                                        <svg
-                                                            className="ide-workflow-manager-icon"
-                                                            width="48"
-                                                            height="48"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            strokeWidth="1.5"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            aria-hidden="true"
-                                                        >
-                                                            <line x1="8" y1="6" x2="21" y2="6" />
-                                                            <line x1="8" y1="12" x2="21" y2="12" />
-                                                            <line x1="8" y1="18" x2="21" y2="18" />
-                                                            <line x1="3" y1="6" x2="3.01" y2="6" />
-                                                            <line x1="3" y1="12" x2="3.01" y2="12" />
-                                                            <line x1="3" y1="18" x2="3.01" y2="18" />
-                                                        </svg>
-                                                        <h2>Workflow Manager</h2>
-                                                        <p>
-                                                            Coming soon — a place to browse, organize, and import your
-                                                            saved workflows. For now, use the sidebar to drag tools onto
-                                                            the canvas and build new workflows.
-                                                        </p>
-                                                    </div>
-                                                ) : (
-                                                    canvasContent
-                                                )}
+                                                {isManagerActive ? workflowManagerContent : canvasContent}
                                             </div>
                                         </div>
                                     </Panel>
@@ -413,7 +385,9 @@ function IDELayout({
                                         >
                                             Problems
                                             {validationProblems.length > 0 && (
-                                                <span className={`ide-badge-count ${validationProblems.some((p) => p.severity === 'error') ? 'error' : 'warning'}`}>
+                                                <span
+                                                    className={`ide-badge-count ${validationProblems.some((p) => p.severity === 'error') ? 'error' : 'warning'}`}
+                                                >
                                                     {validationProblems.length}
                                                 </span>
                                             )}
@@ -430,7 +404,9 @@ function IDELayout({
                                         >
                                             Log
                                             {logEntries.length > 0 && (
-                                                <span className={`ide-badge-count ${logEntries.some((e) => e.variant === 'danger') ? 'error' : logEntries.some((e) => e.variant === 'warning') ? 'warning' : 'info'}`}>
+                                                <span
+                                                    className={`ide-badge-count ${logEntries.some((e) => e.variant === 'danger') ? 'error' : logEntries.some((e) => e.variant === 'warning') ? 'warning' : 'info'}`}
+                                                >
                                                     {logEntries.length}
                                                 </span>
                                             )}
@@ -475,9 +451,67 @@ function IDELayout({
                                                     ))}
                                                 </div>
                                             ))}
-                                        {activeUtilityTab === 'io' && (
-                                            <span className="ide-placeholder-text">No I/O information available.</span>
-                                        )}
+                                        {activeUtilityTab === 'io' &&
+                                            (workflowIO.inputs.length === 0 && workflowIO.outputs.length === 0 ? (
+                                                <span className="ide-placeholder-text">No nodes in workflow.</span>
+                                            ) : (
+                                                <div className="ide-io-panel">
+                                                    {workflowIO.inputs.length > 0 && (
+                                                        <>
+                                                            <div className="ide-io-section-header">Inputs</div>
+                                                            {workflowIO.inputs.map((group) => (
+                                                                <div key={group.nodeId} className="ide-io-group">
+                                                                    <div className="ide-io-group-label">
+                                                                        {group.nodeLabel}
+                                                                    </div>
+                                                                    {group.inputs.map((inp) => (
+                                                                        <div
+                                                                            key={`${group.nodeId}-${inp.name}`}
+                                                                            className="ide-io-item"
+                                                                        >
+                                                                            <span
+                                                                                className={`ide-problem-icon ${inp.wired ? 'success' : 'error'}`}
+                                                                            />
+                                                                            <span className="ide-io-name">
+                                                                                {inp.label}
+                                                                            </span>
+                                                                            <span className="ide-io-type">
+                                                                                {inp.type}
+                                                                            </span>
+                                                                            {inp.source && (
+                                                                                <span className="ide-io-source">
+                                                                                    &larr; {inp.source}
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            ))}
+                                                        </>
+                                                    )}
+                                                    {workflowIO.outputs.length > 0 && (
+                                                        <>
+                                                            <div className="ide-io-section-header">Outputs</div>
+                                                            {workflowIO.outputs.map((out) => (
+                                                                <div
+                                                                    key={`${out.nodeId}-${out.name}`}
+                                                                    className="ide-io-item"
+                                                                >
+                                                                    <span className="ide-problem-icon info" />
+                                                                    <span className="ide-io-node">{out.nodeLabel}</span>
+                                                                    <span className="ide-io-name">{out.label}</span>
+                                                                    <span className="ide-io-type">
+                                                                        {out.type}
+                                                                        {out.extensions.length > 0
+                                                                            ? ` (${out.extensions.join(', ')})`
+                                                                            : ''}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </>
+                                                    )}
+                                                </div>
+                                            ))}
                                         {activeUtilityTab === 'log' &&
                                             (logEntries.length === 0 ? (
                                                 <span className="ide-placeholder-text">No log entries.</span>
@@ -506,7 +540,9 @@ function IDELayout({
                                                 </div>
                                             ))}
                                         {activeUtilityTab === 'env' && (
-                                            <span className="ide-placeholder-text">No environment variables configured.</span>
+                                            <span className="ide-placeholder-text">
+                                                No environment variables configured.
+                                            </span>
                                         )}
                                         {activeUtilityTab === 'server' && (
                                             <span className="ide-placeholder-text">No server connected.</span>
@@ -518,7 +554,11 @@ function IDELayout({
                     </Panel>
                 </PanelGroup>
             </div>
-            <StatusBar currentWorkspace={currentWorkspace} totalWorkspaces={totalWorkspaces} />
+            <StatusBar
+                currentWorkspace={currentWorkspace}
+                totalWorkspaces={totalWorkspaces}
+                isManagerActive={isManagerActive}
+            />
         </div>
     );
 }

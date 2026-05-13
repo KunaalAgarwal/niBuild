@@ -1,11 +1,11 @@
 import '../styles/statusBar.css';
 
-function StatusBar({ currentWorkspace, totalWorkspaces }) {
+function StatusBar({ currentWorkspace, totalWorkspaces, isManagerActive }) {
     return (
         <div className="status-bar">
             <div className="status-bar-left">
                 <span className="status-bar-item">
-                    Workspace {currentWorkspace + 1}/{totalWorkspaces}
+                    {isManagerActive ? 'Workflow Manager' : `Workspace ${currentWorkspace + 1}/${totalWorkspaces}`}
                 </span>
             </div>
             <div className="status-bar-right">

@@ -355,6 +355,86 @@
     white-space: nowrap;
 }
 
+/* I/O panel */
+.ide-io-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.ide-io-section-header {
+    font-family: var(--font-mono);
+    font-size: var(--size-2xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    padding: 6px 12px 4px;
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: var(--bg-elevated);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.ide-io-group {
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.ide-io-group-label {
+    font-family: var(--font-mono);
+    font-size: var(--size-2xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 4px 12px 2px;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.ide-io-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 12px 3px 20px;
+    font-family: var(--font-mono);
+    font-size: var(--size-2xs);
+    cursor: default;
+    transition: background-color var(--transition-fast);
+}
+
+.ide-io-item:hover {
+    background-color: var(--bg-hover);
+}
+
+.ide-io-node {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ide-io-name {
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ide-io-type {
+    color: var(--text-disabled);
+    flex-shrink: 0;
+    font-size: 0.6rem;
+}
+
+.ide-io-source {
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    flex-shrink: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* Log list */
 .ide-log-list {
     display: flex;
@@ -554,41 +634,4 @@
 
 .ide-manager-mode .ide-resize-handle {
     pointer-events: none;
-}
-
-/* Workflow Manager placeholder (rendered in the canvas wrapper when manager active) */
-.ide-workflow-manager-placeholder {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--bg-canvas);
-    padding: 40px;
-    text-align: center;
-    gap: 12px;
-}
-
-.ide-workflow-manager-icon {
-    color: var(--text-muted);
-    opacity: 0.6;
-    margin-bottom: 8px;
-}
-
-.ide-workflow-manager-placeholder h2 {
-    margin: 0;
-    color: var(--text-primary);
-    font-family: var(--font-ui);
-    font-size: var(--size-xl);
-    font-weight: var(--weight-semibold);
-}
-
-.ide-workflow-manager-placeholder p {
-    margin: 0;
-    max-width: 480px;
-    color: var(--text-muted);
-    font-family: var(--font-ui);
-    font-size: var(--size-sm);
-    line-height: var(--lh-relaxed);
 }

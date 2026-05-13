@@ -1,0 +1,211 @@
+.workflow-manager-page {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    background-color: var(--bg-canvas);
+    padding: 32px 48px;
+    color: var(--text-primary);
+}
+
+/* Page header */
+.wm-header {
+    margin-bottom: 28px;
+    max-width: 920px;
+}
+
+.wm-title {
+    margin: 0;
+    font-family: var(--font-ui);
+    font-size: var(--size-2xl);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+    letter-spacing: var(--tracking-tight);
+}
+
+.wm-subtitle {
+    margin: 6px 0 0;
+    font-family: var(--font-ui);
+    font-size: var(--size-md);
+    color: var(--text-muted);
+    line-height: var(--lh-relaxed);
+}
+
+/* Section header above the list */
+.wm-section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-default);
+    max-width: 920px;
+    margin-bottom: 0;
+}
+
+.wm-section-title {
+    font-family: var(--font-ui);
+    font-size: var(--size-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-sidebar-heading);
+}
+
+.wm-section-count {
+    font-family: var(--font-ui);
+    font-size: var(--size-2xs);
+    color: var(--text-muted);
+}
+
+/* List */
+.wm-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 920px;
+}
+
+.wm-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 8px;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color var(--transition-fast);
+}
+
+.wm-row:hover {
+    background-color: var(--bg-hover);
+}
+
+.wm-status {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.wm-status-ok {
+    color: var(--color-success);
+}
+
+.wm-status-warning {
+    color: var(--color-warning);
+}
+
+.wm-row-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wm-row-name {
+    font-family: var(--font-ui);
+    font-size: var(--size-md);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wm-row-meta {
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+    color: var(--text-muted);
+}
+
+.wm-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.wm-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    background-color: transparent;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+    cursor: pointer;
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.wm-action-open {
+    color: var(--color-accent);
+    border-color: var(--color-accent-border);
+}
+
+.wm-action-open:hover {
+    background-color: var(--color-accent-muted);
+    color: var(--color-accent-hover);
+}
+
+.wm-action-delete {
+    width: 28px;
+    padding: 0;
+    justify-content: center;
+    opacity: 0;
+    transition:
+        opacity var(--transition-fast),
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.wm-row:hover .wm-action-delete,
+.wm-row:focus-within .wm-action-delete {
+    opacity: 1;
+}
+
+.wm-action-delete:hover {
+    background-color: var(--color-danger-muted);
+    color: var(--color-danger);
+    border-color: var(--color-danger-border);
+}
+
+/* Empty state */
+.wm-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    gap: 8px;
+}
+
+.wm-empty svg {
+    opacity: 0.5;
+    margin-bottom: 8px;
+}
+
+.wm-empty h2 {
+    margin: 0;
+    font-family: var(--font-ui);
+    font-size: var(--size-xl);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+}
+
+.wm-empty p {
+    margin: 0;
+    max-width: 380px;
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+    line-height: var(--lh-relaxed);
+}

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import IDELayout from './components/IDELayout';
 import WorkflowMenu from './components/workflowMenu';
+import WorkflowManagerPage from './components/WorkflowManagerPage';
 import WorkflowCanvas from './components/workflowCanvas';
 import CWLPreviewPanel from './components/CWLPreviewPanel';
 import WorkflowComparisonModal from './components/WorkflowComparisonModal';
@@ -21,7 +22,7 @@ import {
     computeWorkflowDiff,
     computeBoundaryNodes,
 } from './utils/workflowDiff.js';
-import { computeProblems } from './utils/workflowValidation.js';
+import { computeProblems, computeWorkflowIO } from './utils/workflowValidation.js';
 
 import './styles/tokens.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -280,21 +281,28 @@ function App() {
     const workflowHasChanges = savedWorkflow ? hasUnsavedChanges(workspaces[currentWorkspace], savedWorkflow) : false;
 
     // Per-workspace status for tab annotations: 'unsaved' | 'modified' | null
-    const workspaceStatuses = useMemo(() =>
-        workspaces.map((ws) => {
-            if (!ws.savedWorkflowId) {
-                const hasContent = (ws.nodes || []).some((n) => !n.data?.isDummy);
-                return hasContent ? 'unsaved' : null;
-            }
-            const saved = customWorkflows.find((w) => w.id === ws.savedWorkflowId);
-            return saved && hasUnsavedChanges(ws, saved) ? 'modified' : null;
-        }),
-    [workspaces, customWorkflows]);
+    const workspaceStatuses = useMemo(
+        () =>
+            workspaces.map((ws) => {
+                if (!ws.savedWorkflowId) {
+                    const hasContent = (ws.nodes || []).some((n) => !n.data?.isDummy);
+                    return hasContent ? 'unsaved' : null;
+                }
+                const saved = customWorkflows.find((w) => w.id === ws.savedWorkflowId);
+                return saved && hasUnsavedChanges(ws, saved) ? 'modified' : null;
+            }),
+        [workspaces, customWorkflows],
+    );
 
     const currentWs = workspaces[currentWorkspace];
     const validationProblems = useMemo(
         () => computeProblems(currentWs?.nodes, currentWs?.edges, workspaceStatuses[currentWorkspace]),
-        [currentWs?.nodes, currentWs?.edges, workspaceStatuses, currentWorkspace],
+        [currentWs?.nodes, currentWs?.edges, workspaceStatuses, currentWorkspace, cwlReady],
+    );
+
+    const workflowIO = useMemo(
+        () => computeWorkflowIO(currentWs?.nodes, currentWs?.edges),
+        [currentWs?.nodes, currentWs?.edges, cwlReady],
     );
 
     // Command palette: Ctrl+K global shortcut
@@ -404,14 +412,12 @@ function App() {
                 onRenameWorkspace={renameWorkspace}
                 workspaceStatuses={workspaceStatuses}
                 validationProblems={validationProblems}
+                workflowIO={workflowIO}
                 sidebarRef={sidebarRef}
                 cwlRef={cwlRef}
                 utilityRef={utilityRef}
                 sidebarContent={
-                    <WorkflowMenu
-                        onEditWorkflow={handleEditWorkflow}
-                        onDeleteWorkflow={handleDeleteWorkflow}
-                    />
+                    <WorkflowMenu onEditWorkflow={handleEditWorkflow} onDeleteWorkflow={handleDeleteWorkflow} />
                 }
                 canvasContent={
                     cwlReady ? (
@@ -427,8 +433,9 @@ function App() {
                         <div className="ide-loading-placeholder">Loading tool definitions…</div>
                     )
                 }
-                cwlPreviewContent={
-                    <CWLPreviewPanel getWorkflowData={getWorkflowData} />
+                cwlPreviewContent={<CWLPreviewPanel getWorkflowData={getWorkflowData} />}
+                workflowManagerContent={
+                    <WorkflowManagerPage onEditWorkflow={handleEditWorkflow} onDeleteWorkflow={handleDeleteWorkflow} />
                 }
             />
             <CommandPalette
