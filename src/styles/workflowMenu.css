@@ -379,7 +379,7 @@
 .delete-confirm-text {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: var(--text-light);
+    color: var(--text-primary);
     white-space: nowrap;
 }
 
@@ -424,7 +424,7 @@
 
 .delete-confirm-no:hover {
     background-color: var(--bg-hover);
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 /* ============================================================
@@ -461,7 +461,7 @@
 }
 
 .menu-collapsed-strip:hover .menu-collapsed-label {
-    color: var(--text-medium);
+    color: var(--text-secondary);
 }
 
 .menu-collapse-btn {
@@ -477,7 +477,7 @@
 }
 
 .menu-collapse-btn:hover {
-    color: var(--text-light);
+    color: var(--text-primary);
     background: none;
     transform: none;
     box-shadow: none;

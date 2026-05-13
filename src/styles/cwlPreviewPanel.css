@@ -12,8 +12,8 @@
     align-items: center;
     justify-content: space-between;
     padding: clamp(6px, 0.8vw, 10px) clamp(8px, 1vw, 14px);
-    background-color: var(--bg-header);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-panel);
     flex-wrap: wrap;
     gap: 4px;
 }
@@ -25,29 +25,29 @@
 }
 
 .cwl-tab {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.55rem, 0.8vw, 0.7rem);
     font-weight: 500;
     padding: clamp(2px, 0.4vw, 4px) clamp(6px, 0.8vw, 10px);
     background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
     color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all var(--transition-normal);
 }
 
 .cwl-tab:hover {
-    color: var(--text-medium);
-    background-color: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+    background-color: var(--border-subtle);
     transform: none;
     box-shadow: none;
 }
 
 .cwl-tab.active {
-    color: var(--text-light);
-    background-color: rgba(74, 144, 226, 0.15);
-    border-color: rgba(74, 144, 226, 0.4);
+    color: var(--text-primary);
+    background-color: var(--color-accent-muted);
+    border-color: var(--color-accent-border);
 }
 
 .cwl-preview-actions {
@@ -59,23 +59,23 @@
 }
 
 .cwl-action-btn {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.5rem, 0.7vw, 0.65rem);
     font-weight: 500;
     padding: clamp(2px, 0.4vw, 4px) clamp(4px, 0.6vw, 8px);
     background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
     color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all var(--transition-normal);
     white-space: nowrap;
 }
 
 .cwl-action-btn:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: var(--text-light);
+    background-color: var(--border-subtle);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
     transform: none;
     box-shadow: none;
 }
@@ -93,14 +93,14 @@
 }
 
 .cwl-code {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.65rem, 0.9vw, 0.8rem);
     line-height: 1.6;
-    color: var(--text-medium);
-    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    background-color: var(--bg-inset);
     padding: clamp(6px, 0.8vw, 12px);
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
     margin: 0;
     white-space: pre;
     overflow-x: auto;
@@ -113,7 +113,7 @@
 }
 
 .cwl-key {
-    color: var(--color-primary);
+    color: var(--color-accent);
 }
 .cwl-string {
     color: var(--color-success);
@@ -135,9 +135,9 @@
 }
 
 .cwl-error-banner {
-    background-color: rgba(255, 193, 7, 0.15);
-    border: 1px solid rgba(255, 193, 7, 0.4);
-    border-radius: 6px;
+    background-color: var(--color-warning-muted);
+    border: 1px solid var(--color-warning-border);
+    border-radius: var(--radius-md);
     padding: clamp(6px, 0.8vw, 10px) clamp(8px, 1vw, 14px);
     margin-bottom: clamp(6px, 0.8vw, 12px);
     display: flex;
@@ -156,7 +156,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: rgba(255, 193, 7, 0.3);
+    background-color: var(--color-warning-border);
     flex-shrink: 0;
 }
 
@@ -165,34 +165,34 @@
 }
 
 .cwl-fullscreen-modal .modal-content {
-    border-radius: 8px;
-    background-color: var(--bg-secondary);
-    color: var(--text-light);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-lg);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 }
 
 .cwl-fullscreen-modal .modal-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
     padding: 16px 20px;
-    background-color: var(--bg-header);
-    border-radius: 8px 8px 0 0;
+    background-color: var(--bg-elevated);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .cwl-fullscreen-modal .modal-title {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 1.1rem;
     font-weight: 500;
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 .cwl-fullscreen-modal .modal-body {
     padding: 20px;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-surface);
 }
 
 .cwl-split-container {
@@ -214,17 +214,17 @@
     align-items: center;
     justify-content: space-between;
     padding: 6px 10px;
-    background-color: var(--bg-header);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-panel);
     border-bottom: none;
-    border-radius: 6px 6px 0 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
 .cwl-split-pane-label {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--text-light);
+    color: var(--text-primary);
     letter-spacing: 0.5px;
 }
 
@@ -233,7 +233,7 @@
     max-height: none;
     overflow-y: auto;
     overflow-x: auto;
-    border-radius: 0 0 6px 6px;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
     font-size: clamp(0.85rem, 1.1vw, 1.05rem);
 }
 

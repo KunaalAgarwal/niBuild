@@ -3,9 +3,9 @@
 }
 
 .custom-modal .modal-content {
-    border-radius: 6px;
-    background-color: var(--bg-tertiary);
-    color: var(--text-light);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-overlay);
+    color: var(--text-primary);
     border: 1px solid var(--border-medium);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
     padding: 8px;
@@ -15,7 +15,7 @@
 .modal-label {
     font-family: var(--font-mono);
     font-weight: 600;
-    color: var(--text-light);
+    color: var(--text-primary);
     font-size: 1rem;
     display: block;
     margin-bottom: 6px;
@@ -55,13 +55,13 @@
 
 .param-card {
     padding: 8px 10px;
-    background-color: var(--bg-tertiary);
+    background-color: var(--bg-overlay);
     border: 1px solid var(--border-panel);
     border-radius: 5px;
     margin-bottom: 6px;
     transition:
-        border-color 0.15s ease,
-        background-color 0.15s ease;
+        border-color var(--transition-normal),
+        background-color var(--transition-normal);
 }
 
 .param-card:hover {
@@ -80,7 +80,7 @@
 
 .param-name {
     font-weight: 600;
-    color: var(--text-medium);
+    color: var(--text-secondary);
     flex-shrink: 0;
 }
 
@@ -134,9 +134,9 @@
     border-radius: 10px;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23888'/%3e%3c/svg%3e");
     transition:
-        background-color 0.15s ease,
-        border-color 0.15s ease,
-        background-position 0.15s ease;
+        background-color var(--transition-normal),
+        border-color var(--transition-normal),
+        background-position var(--transition-normal);
 }
 
 .param-switch .form-check-input:hover,
@@ -169,8 +169,8 @@
 .custom-modal .param-number,
 .custom-modal .param-text {
     font-family: var(--font-mono);
-    background-color: var(--bg-primary);
-    color: var(--text-medium);
+    background-color: var(--bg-inset);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
     border-left: 2px solid var(--border-subtle);
     border-radius: 5px;
@@ -178,10 +178,10 @@
     padding: 5px 10px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        color 0.2s ease,
-        background-color 0.2s ease;
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal),
+        color var(--transition-normal),
+        background-color var(--transition-normal);
     -moz-appearance: textfield;
 }
 
@@ -216,7 +216,7 @@
         var(--shadow-focus);
     border-color: var(--color-accent);
     border-left-color: var(--color-accent);
-    color: var(--text-light);
+    color: var(--text-primary);
     background-color: rgba(26, 26, 26, 0.95);
 }
 
@@ -224,7 +224,7 @@
 .custom-modal .param-number.filled,
 .custom-modal .param-text.filled {
     border-left-color: var(--color-accent);
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 .custom-modal .param-number::placeholder,
@@ -237,8 +237,8 @@
 /* Inline controls — select dropdowns */
 .custom-modal .param-select {
     font-family: var(--font-mono);
-    background-color: var(--bg-primary);
-    color: var(--text-medium);
+    background-color: var(--bg-inset);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
     border-left: 2px solid var(--border-subtle);
     border-radius: 5px;
@@ -247,10 +247,10 @@
     padding: 5px 28px 5px 10px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        color 0.2s ease,
-        background-color 0.2s ease;
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal),
+        color var(--transition-normal),
+        background-color var(--transition-normal);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23888888' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 8px center;
@@ -278,7 +278,7 @@
 /* Filled state for selects */
 .custom-modal .param-select.filled {
     border-left-color: var(--color-accent);
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 .custom-modal .modal-body {
@@ -322,8 +322,8 @@
 
 .custom-modal .when-param-select {
     font-family: var(--font-mono);
-    background-color: var(--bg-primary);
-    color: var(--text-medium);
+    background-color: var(--bg-inset);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
     border-left: 2px solid var(--border-subtle);
     border-radius: 5px;
@@ -333,8 +333,8 @@
     padding: 5px 28px 5px 10px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal);
     cursor: pointer;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -359,8 +359,8 @@
 
 .custom-modal .when-condition-input {
     font-family: var(--font-mono);
-    background-color: var(--bg-primary);
-    color: var(--text-medium);
+    background-color: var(--bg-inset);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
     border-left: 2px solid var(--border-subtle);
     border-radius: 5px;
@@ -370,10 +370,10 @@
     padding: 5px 10px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        color 0.2s ease,
-        background-color 0.2s ease;
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal),
+        color var(--transition-normal),
+        background-color var(--transition-normal);
 }
 
 .custom-modal .when-condition-input:hover {
@@ -386,13 +386,13 @@
         var(--shadow-focus);
     border-color: var(--color-accent);
     border-left-color: var(--color-accent);
-    color: var(--text-light);
+    color: var(--text-primary);
     background-color: rgba(26, 26, 26, 0.95);
 }
 
 .custom-modal .when-condition-input.filled {
     border-left-color: var(--color-warning);
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 .custom-modal .when-condition-input::placeholder {
@@ -447,8 +447,8 @@
 
 .custom-modal .scatter-method-select {
     font-family: var(--font-mono);
-    background-color: var(--bg-primary);
-    color: var(--text-medium);
+    background-color: var(--bg-inset);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
     border-radius: 5px;
     font-size: 0.9rem;
@@ -456,8 +456,8 @@
     padding: 5px 28px 5px 10px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal);
     cursor: pointer;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -531,7 +531,7 @@
     padding: 5px 8px;
     background-color: rgba(0, 120, 212, 0.04);
     border: 1px solid rgba(0, 120, 212, 0.1);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
 }
 
 .input-source-multi-row {
@@ -560,8 +560,8 @@
 .custom-modal .link-merge-select {
     font-family: var(--font-mono);
     font-size: 0.8rem;
-    background-color: var(--bg-primary);
-    color: var(--text-medium);
+    background-color: var(--bg-inset);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
     border-radius: 5px;
     padding: 4px 28px 4px 8px;
@@ -569,8 +569,8 @@
     max-width: 170px;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal);
     cursor: pointer;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -825,7 +825,7 @@
 .node-info-btn {
     color: var(--text-muted);
     cursor: pointer;
-    transition: color 0.15s ease;
+    transition: color var(--transition-normal);
 }
 
 .node-params-btn:hover,
@@ -888,7 +888,7 @@
     border: 2px solid var(--color-purple-border) !important;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(245, 240, 255, 0.95)) !important;
     box-shadow: 0 0 6px var(--color-purple-muted);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
 }
 
 .react-flow__node-default:has(.node-custom-workflow):hover {
@@ -934,7 +934,7 @@
     border: 2px solid var(--color-green-io-border) !important;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(240, 255, 245, 0.95)) !important;
     box-shadow: 0 0 6px rgba(46, 204, 113, 0.15);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
 }
 
 .react-flow__node-default:has(.node-io):hover {
@@ -1013,16 +1013,16 @@
     color: var(--text-secondary);
     background-color: transparent;
     border: 1px solid var(--border-subtle);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 3px 6px;
     cursor: pointer;
     flex-shrink: 0;
     user-select: none;
     transition:
-        color 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
+        color var(--transition-normal),
+        border-color var(--transition-normal),
+        background-color var(--transition-normal),
+        box-shadow var(--transition-normal);
 }
 
 .expression-toggle:hover {
@@ -1046,15 +1046,15 @@
     color: var(--text-secondary);
     background-color: transparent;
     border: 1px solid var(--border-subtle);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 3px 5px;
     cursor: pointer;
     flex-shrink: 0;
     user-select: none;
     transition:
-        color 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease;
+        color var(--transition-normal),
+        border-color var(--transition-normal),
+        background-color var(--transition-normal);
 }
 
 .scatter-toggle:hover {
@@ -1106,8 +1106,8 @@
 
 .custom-modal .expression-input {
     font-family: var(--font-mono);
-    background-color: var(--bg-primary);
-    color: var(--text-medium);
+    background-color: var(--bg-inset);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
     border-left: 2px solid var(--border-subtle);
     border-radius: 5px;
@@ -1116,15 +1116,15 @@
     flex: 1;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        color 0.2s ease,
-        background-color 0.2s ease;
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal),
+        color var(--transition-normal),
+        background-color var(--transition-normal);
 }
 
 .custom-modal .expression-input.filled {
     border-left-color: var(--color-accent);
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 .custom-modal .expression-input:focus {
@@ -1145,17 +1145,17 @@
 .custom-modal .expression-template-select {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    background-color: var(--bg-primary);
-    color: var(--text-medium);
+    background-color: var(--bg-inset);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 4px 28px 4px 8px;
     width: auto;
     max-width: 220px;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal);
     cursor: pointer;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1247,7 +1247,7 @@
     padding: 6px 8px;
     background-color: rgba(0, 120, 212, 0.04);
     border: 1px solid rgba(0, 120, 212, 0.1);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
 }
 
 /* Contextual help text for expression mode */
@@ -1271,12 +1271,12 @@
 }
 
 .node-notes-textarea {
-    background-color: var(--bg-primary) !important;
+    background-color: var(--bg-inset) !important;
     border: 1px solid var(--border-panel) !important;
-    color: var(--text-light) !important;
+    color: var(--text-primary) !important;
     font-family: var(--font-mono);
     font-size: 0.85rem;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     resize: vertical;
     min-height: 60px;
 }
@@ -1320,7 +1320,7 @@
 
 .tooltip-text {
     font-size: 0.75rem;
-    color: var(--text-light);
+    color: var(--text-primary);
     line-height: 1.4;
 }
 
@@ -1349,12 +1349,12 @@
     align-items: center;
     gap: 8px;
     padding: 8px 10px;
-    background-color: var(--bg-tertiary);
+    background-color: var(--bg-overlay);
     border: 1px solid var(--border-panel);
     border-radius: 5px;
     transition:
-        border-color 0.15s ease,
-        background-color 0.15s ease;
+        border-color var(--transition-normal),
+        background-color var(--transition-normal);
 }
 
 .operation-order-item:hover {
@@ -1374,7 +1374,7 @@
     font-family: var(--font-mono);
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--text-medium);
+    color: var(--text-secondary);
     min-width: 60px;
 }
 
@@ -1413,13 +1413,13 @@
     padding: 2px 5px;
     cursor: pointer;
     transition:
-        background-color 0.15s ease,
-        color 0.15s ease;
+        background-color var(--transition-normal),
+        color var(--transition-normal);
 }
 
 .operation-order-arrow:hover:not(:disabled) {
     background-color: var(--border-default);
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 .operation-order-arrow:disabled {
@@ -1435,16 +1435,16 @@
     color: var(--text-secondary);
     background-color: transparent;
     border: 1px solid var(--border-subtle);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 3px 6px;
     cursor: pointer;
     flex-shrink: 0;
     user-select: none;
     line-height: 1;
     transition:
-        color 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease;
+        color var(--transition-normal),
+        border-color var(--transition-normal),
+        background-color var(--transition-normal);
 }
 
 .operation-order-toggle:hover {

@@ -1,7 +1,7 @@
 .io-node-modal .modal-content {
-    border-radius: 8px;
-    background-color: var(--bg-secondary);
-    color: var(--text-light);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-lg);
     font-family: var(--font-ui);
@@ -10,7 +10,7 @@
 .io-node-modal .modal-header {
     border-bottom: 1px solid var(--border-panel);
     padding: 12px 16px;
-    background-color: var(--bg-header);
+    background-color: var(--bg-elevated);
     border-radius: 8px 8px 0 0;
 }
 
@@ -18,12 +18,12 @@
     font-family: var(--font-mono);
     font-size: 0.85rem;
     font-weight: 500;
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 .io-node-modal .modal-body {
     padding: 16px;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-surface);
 }
 
 .io-modal-field {
@@ -42,12 +42,12 @@
 
 .io-modal-input,
 .io-modal-textarea {
-    background-color: var(--bg-primary) !important;
+    background-color: var(--bg-inset) !important;
     border: 1px solid var(--border-panel) !important;
-    color: var(--text-light) !important;
+    color: var(--text-primary) !important;
     font-family: var(--font-mono);
     font-size: 0.8rem;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
 }
 
 .io-modal-input::placeholder,
@@ -69,7 +69,7 @@
 .io-node-modal .modal-footer {
     border-top: 1px solid var(--border-panel);
     padding: 12px 16px;
-    background-color: var(--bg-header);
+    background-color: var(--bg-elevated);
     border-radius: 0 0 8px 8px;
     gap: 10px;
 }
@@ -84,8 +84,8 @@
 }
 
 .io-node-modal .btn-primary:hover {
-    background-color: #3a7bc8;
-    border-color: #3a7bc8;
+    background-color: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
 }
 
 .io-node-modal .btn-secondary {
@@ -101,5 +101,5 @@
 .io-node-modal .btn-secondary:hover {
     background-color: rgba(255, 255, 255, 0.05);
     border-color: var(--border-strong);
-    color: var(--text-light);
+    color: var(--text-primary);
 }

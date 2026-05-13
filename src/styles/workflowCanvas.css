@@ -69,17 +69,17 @@
     font-size: 0.65rem;
     font-weight: 500;
     padding: 5px 10px;
-    background-color: rgba(46, 46, 46, 0.92);
+    background-color: var(--bg-overlay);
     color: var(--text-secondary);
     border: 1px solid var(--border-default);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     backdrop-filter: blur(4px);
     white-space: nowrap;
     transition:
-        background-color 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease;
+        background-color var(--transition-normal),
+        border-color var(--transition-normal),
+        color var(--transition-normal);
 }
 
 .canvas-bottom-btn:hover {
@@ -109,9 +109,9 @@
     opacity: 1;
     padding: 5px 10px;
     transition:
-        max-width 0.25s ease,
-        opacity 0.2s ease,
-        padding 0.25s ease;
+        max-width var(--transition-normal),
+        opacity var(--transition-normal),
+        padding var(--transition-normal);
 }
 
 .canvas-bottom-bar.tools-hidden .canvas-bottom-btn.collapsible {

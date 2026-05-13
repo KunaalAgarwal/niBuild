@@ -41,7 +41,10 @@ function TopBar({
             </div>
 
             <div className="top-bar-center">
-                <div className={`top-bar-search${isCommandPaletteOpen ? ' palette-open' : ''}`} onClick={onOpenCommandPalette}>
+                <div
+                    className={`top-bar-search${isCommandPaletteOpen ? ' palette-open' : ''}`}
+                    onClick={onOpenCommandPalette}
+                >
                     <svg
                         className="top-bar-search-icon"
                         width="14"
@@ -56,12 +59,7 @@ function TopBar({
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
-                    <input
-                        type="text"
-                        className="top-bar-search-input"
-                        placeholder={workflowDisplayName}
-                        readOnly
-                    />
+                    <input type="text" className="top-bar-search-input" placeholder={workflowDisplayName} readOnly />
                 </div>
             </div>
 
@@ -76,11 +74,7 @@ function TopBar({
                         Staged Changes
                     </button>
                 ) : (
-                    <button
-                        className="top-bar-btn top-bar-btn-save"
-                        onClick={onSaveWorkflow}
-                        title="Save workflow"
-                    >
+                    <button className="top-bar-btn top-bar-btn-save" onClick={onSaveWorkflow} title="Save workflow">
                         Save
                     </button>
                 )}

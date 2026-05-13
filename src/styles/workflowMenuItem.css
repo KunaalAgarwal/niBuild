@@ -53,7 +53,7 @@
    verifying the canvas tooltips still look right. */
 .workflow-tooltip {
     position: fixed;
-    background-color: var(--bg-primary);
+    background-color: var(--bg-inset);
     padding: 12px;
     border-radius: 8px;
     width: 320px;
@@ -79,5 +79,5 @@
 
 .tooltip-close-btn:hover {
     color: var(--text-primary);
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-surface);
 }

@@ -1,8 +1,8 @@
 /* Faster fade transition (Bootstrap default is 0.15s) */
 .custom-toast-container .toast.fade {
     transition:
-        opacity 0.15s ease,
-        transform 0.15s ease;
+        opacity var(--transition-normal),
+        transform var(--transition-normal);
     transform: translateX(0);
 }
 
@@ -13,12 +13,12 @@
 
 /* Base toast — compact single-row dark style */
 .custom-toast {
-    background-color: var(--bg-secondary) !important;
-    color: var(--text-light);
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary);
     border: 1px solid var(--border-panel);
     border-left: 3px solid transparent;
-    border-radius: 6px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-dropdown);
     font-family: var(--font-ui);
     backdrop-filter: blur(10px);
     overflow: hidden;
@@ -45,7 +45,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: var(--text-medium);
+    color: var(--text-secondary);
     font-size: 0.8rem;
     padding: 10px 14px;
     line-height: 1.4;

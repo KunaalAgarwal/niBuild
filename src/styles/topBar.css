@@ -94,13 +94,13 @@
 }
 
 .top-bar-btn-revert {
-    color: #C9A84C;
+    color: #c9a84c;
     border: 1px solid rgba(201, 168, 76, 0.4);
 }
 
 .top-bar-btn-revert:hover {
     background-color: rgba(201, 168, 76, 0.12);
-    color: #DBBF6A;
+    color: #dbbf6a;
     border-color: rgba(201, 168, 76, 0.6);
 }
 
@@ -137,7 +137,6 @@
 .top-bar-search:hover {
     border-color: var(--border-strong);
 }
-
 
 .top-bar-search-icon {
     color: var(--text-muted);

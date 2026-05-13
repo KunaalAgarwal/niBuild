@@ -1,6 +1,6 @@
 .footer {
     width: 100%;
-    background-color: var(--bg-card);
+    background-color: var(--bg-overlay);
     color: var(--text-primary);
     font-size: clamp(0.75rem, 1.2vw, 0.875rem);
     position: relative;

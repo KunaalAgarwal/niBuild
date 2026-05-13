@@ -7,9 +7,9 @@
 }
 
 .bids-modal .modal-content {
-    border-radius: 6px;
-    background-color: var(--bg-tertiary);
-    color: var(--text-light);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-overlay);
+    color: var(--text-primary);
     border: 1px solid var(--border-medium);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
     padding: 8px;
@@ -54,7 +54,7 @@
 /* ---- Subject Panel (left) ---- */
 .bids-subject-panel {
     border: 1px solid var(--border-subtle);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 8px;
     display: flex;
     flex-direction: column;
@@ -106,10 +106,10 @@
 }
 
 .bids-search-input {
-    background-color: var(--bg-primary);
+    background-color: var(--bg-inset);
     border: 1px solid var(--border-subtle);
     border-radius: 3px;
-    color: var(--text-light);
+    color: var(--text-primary);
     font-family: var(--font-mono);
     font-size: clamp(0.68rem, 0.52rem + 0.55vw, 0.78rem);
     padding: 3px 6px;
@@ -147,7 +147,7 @@
 }
 
 .bids-subject-id {
-    color: var(--text-light);
+    color: var(--text-primary);
     flex-shrink: 0;
 }
 
@@ -167,7 +167,7 @@
 /* ---- Data Type Selection ---- */
 .bids-datatype-section {
     border: 1px solid var(--border-subtle);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 8px;
 }
 
@@ -191,9 +191,9 @@
     display: flex;
     flex-direction: column;
     gap: 1px;
-    background-color: var(--bg-primary);
+    background-color: var(--bg-inset);
     border: 1px solid var(--border-subtle);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 3px 8px;
     font-family: var(--font-mono);
     font-size: clamp(0.68rem, 0.52rem + 0.55vw, 0.78rem);
@@ -245,7 +245,7 @@
 /* ---- Output Groups / File Selection ---- */
 .bids-outputs-section {
     border: 1px solid var(--border-subtle);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 8px;
     flex: 1;
     overflow-y: auto;
@@ -274,10 +274,10 @@
 }
 
 .bids-output-label-input {
-    background-color: var(--bg-primary);
+    background-color: var(--bg-inset);
     border: 1px solid var(--border-subtle);
     border-radius: 3px;
-    color: var(--text-light);
+    color: var(--text-primary);
     font-family: var(--font-mono);
     font-size: clamp(0.76rem, 0.58rem + 0.55vw, 0.88rem);
     padding: 2px 6px;
@@ -342,10 +342,10 @@
 }
 
 .bids-filter-select {
-    background-color: var(--bg-primary);
+    background-color: var(--bg-inset);
     border: 1px solid var(--border-subtle);
     border-radius: 3px;
-    color: var(--text-light);
+    color: var(--text-primary);
     font-family: var(--font-mono);
     font-size: clamp(0.73rem, 0.56rem + 0.55vw, 0.85rem);
     padding: 3px 6px;
@@ -391,7 +391,7 @@
 .bids-path-preview {
     margin-top: 8px;
     border: 1px solid var(--border-subtle);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
 }
 
 .bids-preview-header {
@@ -435,7 +435,7 @@
 }
 
 .bids-modal .btn-save:hover {
-    background-color: #3a7fcf;
+    background-color: var(--color-accent-hover);
 }
 
 .bids-modal .btn-cancel {
@@ -449,7 +449,7 @@
 
 .bids-modal .btn-cancel:hover {
     background-color: var(--bg-hover);
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 /* ---- Empty / loading states ---- */

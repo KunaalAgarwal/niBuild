@@ -170,9 +170,7 @@ function CWLPreviewPanel({ getWorkflowData, onCollapse }) {
                         </div>
                     )}
                     {showPlaceholder && !error && (
-                        <div className="cwl-empty-message">
-                            Add a node to preview the generated CWL workflow.
-                        </div>
+                        <div className="cwl-empty-message">Add a node to preview the generated CWL workflow.</div>
                     )}
                     {activeContent && (
                         <pre className="cwl-code" dangerouslySetInnerHTML={{ __html: highlightedHtml }} />

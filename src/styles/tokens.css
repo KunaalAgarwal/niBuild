@@ -4,171 +4,171 @@
 
 :root {
     /* ── Background: Core surfaces (VS Code Dark Modern) ── */
-    --bg-base:            #181818;
-    --bg-surface:         #1F1F1F;
-    --bg-elevated:        #181818;
-    --bg-overlay:         #2D2D2D;
-    --bg-inset:           #181818;
-    --bg-widget:          #202020;
+    --bg-base: #181818;
+    --bg-surface: #1f1f1f;
+    --bg-elevated: #181818;
+    --bg-overlay: #2d2d2d;
+    --bg-inset: #181818;
+    --bg-widget: #202020;
 
     /* ── Background: Interactive ─────────────────────────── */
-    --bg-interactive:     #313131;
-    --bg-hover:           #3C3C3C;
-    --bg-active:          #454545;
-    --bg-selected:        #264F78;
+    --bg-interactive: #313131;
+    --bg-hover: #3c3c3c;
+    --bg-active: #454545;
+    --bg-selected: #264f78;
 
     /* ── Background: IDE regions ─────────────────────────── */
-    --bg-topbar:          #181818;
-    --bg-tabbar:          #181818;
-    --bg-tab-active:      #1F1F1F;
-    --bg-tab-inactive:    #181818;
-    --bg-sidebar:         #181818;
-    --bg-canvas:          #1F1F1F;
-    --bg-preview:         #1F1F1F;
-    --bg-utilitybar:      #181818;
-    --bg-statusbar:       #0078D4;
-    --bg-footer:          #181818;
+    --bg-topbar: #181818;
+    --bg-tabbar: #181818;
+    --bg-tab-active: #1f1f1f;
+    --bg-tab-inactive: #181818;
+    --bg-sidebar: #181818;
+    --bg-canvas: #1f1f1f;
+    --bg-preview: #1f1f1f;
+    --bg-utilitybar: #181818;
+    --bg-statusbar: #0078d4;
+    --bg-footer: #181818;
 
     /* ── Background: Inputs & overlays ───────────────────── */
-    --bg-input:           #313131;
-    --bg-input-hover:     #3C3C3C;
-    --bg-scrim:           rgba(0, 0, 0, 0.5);
-    --bg-tooltip:         #202020;
-    --bg-dropdown:        #313131;
+    --bg-input: #313131;
+    --bg-input-hover: #3c3c3c;
+    --bg-scrim: rgba(0, 0, 0, 0.5);
+    --bg-tooltip: #202020;
+    --bg-dropdown: #313131;
 
     /* ── Text: Hierarchy ─────────────────────────────────── */
-    --text-primary:       #E0E0E0;
-    --text-secondary:     #CCCCCC;
-    --text-muted:         #888888;
-    --text-disabled:      #5A5A5A;
-    --text-placeholder:   #6E6E6E;
-    --text-inverse:       #181818;
-    --text-on-accent:     #FFFFFF;
-    --text-on-node:       #333333;
+    --text-primary: #e0e0e0;
+    --text-secondary: #cccccc;
+    --text-muted: #888888;
+    --text-disabled: #5a5a5a;
+    --text-placeholder: #6e6e6e;
+    --text-inverse: #181818;
+    --text-on-accent: #ffffff;
+    --text-on-node: #333333;
 
     /* ── Text: Links ─────────────────────────────────────── */
-    --text-link:          #0078D4;
-    --text-link-hover:    #1a8ae8;
+    --text-link: #0078d4;
+    --text-link-hover: #1a8ae8;
 
     /* ── Text: IDE regions ───────────────────────────────── */
-    --text-tab-active:    #E0E0E0;
-    --text-tab-inactive:  #888888;
-    --text-sidebar:       #CCCCCC;
-    --text-sidebar-heading: #E0E0E0;
-    --text-statusbar:     #FFFFFF;
+    --text-tab-active: #e0e0e0;
+    --text-tab-inactive: #888888;
+    --text-sidebar: #cccccc;
+    --text-sidebar-heading: #e0e0e0;
+    --text-statusbar: #ffffff;
 
     /* ── Accent & semantic colors ────────────────────────── */
-    --color-accent:        #0078D4;
-    --color-accent-hover:  #1a8ae8;
-    --color-accent-muted:  rgba(0, 120, 212, 0.15);
+    --color-accent: #0078d4;
+    --color-accent-hover: #1a8ae8;
+    --color-accent-muted: rgba(0, 120, 212, 0.15);
     --color-accent-border: rgba(0, 120, 212, 0.4);
 
-    --color-success:       #4CAF50;
+    --color-success: #4caf50;
     --color-success-muted: rgba(76, 175, 80, 0.12);
     --color-success-border: rgba(76, 175, 80, 0.35);
 
-    --color-warning:       #FFC107;
+    --color-warning: #ffc107;
     --color-warning-muted: rgba(255, 193, 7, 0.12);
     --color-warning-border: rgba(255, 193, 7, 0.4);
 
-    --color-danger:        #E74C3C;
-    --color-danger-muted:  rgba(231, 76, 60, 0.12);
+    --color-danger: #e74c3c;
+    --color-danger-muted: rgba(231, 76, 60, 0.12);
     --color-danger-border: rgba(231, 76, 60, 0.4);
 
-    --color-info:          #4AC6E2;
-    --color-info-muted:    rgba(74, 198, 226, 0.12);
-    --color-info-border:   rgba(74, 198, 226, 0.35);
+    --color-info: #4ac6e2;
+    --color-info-muted: rgba(74, 198, 226, 0.12);
+    --color-info-border: rgba(74, 198, 226, 0.35);
 
-    --color-purple:        #A855F7;
-    --color-purple-muted:  rgba(168, 85, 247, 0.15);
+    --color-purple: #a855f7;
+    --color-purple-muted: rgba(168, 85, 247, 0.15);
     --color-purple-border: rgba(168, 85, 247, 0.4);
-    --color-purple-hover:  rgba(200, 140, 255, 1);
+    --color-purple-hover: rgba(200, 140, 255, 1);
 
-    --color-green-io:      #2ECC71;
+    --color-green-io: #2ecc71;
     --color-green-io-muted: rgba(46, 204, 113, 0.12);
     --color-green-io-border: rgba(46, 204, 113, 0.4);
 
     /* ── Borders ─────────────────────────────────────────── */
-    --border-subtle:       rgba(255, 255, 255, 0.06);
-    --border-default:      rgba(255, 255, 255, 0.10);
-    --border-medium:       rgba(255, 255, 255, 0.15);
-    --border-strong:       rgba(255, 255, 255, 0.25);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-default: rgba(255, 255, 255, 0.1);
+    --border-medium: rgba(255, 255, 255, 0.15);
+    --border-strong: rgba(255, 255, 255, 0.25);
 
-    --border-focus:        #0078D4;
-    --border-focus-ring:   rgba(0, 120, 212, 0.25);
-    --border-input:        rgba(255, 255, 255, 0.10);
-    --border-input-hover:  rgba(255, 255, 255, 0.22);
-    --border-input-focus:  #0078D4;
-    --border-input-invalid: #E74C3C;
+    --border-focus: #0078d4;
+    --border-focus-ring: rgba(0, 120, 212, 0.25);
+    --border-input: rgba(255, 255, 255, 0.1);
+    --border-input-hover: rgba(255, 255, 255, 0.22);
+    --border-input-focus: #0078d4;
+    --border-input-invalid: #e74c3c;
 
-    --border-panel:        rgba(255, 255, 255, 0.08);
-    --border-tab-active:   #0078D4;
-    --border-resize:       rgba(255, 255, 255, 0.06);
-    --border-resize-active: #0078D4;
+    --border-panel: rgba(255, 255, 255, 0.08);
+    --border-tab-active: #0078d4;
+    --border-resize: rgba(255, 255, 255, 0.06);
+    --border-resize-active: #0078d4;
 
     /* ── Shadows ─────────────────────────────────────────── */
-    --shadow-sm:           0 1px 3px rgba(0, 0, 0, 0.2);
-    --shadow-md:           0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg:           0 8px 24px rgba(0, 0, 0, 0.45);
-    --shadow-focus:        0 0 0 2px rgba(0, 120, 212, 0.25);
-    --shadow-dropdown:     0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
+    --shadow-focus: 0 0 0 2px rgba(0, 120, 212, 0.25);
+    --shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.4);
 
     /* ── Border radius ───────────────────────────────────── */
-    --radius-xs:       2px;
-    --radius-sm:       4px;
-    --radius-md:       6px;
-    --radius-lg:       8px;
-    --radius-xl:       12px;
-    --radius-full:     9999px;
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-full: 9999px;
 
     /* ── Typography: Families ────────────────────────────── */
-    --font-ui:         'Work Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-mono:       'Roboto Mono', 'Consolas', 'Menlo', 'Courier New', monospace;
+    --font-ui: 'Work Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'Roboto Mono', 'Consolas', 'Menlo', 'Courier New', monospace;
 
     /* ── Typography: Sizes (matches VS Code) ─────────────── */
-    --size-2xs:        0.6875rem;  /* 11px — badges, micro-text */
-    --size-xs:         0.75rem;    /* 12px — status bar, utility tabs */
-    --size-sm:         0.8125rem;  /* 13px — default UI text (VS Code base) */
-    --size-base:       0.8125rem;  /* 13px — default body text */
-    --size-md:         0.875rem;   /* 14px — code editor (VS Code default) */
-    --size-lg:         1rem;       /* 16px — modal titles, section headers */
-    --size-xl:         1.125rem;   /* 18px — panel headings */
-    --size-2xl:        1.5rem;     /* 24px — page-level headings */
+    --size-2xs: 0.6875rem; /* 11px — badges, micro-text */
+    --size-xs: 0.75rem; /* 12px — status bar, utility tabs */
+    --size-sm: 0.8125rem; /* 13px — default UI text (VS Code base) */
+    --size-base: 0.8125rem; /* 13px — default body text */
+    --size-md: 0.875rem; /* 14px — code editor (VS Code default) */
+    --size-lg: 1rem; /* 16px — modal titles, section headers */
+    --size-xl: 1.125rem; /* 18px — panel headings */
+    --size-2xl: 1.5rem; /* 24px — page-level headings */
 
     /* ── Typography: Weights ─────────────────────────────── */
-    --weight-light:    300;
-    --weight-regular:  400;
-    --weight-medium:   500;
+    --weight-light: 300;
+    --weight-regular: 400;
+    --weight-medium: 500;
     --weight-semibold: 600;
-    --weight-bold:     700;
+    --weight-bold: 700;
 
     /* ── Typography: Line heights ────────────────────────── */
-    --lh-tight:        1.2;
-    --lh-snug:         1.35;
-    --lh-normal:       1.5;
-    --lh-relaxed:      1.7;
-    --lh-code:         1.6;
+    --lh-tight: 1.2;
+    --lh-snug: 1.35;
+    --lh-normal: 1.5;
+    --lh-relaxed: 1.7;
+    --lh-code: 1.6;
 
     /* ── Typography: Letter spacing ──────────────────────── */
-    --tracking-tight:  -0.01em;
+    --tracking-tight: -0.01em;
     --tracking-normal: 0;
-    --tracking-wide:   0.04em;
+    --tracking-wide: 0.04em;
 
     /* ── Scrollbar ───────────────────────────────────────── */
-    --scrollbar-width:         10px;
-    --scrollbar-width-thin:    4px;
-    --scrollbar-track:         transparent;
-    --scrollbar-thumb:         rgba(255, 255, 255, 0.15);
-    --scrollbar-thumb-hover:   rgba(255, 255, 255, 0.30);
+    --scrollbar-width: 10px;
+    --scrollbar-width-thin: 4px;
+    --scrollbar-track: transparent;
+    --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.3);
 
     /* ── Transitions ─────────────────────────────────────── */
-    --transition-fast:    0.1s ease;
-    --transition-normal:  0.15s ease;
-    --transition-slow:    0.3s ease;
+    --transition-fast: 0.1s ease;
+    --transition-normal: 0.15s ease;
+    --transition-slow: 0.3s ease;
 
     /* ── Minimap ─────────────────────────────────────────── */
-    --minimap-bg:          #1A1A1A;
-    --minimap-mask:        rgba(0, 0, 0, 0.65);
+    --minimap-bg: #1a1a1a;
+    --minimap-mask: rgba(0, 0, 0, 0.65);
 
     /* ── Legacy aliases (backward compat) ────────────────── */
     --bg-primary: var(--bg-inset);

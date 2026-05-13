@@ -4,9 +4,9 @@
 }
 
 .edge-mapping-modal .modal-content {
-    border-radius: 8px;
-    background-color: var(--bg-secondary);
-    color: var(--text-light);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-lg);
     font-family: var(--font-ui);
@@ -15,27 +15,27 @@
 .edge-mapping-modal .modal-header {
     border-bottom: 1px solid var(--border-panel);
     padding: 18px 24px;
-    background-color: var(--bg-header);
-    border-radius: 8px 8px 0 0;
+    background-color: var(--bg-elevated);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .edge-mapping-modal .modal-title {
     font-family: var(--font-mono);
     font-size: clamp(0.85rem, 0.6rem + 0.7vw, 1.15rem);
     font-weight: 500;
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 .edge-mapping-modal .modal-body {
     padding: 28px;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-surface);
 }
 
 .edge-mapping-modal .modal-footer {
     border-top: 1px solid var(--border-panel);
     padding: 18px 24px;
-    background-color: var(--bg-header);
-    border-radius: 0 0 8px 8px;
+    background-color: var(--bg-elevated);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     gap: 10px;
 }
 
@@ -95,7 +95,7 @@
 .generic-badge {
     font-size: clamp(0.58rem, 0.4rem + 0.45vw, 0.74rem);
     background-color: var(--bg-interactive);
-    color: var(--text-medium);
+    color: var(--text-secondary);
     padding: 2px 6px;
     border-radius: 3px;
     font-weight: 500;
@@ -107,15 +107,15 @@
     flex-direction: column;
     gap: 6px;
     padding: clamp(8px, 0.4rem + 0.4vw, 14px) clamp(10px, 0.5rem + 0.5vw, 18px);
-    background-color: var(--bg-tertiary);
+    background-color: var(--bg-overlay);
     border: 1px solid var(--border-panel);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.12s ease;
+    transition: all var(--transition-fast);
 }
 
 .io-item:hover {
-    background-color: var(--bg-tertiary);
+    background-color: var(--bg-overlay);
     border-color: var(--border-medium);
 }
 
@@ -157,7 +157,7 @@
     font-family: var(--font-mono);
     font-size: clamp(0.74rem, 0.55rem + 0.55vw, 0.95rem);
     font-weight: 500;
-    color: var(--text-medium);
+    color: var(--text-secondary);
     flex: 1;
     min-width: 0;
     overflow: hidden;
@@ -180,7 +180,7 @@
     color: var(--text-secondary);
     background-color: rgba(255, 255, 255, 0.04);
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     flex-shrink: 1;
     min-width: 0;
     max-width: 50%;
@@ -205,8 +205,8 @@
     fill: none;
     stroke-linecap: round;
     transition:
-        stroke 0.15s ease,
-        stroke-width 0.15s ease;
+        stroke var(--transition-normal),
+        stroke-width var(--transition-normal);
 }
 
 .connection-line-hitarea {
@@ -219,10 +219,10 @@
 
 .connection-dot {
     fill: var(--color-success);
-    stroke: var(--bg-secondary);
+    stroke: var(--bg-surface);
     stroke-width: 1.5;
     pointer-events: none;
-    transition: fill 0.15s ease;
+    transition: fill var(--transition-normal);
 }
 
 g:hover .connection-line {
@@ -255,8 +255,8 @@ g:hover .connection-dot {
     opacity: 0.6;
     pointer-events: none;
     transition:
-        fill 0.15s ease,
-        opacity 0.15s ease;
+        fill var(--transition-normal),
+        opacity var(--transition-normal);
 }
 
 .connection-dot-junction.warning-dot {
@@ -280,8 +280,8 @@ g:hover .connection-dot {
     white-space: nowrap;
     pointer-events: none;
     transition:
-        color 0.15s ease,
-        opacity 0.15s ease;
+        color var(--transition-normal),
+        opacity var(--transition-normal);
 }
 
 .offscreen-label-warning {
@@ -326,13 +326,13 @@ g:hover .connection-dot {
     border-color: var(--color-accent);
     font-size: clamp(0.78rem, 0.55rem + 0.55vw, 0.95rem);
     padding: 8px 20px;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     font-weight: 500;
 }
 
 .edge-mapping-modal .btn-primary:hover {
-    background-color: #3a7bc8;
-    border-color: #3a7bc8;
+    background-color: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
 }
 
 .edge-mapping-modal .btn-secondary {
@@ -341,21 +341,21 @@ g:hover .connection-dot {
     color: var(--text-muted);
     font-size: clamp(0.78rem, 0.55rem + 0.55vw, 0.95rem);
     padding: 8px 20px;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     font-weight: 500;
 }
 
 .edge-mapping-modal .btn-secondary:hover {
     background-color: rgba(255, 255, 255, 0.05);
     border-color: var(--border-strong);
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 /* Warning banner */
 .type-warning-banner {
     background-color: var(--color-warning-muted);
     border: 1px solid var(--color-warning-border);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     padding: 10px 14px;
     margin-bottom: 16px;
     display: flex;
@@ -401,14 +401,14 @@ g:hover .connection-dot {
 .scatter-note-banner {
     background-color: rgba(111, 194, 207, 0.12);
     border: 1px solid rgba(111, 194, 207, 0.3);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     padding: 10px 14px;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 10px;
     font-size: clamp(0.72rem, 0.5rem + 0.55vw, 0.9rem);
-    color: #6fc2cf;
+    color: var(--color-info);
 }
 
 .scatter-note-banner .scatter-note-icon {
@@ -418,14 +418,14 @@ g:hover .connection-dot {
 .scatter-gather-banner {
     background-color: rgba(80, 200, 120, 0.12);
     border: 1px solid rgba(80, 200, 120, 0.3);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     padding: 10px 14px;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 10px;
     font-size: clamp(0.72rem, 0.5rem + 0.55vw, 0.9rem);
-    color: #50c878;
+    color: var(--color-green-io);
 }
 
 .scatter-gather-banner .scatter-gather-icon {
@@ -444,7 +444,7 @@ g:hover .connection-dot {
     margin-top: 4px;
     border-left: 2px solid var(--color-accent);
     background-color: var(--color-accent-muted);
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .io-group-header:first-child {
@@ -453,13 +453,13 @@ g:hover .connection-dot {
 
 .group-scatter-badge {
     margin-left: 6px;
-    color: #6fc2cf;
+    color: var(--color-info);
     font-size: 0.85em;
 }
 
 .group-gather-badge {
     margin-left: 6px;
-    color: #50c878;
+    color: var(--color-green-io);
     font-size: 0.85em;
     font-weight: 700;
 }

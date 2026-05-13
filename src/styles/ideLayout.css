@@ -593,7 +593,7 @@
 }
 
 .ide-collapsed-strip:hover .ide-collapsed-label {
-    color: var(--text-medium);
+    color: var(--text-secondary);
 }
 
 /* Utility bar collapse toggle */

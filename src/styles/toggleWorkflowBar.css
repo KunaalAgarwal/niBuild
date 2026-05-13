@@ -7,7 +7,7 @@
     align-items: center;
     padding: 10px;
     background-color: rgba(46, 46, 46, 0.9);
-    border-radius: 12px;
+    border-radius: var(--radius-xl);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     border: 1px solid var(--border-subtle);
     z-index: 1000;
@@ -25,13 +25,13 @@
     font-size: clamp(0.8rem, 1.5vw, 1.2rem);
     color: var(--text-primary);
     transition:
-        transform 0.2s ease,
-        color 0.2s ease;
+        transform var(--transition-normal),
+        color var(--transition-normal);
 }
 
 .page-numbers span:hover {
     transform: scale(1.1);
-    color: var(--text-light);
+    color: var(--text-primary);
 }
 
 .page-numbers .active {

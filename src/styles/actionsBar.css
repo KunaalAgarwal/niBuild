@@ -6,7 +6,7 @@
     justify-content: space-evenly;
     align-items: stretch;
     background-color: rgba(46, 46, 46, 0.9);
-    border-radius: 12px;
+    border-radius: var(--radius-xl);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(8px);
     border: 1px solid var(--border-subtle);
