@@ -15,11 +15,11 @@
 .custom-toast {
     background-color: var(--bg-secondary) !important;
     color: var(--text-light);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-panel);
     border-left: 3px solid transparent;
     border-radius: 6px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
     backdrop-filter: blur(10px);
     overflow: hidden;
     width: fit-content !important;
@@ -37,7 +37,7 @@
     border-left-color: var(--color-success);
 }
 .custom-toast.toast-info {
-    border-left-color: var(--color-primary);
+    border-left-color: var(--color-accent);
 }
 
 /* Body — single compact row */
@@ -53,7 +53,7 @@
 
 /* Inline variant label */
 .custom-toast .toast-label {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -71,5 +71,5 @@
     color: var(--color-success);
 }
 .custom-toast.toast-info .toast-label {
-    color: var(--color-primary);
+    color: var(--color-accent);
 }

@@ -147,7 +147,7 @@ const CustomWorkflowNodeComponent = ({ data, isScatterInherited, isGatherNode, w
                         )}
                         {data.hasValidationWarnings && (
                             <div className="tooltip-section">
-                                <span className="tooltip-label" style={{ color: '#f0ad4e' }}>
+                                <span className="tooltip-label" style={{ color: 'var(--color-warning)' }}>
                                     Warning:
                                 </span>
                                 <span className="tooltip-text">Contains invalid edges or parameter mappings</span>

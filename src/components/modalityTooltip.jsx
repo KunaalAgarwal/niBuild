@@ -1,11 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import '../styles/workflowMenuItem.css';
+
+const TOOLTIP_DELAY_MS = 250;
 
 function ModalityTooltip({ children, name, description }) {
     const [isHovered, setIsHovered] = useState(false);
     const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
     const elementRef = useRef(null);
+    const tooltipTimer = useRef(null);
 
     const handleMouseEnter = () => {
         if (elementRef.current) {
@@ -15,12 +18,25 @@ function ModalityTooltip({ children, name, description }) {
                 left: rect.right + 10,
             });
         }
-        setIsHovered(true);
+        if (tooltipTimer.current) clearTimeout(tooltipTimer.current);
+        tooltipTimer.current = setTimeout(() => setIsHovered(true), TOOLTIP_DELAY_MS);
     };
 
     const handleMouseLeave = () => {
+        if (tooltipTimer.current) {
+            clearTimeout(tooltipTimer.current);
+            tooltipTimer.current = null;
+        }
         setIsHovered(false);
     };
+
+    // Cancel any pending tooltip timer if the component unmounts mid-hover
+    useEffect(
+        () => () => {
+            if (tooltipTimer.current) clearTimeout(tooltipTimer.current);
+        },
+        [],
+    );
 
     return (
         <>

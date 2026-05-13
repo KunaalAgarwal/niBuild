@@ -382,7 +382,7 @@ const CustomWorkflowParamModal = ({ show, onClose, workflowName, internalNodes, 
     return (
         <Modal show={show} onHide={handleCancel} centered className="custom-modal" size="lg">
             <Modal.Header>
-                <Modal.Title style={{ fontFamily: 'Roboto Mono, monospace', fontSize: '1rem', width: '100%' }}>
+                <Modal.Title style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem', width: '100%' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span>{workflowName} - Parameters</span>
                     </div>

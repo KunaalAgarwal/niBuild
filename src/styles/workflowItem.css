@@ -9,11 +9,11 @@
     border: 1px solid var(--border-medium);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
     padding: 8px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 }
 
 .modal-label {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     color: var(--text-light);
     font-size: 1rem;
@@ -32,7 +32,7 @@
 .param-section {
     margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
 }
 
 .param-section:last-child {
@@ -42,7 +42,7 @@
 }
 
 .param-section-header {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 500;
     font-size: 0.8rem;
     color: var(--text-muted);
@@ -50,13 +50,13 @@
     letter-spacing: 0.5px;
     padding-bottom: 8px;
     margin-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .param-card {
     padding: 8px 10px;
     background-color: var(--bg-tertiary);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-panel);
     border-radius: 5px;
     margin-bottom: 6px;
     transition:
@@ -65,7 +65,7 @@
 }
 
 .param-card:hover {
-    border-color: rgba(255, 255, 255, 0.14);
+    border-color: var(--border-medium);
     background-color: rgba(42, 42, 42, 0.9);
 }
 
@@ -74,7 +74,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 6px 8px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.9rem;
 }
 
@@ -88,7 +88,7 @@
     font-size: 0.7rem;
     padding: 1px 6px;
     border-radius: 3px;
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: var(--border-panel);
     color: var(--text-muted);
     flex-shrink: 0;
 }
@@ -109,16 +109,16 @@
 }
 
 .param-bounds {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--text-secondary);
     margin-top: 3px;
 }
 
 .param-default-hint {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--color-primary);
+    color: var(--color-accent);
     margin-top: 3px;
     font-style: italic;
 }
@@ -130,7 +130,7 @@
     height: 16px;
     cursor: pointer;
     background-color: var(--bg-interactive);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border-default);
     border-radius: 10px;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23888'/%3e%3c/svg%3e");
     transition:
@@ -142,20 +142,20 @@
 .param-switch .form-check-input:hover,
 .scatter-switch .form-check-input:hover {
     background-color: var(--bg-hover);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--border-input-hover);
 }
 
 .param-switch .form-check-input:checked,
 .scatter-switch .form-check-input:checked {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
 }
 
 .param-switch .form-check-input:focus,
 .scatter-switch .form-check-input:focus {
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
-    border-color: rgba(74, 144, 226, 0.5);
+    box-shadow: var(--shadow-focus);
+    border-color: rgba(0, 120, 212, 0.5);
 }
 
 .param-switch .form-check-input:disabled,
@@ -168,7 +168,7 @@
    .custom-modal prefix wins specificity over Bootstrap .form-control */
 .custom-modal .param-number,
 .custom-modal .param-text {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     background-color: var(--bg-primary);
     color: var(--text-medium);
     border: 1px solid var(--border-subtle);
@@ -205,7 +205,7 @@
 
 .custom-modal .param-number:hover,
 .custom-modal .param-text:hover {
-    border-color: rgba(255, 255, 255, 0.22);
+    border-color: var(--border-input-hover);
     background-color: rgba(26, 26, 26, 0.85);
 }
 
@@ -213,9 +213,9 @@
 .custom-modal .param-text:focus {
     box-shadow:
         inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        0 0 0 2px rgba(74, 144, 226, 0.25);
-    border-color: var(--color-primary);
-    border-left-color: var(--color-primary);
+        var(--shadow-focus);
+    border-color: var(--color-accent);
+    border-left-color: var(--color-accent);
     color: var(--text-light);
     background-color: rgba(26, 26, 26, 0.95);
 }
@@ -223,7 +223,7 @@
 /* Filled state — accent left border when a value is entered */
 .custom-modal .param-number.filled,
 .custom-modal .param-text.filled {
-    border-left-color: var(--color-primary);
+    border-left-color: var(--color-accent);
     color: var(--text-light);
 }
 
@@ -236,7 +236,7 @@
 
 /* Inline controls — select dropdowns */
 .custom-modal .param-select {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     background-color: var(--bg-primary);
     color: var(--text-medium);
     border: 1px solid var(--border-subtle);
@@ -262,22 +262,22 @@
 }
 
 .custom-modal .param-select:hover {
-    border-color: rgba(255, 255, 255, 0.22);
+    border-color: var(--border-input-hover);
     background-color: rgba(26, 26, 26, 0.85);
 }
 
 .custom-modal .param-select:focus {
     box-shadow:
         inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        0 0 0 2px rgba(74, 144, 226, 0.25);
-    border-color: var(--color-primary);
-    border-left-color: var(--color-primary);
+        var(--shadow-focus);
+    border-color: var(--color-accent);
+    border-left-color: var(--color-accent);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234a90e2' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
 /* Filled state for selects */
 .custom-modal .param-select.filled {
-    border-left-color: var(--color-primary);
+    border-left-color: var(--color-accent);
     color: var(--text-light);
 }
 
@@ -289,7 +289,7 @@
 .docker-version-group {
     margin-bottom: 16px;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
 }
 
 .docker-help-text {
@@ -311,7 +311,7 @@
 .when-expression-group {
     margin-bottom: 16px;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
 }
 
 .when-builder-row {
@@ -321,7 +321,7 @@
 }
 
 .custom-modal .when-param-select {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     background-color: var(--bg-primary);
     color: var(--text-medium);
     border: 1px solid var(--border-subtle);
@@ -346,19 +346,19 @@
 }
 
 .custom-modal .when-param-select:hover {
-    border-color: rgba(255, 255, 255, 0.22);
+    border-color: var(--border-input-hover);
 }
 
 .custom-modal .when-param-select:focus {
     box-shadow:
         inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        0 0 0 2px rgba(74, 144, 226, 0.25);
-    border-color: var(--color-primary);
-    border-left-color: var(--color-primary);
+        var(--shadow-focus);
+    border-color: var(--color-accent);
+    border-left-color: var(--color-accent);
 }
 
 .custom-modal .when-condition-input {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     background-color: var(--bg-primary);
     color: var(--text-medium);
     border: 1px solid var(--border-subtle);
@@ -377,15 +377,15 @@
 }
 
 .custom-modal .when-condition-input:hover {
-    border-color: rgba(255, 255, 255, 0.22);
+    border-color: var(--border-input-hover);
 }
 
 .custom-modal .when-condition-input:focus {
     box-shadow:
         inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        0 0 0 2px rgba(74, 144, 226, 0.25);
-    border-color: var(--color-primary);
-    border-left-color: var(--color-primary);
+        var(--shadow-focus);
+    border-color: var(--color-accent);
+    border-left-color: var(--color-accent);
     color: var(--text-light);
     background-color: rgba(26, 26, 26, 0.95);
 }
@@ -402,7 +402,7 @@
 }
 
 .when-preview {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--text-muted);
     margin-top: 4px;
@@ -412,8 +412,8 @@
 }
 
 .custom-modal .when-condition-input.invalid {
-    border-color: var(--color-danger, #e74c3c);
-    border-left-color: var(--color-danger, #e74c3c);
+    border-color: var(--color-danger);
+    border-left-color: var(--color-danger);
 }
 
 .custom-modal .when-condition-input.invalid:focus {
@@ -423,12 +423,12 @@
 }
 
 .when-warning-text {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: var(--color-danger, #e74c3c);
+    color: var(--color-danger);
     margin-top: 4px;
     padding: 3px 8px;
-    background-color: rgba(231, 76, 60, 0.06);
+    background-color: var(--color-danger-muted);
     border-radius: 3px;
 }
 
@@ -442,11 +442,11 @@
 .scatter-method-group {
     margin-bottom: 16px;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
 }
 
 .custom-modal .scatter-method-select {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     background-color: var(--bg-primary);
     color: var(--text-medium);
     border: 1px solid var(--border-subtle);
@@ -469,14 +469,14 @@
 }
 
 .custom-modal .scatter-method-select:hover {
-    border-color: rgba(255, 255, 255, 0.22);
+    border-color: var(--border-input-hover);
 }
 
 .custom-modal .scatter-method-select:focus {
     box-shadow:
         inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        0 0 0 2px rgba(74, 144, 226, 0.25);
-    border-color: var(--color-primary);
+        var(--shadow-focus);
+    border-color: var(--color-accent);
 }
 
 .scatter-method-help-text {
@@ -488,7 +488,7 @@
 .scatter-toggle-group {
     margin-bottom: 16px;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
 }
 
 .scatter-toggle-row {
@@ -507,19 +507,19 @@
 
 /* Wired/unwired state for File/Directory params */
 .param-card.input-wired {
-    background-color: rgba(74, 144, 226, 0.08);
-    border-color: rgba(74, 144, 226, 0.2);
+    background-color: rgba(0, 120, 212, 0.08);
+    border-color: rgba(0, 120, 212, 0.2);
 }
 
 .input-source {
-    color: var(--color-primary);
+    color: var(--color-accent);
     font-size: 0.8rem;
 }
 
 .input-source-single {
     margin-top: 4px;
     padding: 3px 8px;
-    background-color: rgba(74, 144, 226, 0.04);
+    background-color: rgba(0, 120, 212, 0.04);
     border-radius: 3px;
 }
 
@@ -529,8 +529,8 @@
     gap: 3px;
     margin-top: 4px;
     padding: 5px 8px;
-    background-color: rgba(74, 144, 226, 0.04);
-    border: 1px solid rgba(74, 144, 226, 0.1);
+    background-color: rgba(0, 120, 212, 0.04);
+    border: 1px solid rgba(0, 120, 212, 0.1);
     border-radius: 4px;
 }
 
@@ -558,7 +558,7 @@
 
 /* .custom-modal prefix needed to override Bootstrap .form-select */
 .custom-modal .link-merge-select {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     background-color: var(--bg-primary);
     color: var(--text-medium);
@@ -583,14 +583,14 @@
 }
 
 .custom-modal .link-merge-select:hover {
-    border-color: rgba(255, 255, 255, 0.22);
+    border-color: var(--border-input-hover);
 }
 
 .custom-modal .link-merge-select:focus {
     box-shadow:
         inset 0 1px 2px rgba(0, 0, 0, 0.25),
-        0 0 0 2px rgba(74, 144, 226, 0.2);
-    border-color: var(--color-primary);
+        var(--shadow-focus);
+    border-color: var(--color-accent);
 }
 
 .merge-help-text {
@@ -759,7 +759,7 @@
 
 .node-content .handle-label {
     font-size: 8px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     color: var(--text-muted);
     font-weight: 500;
     text-transform: uppercase;
@@ -790,7 +790,7 @@
     min-width: 54px;
     max-width: 54px;
     font-size: 9px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 500;
     text-align: left;
     white-space: nowrap;
@@ -812,7 +812,7 @@
     min-width: 54px;
     max-width: 54px;
     font-size: 9px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 500;
     text-align: right;
     user-select: none;
@@ -830,7 +830,7 @@
 
 .node-params-btn:hover,
 .node-info-btn:hover {
-    color: var(--color-primary);
+    color: var(--color-accent);
 }
 
 /* Bottom-left badge container — inline icons */
@@ -855,7 +855,7 @@
 .node-fx-badge,
 .node-notes-badge {
     font-size: 7px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     border-radius: 2px;
     padding: 0px 3px;
@@ -866,28 +866,28 @@
 }
 
 .node-scatter-badge {
-    color: var(--color-cyan);
-    background-color: rgba(74, 198, 226, 0.12);
-    border: 1px solid rgba(74, 198, 226, 0.3);
+    color: var(--color-info);
+    background-color: var(--color-info-muted);
+    border: 1px solid var(--color-info-border);
 }
 
 .node-gather-badge {
-    color: var(--color-success, #2ecc71);
-    background-color: rgba(46, 204, 113, 0.12);
+    color: var(--color-success);
+    background-color: var(--color-green-io-muted);
     border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
 .node-fx-badge {
-    color: var(--color-primary, #4a90e2);
-    background-color: rgba(74, 144, 226, 0.12);
-    border: 1px solid rgba(74, 144, 226, 0.3);
+    color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+    border: 1px solid var(--color-accent-border);
 }
 
 /* Custom workflow node styling — applied to ReactFlow outer container */
 .react-flow__node-default:has(.node-custom-workflow) {
-    border: 2px solid rgba(168, 85, 247, 0.6) !important;
+    border: 2px solid var(--color-purple-border) !important;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(245, 240, 255, 0.95)) !important;
-    box-shadow: 0 0 6px rgba(168, 85, 247, 0.15);
+    box-shadow: 0 0 6px var(--color-purple-muted);
     border-radius: 8px;
 }
 
@@ -918,7 +918,7 @@
 
 .node-custom-badge-text {
     font-size: 7px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     color: rgba(128, 60, 200, 0.95);
     background-color: rgba(168, 85, 247, 0.08);
@@ -931,7 +931,7 @@
 
 /* I/O node styling — green accent (mirrors custom workflow purple pattern) */
 .react-flow__node-default:has(.node-io) {
-    border: 2px solid rgba(46, 204, 113, 0.6) !important;
+    border: 2px solid var(--color-green-io-border) !important;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(240, 255, 245, 0.95)) !important;
     box-shadow: 0 0 6px rgba(46, 204, 113, 0.15);
     border-radius: 8px;
@@ -958,7 +958,7 @@
 
 .node-io-badge-text {
     font-size: 7px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     color: rgba(36, 170, 90, 0.95);
     background-color: rgba(46, 204, 113, 0.08);
@@ -973,8 +973,8 @@
     font-size: 8px;
     font-weight: 700;
     color: var(--color-warning);
-    background-color: rgba(240, 173, 78, 0.15);
-    border: 1px solid rgba(240, 173, 78, 0.3);
+    background-color: var(--color-warning-muted);
+    border: 1px solid var(--color-warning-border);
     border-radius: 2px;
     padding: 0px 3px;
     white-space: nowrap;
@@ -989,7 +989,7 @@
     gap: 12px;
     margin-top: 8px;
     padding: 6px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--border-default);
 }
 
 .custom-workflow-nav-btn {
@@ -999,14 +999,14 @@
 }
 
 .custom-workflow-nav-label {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.9rem;
-    color: var(--text-secondary, #aaa);
+    color: var(--text-disabled);
 }
 
 /* Expression toggle button in param control */
 .expression-toggle {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     font-style: italic;
     font-weight: 700;
@@ -1026,21 +1026,21 @@
 }
 
 .expression-toggle:hover {
-    color: var(--color-primary);
-    border-color: rgba(74, 144, 226, 0.5);
-    background-color: rgba(74, 144, 226, 0.06);
+    color: var(--color-accent);
+    border-color: rgba(0, 120, 212, 0.5);
+    background-color: rgba(0, 120, 212, 0.06);
 }
 
 .expression-toggle.active {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-    background-color: rgba(74, 144, 226, 0.14);
-    box-shadow: 0 0 0 1px rgba(74, 144, 226, 0.15);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+    box-shadow: 0 0 0 1px var(--color-accent-muted);
 }
 
 /* Scatter toggle button in param control (mirrors expression-toggle with cyan) */
 .scatter-toggle {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-secondary);
@@ -1058,15 +1058,15 @@
 }
 
 .scatter-toggle:hover {
-    color: var(--color-cyan);
+    color: var(--color-info);
     border-color: rgba(74, 198, 226, 0.5);
     background-color: rgba(74, 198, 226, 0.06);
 }
 
 .scatter-toggle.active {
-    color: var(--color-cyan);
-    border-color: var(--color-cyan);
-    background-color: rgba(74, 198, 226, 0.14);
+    color: var(--color-info);
+    border-color: var(--color-info);
+    background-color: var(--color-info-muted);
 }
 
 .scatter-toggle.locked {
@@ -1105,7 +1105,7 @@
 }
 
 .custom-modal .expression-input {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     background-color: var(--bg-primary);
     color: var(--text-medium);
     border: 1px solid var(--border-subtle);
@@ -1123,16 +1123,16 @@
 }
 
 .custom-modal .expression-input.filled {
-    border-left-color: var(--color-primary);
+    border-left-color: var(--color-accent);
     color: var(--text-light);
 }
 
 .custom-modal .expression-input:focus {
     box-shadow:
         inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        0 0 0 2px rgba(74, 144, 226, 0.25);
-    border-color: var(--color-primary);
-    border-left-color: var(--color-primary);
+        var(--shadow-focus);
+    border-color: var(--color-accent);
+    border-left-color: var(--color-accent);
     background-color: rgba(26, 26, 26, 0.95);
 }
 
@@ -1143,7 +1143,7 @@
 }
 
 .custom-modal .expression-template-select {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     background-color: var(--bg-primary);
     color: var(--text-medium);
@@ -1168,42 +1168,42 @@
 }
 
 .custom-modal .expression-template-select:hover {
-    border-color: rgba(255, 255, 255, 0.22);
+    border-color: var(--border-input-hover);
 }
 
 .custom-modal .expression-template-select:focus {
     box-shadow:
         inset 0 1px 2px rgba(0, 0, 0, 0.2),
-        0 0 0 2px rgba(74, 144, 226, 0.2);
-    border-color: var(--color-primary);
+        var(--shadow-focus);
+    border-color: var(--color-accent);
 }
 
 /* Expression preview (valueFrom context) */
 .expression-preview {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--text-muted);
     margin-top: 4px;
     padding: 3px 8px;
     background-color: rgba(255, 255, 255, 0.04);
     border-radius: 3px;
-    border-left: 2px solid rgba(74, 144, 226, 0.3);
+    border-left: 2px solid var(--color-accent-border);
 }
 
 /* Expression validation warning */
 .expression-warning-text {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: var(--color-danger, #e74c3c);
+    color: var(--color-danger);
     margin-top: 4px;
     padding: 3px 8px;
-    background-color: rgba(231, 76, 60, 0.06);
+    background-color: var(--color-danger-muted);
     border-radius: 3px;
 }
 
 .custom-modal .expression-input.invalid {
-    border-color: var(--color-danger, #e74c3c);
-    border-left-color: var(--color-danger, #e74c3c);
+    border-color: var(--color-danger);
+    border-left-color: var(--color-danger);
 }
 
 .custom-modal .expression-input.invalid:focus {
@@ -1214,25 +1214,25 @@
 
 /* Highlight param cards with active expressions */
 .param-card.has-expression {
-    border-color: rgba(74, 144, 226, 0.25);
-    background-color: rgba(74, 144, 226, 0.05);
+    border-color: var(--border-focus-ring);
+    background-color: rgba(0, 120, 212, 0.05);
 }
 
 .param-card.has-scatter {
-    border-color: rgba(74, 198, 226, 0.3);
+    border-color: var(--color-info-border);
     background-color: rgba(74, 198, 226, 0.06);
 }
 
 /* Scatter + expression info note */
 .expression-scatter-note {
     font-size: 0.75rem;
-    color: var(--color-cyan);
+    color: var(--color-info);
     margin-top: 3px;
     opacity: 0.8;
 }
 
 .expression-scatter-note code {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: inherit;
     color: inherit;
 }
@@ -1245,8 +1245,8 @@
     gap: 4px;
     margin-top: 4px;
     padding: 6px 8px;
-    background-color: rgba(74, 144, 226, 0.04);
-    border: 1px solid rgba(74, 144, 226, 0.1);
+    background-color: rgba(0, 120, 212, 0.04);
+    border: 1px solid rgba(0, 120, 212, 0.1);
     border-radius: 4px;
 }
 
@@ -1259,22 +1259,22 @@
 }
 
 .node-when-badge {
-    color: var(--color-warning, #ffc107);
-    background-color: rgba(255, 193, 7, 0.12);
-    border: 1px solid rgba(255, 193, 7, 0.3);
+    color: var(--color-warning);
+    background-color: var(--color-warning-muted);
+    border: 1px solid var(--color-warning-border);
 }
 
 .node-notes-badge {
-    color: var(--color-success, #2ecc71);
-    background-color: rgba(46, 204, 113, 0.12);
+    color: var(--color-success);
+    background-color: var(--color-green-io-muted);
     border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
 .node-notes-textarea {
     background-color: var(--bg-primary) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid var(--border-panel) !important;
     color: var(--text-light) !important;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     border-radius: 6px;
     resize: vertical;
@@ -1329,7 +1329,7 @@
 .operation-order-group {
     margin-bottom: 16px;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
 }
 
 .operation-order-help {
@@ -1350,7 +1350,7 @@
     gap: 8px;
     padding: 8px 10px;
     background-color: var(--bg-tertiary);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-panel);
     border-radius: 5px;
     transition:
         border-color 0.15s ease,
@@ -1358,12 +1358,12 @@
 }
 
 .operation-order-item:hover {
-    border-color: rgba(255, 255, 255, 0.14);
+    border-color: var(--border-medium);
     background-color: rgba(42, 42, 42, 0.9);
 }
 
 .operation-order-pos {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--text-muted);
     min-width: 16px;
@@ -1371,7 +1371,7 @@
 }
 
 .operation-order-flag {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-medium);
@@ -1379,7 +1379,7 @@
 }
 
 .operation-order-label {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
     font-size: 0.8rem;
     color: var(--text-muted);
     flex: 1;
@@ -1389,7 +1389,7 @@
 }
 
 .operation-order-value {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--text-secondary);
     min-width: 32px;
@@ -1405,7 +1405,7 @@
 
 .operation-order-arrow {
     background: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-default);
     border-radius: 3px;
     color: var(--text-muted);
     font-size: 0.55rem;
@@ -1418,7 +1418,7 @@
 }
 
 .operation-order-arrow:hover:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--border-default);
     color: var(--text-light);
 }
 
@@ -1429,7 +1429,7 @@
 
 /* + / − toggle for adding file params to operation order */
 .operation-order-toggle {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-secondary);
@@ -1448,15 +1448,15 @@
 }
 
 .operation-order-toggle:hover {
-    color: var(--color-primary);
-    border-color: rgba(74, 144, 226, 0.5);
-    background-color: rgba(74, 144, 226, 0.06);
+    color: var(--color-accent);
+    border-color: rgba(0, 120, 212, 0.5);
+    background-color: rgba(0, 120, 212, 0.06);
 }
 
 .operation-order-toggle.active {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-    background-color: rgba(74, 144, 226, 0.14);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-muted);
 }
 
 .operation-order-toggle.disabled {

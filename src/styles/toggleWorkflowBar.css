@@ -20,7 +20,7 @@
 
 .page-numbers span {
     cursor: pointer;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
     font-weight: 500;
     font-size: clamp(0.8rem, 1.5vw, 1.2rem);
     color: var(--text-primary);

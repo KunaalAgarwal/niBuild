@@ -118,7 +118,7 @@ const BIDSNodeComponent = ({ data, isScatterInherited, isGatherNode }) => {
                         )}
                         {!data.bidsStructure && (
                             <div className="tooltip-section">
-                                <span className="tooltip-label" style={{ color: '#f0ad4e' }}>
+                                <span className="tooltip-label" style={{ color: 'var(--color-warning)' }}>
                                     Status:
                                 </span>
                                 <span className="tooltip-text">

@@ -373,7 +373,7 @@ const ToolNodeComponent = ({ data, id, isScatterInherited, isGatherNode, upstrea
 
             <Modal show={showModal} onHide={handleCloseModal} centered className="custom-modal" size="lg">
                 <Modal.Header>
-                    <Modal.Title style={{ fontFamily: 'Roboto Mono, monospace', fontSize: '1rem' }}>
+                    <Modal.Title style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem' }}>
                         {data.label} - Parameters
                     </Modal.Title>
                 </Modal.Header>

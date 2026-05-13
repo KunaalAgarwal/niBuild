@@ -694,7 +694,7 @@ const BIDSDataModal = ({ show, onClose, bidsStructure, bidsSelections: savedSele
                     <div className="bids-preview-list">
                         {resolvedPaths.slice(0, 50).map((p, i) => (
                             <div key={i} className="bids-preview-path">
-                                <span style={{ color: 'var(--color-cyan)' }}>[{p.group}]</span> {p.path}
+                                <span style={{ color: 'var(--color-info)' }}>[{p.group}]</span> {p.path}
                             </div>
                         ))}
                         {resolvedPaths.length > 50 && (

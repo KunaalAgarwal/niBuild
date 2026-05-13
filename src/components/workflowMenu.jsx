@@ -12,29 +12,30 @@ import {
 import { useCustomWorkflowsContext } from '../context/CustomWorkflowsContext.jsx';
 import '../styles/workflowMenu.css';
 
-function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow }) {
-    const { customWorkflows, deleteWorkflow } = useCustomWorkflowsContext();
+// VS Code–style chevron: points right when collapsed, rotates 90° when expanded.
+function Chevron({ expanded }) {
+    return (
+        <span className={`chevron${expanded ? ' chevron-expanded' : ''}`} aria-hidden="true">
+            <svg
+                width="10"
+                height="10"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <polyline points="6 4 10 8 6 12" />
+            </svg>
+        </span>
+    );
+}
 
-    const [isCollapsed, setIsCollapsed] = useState(() => {
-        try {
-            const saved = localStorage.getItem('workflowMenuCollapsed');
-            return saved === null ? false : JSON.parse(saved) === true;
-        } catch {
-            return false;
-        }
-    });
+function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
+    const { customWorkflows, updateWorkflow, deleteWorkflow } = useCustomWorkflowsContext();
 
-    const toggleCollapse = useCallback(() => {
-        setIsCollapsed((prev) => {
-            const next = !prev;
-            try {
-                localStorage.setItem('workflowMenuCollapsed', JSON.stringify(next));
-            } catch {
-                /* private browsing */
-            }
-            return next;
-        });
-    }, []);
+    // Collapse is handled by the panel system (react-resizable-panels)
 
     const [expandedSections, setExpandedSections] = useState(() => {
         const initial = { DummyNodes: false, MyWorkflows: false };
@@ -46,8 +47,24 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow }) {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [deleteConfirm, setDeleteConfirm] = useState(null); // { wfId, wfName, position: { top, left } }
+    const [renamingId, setRenamingId] = useState(null);
     const deleteConfirmRef = useRef(null);
     const searchInputRef = useRef(null);
+
+    const commitRename = useCallback(
+        (id, newName) => {
+            const trimmed = newName.trim();
+            if (trimmed) {
+                updateWorkflow(id, { name: trimmed });
+            }
+            setRenamingId(null);
+        },
+        [updateWorkflow],
+    );
+
+    const cancelRename = useCallback(() => {
+        setRenamingId(null);
+    }, []);
 
     // Click-outside handler to dismiss delete confirmation portal
     useEffect(() => {
@@ -243,53 +260,64 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow }) {
     };
 
     return (
-        <div className={`workflow-menu-container${isCollapsed ? ' menu-collapsed' : ''}`}>
-            {isCollapsed ? (
-                <div className="menu-collapsed-strip" onClick={toggleCollapse} title="Expand Tools">
-                    <span className="menu-collapsed-label">Tools</span>
-                </div>
-            ) : (
-                <>
-                    {deleteConfirm &&
-                        createPortal(
-                            <div
-                                ref={deleteConfirmRef}
-                                className="delete-confirm-portal"
-                                style={{
-                                    top: deleteConfirm.position.top,
-                                    left: deleteConfirm.position.left,
-                                    transform: 'translateY(-50%)',
-                                }}
-                            >
-                                <span className="delete-confirm-text">
-                                    Delete &lsquo;{deleteConfirm.wfName}&rsquo;?
-                                </span>
-                                <span className="delete-confirm-subtext">All canvas instances will be removed.</span>
-                                <div className="delete-confirm-buttons">
-                                    <button
-                                        className="delete-confirm-btn delete-confirm-yes"
-                                        onClick={() => {
-                                            if (onDeleteWorkflow) onDeleteWorkflow(deleteConfirm.wfId);
-                                            setDeleteConfirm(null);
-                                        }}
-                                    >
-                                        Yes
-                                    </button>
-                                    <button
-                                        className="delete-confirm-btn delete-confirm-no"
-                                        onClick={() => setDeleteConfirm(null)}
-                                    >
-                                        No
-                                    </button>
-                                </div>
-                            </div>,
-                            document.body,
-                        )}
+        <div className="workflow-menu-container">
+            <>
+                {deleteConfirm &&
+                    createPortal(
+                        <div
+                            ref={deleteConfirmRef}
+                            className="delete-confirm-portal"
+                            style={{
+                                top: deleteConfirm.position.top,
+                                left: deleteConfirm.position.left,
+                                transform: 'translateY(-50%)',
+                            }}
+                        >
+                            <span className="delete-confirm-text">Delete &lsquo;{deleteConfirm.wfName}&rsquo;?</span>
+                            <span className="delete-confirm-subtext">All canvas instances will be removed.</span>
+                            <div className="delete-confirm-buttons">
+                                <button
+                                    className="delete-confirm-btn delete-confirm-yes"
+                                    onClick={() => {
+                                        if (onDeleteWorkflow) onDeleteWorkflow(deleteConfirm.wfId);
+                                        setDeleteConfirm(null);
+                                    }}
+                                >
+                                    Yes
+                                </button>
+                                <button
+                                    className="delete-confirm-btn delete-confirm-no"
+                                    onClick={() => setDeleteConfirm(null)}
+                                >
+                                    No
+                                </button>
+                            </div>
+                        </div>,
+                        document.body,
+                    )}
 
-                    <div className="workflow-search">
-                        <button className="menu-collapse-btn" onClick={toggleCollapse} title="Collapse menu">
+                <div className="workflow-search">
+                    {onCollapse && (
+                        <button className="menu-collapse-btn" onClick={onCollapse} title="Collapse menu">
                             &laquo;
                         </button>
+                    )}
+                    <div className="workflow-search-wrapper">
+                        <svg
+                            className="workflow-search-icon"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                        >
+                            <circle cx="11" cy="11" r="7" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
                         <input
                             ref={searchInputRef}
                             type="text"
@@ -301,236 +329,327 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow }) {
                                 if (e.key === 'Escape') clearSearch();
                             }}
                         />
+                        {searchQuery && (
+                            <button
+                                type="button"
+                                className="workflow-search-clear"
+                                onClick={clearSearch}
+                                aria-label="Clear search"
+                            >
+                                <svg
+                                    width="12"
+                                    height="12"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            </button>
+                        )}
                     </div>
+                </div>
 
-                    <div className="workflow-menu">
-                        {filteredResults ? (
-                            renderSearchResults()
-                        ) : (
-                            <>
-                                {/* I/O (Dummy Nodes) Section */}
-                                <div className="library-section">
+                <div className="workflow-menu">
+                    {filteredResults ? (
+                        renderSearchResults()
+                    ) : (
+                        <>
+                            {/* I/O (Dummy Nodes) Section */}
+                            <div className="library-section io-section">
+                                <div className="library-header io-header" onClick={() => toggleSection('DummyNodes')}>
+                                    <Chevron expanded={expandedSections['DummyNodes']} />
+                                    <span className="library-name">I/O</span>
+                                    <span className="tool-count">{dummyNodes['I/O'].length}</span>
+                                </div>
+
+                                {expandedSections['DummyNodes'] && (
+                                    <div className="library-tools">
+                                        <div className="subsection-tools">
+                                            {dummyNodes['I/O'].map((tool, index) => (
+                                                <WorkflowMenuItem
+                                                    key={`dummy-${index}`}
+                                                    name={tool.name}
+                                                    toolInfo={{
+                                                        fullName: tool.fullName,
+                                                        function: tool.function,
+                                                        typicalUse: tool.typicalUse,
+                                                    }}
+                                                    onDragStart={(event, name) => handleDragStart(event, name, true)}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* My Workflows Section */}
+                            {customWorkflows.length > 0 && (
+                                <div className="library-section my-workflows-section">
                                     <div
-                                        className="library-header io-header"
-                                        onClick={() => toggleSection('DummyNodes')}
+                                        className="library-header my-workflows-header"
+                                        onClick={() => toggleSection('MyWorkflows')}
                                     >
-                                        <span className="chevron">{expandedSections['DummyNodes'] ? '▼' : '▶'}</span>
-                                        <span className="library-name">I/O</span>
-                                        <span className="tool-count">{dummyNodes['I/O'].length}</span>
+                                        <Chevron expanded={expandedSections['MyWorkflows']} />
+                                        <span className="library-name">My Workflows</span>
+                                        <span className="tool-count">{customWorkflows.length}</span>
                                     </div>
 
-                                    {expandedSections['DummyNodes'] && (
+                                    {expandedSections['MyWorkflows'] && (
                                         <div className="library-tools">
                                             <div className="subsection-tools">
-                                                {dummyNodes['I/O'].map((tool, index) => (
-                                                    <WorkflowMenuItem
-                                                        key={`dummy-${index}`}
-                                                        name={tool.name}
-                                                        toolInfo={{
-                                                            fullName: tool.fullName,
-                                                            function: tool.function,
-                                                            typicalUse: tool.typicalUse,
-                                                        }}
-                                                        onDragStart={(event, name) =>
-                                                            handleDragStart(event, name, true)
-                                                        }
-                                                    />
-                                                ))}
+                                                {customWorkflows.map((wf) => {
+                                                    const nonDummyTools = wf.nodes
+                                                        .filter((n) => !n.isDummy)
+                                                        .map((n) => n.label);
+
+                                                    // Inline rename mode (F2 / pencil click / double-click on row)
+                                                    if (renamingId === wf.id) {
+                                                        return (
+                                                            <div
+                                                                key={wf.id}
+                                                                className="custom-workflow-row custom-workflow-row-renaming"
+                                                            >
+                                                                <input
+                                                                    type="text"
+                                                                    className="custom-workflow-rename-input"
+                                                                    autoFocus
+                                                                    defaultValue={wf.name}
+                                                                    onFocus={(e) => e.currentTarget.select()}
+                                                                    onKeyDown={(e) => {
+                                                                        if (e.key === 'Enter') {
+                                                                            commitRename(wf.id, e.currentTarget.value);
+                                                                        } else if (e.key === 'Escape') {
+                                                                            cancelRename();
+                                                                        }
+                                                                    }}
+                                                                    onBlur={(e) => commitRename(wf.id, e.target.value)}
+                                                                />
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    return (
+                                                        <div
+                                                            key={wf.id}
+                                                            className="custom-workflow-row"
+                                                            onDoubleClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setRenamingId(wf.id);
+                                                            }}
+                                                        >
+                                                            <WorkflowMenuItem
+                                                                name={wf.name}
+                                                                toolInfo={{
+                                                                    fullName: wf.name,
+                                                                    function: `Custom workflow with ${nonDummyTools.length} tools`,
+                                                                    typicalUse: `Tools: ${nonDummyTools.join(', ')}`,
+                                                                }}
+                                                                onDragStart={(event) =>
+                                                                    handleCustomWorkflowDragStart(event, wf)
+                                                                }
+                                                                warningIcon={wf.hasValidationWarnings}
+                                                            />
+                                                            <div className="custom-workflow-actions">
+                                                                {/* Rename — pencil icon */}
+                                                                <button
+                                                                    type="button"
+                                                                    className="custom-workflow-action-btn rename-btn"
+                                                                    title="Rename workflow"
+                                                                    aria-label="Rename workflow"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setRenamingId(wf.id);
+                                                                    }}
+                                                                >
+                                                                    <svg
+                                                                        width="14"
+                                                                        height="14"
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="2"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        aria-hidden="true"
+                                                                    >
+                                                                        <path d="M12 20h9" />
+                                                                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                                                    </svg>
+                                                                </button>
+                                                                {/* Open in new workspace — external-link icon */}
+                                                                <button
+                                                                    type="button"
+                                                                    className="custom-workflow-action-btn open-btn"
+                                                                    title="Open in new workspace"
+                                                                    aria-label="Open workflow in new workspace"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        if (onEditWorkflow) onEditWorkflow(wf);
+                                                                    }}
+                                                                >
+                                                                    <svg
+                                                                        width="14"
+                                                                        height="14"
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="2"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        aria-hidden="true"
+                                                                    >
+                                                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                                                        <polyline points="15 3 21 3 21 9" />
+                                                                        <line x1="10" y1="14" x2="21" y2="3" />
+                                                                    </svg>
+                                                                </button>
+                                                                {/* Delete — X icon */}
+                                                                <button
+                                                                    type="button"
+                                                                    className="custom-workflow-action-btn delete-btn"
+                                                                    title="Delete workflow"
+                                                                    aria-label="Delete workflow"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        const rect =
+                                                                            e.currentTarget.getBoundingClientRect();
+                                                                        setDeleteConfirm({
+                                                                            wfId: wf.id,
+                                                                            wfName: wf.name,
+                                                                            position: {
+                                                                                top: rect.top + rect.height / 2,
+                                                                                left: rect.right + 8,
+                                                                            },
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    <svg
+                                                                        width="14"
+                                                                        height="14"
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="2"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        aria-hidden="true"
+                                                                    >
+                                                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         </div>
                                     )}
                                 </div>
+                            )}
 
-                                {/* My Workflows Section */}
-                                {customWorkflows.length > 0 && (
-                                    <div className="library-section">
-                                        <div
-                                            className="library-header my-workflows-header"
-                                            onClick={() => toggleSection('MyWorkflows')}
-                                        >
-                                            <span className="chevron">
-                                                {expandedSections['MyWorkflows'] ? '\u25BC' : '\u25B6'}
-                                            </span>
-                                            <span className="library-name">My Workflows</span>
-                                            <span className="tool-count">{customWorkflows.length}</span>
-                                        </div>
+                            {/* Modality Sections */}
+                            {modalityOrder.map((modality) => {
+                                const modalityData = toolsByModality[modality];
+                                const isModalityExpanded = expandedSections[modality];
+                                const modalityToolCount = getModalityToolCount(modality);
+                                const libraries = modalityData ? Object.keys(modalityData) : [];
 
-                                        {expandedSections['MyWorkflows'] && (
-                                            <div className="library-tools">
-                                                <div className="subsection-tools">
-                                                    {customWorkflows.map((wf) => {
-                                                        const nonDummyTools = wf.nodes
-                                                            .filter((n) => !n.isDummy)
-                                                            .map((n) => n.label);
-                                                        return (
-                                                            <div key={wf.id} className="custom-workflow-item-wrapper">
-                                                                <WorkflowMenuItem
-                                                                    name={wf.name}
-                                                                    toolInfo={{
-                                                                        fullName: wf.name,
-                                                                        function: `Custom workflow with ${nonDummyTools.length} tools`,
-                                                                        typicalUse: `Tools: ${nonDummyTools.join(', ')}`,
-                                                                    }}
-                                                                    onDragStart={(event) =>
-                                                                        handleCustomWorkflowDragStart(event, wf)
-                                                                    }
-                                                                    warningIcon={wf.hasValidationWarnings}
-                                                                />
-                                                                <div className="custom-workflow-action-left">
-                                                                    <button
-                                                                        className="custom-workflow-action-btn edit-btn"
-                                                                        title="Edit in new workspace"
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            if (onEditWorkflow) onEditWorkflow(wf);
-                                                                        }}
-                                                                    >
-                                                                        &#9998;
-                                                                    </button>
-                                                                </div>
-                                                                <div className="custom-workflow-action-right">
-                                                                    <button
-                                                                        className="custom-workflow-action-btn delete-btn"
-                                                                        title="Delete workflow"
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            const rect =
-                                                                                e.currentTarget.getBoundingClientRect();
-                                                                            setDeleteConfirm({
-                                                                                wfId: wf.id,
-                                                                                wfName: wf.name,
-                                                                                position: {
-                                                                                    top: rect.top + rect.height / 2,
-                                                                                    left: rect.right + 8,
-                                                                                },
-                                                                            });
-                                                                        }}
-                                                                    >
-                                                                        &#10005;
-                                                                    </button>
-                                                                </div>
+                                // Sort libraries by libraryOrder
+                                const sortedLibraries = libraries.sort((a, b) => {
+                                    const aIdx = libraryOrder.indexOf(a);
+                                    const bIdx = libraryOrder.indexOf(b);
+                                    return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
+                                });
+
+                                if (modalityToolCount === 0) return null;
+
+                                return (
+                                    <div key={modality} className="modality-section">
+                                        <ModalityTooltip name={modality} description={modalityDescriptions[modality]}>
+                                            <div className="modality-header" onClick={() => toggleSection(modality)}>
+                                                <Chevron expanded={isModalityExpanded} />
+                                                <span className="modality-name">{modality}</span>
+                                                <span className="tool-count">{modalityToolCount}</span>
+                                            </div>
+                                        </ModalityTooltip>
+
+                                        {isModalityExpanded && (
+                                            <div className="modality-content">
+                                                {sortedLibraries.map((library) => {
+                                                    const libraryData = modalityData[library];
+                                                    const libraryKey = `${modality}::${library}`;
+                                                    const isLibraryExpanded = expandedSections[libraryKey];
+                                                    const libraryToolCount = getLibraryToolCount(modalityData, library);
+                                                    const categories = Object.keys(libraryData || {});
+
+                                                    if (libraryToolCount === 0) return null;
+
+                                                    return (
+                                                        <div key={libraryKey} className="library-section">
+                                                            <div
+                                                                className="library-header"
+                                                                onClick={() => toggleSection(libraryKey)}
+                                                            >
+                                                                <Chevron expanded={isLibraryExpanded} />
+                                                                <span className="library-name">{library}</span>
+                                                                <span className="tool-count">{libraryToolCount}</span>
                                                             </div>
-                                                        );
-                                                    })}
-                                                </div>
+
+                                                            {isLibraryExpanded && (
+                                                                <div className="library-tools">
+                                                                    {categories.map((category) => (
+                                                                        <div key={category} className="subsection">
+                                                                            <div className="subsection-header">
+                                                                                {category}
+                                                                            </div>
+                                                                            <div className="subsection-tools">
+                                                                                {libraryData[category].map(
+                                                                                    (tool, index) => (
+                                                                                        <WorkflowMenuItem
+                                                                                            key={`${libraryKey}-${category}-${index}`}
+                                                                                            name={tool.name}
+                                                                                            toolInfo={{
+                                                                                                fullName: tool.fullName,
+                                                                                                function: tool.function,
+                                                                                                modality: tool.modality,
+                                                                                                keyParameters:
+                                                                                                    tool.keyParameters,
+                                                                                                keyPoints:
+                                                                                                    tool.keyPoints,
+                                                                                                typicalUse:
+                                                                                                    tool.typicalUse,
+                                                                                                docUrl: tool.docUrl,
+                                                                                            }}
+                                                                                            onDragStart={
+                                                                                                handleDragStart
+                                                                                            }
+                                                                                        />
+                                                                                    ),
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         )}
                                     </div>
-                                )}
-
-                                {/* Modality Sections */}
-                                {modalityOrder.map((modality) => {
-                                    const modalityData = toolsByModality[modality];
-                                    const isModalityExpanded = expandedSections[modality];
-                                    const modalityToolCount = getModalityToolCount(modality);
-                                    const libraries = modalityData ? Object.keys(modalityData) : [];
-
-                                    // Sort libraries by libraryOrder
-                                    const sortedLibraries = libraries.sort((a, b) => {
-                                        const aIdx = libraryOrder.indexOf(a);
-                                        const bIdx = libraryOrder.indexOf(b);
-                                        return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
-                                    });
-
-                                    if (modalityToolCount === 0) return null;
-
-                                    return (
-                                        <div key={modality} className="modality-section">
-                                            <ModalityTooltip
-                                                name={modality}
-                                                description={modalityDescriptions[modality]}
-                                            >
-                                                <div
-                                                    className="modality-header"
-                                                    onClick={() => toggleSection(modality)}
-                                                >
-                                                    <span className="chevron">{isModalityExpanded ? '▼' : '▶'}</span>
-                                                    <span className="modality-name">{modality}</span>
-                                                    <span className="tool-count">{modalityToolCount}</span>
-                                                </div>
-                                            </ModalityTooltip>
-
-                                            {isModalityExpanded && (
-                                                <div className="modality-content">
-                                                    {sortedLibraries.map((library) => {
-                                                        const libraryData = modalityData[library];
-                                                        const libraryKey = `${modality}::${library}`;
-                                                        const isLibraryExpanded = expandedSections[libraryKey];
-                                                        const libraryToolCount = getLibraryToolCount(
-                                                            modalityData,
-                                                            library,
-                                                        );
-                                                        const categories = Object.keys(libraryData || {});
-
-                                                        if (libraryToolCount === 0) return null;
-
-                                                        return (
-                                                            <div key={libraryKey} className="library-section">
-                                                                <div
-                                                                    className="library-header"
-                                                                    onClick={() => toggleSection(libraryKey)}
-                                                                >
-                                                                    <span className="chevron">
-                                                                        {isLibraryExpanded ? '▼' : '▶'}
-                                                                    </span>
-                                                                    <span className="library-name">{library}</span>
-                                                                    <span className="tool-count">
-                                                                        {libraryToolCount}
-                                                                    </span>
-                                                                </div>
-
-                                                                {isLibraryExpanded && (
-                                                                    <div className="library-tools">
-                                                                        {categories.map((category) => (
-                                                                            <div key={category} className="subsection">
-                                                                                <div className="subsection-header">
-                                                                                    {category}
-                                                                                </div>
-                                                                                <div className="subsection-tools">
-                                                                                    {libraryData[category].map(
-                                                                                        (tool, index) => (
-                                                                                            <WorkflowMenuItem
-                                                                                                key={`${libraryKey}-${category}-${index}`}
-                                                                                                name={tool.name}
-                                                                                                toolInfo={{
-                                                                                                    fullName:
-                                                                                                        tool.fullName,
-                                                                                                    function:
-                                                                                                        tool.function,
-                                                                                                    modality:
-                                                                                                        tool.modality,
-                                                                                                    keyParameters:
-                                                                                                        tool.keyParameters,
-                                                                                                    keyPoints:
-                                                                                                        tool.keyPoints,
-                                                                                                    typicalUse:
-                                                                                                        tool.typicalUse,
-                                                                                                    docUrl: tool.docUrl,
-                                                                                                }}
-                                                                                                onDragStart={
-                                                                                                    handleDragStart
-                                                                                                }
-                                                                                            />
-                                                                                        ),
-                                                                                    )}
-                                                                                </div>
-                                                                            </div>
-                                                                        ))}
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </>
-                        )}
-                    </div>
-                </>
-            )}
+                                );
+                            })}
+                        </>
+                    )}
+                </div>
+            </>
         </div>
     );
 }

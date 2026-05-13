@@ -1,15 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
-import ActionsBar from './components/actionsBar';
-import HeaderBar from './components/headerBar';
+import IDELayout from './components/IDELayout';
 import WorkflowMenu from './components/workflowMenu';
-import ToggleWorkflowBar from './components/toggleWorkflowBar';
 import WorkflowCanvas from './components/workflowCanvas';
-import OutputNameInput from './components/outputNameInput';
-import WorkflowNameInput from './components/workflowNameInput';
-import Footer from './components/footer';
 import CWLPreviewPanel from './components/CWLPreviewPanel';
 import WorkflowComparisonModal from './components/WorkflowComparisonModal';
+import CommandPalette from './components/CommandPalette';
 import { useWorkspaces } from './hooks/useWorkspaces';
 import { useGenerateWorkflow } from './hooks/generateWorkflow';
 import { ToastProvider, useToast } from './context/ToastContext.jsx';
@@ -26,6 +22,7 @@ import {
     computeBoundaryNodes,
 } from './utils/workflowDiff.js';
 
+import './styles/tokens.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/background.css';
 
@@ -39,6 +36,8 @@ function App() {
         clearCurrentWorkspace,
         updateCurrentWorkspaceItems,
         removeCurrentWorkspace,
+        removeWorkspace,
+        renameWorkspace,
         updateWorkspaceName,
         updateWorkflowName,
         updateSavedWorkflowId,
@@ -51,11 +50,17 @@ function App() {
     const currentWorkflowName = workspaces[currentWorkspace]?.workflowName || '';
     const savedWorkflowId = workspaces[currentWorkspace]?.savedWorkflowId || null;
 
+    const sidebarRef = useRef(null);
+    const cwlRef = useRef(null);
+    const utilityRef = useRef(null);
+
     // This state will eventually hold a function returned by WorkflowCanvas
     const [getWorkflowData, setGetWorkflowData] = useState(null);
+    const [addNode, setAddNode] = useState(null);
     const [cwlReady, setCwlReady] = useState(false);
     const [showComparisonModal, setShowComparisonModal] = useState(false);
     const [comparisonDiffData, setComparisonDiffData] = useState(null);
+    const [showCommandPalette, setShowCommandPalette] = useState(false);
 
     const { generateWorkflow } = useGenerateWorkflow();
     const { showError, showSuccess, showWarning, showInfo } = useToast();
@@ -273,64 +278,159 @@ function App() {
     const savedWorkflow = savedWorkflowId ? customWorkflows.find((w) => w.id === savedWorkflowId) : null;
     const workflowHasChanges = savedWorkflow ? hasUnsavedChanges(workspaces[currentWorkspace], savedWorkflow) : false;
 
+    // Per-workspace status for tab annotations: 'unsaved' | 'modified' | null
+    const workspaceStatuses = useMemo(() =>
+        workspaces.map((ws) => {
+            if (!ws.savedWorkflowId) {
+                const hasContent = (ws.nodes || []).some((n) => !n.data?.isDummy);
+                return hasContent ? 'unsaved' : null;
+            }
+            const saved = customWorkflows.find((w) => w.id === ws.savedWorkflowId);
+            return saved && hasUnsavedChanges(ws, saved) ? 'modified' : null;
+        }),
+    [workspaces, customWorkflows]);
+
+    // Command palette: Ctrl+K global shortcut
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                setShowCommandPalette(true);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    const handleImportCWL = useCallback(() => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.cwl,.yaml,.yml';
+        input.onchange = (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            showInfo(`Imported "${file.name}" — CWL import coming soon`);
+        };
+        input.click();
+    }, [showInfo]);
+
+    const paletteActions = useMemo(
+        () => [
+            { id: 'new-workspace', label: 'New Workspace', handler: addNewWorkspace },
+            { id: 'clear-workspace', label: 'Clear Workspace', handler: clearCurrentWorkspace },
+            {
+                id: 'remove-workspace',
+                label: 'Remove Workspace',
+                handler: removeCurrentWorkspace,
+                disabled: workspaces.length <= 1,
+            },
+            {
+                id: 'save-workflow',
+                label: 'Save Workflow',
+                handler: handleSaveAsCustomNode,
+                disabled: !!savedWorkflowId,
+            },
+            {
+                id: 'generate-workflow',
+                label: 'Generate Workflow',
+                handler: () => generateWorkflow(getWorkflowData, currentOutputName),
+            },
+            { id: 'import-cwl', label: 'Import CWL', handler: handleImportCWL },
+        ],
+        [
+            addNewWorkspace,
+            clearCurrentWorkspace,
+            removeCurrentWorkspace,
+            workspaces.length,
+            handleSaveAsCustomNode,
+            savedWorkflowId,
+            generateWorkflow,
+            getWorkflowData,
+            currentOutputName,
+            handleImportCWL,
+        ],
+    );
+
+    const handlePaletteToolSelect = useCallback(
+        (item) => {
+            if (!addNode) return;
+            addNode(item.name, {
+                isDummy: item.isDummy || false,
+                isBIDS: item.isBIDS || false,
+                isOutputNode: item.isOutputNode || false,
+                customWorkflowId: null,
+            });
+        },
+        [addNode],
+    );
+
+    const handlePaletteWorkflowSelect = useCallback(
+        (workflow) => {
+            if (!addNode) return;
+            addNode(workflow.name, {
+                isDummy: false,
+                isBIDS: false,
+                isOutputNode: false,
+                customWorkflowId: workflow.id,
+            });
+        },
+        [addNode],
+    );
+
     return (
-        <div className="app-layout">
-            <HeaderBar />
-            <div className="toolbar-row">
-                <ActionsBar
-                    onNewWorkspace={addNewWorkspace}
-                    onClearWorkspace={clearCurrentWorkspace}
-                    onRemoveWorkspace={removeCurrentWorkspace}
-                    workspaceCount={workspaces.length}
-                    onGenerateWorkflow={() => generateWorkflow(getWorkflowData, currentOutputName)}
-                    onSaveWorkflow={handleSaveAsCustomNode}
-                    onRevertWorkflow={handleOpenComparison}
-                    isSavedWorkflow={!!savedWorkflowId}
-                    workflowHasChanges={workflowHasChanges}
-                />
-                <div className="workflow-names-container">
-                    <OutputNameInput name={currentOutputName} onNameChange={updateWorkspaceName} />
-                    <WorkflowNameInput
-                        name={currentWorkflowName}
-                        onNameChange={handleWorkflowNameChange}
-                        placeholder={getNextDefaultName()}
+        <>
+            <IDELayout
+                onNewWorkspace={addNewWorkspace}
+                onGenerateWorkflow={() => generateWorkflow(getWorkflowData, currentOutputName)}
+                onSaveWorkflow={handleSaveAsCustomNode}
+                onRevertWorkflow={handleOpenComparison}
+                isSavedWorkflow={!!savedWorkflowId}
+                workflowHasChanges={workflowHasChanges}
+                workflowDisplayName={currentWorkflowName.trim() || getNextDefaultName()}
+                onOpenCommandPalette={() => setShowCommandPalette(true)}
+                isCommandPaletteOpen={showCommandPalette}
+                currentWorkspace={currentWorkspace}
+                totalWorkspaces={workspaces.length}
+                workspaces={workspaces}
+                onWorkspaceSwitch={handleWorkspaceSwitch}
+                onRemoveWorkspaceAt={removeWorkspace}
+                onRenameWorkspace={renameWorkspace}
+                workspaceStatuses={workspaceStatuses}
+                sidebarRef={sidebarRef}
+                cwlRef={cwlRef}
+                utilityRef={utilityRef}
+                sidebarContent={
+                    <WorkflowMenu
+                        onEditWorkflow={handleEditWorkflow}
+                        onDeleteWorkflow={handleDeleteWorkflow}
                     />
-                </div>
-            </div>
-            <div className="workflow-content">
-                <div className="workflow-content-main">
-                    <WorkflowMenu onEditWorkflow={handleEditWorkflow} onDeleteWorkflow={handleDeleteWorkflow} />
-                    {cwlReady ? (
+                }
+                canvasContent={
+                    cwlReady ? (
                         <WorkflowCanvas
                             workflowItems={workspaces[currentWorkspace]}
                             updateCurrentWorkspaceItems={updateCurrentWorkspaceItems}
                             onSetWorkflowData={setGetWorkflowData}
+                            onSetAddNode={setAddNode}
                             currentWorkspaceIndex={currentWorkspace}
                             saveViewportForWorkspace={saveViewportForWorkspace}
                         />
                     ) : (
-                        <div
-                            className="workflow-canvas-loading"
-                            style={{
-                                flex: 1,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'var(--text-secondary)',
-                            }}
-                        >
-                            Loading tool definitions…
-                        </div>
-                    )}
+                        <div className="ide-loading-placeholder">Loading tool definitions…</div>
+                    )
+                }
+                cwlPreviewContent={
                     <CWLPreviewPanel getWorkflowData={getWorkflowData} />
-                </div>
-                <ToggleWorkflowBar
-                    current={currentWorkspace}
-                    workspaces={workspaces}
-                    onChange={handleWorkspaceSwitch}
-                />
-            </div>
-            <Footer />
+                }
+            />
+            <CommandPalette
+                isOpen={showCommandPalette}
+                onClose={() => setShowCommandPalette(false)}
+                actions={paletteActions}
+                customWorkflows={customWorkflows}
+                onSelectTool={handlePaletteToolSelect}
+                onSelectWorkflow={handlePaletteWorkflowSelect}
+            />
             <WorkflowComparisonModal
                 show={showComparisonModal}
                 onHide={() => setShowComparisonModal(false)}
@@ -345,7 +445,7 @@ function App() {
                 }}
                 savedName={savedWorkflow?.name || ''}
             />
-        </div>
+        </>
     );
 }
 

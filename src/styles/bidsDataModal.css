@@ -13,7 +13,7 @@
     border: 1px solid var(--border-medium);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
     padding: 8px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 }
 
 .bids-modal .modal-header {
@@ -22,7 +22,7 @@
 }
 
 .bids-modal .modal-title {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     font-size: clamp(0.9rem, 0.7rem + 0.7vw, 1.05rem);
     color: var(--text-primary);
@@ -71,7 +71,7 @@
 }
 
 .bids-subject-count {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.65rem, 0.5rem + 0.5vw, 0.75rem);
     color: var(--text-muted);
     white-space: nowrap;
@@ -87,11 +87,11 @@
 }
 
 .bids-select-all-btn {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.62rem, 0.48rem + 0.5vw, 0.72rem);
-    color: var(--color-primary);
+    color: var(--color-accent);
     background: none;
-    border: 1px solid rgba(74, 144, 226, 0.3);
+    border: 1px solid var(--color-accent-border);
     border-radius: 3px;
     padding: 1px 6px;
     cursor: pointer;
@@ -102,7 +102,7 @@
 }
 
 .bids-select-all-btn:hover {
-    background-color: rgba(74, 144, 226, 0.1);
+    background-color: var(--color-accent-muted);
 }
 
 .bids-search-input {
@@ -110,7 +110,7 @@
     border: 1px solid var(--border-subtle);
     border-radius: 3px;
     color: var(--text-light);
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.68rem, 0.52rem + 0.55vw, 0.78rem);
     padding: 3px 6px;
     margin-bottom: 6px;
@@ -132,7 +132,7 @@
     gap: 6px;
     padding: 2px 4px;
     border-radius: 3px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.68rem, 0.52rem + 0.55vw, 0.78rem);
     cursor: pointer;
 }
@@ -142,7 +142,7 @@
 }
 
 .bids-subject-row input[type='checkbox'] {
-    accent-color: var(--color-primary);
+    accent-color: var(--color-accent);
     cursor: pointer;
 }
 
@@ -172,7 +172,7 @@
 }
 
 .bids-section-label {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 500;
     font-size: clamp(0.7rem, 0.54rem + 0.55vw, 0.8rem);
     color: var(--text-muted);
@@ -195,7 +195,7 @@
     border: 1px solid var(--border-subtle);
     border-radius: 4px;
     padding: 3px 8px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.68rem, 0.52rem + 0.55vw, 0.78rem);
     cursor: pointer;
     user-select: none;
@@ -214,8 +214,8 @@
 }
 
 .bids-datatype-chip.selected {
-    border-color: var(--color-primary);
-    background-color: rgba(74, 144, 226, 0.12);
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-muted);
 }
 
 .bids-datatype-chip.unavailable {
@@ -224,7 +224,7 @@
 }
 
 .bids-datatype-chip input[type='checkbox'] {
-    accent-color: var(--color-primary);
+    accent-color: var(--color-accent);
     cursor: pointer;
 }
 
@@ -235,7 +235,7 @@
 }
 
 .bids-outputs-subtitle {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.6rem, 0.46rem + 0.5vw, 0.7rem);
     color: var(--text-secondary);
     margin-bottom: 8px;
@@ -257,7 +257,7 @@
 .bids-output-group {
     margin-bottom: 10px;
     padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .bids-output-group:last-child {
@@ -278,7 +278,7 @@
     border: 1px solid var(--border-subtle);
     border-radius: 3px;
     color: var(--text-light);
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.76rem, 0.58rem + 0.55vw, 0.88rem);
     padding: 2px 6px;
     flex: 1;
@@ -286,22 +286,22 @@
 }
 
 .bids-output-label-input:focus {
-    border-color: var(--color-primary);
+    border-color: var(--color-accent);
     outline: none;
 }
 
 .bids-output-type-badge {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.68rem, 0.52rem + 0.55vw, 0.8rem);
-    color: var(--color-cyan);
-    background-color: rgba(74, 198, 226, 0.08);
-    border: 1px solid rgba(74, 198, 226, 0.2);
+    color: var(--color-info);
+    background-color: var(--color-info-muted);
+    border: 1px solid var(--color-info-border);
     border-radius: 2px;
     padding: 1px 4px;
 }
 
 .bids-output-count-badge {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.66rem, 0.5rem + 0.55vw, 0.78rem);
     color: var(--text-muted);
     background-color: rgba(255, 255, 255, 0.04);
@@ -314,14 +314,14 @@
     font-size: clamp(0.7rem, 0.54rem + 0.55vw, 0.82rem);
     color: var(--color-danger);
     background: none;
-    border: 1px solid rgba(231, 76, 60, 0.3);
+    border: 1px solid var(--color-danger-border);
     border-radius: 3px;
     padding: 1px 6px;
     cursor: pointer;
 }
 
 .bids-remove-group-btn:hover {
-    background-color: rgba(231, 76, 60, 0.1);
+    background-color: var(--color-danger-muted);
 }
 
 .bids-output-filters {
@@ -336,7 +336,7 @@
 }
 
 .bids-filter-label {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.7rem, 0.54rem + 0.55vw, 0.82rem);
     color: var(--text-muted);
 }
@@ -346,7 +346,7 @@
     border: 1px solid var(--border-subtle);
     border-radius: 3px;
     color: var(--text-light);
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.73rem, 0.56rem + 0.55vw, 0.85rem);
     padding: 3px 6px;
 }
@@ -355,13 +355,13 @@
     display: flex;
     align-items: center;
     gap: 3px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.7rem, 0.54rem + 0.55vw, 0.82rem);
     color: var(--text-muted);
 }
 
 .bids-filter-check input[type='checkbox'] {
-    accent-color: var(--color-primary);
+    accent-color: var(--color-accent);
 }
 
 .bids-suffix-desc {
@@ -372,11 +372,11 @@
 }
 
 .bids-add-group-btn {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.72rem, 0.56rem + 0.55vw, 0.84rem);
     color: var(--color-success);
     background: none;
-    border: 1px solid rgba(76, 175, 80, 0.3);
+    border: 1px solid var(--color-success-border);
     border-radius: 3px;
     padding: 3px 8px;
     cursor: pointer;
@@ -384,7 +384,7 @@
 }
 
 .bids-add-group-btn:hover {
-    background-color: rgba(76, 175, 80, 0.1);
+    background-color: var(--color-success-muted);
 }
 
 /* ---- Path Preview ---- */
@@ -396,7 +396,7 @@
 
 .bids-preview-header {
     padding: 4px 8px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.65rem, 0.5rem + 0.5vw, 0.75rem);
     color: var(--text-muted);
     border-bottom: 1px solid var(--border-subtle);
@@ -411,7 +411,7 @@
 }
 
 .bids-preview-path {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.6rem, 0.46rem + 0.5vw, 0.7rem);
     color: var(--text-muted);
     line-height: 1.5;
@@ -419,7 +419,7 @@
 }
 
 .bids-preview-more {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.6rem, 0.46rem + 0.5vw, 0.7rem);
     color: var(--text-secondary);
     font-style: italic;
@@ -427,9 +427,9 @@
 
 /* ---- Modal buttons ---- */
 .bids-modal .btn-save {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-    font-family: 'Roboto Mono', monospace;
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    font-family: var(--font-mono);
     font-size: clamp(0.72rem, 0.55rem + 0.55vw, 0.82rem);
     padding: 4px 14px;
 }
@@ -442,7 +442,7 @@
     background-color: transparent;
     border: 1px solid var(--border-medium);
     color: var(--text-muted);
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.72rem, 0.55rem + 0.55vw, 0.82rem);
     padding: 4px 14px;
 }
@@ -459,7 +459,7 @@
     justify-content: center;
     min-height: 160px;
     color: var(--text-secondary);
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.72rem, 0.55rem + 0.55vw, 0.82rem);
     font-style: italic;
 }

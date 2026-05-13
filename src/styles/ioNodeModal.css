@@ -4,18 +4,18 @@
     color: var(--text-light);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-lg);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 }
 
 .io-node-modal .modal-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
     padding: 12px 16px;
     background-color: var(--bg-header);
     border-radius: 8px 8px 0 0;
 }
 
 .io-node-modal .modal-title {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-light);
@@ -31,7 +31,7 @@
 }
 
 .io-modal-label {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 500;
     color: var(--text-muted);
@@ -43,9 +43,9 @@
 .io-modal-input,
 .io-modal-textarea {
     background-color: var(--bg-primary) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid var(--border-panel) !important;
     color: var(--text-light) !important;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     border-radius: 6px;
 }
@@ -67,7 +67,7 @@
 }
 
 .io-node-modal .modal-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--border-panel);
     padding: 12px 16px;
     background-color: var(--bg-header);
     border-radius: 0 0 8px 8px;
@@ -75,8 +75,8 @@
 }
 
 .io-node-modal .btn-primary {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
     font-size: 0.85rem;
     padding: 8px 20px;
     border-radius: 5px;
@@ -90,7 +90,7 @@
 
 .io-node-modal .btn-secondary {
     background-color: transparent;
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--border-medium);
     color: var(--text-muted);
     font-size: 0.85rem;
     padding: 8px 20px;
@@ -100,6 +100,6 @@
 
 .io-node-modal .btn-secondary:hover {
     background-color: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: var(--border-strong);
     color: var(--text-light);
 }

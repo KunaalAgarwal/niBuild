@@ -1,0 +1,379 @@
+.ide-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-base);
+}
+
+.ide-main-area {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Override library inline overflow: visible on Panel outer wrappers */
+[data-panel] {
+    overflow: hidden !important;
+}
+
+/* Smooth collapse/expand — only active when JS adds .ide-animating */
+.ide-animating [data-panel] {
+    transition:
+        flex-grow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        flex-basis 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Give Panel inner div a definite height and kill the library's inline overflow: auto */
+[data-panel] > div {
+    height: 100% !important;
+    overflow: hidden !important;
+}
+
+/* Panel content wrapper */
+.ide-panel-content {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+/* Sidebar */
+.ide-sidebar {
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-default);
+    overflow: hidden;
+}
+
+/* Center column: tab bar + canvas stacked vertically */
+.ide-center-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Tab bar — fixed height, only above the canvas */
+.ide-tab-bar {
+    height: 35px;
+    min-height: 35px;
+    background-color: var(--bg-tabbar);
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    padding: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.ide-tabs-scroll {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+.ide-tabs-scroll::-webkit-scrollbar { display: none; }
+
+.ide-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    padding: 0 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-right: 1px solid var(--border-default);
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: var(--size-xs);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.ide-tab:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.ide-tab.active {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--color-accent);
+}
+
+.ide-tab-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+.ide-tab-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--transition-fast), background-color var(--transition-fast);
+}
+
+.ide-tab:hover .ide-tab-close,
+.ide-tab.active .ide-tab-close {
+    opacity: 1;
+}
+
+.ide-tab-close:hover {
+    background-color: var(--bg-interactive);
+    color: var(--text-primary);
+    transform: none;
+    box-shadow: none;
+}
+
+.ide-tab-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin: 0 4px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.ide-tab-add:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    transform: none;
+    box-shadow: none;
+}
+
+.ide-tab-dirty {
+    color: var(--color-warning, #e2b340);
+}
+
+.ide-tab-dirty.active {
+    color: var(--color-warning, #e2b340);
+}
+
+.ide-tab-badge {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--color-warning, #e2b340);
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.ide-tab-edit {
+    background: transparent;
+    border: 1px solid var(--border-input-focus);
+    border-radius: var(--radius-xs);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: var(--size-xs);
+    padding: 1px 4px;
+    outline: none;
+    width: 120px;
+    max-width: 150px;
+}
+
+/* Canvas wrapper — fills remaining space below tab bar */
+.ide-canvas-wrapper {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--bg-canvas);
+}
+
+/* CWL Preview */
+.ide-cwl-preview {
+    background-color: var(--bg-preview);
+    border-left: 1px solid var(--border-default);
+}
+
+/* Utility bar */
+.ide-utility-bar {
+    background-color: var(--bg-utilitybar);
+    border-top: 1px solid var(--border-default);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ide-utility-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 8px;
+    height: 30px;
+    min-height: 30px;
+    border-bottom: 1px solid var(--border-default);
+    background-color: var(--bg-elevated);
+}
+
+.ide-utility-tab {
+    font-family: var(--font-mono);
+    font-size: var(--size-2xs);
+    font-weight: var(--weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition:
+        color var(--transition-normal),
+        border-color var(--transition-normal);
+    user-select: none;
+}
+
+.ide-utility-tab:hover {
+    color: var(--text-primary);
+}
+
+.ide-utility-tab.active {
+    color: var(--text-on-accent);
+    border-bottom-color: var(--color-accent);
+}
+
+.ide-utility-content {
+    flex: 1;
+    overflow: auto;
+    padding: 8px 12px;
+}
+
+/* Placeholder text */
+.ide-placeholder-label {
+    font-family: var(--font-mono);
+    font-size: var(--size-xs);
+    color: var(--text-muted);
+    user-select: none;
+}
+
+.ide-placeholder-text {
+    font-family: var(--font-mono);
+    font-size: var(--size-xs);
+    color: var(--text-disabled);
+}
+
+.ide-loading-placeholder {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: var(--size-base);
+    color: var(--text-disabled);
+}
+
+/* Resize handles */
+.ide-resize-handle {
+    background-color: transparent;
+    transition: background-color var(--transition-normal);
+    position: relative;
+    z-index: 10;
+}
+
+.ide-resize-handle::after {
+    content: '';
+    position: absolute;
+    transition: background-color var(--transition-normal);
+    pointer-events: none;
+}
+
+.ide-resize-handle-horizontal {
+    width: 4px;
+    cursor: col-resize;
+}
+
+.ide-resize-handle-horizontal::after {
+    top: 0;
+    bottom: 0;
+    left: 1px;
+    width: 2px;
+    background-color: var(--border-resize);
+}
+
+.ide-resize-handle-vertical {
+    height: 4px;
+    cursor: row-resize;
+}
+
+.ide-resize-handle-vertical::after {
+    left: 0;
+    right: 0;
+    top: 1px;
+    height: 2px;
+    background-color: var(--border-resize);
+}
+
+.ide-resize-handle:hover::after,
+.ide-resize-handle[data-resize-handle-active]::after {
+    background-color: var(--border-resize-active);
+}
+
+/* Collapsed panel strips */
+.ide-collapsed-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    cursor: pointer;
+}
+
+.ide-collapsed-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+.ide-collapsed-strip:hover .ide-collapsed-label {
+    color: var(--text-medium);
+}
+
+/* Utility bar collapse toggle */
+.ide-utility-collapse-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+}
+
+.ide-utility-collapse-btn:hover {
+    color: var(--text-primary);
+    background: none;
+    transform: none;
+    box-shadow: none;
+}

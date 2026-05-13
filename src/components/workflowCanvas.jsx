@@ -42,6 +42,7 @@ function WorkflowCanvas({
     workflowItems,
     updateCurrentWorkspaceItems,
     onSetWorkflowData,
+    onSetAddNode,
     currentWorkspaceIndex,
     saveViewportForWorkspace,
 }) {
@@ -609,28 +610,14 @@ function WorkflowCanvas({
         event.dataTransfer.dropEffect = 'move';
     }, []);
 
-    // On drop, create a new node.
-    const handleDrop = (event) => {
-        event.preventDefault();
-        const name = event.dataTransfer.getData('node/name') || 'Unnamed Node';
-        const isDummy = event.dataTransfer.getData('node/isDummy') === 'true';
-        const isBIDS = event.dataTransfer.getData('node/isBIDS') === 'true';
-        const isOutputNode = event.dataTransfer.getData('node/isOutputNode') === 'true';
-        const customWorkflowId = event.dataTransfer.getData('node/customWorkflowId');
-        if (!reactFlowInstance) return;
-
-        const flowPosition = reactFlowInstance.screenToFlowPosition({
-            x: event.clientX,
-            y: event.clientY,
-        });
-
-        // Helper: create a node with common defaults, apply type-specific overrides
-        const createNode = (dataOverrides, afterAdd) => {
+    // Shared node creation helper — used by both handleDrop and addNodeAtCenter
+    const createNodeAt = useCallback(
+        (position, name, dataOverrides, afterAdd) => {
             const newNodeId = crypto.randomUUID();
             const newNode = {
                 id: newNodeId,
                 type: 'default',
-                position: flowPosition,
+                position,
                 data: {
                     label: name,
                     isDummy: false,
@@ -646,47 +633,96 @@ function WorkflowCanvas({
             setNodes((prevNodes) => [...prevNodes, newNode]);
             markForSync();
             if (afterAdd) afterAdd(newNodeId);
-        };
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [markForSync],
+    );
 
-        if (isBIDS) {
-            createNode(
-                (id) => ({
-                    isDummy: true,
-                    isBIDS: true,
-                    bidsStructure: null,
-                    bidsSelections: null,
-                    onSaveParameters: null,
-                    onSaveIO: (data) => handleIONodeUpdate(id, data),
-                    onUpdateBIDS: (updates) => handleBIDSNodeUpdate(id, updates),
+    const buildNodeOverrides = useCallback(
+        (name, { isDummy, isBIDS, isOutputNode, customWorkflowId }) => {
+            if (isBIDS) {
+                return {
+                    overrides: (id) => ({
+                        isDummy: true,
+                        isBIDS: true,
+                        bidsStructure: null,
+                        bidsSelections: null,
+                        onSaveParameters: null,
+                        onSaveIO: (data) => handleIONodeUpdate(id, data),
+                        onUpdateBIDS: (updates) => handleBIDSNodeUpdate(id, updates),
+                    }),
+                    afterAdd: (id) => triggerBIDSDirectoryPicker(id),
+                };
+            }
+            if (customWorkflowId) {
+                const savedWorkflow = customWorkflows.find((w) => w.id === customWorkflowId);
+                if (!savedWorkflow) return null;
+                return {
+                    overrides: (id) => ({
+                        label: savedWorkflow.name,
+                        isCustomWorkflow: true,
+                        customWorkflowId: savedWorkflow.id,
+                        internalNodes: structuredClone(savedWorkflow.nodes),
+                        internalEdges: structuredClone(savedWorkflow.edges),
+                        boundaryNodes: { ...savedWorkflow.boundaryNodes },
+                        hasValidationWarnings: savedWorkflow.hasValidationWarnings,
+                        parameters: {},
+                        onSaveParameters: (newData) => handleCustomNodeUpdate(id, newData),
+                        onUpdateInternalBIDS: (updates) => handleInternalBIDSUpdate(id, updates),
+                    }),
+                };
+            }
+            return {
+                overrides: (id) => ({
+                    isDummy,
+                    isOutputNode: isOutputNode || undefined,
+                    selectedOutputs: isOutputNode ? null : undefined,
+                    onSaveParameters: isDummy ? null : (newData) => handleNodeUpdate(id, newData),
+                    onSaveIO: isDummy ? (data) => handleIONodeUpdate(id, data) : null,
+                    onSaveOutputConfig: isOutputNode ? (data) => handleOutputNodeUpdate(id, data) : null,
                 }),
-                (id) => triggerBIDSDirectoryPicker(id),
-            );
-        } else if (customWorkflowId) {
-            const savedWorkflow = customWorkflows.find((w) => w.id === customWorkflowId);
-            if (!savedWorkflow) return;
-            createNode((id) => ({
-                label: savedWorkflow.name,
-                isCustomWorkflow: true,
-                customWorkflowId: savedWorkflow.id,
-                internalNodes: structuredClone(savedWorkflow.nodes),
-                internalEdges: structuredClone(savedWorkflow.edges),
-                boundaryNodes: { ...savedWorkflow.boundaryNodes },
-                hasValidationWarnings: savedWorkflow.hasValidationWarnings,
-                parameters: {},
-                onSaveParameters: (newData) => handleCustomNodeUpdate(id, newData),
-                onUpdateInternalBIDS: (updates) => handleInternalBIDSUpdate(id, updates),
-            }));
-        } else {
-            createNode((id) => ({
-                isDummy: isDummy,
-                isOutputNode: isOutputNode || undefined,
-                selectedOutputs: isOutputNode ? null : undefined,
-                onSaveParameters: isDummy ? null : (newData) => handleNodeUpdate(id, newData),
-                onSaveIO: isDummy ? (data) => handleIONodeUpdate(id, data) : null,
-                onSaveOutputConfig: isOutputNode ? (data) => handleOutputNodeUpdate(id, data) : null,
-            }));
-        }
+            };
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [customWorkflows],
+    );
+
+    // On drop, create a new node.
+    const handleDrop = (event) => {
+        event.preventDefault();
+        const name = event.dataTransfer.getData('node/name') || 'Unnamed Node';
+        const isDummy = event.dataTransfer.getData('node/isDummy') === 'true';
+        const isBIDS = event.dataTransfer.getData('node/isBIDS') === 'true';
+        const isOutputNode = event.dataTransfer.getData('node/isOutputNode') === 'true';
+        const customWorkflowId = event.dataTransfer.getData('node/customWorkflowId');
+        if (!reactFlowInstance) return;
+
+        const flowPosition = reactFlowInstance.screenToFlowPosition({
+            x: event.clientX,
+            y: event.clientY,
+        });
+
+        const result = buildNodeOverrides(name, { isDummy, isBIDS, isOutputNode, customWorkflowId });
+        if (!result) return;
+        createNodeAt(flowPosition, name, result.overrides, result.afterAdd);
     };
+
+    // Add a node at the center of the current viewport (used by command palette)
+    const addNodeAtCenter = useCallback(
+        (name, opts = {}) => {
+            if (!reactFlowInstance) return;
+            const { x, y, zoom } = reactFlowInstance.getViewport();
+            const wrapper = reactFlowWrapper.current;
+            if (!wrapper) return;
+            const cx = (-x + wrapper.clientWidth / 2) / zoom;
+            const cy = (-y + wrapper.clientHeight / 2) / zoom;
+
+            const result = buildNodeOverrides(name, opts);
+            if (!result) return;
+            createNodeAt({ x: cx, y: cy }, name, result.overrides, result.afterAdd);
+        },
+        [reactFlowInstance, createNodeAt, buildNodeOverrides],
+    );
 
     // Delete nodes and corresponding edges.
     // Uses Set for O(1) lookups instead of O(n) array.some()
@@ -753,6 +789,12 @@ function WorkflowCanvas({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, onSetWorkflowData]);
 
+    useEffect(() => {
+        if (onSetAddNode) {
+            onSetAddNode(() => addNodeAtCenter);
+        }
+    }, [addNodeAtCenter, onSetAddNode]);
+
     return (
         <div className="workflow-canvas">
             <div
@@ -784,7 +826,7 @@ function WorkflowCanvas({
                             }}
                         >
                             <MiniMap
-                                nodeColor="var(--color-primary)"
+                                nodeColor="var(--color-accent)"
                                 maskColor="var(--minimap-mask)"
                                 style={{ backgroundColor: 'var(--minimap-bg)' }}
                             />
@@ -812,6 +854,18 @@ function WorkflowCanvas({
                                     title="Remove all edges"
                                 >
                                     Clear Edges
+                                </button>
+                                <button
+                                    className="canvas-bottom-btn collapsible"
+                                    onClick={() => {
+                                        setNodes([]);
+                                        setEdges([]);
+                                        markForSync();
+                                    }}
+                                    disabled={nodes.length === 0}
+                                    title="Clear all nodes and edges"
+                                >
+                                    Clear All
                                 </button>
                             </div>
                         </ReactFlow>

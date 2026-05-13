@@ -20,7 +20,7 @@
 }
 
 .name-input-label {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.6rem;
     color: var(--text-secondary);
     min-width: 30px;
@@ -33,7 +33,7 @@
     display: flex;
     align-items: center;
     background-color: var(--bg-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--border-input-hover);
     border-radius: 4px;
     overflow: hidden;
     flex: 1;
@@ -44,12 +44,12 @@
 }
 
 .name-input-wrapper:focus-within {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-focus);
 }
 
 .name-input-field {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     background: transparent;
     color: var(--text-light);
     border: none;
@@ -66,7 +66,7 @@
 }
 
 .name-input-suffix {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--text-secondary);
     padding-right: 4px;

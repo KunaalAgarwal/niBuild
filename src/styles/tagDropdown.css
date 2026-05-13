@@ -7,7 +7,7 @@
     display: flex;
     align-items: center;
     background-color: var(--bg-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--border-input-hover);
     border-radius: 4px;
     padding: 6px 10px;
     transition:
@@ -17,8 +17,8 @@
 }
 
 .tag-dropdown-wrapper.focused {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.15);
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-focus);
 }
 
 .tag-dropdown-wrapper.invalid {
@@ -26,12 +26,12 @@
 }
 
 .tag-dropdown-wrapper.invalid.focused {
-    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.15);
+    box-shadow: 0 0 0 2px var(--color-danger-muted);
 }
 
 /* Prefix text (e.g., "brainlife/fsl:") */
 .tag-dropdown-prefix {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     color: var(--text-muted);
     font-size: 0.85rem;
     white-space: nowrap;
@@ -40,10 +40,10 @@
 
 /* Input field */
 .tag-dropdown-input {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     background-color: transparent;
     border: none;
-    color: var(--color-primary);
+    color: var(--color-accent);
     padding: 0 4px;
     flex: 1;
     font-size: 0.85rem;
@@ -72,7 +72,7 @@
 }
 
 .tag-dropdown-chevron:hover {
-    color: var(--color-primary);
+    color: var(--color-accent);
 }
 
 .tag-dropdown-chevron.open {
@@ -116,7 +116,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 12px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--text-light);
     border-radius: 4px;
@@ -131,7 +131,7 @@
 
 .tag-dropdown-item.selected {
     background-color: #1a3a5c;
-    color: var(--color-primary);
+    color: var(--color-accent);
 }
 
 .tag-dropdown-item.selected.highlighted {

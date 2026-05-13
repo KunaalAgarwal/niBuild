@@ -1,320 +1,366 @@
 .workflow-menu-container {
-    flex: 0.5;
+    height: 100%;
+    width: 100%;
     min-width: 0;
-    max-height: 80vh;
     overflow-y: auto;
-    margin: clamp(8px, 1.5vw, 20px);
-    padding: 0;
-    border-radius: 12px;
-    background-color: rgba(46, 46, 46, 0.9);
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    scroll-behavior: smooth;
-    transition:
-        flex 0.3s ease,
-        max-width 0.3s ease;
+    overscroll-behavior: none;
+    background-color: var(--bg-sidebar);
 }
 
 .workflow-menu {
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 0.6vw, 8px);
-    padding: clamp(8px, 1vw, 15px);
+    gap: 2px;
+    padding: 6px 0;
 }
 
-/* Modality Section Styles */
-.modality-section {
-    margin-bottom: 2px;
-}
+/* ============================================================
+   Section headers — flat 26px rows, VS Code file-explorer style
+   ============================================================ */
 
-.modality-header {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: clamp(6px, 0.8vw, 10px) clamp(8px, 1vw, 12px);
-    background-color: var(--bg-interactive);
-    border-radius: 8px;
-    font-weight: 700;
-    color: var(--text-light);
-    transition: background-color 0.2s ease;
-    user-select: none;
-}
-
-.modality-header:hover {
-    background-color: var(--bg-hover);
-}
-
-.modality-header .chevron {
-    margin-right: clamp(4px, 0.5vw, 8px);
-    font-size: 0.7em;
-    transition: transform 0.2s ease;
-    color: var(--text-muted);
-    flex-shrink: 0;
-}
-
-.modality-header .modality-name {
-    flex: 1;
-    font-size: clamp(0.8rem, 1.1vw, 0.95rem);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 0;
-}
-
-.modality-header .tool-count {
-    font-size: clamp(0.65rem, 0.7vw, 0.75rem);
-    color: var(--text-muted);
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: clamp(1px, 0.3vw, 2px) clamp(4px, 0.6vw, 6px);
-    border-radius: 10px;
-    white-space: nowrap;
-    margin-left: 8px;
-}
-
-.modality-content {
-    padding: clamp(3px, 0.4vw, 6px) 0 clamp(2px, 0.3vw, 4px) clamp(3px, 0.4vw, 6px);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-/* Library Section Styles */
-.library-section {
-    margin-bottom: 2px;
-}
-
+/* Top-level headers (modalities, I/O, My Workflows) — uppercase */
+.modality-header,
 .library-header {
-    cursor: pointer;
     display: flex;
     align-items: center;
-    padding: clamp(6px, 0.8vw, 10px) clamp(8px, 1vw, 12px);
-    background-color: var(--bg-interactive);
-    border-radius: 8px;
-    font-weight: 600;
-    color: var(--text-light);
-    transition: background-color 0.2s ease;
+    cursor: pointer;
     user-select: none;
+    height: 26px;
+    padding: 0 8px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: var(--text-sidebar-heading);
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: background-color var(--transition-fast);
 }
 
+.modality-header:hover,
 .library-header:hover {
     background-color: var(--bg-hover);
 }
 
-.library-header .chevron {
-    margin-right: clamp(4px, 0.5vw, 8px);
-    font-size: 0.7em;
-    transition: transform 0.2s ease;
+/* Nested library headers (inside an expanded modality) — mixed case, lighter weight */
+.modality-content .library-header {
+    font-size: var(--size-md);
+    font-weight: var(--weight-medium);
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-sidebar);
+}
+
+.chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
     color: var(--text-muted);
     flex-shrink: 0;
 }
 
-.library-header .library-name {
+.chevron svg {
+    transition: transform var(--transition-fast);
+}
+
+.chevron.chevron-expanded svg {
+    transform: rotate(90deg);
+}
+
+.modality-name,
+.library-name {
     flex: 1;
-    font-size: clamp(0.8rem, 1.1vw, 0.95rem);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     min-width: 0;
 }
 
-.library-header .tool-count {
-    font-size: clamp(0.65rem, 0.7vw, 0.75rem);
+/* Plain count — no pill background; override parent's uppercase + tracking */
+.tool-count {
+    margin-left: auto;
+    padding-left: 8px;
+    font-size: var(--size-sm);
+    font-weight: var(--weight-regular);
     color: var(--text-muted);
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: clamp(1px, 0.3vw, 2px) clamp(4px, 0.6vw, 6px);
-    border-radius: 10px;
+    background: transparent;
+    border-radius: 0;
     white-space: nowrap;
-    margin-left: 8px;
+    text-transform: none;
+    letter-spacing: 0;
 }
 
-/* Green accent for I/O section */
-.io-header {
-    border: 1px solid rgba(46, 204, 113, 0.4);
-}
+/* ============================================================
+   Section accents (I/O green, My Workflows purple)
+   ============================================================ */
 
-.io-header .library-name {
+/* I/O section — green accent on header label, chevron, count, and tool items */
+.io-header .library-name,
+.io-section .tool-count,
+.io-section .workflow-menu-item {
     color: rgba(130, 230, 170, 0.95);
 }
 
 .io-header .chevron {
-    color: rgba(46, 204, 113, 0.7);
+    color: var(--color-green-io);
 }
 
-.io-header:hover {
-    border-color: rgba(46, 204, 113, 0.6);
-}
-
-/* Purple accent for My Workflows section */
-.my-workflows-header {
-    border: 1px solid rgba(168, 85, 247, 0.4);
-}
-
-.my-workflows-header .library-name {
+/* My Workflows section — purple accent on header label, chevron, count, and tool items */
+.my-workflows-header .library-name,
+.my-workflows-section .tool-count,
+.my-workflows-section .workflow-menu-item {
     color: rgba(200, 160, 255, 0.95);
 }
 
 .my-workflows-header .chevron {
-    color: rgba(168, 85, 247, 0.7);
+    color: var(--color-purple);
 }
 
-.my-workflows-header:hover {
-    border-color: rgba(168, 85, 247, 0.6);
+/* ============================================================
+   Nested-content indentation
+   ============================================================ */
+
+.modality-section,
+.library-section {
+    margin: 0;
+}
+
+.modality-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 2px 0 4px 14px;
 }
 
 .library-tools {
-    padding: clamp(4px, 0.6vw, 8px) 0 clamp(2px, 0.3vw, 4px) clamp(4px, 0.6vw, 8px);
     display: flex;
     flex-direction: column;
-    gap: clamp(3px, 0.4vw, 6px);
+    gap: 0;
+    padding: 2px 0 4px 14px;
 }
 
-/* Subsection Styles */
 .subsection {
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+}
+
+.subsection:last-child {
+    margin-bottom: 0;
 }
 
 .subsection-header {
-    font-size: clamp(0.55em, 0.7vw, 0.7em);
+    padding: 6px 8px 2px;
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+    font-weight: var(--weight-medium);
     color: var(--text-muted);
-    padding: clamp(4px, 0.6vw, 8px) clamp(4px, 0.6vw, 8px) clamp(2px, 0.3vw, 4px);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 500;
+    letter-spacing: 0.04em;
 }
 
 .subsection-tools {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 0;
 }
 
-/* Search Bar */
+/* Tools inside a category get an extra indent so the category header
+   sits clearly above its grouped tools. Does not apply to I/O or My
+   Workflows (whose subsection-tools have no .subsection parent). */
+.subsection > .subsection-tools {
+    padding-left: 12px;
+}
+
+/* ============================================================
+   Sticky search bar (top of panel)
+   ============================================================ */
+
 .workflow-search {
     position: sticky;
     top: 0;
     z-index: 10;
-    padding: clamp(6px, 0.8vw, 12px) clamp(8px, 1vw, 15px) clamp(4px, 0.5vw, 8px);
-    background-color: rgba(46, 46, 46, 0.95);
-    backdrop-filter: blur(8px);
+    padding: 6px 8px;
+    background-color: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border-default);
     display: flex;
     align-items: center;
+    gap: 4px;
+}
+
+.workflow-search-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+    transition: border-color var(--transition-normal);
+}
+
+.workflow-search-wrapper:focus-within {
+    border-color: var(--border-input-focus);
+    box-shadow: var(--shadow-focus);
+}
+
+.workflow-search-icon {
+    color: var(--text-muted);
+    margin-right: 6px;
+    flex-shrink: 0;
 }
 
 .workflow-search-input {
     flex: 1;
-    padding: clamp(4px, 0.5vw, 7px) clamp(5px, 0.6vw, 10px);
     min-width: 0;
-    background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: clamp(4px, 0.5vw, 6px);
-    color: var(--text-light);
-    font-family: 'Roboto Mono', monospace;
-    font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+    padding: 2px 0;
+    background: transparent;
+    border: none;
     outline: none;
-    transition:
-        background-color 0.2s ease,
-        border-color 0.2s ease;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: var(--size-md);
 }
 
 .workflow-search-input::placeholder {
-    color: var(--text-secondary);
-    font-size: clamp(0.6rem, 0.8vw, 0.75rem);
+    color: var(--text-placeholder);
 }
 
-.workflow-search-input:focus {
-    background-color: var(--bg-tertiary);
-    border-color: var(--border-focus);
+.workflow-search-clear {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    margin-left: 4px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-xs);
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast);
 }
 
-/* Search Results */
+.workflow-search-clear:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+}
+
+/* ============================================================
+   Search results
+   ============================================================ */
+
 .search-result-group {
-    margin-bottom: clamp(4px, 0.6vw, 8px);
+    margin-bottom: 4px;
 }
 
 .search-result-modality {
-    font-size: clamp(0.55rem, 0.7vw, 0.7em);
-    color: var(--text-muted);
-    padding: clamp(4px, 0.5vw, 6px) clamp(6px, 0.7vw, 8px) clamp(2px, 0.3vw, 4px);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-}
-
-/* Custom Workflow Item with Edit/Delete */
-.custom-workflow-item-wrapper {
-    position: relative;
-}
-
-.custom-workflow-action-left,
-.custom-workflow-action-right {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
     display: flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 8px;
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-sidebar-heading);
+}
+
+.workflow-search-empty {
+    padding: 8px;
+    font-family: var(--font-ui);
+    font-size: var(--size-md);
+    color: var(--text-muted);
+    text-align: left;
+    font-style: normal;
+}
+
+/* ============================================================
+   Custom workflow row — inline-flex actions on the right
+   ============================================================ */
+
+.custom-workflow-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.custom-workflow-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 4px;
+    padding-right: 4px;
     opacity: 0;
-    transition: opacity 0.15s ease;
-    z-index: 2;
+    transition: opacity var(--transition-fast);
+    flex-shrink: 0;
 }
 
-.custom-workflow-action-left {
-    left: 4px;
-}
-
-.custom-workflow-action-right {
-    right: 4px;
-}
-
-.custom-workflow-item-wrapper:hover .custom-workflow-action-left,
-.custom-workflow-item-wrapper:hover .custom-workflow-action-right {
+.custom-workflow-row:hover .custom-workflow-actions,
+.custom-workflow-row:focus-within .custom-workflow-actions {
     opacity: 1;
 }
 
 .custom-workflow-action-btn {
-    background: var(--bg-interactive);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    background: transparent;
+    border: none;
     color: var(--text-muted);
     cursor: pointer;
-    font-size: 0.65rem;
-    padding: 4px 7px;
-    line-height: 1;
+    border-radius: var(--radius-xs);
     transition:
-        background-color 0.15s ease,
-        color 0.15s ease;
+        background-color var(--transition-fast),
+        color var(--transition-fast);
 }
 
-.custom-workflow-action-btn.edit-btn:hover {
-    background-color: rgba(74, 144, 226, 0.3);
-    color: var(--color-primary);
-    border-color: var(--color-primary);
+.custom-workflow-action-btn:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.custom-workflow-action-btn.rename-btn:hover {
+    color: var(--color-accent);
 }
 
 .custom-workflow-action-btn.delete-btn:hover {
-    background-color: rgba(220, 53, 69, 0.3);
     color: var(--color-danger);
-    border-color: var(--color-danger);
 }
 
-/* Smooth padding/font transition when edit/delete buttons appear */
-.custom-workflow-item-wrapper > :first-child {
-    transition:
-        padding 0.15s ease,
-        font-size 0.15s ease;
+/* Inline rename input (replaces the row contents when active) */
+.custom-workflow-row-renaming {
+    height: 24px;
+    padding: 0 4px;
 }
 
-.custom-workflow-item-wrapper:hover > :first-child {
-    padding-left: 30px;
-    padding-right: 30px;
-    font-size: clamp(0.55rem, 0.85vw, 0.7rem);
+.custom-workflow-rename-input {
+    flex: 1;
+    min-width: 0;
+    height: 22px;
+    padding: 0 6px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-input-focus);
+    border-radius: var(--radius-xs);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: var(--size-md);
+    outline: none;
+    box-shadow: var(--shadow-focus);
 }
 
-/* Prevent scale-up on custom items to avoid overlap with action buttons */
-.custom-workflow-item-wrapper .workflow-menu-item:hover {
-    transform: none;
-}
+/* ============================================================
+   Delete confirmation portal (unchanged from previous design)
+   ============================================================ */
 
-/* Delete confirmation portal */
 .delete-confirm-portal {
     position: fixed;
     z-index: 9999;
@@ -331,14 +377,14 @@
 }
 
 .delete-confirm-text {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--text-light);
     white-space: nowrap;
 }
 
 .delete-confirm-subtext {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.65rem;
     color: var(--text-muted);
     white-space: nowrap;
@@ -350,11 +396,11 @@
 }
 
 .delete-confirm-btn {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     padding: 4px 12px;
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--border-medium);
     cursor: pointer;
     transition:
         background-color 0.15s ease,
@@ -362,13 +408,13 @@
 }
 
 .delete-confirm-yes {
-    background-color: rgba(231, 76, 60, 0.2);
+    background-color: var(--color-danger-muted);
     color: var(--color-danger);
     border-color: rgba(231, 76, 60, 0.5);
 }
 
 .delete-confirm-yes:hover {
-    background-color: rgba(231, 76, 60, 0.4);
+    background-color: var(--color-danger-border);
 }
 
 .delete-confirm-no {
@@ -381,19 +427,12 @@
     color: var(--text-light);
 }
 
-.workflow-search-empty {
-    color: var(--text-muted);
-    font-style: italic;
-    padding: clamp(12px, 1.5vw, 20px) clamp(8px, 1vw, 12px);
-    font-size: clamp(0.7rem, 0.9vw, 0.85em);
-    text-align: center;
-}
+/* ============================================================
+   Legacy collapsed-state styles (not rendered in current
+   IDELayout — collapse is handled by react-resizable-panels)
+   ============================================================ */
 
-/* Collapsed state */
 .workflow-menu-container.menu-collapsed {
-    flex: 0 0 40px;
-    min-width: 40px;
-    max-width: 40px;
     overflow-y: hidden;
     cursor: pointer;
     display: flex;
@@ -413,7 +452,7 @@
 }
 
 .menu-collapsed-label {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-muted);
@@ -425,7 +464,6 @@
     color: var(--text-medium);
 }
 
-/* Collapse button in search bar */
 .menu-collapse-btn {
     background: none;
     border: none;

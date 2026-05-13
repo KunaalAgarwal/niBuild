@@ -52,18 +52,18 @@
     color: var(--text-light);
     border: 1px solid var(--border-medium);
     box-shadow: var(--shadow-lg);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 }
 
 .howto-modal .modal-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
     padding: 16px 24px;
     background-color: var(--bg-header);
     border-radius: 8px 8px 0 0;
 }
 
 .howto-modal .modal-title {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
@@ -105,9 +105,9 @@
 }
 
 .howto-nav-item {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.68rem;
-    color: var(--color-primary);
+    color: var(--color-accent);
     cursor: pointer;
     padding: 2px 6px;
     border-radius: 3px;
@@ -115,19 +115,19 @@
 }
 
 .howto-nav-item:hover {
-    background-color: rgba(74, 144, 226, 0.12);
+    background-color: var(--color-accent-muted);
     text-decoration: underline;
 }
 
 .howto-nav-item.active {
-    background-color: rgba(74, 144, 226, 0.18);
+    background-color: var(--color-accent-muted);
     color: var(--text-primary);
     font-weight: 600;
 }
 
 /* Cross-reference links within content (styled like nav items) */
 .howto-nav-ref {
-    color: var(--color-primary);
+    color: var(--color-accent);
     cursor: pointer;
     font-weight: 500;
 }
@@ -144,7 +144,7 @@
     --bs-accordion-border-color: var(--border-subtle);
     --bs-accordion-btn-color: var(--text-light);
     --bs-accordion-btn-bg: var(--bg-tertiary);
-    --bs-accordion-active-bg: rgba(74, 144, 226, 0.08);
+    --bs-accordion-active-bg: rgba(0, 120, 212, 0.08);
     --bs-accordion-active-color: var(--text-primary);
     --bs-accordion-btn-focus-box-shadow: none;
 }
@@ -155,7 +155,7 @@
 }
 
 .howto-modal .accordion-button {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     font-size: 0.85rem;
     color: var(--text-light);
@@ -175,8 +175,8 @@
 
 .howto-modal .accordion-button:not(.collapsed) {
     color: var(--text-primary);
-    background-color: rgba(74, 144, 226, 0.08);
-    border-bottom-color: rgba(74, 144, 226, 0.2);
+    background-color: rgba(0, 120, 212, 0.08);
+    border-bottom-color: var(--color-accent-border);
 }
 
 .howto-modal .accordion-button::after {
@@ -206,14 +206,14 @@
 }
 
 .howto-subheading {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     font-size: 0.82rem;
     color: var(--text-primary);
     margin-top: 16px;
     margin-bottom: 8px;
     padding-bottom: 4px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .howto-steps {
@@ -247,17 +247,17 @@
    HOW-TO MODAL — Code & Links
    ============================================ */
 .howto-code {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.78rem;
     background-color: var(--bg-primary);
-    color: var(--color-primary);
+    color: var(--color-accent);
     padding: 1px 5px;
     border-radius: 3px;
     border: 1px solid var(--border-subtle);
 }
 
 .howto-code-block {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.72rem;
     background-color: var(--bg-primary);
     color: var(--text-medium);
@@ -271,7 +271,7 @@
 }
 
 .howto-link {
-    color: var(--color-primary);
+    color: var(--color-accent);
     text-decoration: none;
 }
 
@@ -291,7 +291,7 @@
 }
 
 .howto-table th {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     font-size: 0.74rem;
     color: var(--text-primary);
@@ -327,8 +327,8 @@
    HOW-TO MODAL — Tip Callouts
    ============================================ */
 .howto-tip {
-    background-color: rgba(74, 144, 226, 0.08);
-    border-left: 3px solid var(--color-primary);
+    background-color: rgba(0, 120, 212, 0.08);
+    border-left: 3px solid var(--color-accent);
     padding: 8px 14px;
     border-radius: 0 5px 5px 0;
     margin: 10px 0;
@@ -337,7 +337,7 @@
 }
 
 .howto-tip strong {
-    color: var(--color-primary);
+    color: var(--color-accent);
 }
 
 /* ============================================

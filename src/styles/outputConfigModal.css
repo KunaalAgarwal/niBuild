@@ -9,18 +9,18 @@
     color: var(--text-light);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-lg);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 }
 
 .output-config-modal .modal-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-panel);
     padding: 14px 20px;
     background-color: var(--bg-header);
     border-radius: 8px 8px 0 0;
 }
 
 .output-config-modal .modal-title {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.8rem, 0.6rem + 0.5vw, 1rem);
     font-weight: 500;
     color: var(--text-light);
@@ -34,7 +34,7 @@
 }
 
 .output-config-modal .modal-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--border-panel);
     padding: 12px 20px;
     background-color: var(--bg-header);
     border-radius: 0 0 8px 8px;
@@ -48,11 +48,11 @@
     align-items: center;
     margin-bottom: 16px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .output-config-count {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.65rem, 0.5rem + 0.4vw, 0.8rem);
     color: var(--text-muted);
 }
@@ -63,12 +63,12 @@
 }
 
 .output-config-actions .btn-link {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.6rem, 0.45rem + 0.4vw, 0.72rem);
     color: var(--text-muted);
     text-decoration: none;
     padding: 3px 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-default);
     border-radius: 4px;
     background-color: rgba(255, 255, 255, 0.03);
 }
@@ -76,7 +76,7 @@
 .output-config-actions .btn-link:hover {
     color: var(--text-light);
     background-color: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--border-input-hover);
     text-decoration: none;
 }
 
@@ -94,15 +94,15 @@
 }
 
 .output-config-group-header {
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.6rem, 0.42rem + 0.5vw, 0.78rem);
     font-weight: 600;
-    color: var(--color-primary);
+    color: var(--color-accent);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 6px 10px 4px;
-    border-left: 2px solid var(--color-primary);
-    background-color: rgba(74, 144, 226, 0.06);
+    border-left: 2px solid var(--color-accent);
+    background-color: var(--color-accent-muted);
     border-radius: 0 4px 4px 0;
     display: flex;
     align-items: center;
@@ -130,7 +130,7 @@
     border-radius: 3px;
     font-weight: 500;
     text-transform: lowercase;
-    background-color: rgba(74, 198, 226, 0.1);
+    background-color: var(--color-info-muted);
 }
 
 /* Individual output item (checkbox row) */
@@ -140,14 +140,14 @@
     gap: 10px;
     padding: clamp(6px, 0.3rem + 0.3vw, 12px) clamp(10px, 0.5rem + 0.5vw, 16px);
     background-color: var(--bg-tertiary);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-panel);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.12s ease;
 }
 
 .output-config-item:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--border-medium);
 }
 
 .output-config-item.selected {
@@ -163,15 +163,15 @@
 .output-config-empty {
     text-align: center;
     color: var(--text-secondary);
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(0.72rem, 0.55rem + 0.45vw, 0.88rem);
     padding: 30px 20px;
 }
 
 /* Button styles matching existing patterns */
 .output-config-modal .btn-primary {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
     font-size: 0.85rem;
     padding: 8px 20px;
     border-radius: 5px;
@@ -189,7 +189,7 @@
 
 .output-config-modal .btn-secondary {
     background-color: transparent;
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--border-medium);
     color: var(--text-muted);
     font-size: 0.85rem;
     padding: 8px 20px;
@@ -199,28 +199,28 @@
 
 .output-config-modal .btn-secondary:hover {
     background-color: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: var(--border-strong);
     color: var(--text-light);
 }
 
 /* Clickable "config" button on the Output node */
 .node-output-config-btn {
     font-size: 7px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     border-radius: 2px;
     padding: 0px 3px;
     letter-spacing: 0.3px;
     text-transform: uppercase;
     white-space: nowrap;
-    color: var(--color-primary, #4a90e2);
-    background-color: rgba(74, 144, 226, 0.12);
-    border: 1px solid rgba(74, 144, 226, 0.3);
+    color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+    border: 1px solid var(--color-accent-border);
     cursor: pointer;
     transition: all 0.12s ease;
 }
 
 .node-output-config-btn:hover {
-    background-color: rgba(74, 144, 226, 0.25);
-    border-color: rgba(74, 144, 226, 0.5);
+    background-color: var(--color-accent-muted);
+    border-color: rgba(0, 120, 212, 0.5);
 }

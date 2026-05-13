@@ -1,17 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import '../styles/workflowMenuItem.css';
+
+const TOOLTIP_DELAY_MS = 250;
 
 function WorkflowMenuItem({ name, toolInfo, onDragStart, warningIcon }) {
     const [isHovered, setIsHovered] = useState(false);
     const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
     const itemRef = useRef(null);
-
-    const getFontSizeClass = (name) => {
-        if (name.length > 18) return 'font-smaller';
-        if (name.length > 10) return 'font-small';
-        return '';
-    };
+    const tooltipTimer = useRef(null);
 
     const handleMouseEnter = () => {
         if (itemRef.current) {
@@ -21,12 +18,25 @@ function WorkflowMenuItem({ name, toolInfo, onDragStart, warningIcon }) {
                 left: rect.right + 10,
             });
         }
-        setIsHovered(true);
+        if (tooltipTimer.current) clearTimeout(tooltipTimer.current);
+        tooltipTimer.current = setTimeout(() => setIsHovered(true), TOOLTIP_DELAY_MS);
     };
 
     const handleMouseLeave = () => {
+        if (tooltipTimer.current) {
+            clearTimeout(tooltipTimer.current);
+            tooltipTimer.current = null;
+        }
         setIsHovered(false);
     };
+
+    // Cancel any pending tooltip timer if the item unmounts mid-hover
+    useEffect(
+        () => () => {
+            if (tooltipTimer.current) clearTimeout(tooltipTimer.current);
+        },
+        [],
+    );
 
     const handleDoubleClick = () => {
         if (toolInfo?.docUrl) {
@@ -34,12 +44,10 @@ function WorkflowMenuItem({ name, toolInfo, onDragStart, warningIcon }) {
         }
     };
 
-    const fontSizeClass = getFontSizeClass(name);
-
     return (
         <div
             ref={itemRef}
-            className={`workflow-menu-item ${fontSizeClass}`}
+            className="workflow-menu-item"
             draggable
             onDragStart={(event) => onDragStart(event, name)}
             onMouseEnter={handleMouseEnter}

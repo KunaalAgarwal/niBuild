@@ -1,60 +1,56 @@
 .workflow-menu-item {
-    position: relative;
-    width: 100%;
-    padding: clamp(8px, 1vw, 12px);
-    background-color: var(--bg-interactive);
-    color: var(--text-light);
-    font-size: clamp(0.75rem, 1.2vw, 0.9rem);
-    font-weight: 500;
-    border-radius: 10px;
-    text-align: center;
-    cursor: pointer;
-    transition:
-        transform 0.15s ease,
-        background-color 0.3s ease,
-        box-shadow 0.2s ease,
-        border 0.2s ease;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-subtle);
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    height: 24px;
+    padding: 3px 8px;
+    background: transparent;
+    color: var(--text-sidebar);
+    font-family: var(--font-ui);
+    font-size: var(--size-md);
+    font-weight: var(--weight-regular);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    text-align: left;
+    cursor: grab;
+    user-select: none;
+    transition: background-color var(--transition-fast);
 }
 
-/* Dynamic font sizing for long tool names */
-.workflow-menu-item.font-small {
-    font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+.workflow-menu-item:hover {
+    background-color: var(--bg-hover);
+    transform: none;
+    box-shadow: none;
+    border: none;
 }
 
-.workflow-menu-item.font-smaller {
-    font-size: clamp(0.5rem, 0.75vw, 0.65rem);
+.workflow-menu-item:active {
+    cursor: grabbing;
+    background-color: var(--bg-active);
+    transform: none;
+    box-shadow: none;
 }
 
 .workflow-menu-item .tool-name {
     display: block;
+    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .menu-item-warning {
-    color: #f0ad4e;
+    color: var(--color-warning);
     font-weight: 700;
-    font-size: 0.85em;
+    margin-right: 4px;
 }
 
-.workflow-menu-item:hover {
-    background-color: var(--bg-hover);
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.workflow-menu-item:active {
-    background-color: var(--bg-hover);
-    transform: scale(0.98);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-/* Tooltip Styles (rendered via React Portal) */
+/* Tooltip Styles (rendered via React Portal) — SHARED with canvas-side
+   node components (BIDSNodeComponent, CustomWorkflowNodeComponent,
+   ToolNodeComponent, modalityTooltip). Do not change these without
+   verifying the canvas tooltips still look right. */
 .workflow-tooltip {
     position: fixed;
     background-color: var(--bg-primary);

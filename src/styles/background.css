@@ -1,76 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&family=Roboto+Mono:wght@400;500&display=swap');
-
-:root {
-    /* Backgrounds */
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #1e1e1e;
-    --bg-tertiary: #2a2a2a;
-    --bg-card: #2e2e2e;
-    --bg-header: #252525;
-    --bg-interactive: #3a3a3a;
-    --bg-hover: #444;
-
-    /* Text */
-    --text-primary: #ffffff;
-    --text-light: #e0e0e0;
-    --text-medium: #d0d0d0;
-    --text-muted: #888888;
-    --text-secondary: #666666;
-
-    /* Accent */
-    --color-primary: #4a90e2;
-    --color-success: #4caf50;
-    --color-warning: #ffc107;
-    --color-danger: #e74c3c;
-    --color-cyan: #4ac6e2;
-
-    /* Node text (dark text on light node backgrounds) */
-    --text-on-light: #333;
-
-    /* Borders */
-    --border-subtle: rgba(255, 255, 255, 0.1);
-    --border-medium: rgba(255, 255, 255, 0.15);
-    --border-focus: rgba(255, 255, 255, 0.25);
-
-    /* Shadows */
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-
-    /* MiniMap */
-    --minimap-mask: rgba(0, 0, 0, 0.65);
-    --minimap-bg: #1a1a1a;
-}
-
 html,
 body {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--bg-primary);
-    font-family: 'Roboto Mono', monospace;
+    background-color: var(--bg-base);
+    font-family: var(--font-ui);
     color: var(--text-primary);
-    overflow: auto;
+    overflow: hidden;
 }
 
 h2 {
-    font-size: clamp(1.5rem, 1.5vw, 3rem);
-    font-weight: 600;
+    font-family: var(--font-ui);
+    font-size: var(--size-2xl);
+    font-weight: var(--weight-semibold);
     margin: 0;
     padding: 8px 0;
 }
 
 h3 {
-    font-size: clamp(1.2rem, 1vw, 2rem);
-    font-weight: 600;
+    font-family: var(--font-ui);
+    font-size: var(--size-xl);
+    font-weight: var(--weight-semibold);
     margin: 0;
     padding: 6px 0;
 }
 
 .text {
-    font-size: clamp(0.8rem, 1vw, 1.2rem);
+    font-size: var(--size-base);
 }
 
 .app-layout {
@@ -96,19 +53,19 @@ h3 {
 }
 
 button {
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 500;
-    font-size: clamp(0.8rem, 1.5vw, 1.2rem);
-    border-radius: 8px;
+    font-family: var(--font-ui);
+    font-weight: var(--weight-medium);
+    font-size: var(--size-base);
+    border-radius: var(--radius-lg);
     background-color: var(--bg-interactive);
     color: var(--text-primary);
     border: none;
     cursor: pointer;
     padding: clamp(8px, 0.8vw, 12px) clamp(16px, 1.6vw, 24px);
     transition:
-        background-color 0.3s ease,
-        transform 0.1s ease,
-        box-shadow 0.2s ease;
+        background-color var(--transition-slow),
+        transform var(--transition-fast),
+        box-shadow var(--transition-normal);
 }
 
 button:hover {
@@ -118,7 +75,7 @@ button:hover {
 }
 
 button:focus {
-    outline: 2px solid var(--text-primary);
+    outline: 2px solid var(--border-focus);
     outline-offset: 2px;
 }
 
@@ -139,32 +96,32 @@ button:focus {
 
 /* Global Scrollbar Styling */
 *::-webkit-scrollbar {
-    width: 10px;
+    width: var(--scrollbar-width);
 }
 
 *::-webkit-scrollbar-track {
-    background: var(--border-subtle);
-    border-radius: 8px;
+    background: var(--scrollbar-track);
+    border-radius: var(--radius-lg);
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
+    background-color: var(--scrollbar-thumb);
+    border-radius: var(--radius-lg);
     border: 2px solid rgba(46, 46, 46, 0.9);
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: var(--scrollbar-thumb-hover);
 }
 
 /* Thin scrollbar utility for compact panels */
 .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
-    width: 4px;
+    width: var(--scrollbar-width-thin);
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
@@ -172,10 +129,10 @@ button:focus {
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
+    background-color: var(--scrollbar-thumb);
+    border-radius: var(--radius-sm);
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: var(--scrollbar-thumb-hover);
 }

@@ -117,6 +117,24 @@ function workspaceReducer(state, action) {
                 currentIndex: idx >= updated.length ? updated.length - 1 : idx,
             };
         }
+        case 'REMOVE_AT': {
+            if (state.workspaces.length === 1) return state;
+            const rmIdx = action.index;
+            const remaining = state.workspaces.filter((_, i) => i !== rmIdx);
+            let newIndex = state.currentIndex;
+            if (rmIdx < state.currentIndex) newIndex--;
+            else if (rmIdx === state.currentIndex) newIndex = Math.min(newIndex, remaining.length - 1);
+            return { workspaces: remaining, currentIndex: newIndex };
+        }
+        case 'RENAME_AT': {
+            const updated = [...state.workspaces];
+            updated[action.index] = {
+                ...updated[action.index],
+                name: action.name,
+                workflowName: action.name,
+            };
+            return { ...state, workspaces: updated };
+        }
         case 'UPDATE_NAME': {
             const updated = [...state.workspaces];
             updated[state.currentIndex] = { ...updated[state.currentIndex], name: action.name };
@@ -195,6 +213,8 @@ export function useWorkspaces() {
         [],
     );
     const removeCurrentWorkspace = useCallback(() => dispatch({ type: 'REMOVE_CURRENT' }), []);
+    const removeWorkspace = useCallback((index) => dispatch({ type: 'REMOVE_AT', index }), []);
+    const renameWorkspace = useCallback((index, name) => dispatch({ type: 'RENAME_AT', index, name }), []);
     const updateWorkspaceName = useCallback((newName) => dispatch({ type: 'UPDATE_NAME', name: newName }), []);
     const updateWorkflowName = useCallback((newName) => dispatch({ type: 'UPDATE_WORKFLOW_NAME', name: newName }), []);
     const updateSavedWorkflowId = useCallback((id) => dispatch({ type: 'UPDATE_SAVED_ID', id }), []);
@@ -221,6 +241,8 @@ export function useWorkspaces() {
         clearCurrentWorkspace,
         updateCurrentWorkspaceItems,
         removeCurrentWorkspace,
+        removeWorkspace,
+        renameWorkspace,
         updateWorkspaceName,
         updateWorkflowName,
         updateSavedWorkflowId,
