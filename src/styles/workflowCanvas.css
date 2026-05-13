@@ -1,3 +1,7 @@
+.react-flow {
+    background-color: var(--bg-canvas);
+}
+
 .workflow-canvas {
     height: 100%;
     width: 100%;

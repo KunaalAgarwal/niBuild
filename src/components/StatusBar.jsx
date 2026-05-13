@@ -9,7 +9,27 @@ function StatusBar({ currentWorkspace, totalWorkspaces }) {
                 </span>
             </div>
             <div className="status-bar-right">
-                <span className="status-bar-item status-bar-item-muted">niBuild</span>
+                <span className="status-bar-item status-bar-item-muted">
+                    Agarwal K.{' '}
+                    <a
+                        className="status-bar-link"
+                        href="https://www.linkedin.com/in/kunaal-agarwal/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        [Info]
+                    </a>
+                    {' · '}
+                    Rasero J.{' '}
+                    <a
+                        className="status-bar-link"
+                        href="https://datascience.virginia.edu/people/javier-rasero"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        [Info]
+                    </a>
+                </span>
             </div>
         </div>
     );

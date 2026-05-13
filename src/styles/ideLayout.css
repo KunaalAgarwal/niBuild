@@ -75,7 +75,9 @@
     overflow-y: hidden;
     scrollbar-width: none;
 }
-.ide-tabs-scroll::-webkit-scrollbar { display: none; }
+.ide-tabs-scroll::-webkit-scrollbar {
+    display: none;
+}
 
 .ide-tab {
     display: flex;
@@ -89,7 +91,9 @@
     color: var(--text-muted);
     font-family: var(--font-ui);
     font-size: var(--size-xs);
-    transition: background-color var(--transition-fast), color var(--transition-fast);
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast);
     flex-shrink: 0;
     user-select: none;
 }
@@ -125,7 +129,9 @@
     font-size: 0.7rem;
     cursor: pointer;
     opacity: 0;
-    transition: opacity var(--transition-fast), background-color var(--transition-fast);
+    transition:
+        opacity var(--transition-fast),
+        background-color var(--transition-fast);
 }
 
 .ide-tab:hover .ide-tab-close,
@@ -155,7 +161,9 @@
     font-size: 1rem;
     cursor: pointer;
     flex-shrink: 0;
-    transition: background-color var(--transition-fast), color var(--transition-fast);
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast);
 }
 
 .ide-tab-add:hover {
@@ -258,7 +266,156 @@
 .ide-utility-content {
     flex: 1;
     overflow: auto;
-    padding: 8px 12px;
+    padding: 0;
+}
+
+/* Count badge on utility tabs — color reflects worst severity */
+.ide-badge-count {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--bg-base);
+    border-radius: 8px;
+    padding: 1px 5px;
+    margin-left: 6px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.ide-badge-count.error {
+    background-color: var(--color-danger, #dc3545);
+}
+
+.ide-badge-count.warning {
+    background-color: var(--color-warning, #e2b340);
+}
+
+.ide-badge-count.info {
+    background-color: var(--color-accent, #0078d4);
+}
+
+/* Problem list */
+.ide-problem-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.ide-problem-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-family: var(--font-mono);
+    font-size: var(--size-2xs);
+    cursor: default;
+    transition: background-color var(--transition-fast);
+}
+
+.ide-problem-item:hover {
+    background-color: var(--bg-hover);
+}
+
+.ide-problem-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ide-problem-icon.error {
+    background-color: var(--color-danger, #dc3545);
+}
+
+.ide-problem-icon.warning {
+    background-color: var(--color-warning, #e2b340);
+}
+
+.ide-problem-icon.success {
+    background-color: var(--color-success, #28a745);
+}
+
+.ide-problem-icon.info {
+    background-color: var(--color-accent, #0078d4);
+}
+
+.ide-problem-node {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ide-problem-message {
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Log list */
+.ide-log-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.ide-log-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 2px 8px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.ide-log-clear {
+    font-family: var(--font-mono);
+    font-size: var(--size-2xs);
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: var(--radius-xs);
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast);
+}
+
+.ide-log-clear:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+    transform: none;
+    box-shadow: none;
+}
+
+.ide-log-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-family: var(--font-mono);
+    font-size: var(--size-2xs);
+    cursor: default;
+    transition: background-color var(--transition-fast);
+}
+
+.ide-log-item:hover {
+    background-color: var(--bg-hover);
+}
+
+.ide-log-time {
+    color: var(--text-disabled);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.ide-log-message {
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Placeholder text */
@@ -273,6 +430,7 @@
     font-family: var(--font-mono);
     font-size: var(--size-xs);
     color: var(--text-disabled);
+    padding: 8px 12px;
 }
 
 .ide-loading-placeholder {
@@ -376,4 +534,61 @@
     background: none;
     transform: none;
     box-shadow: none;
+}
+
+/* ============================================================
+   Permanent Workflow Manager tab (leftmost, non-closeable)
+   ============================================================ */
+
+.ide-tab-icon {
+    flex-shrink: 0;
+    /* color comes from .ide-tab via currentColor on the SVG stroke. */
+}
+
+/* While Workflow Manager is the active tab, lock the side/utility panels
+   collapsed: prevent the user from expanding them via the collapsed strip,
+   the utility tabs, or by dragging resize handles. */
+.ide-manager-mode .ide-panel-content {
+    pointer-events: none;
+}
+
+.ide-manager-mode .ide-resize-handle {
+    pointer-events: none;
+}
+
+/* Workflow Manager placeholder (rendered in the canvas wrapper when manager active) */
+.ide-workflow-manager-placeholder {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-canvas);
+    padding: 40px;
+    text-align: center;
+    gap: 12px;
+}
+
+.ide-workflow-manager-icon {
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin-bottom: 8px;
+}
+
+.ide-workflow-manager-placeholder h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: var(--size-xl);
+    font-weight: var(--weight-semibold);
+}
+
+.ide-workflow-manager-placeholder p {
+    margin: 0;
+    max-width: 480px;
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+    line-height: var(--lh-relaxed);
 }

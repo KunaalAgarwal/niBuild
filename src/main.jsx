@@ -21,6 +21,7 @@ import {
     computeWorkflowDiff,
     computeBoundaryNodes,
 } from './utils/workflowDiff.js';
+import { computeProblems } from './utils/workflowValidation.js';
 
 import './styles/tokens.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -290,6 +291,12 @@ function App() {
         }),
     [workspaces, customWorkflows]);
 
+    const currentWs = workspaces[currentWorkspace];
+    const validationProblems = useMemo(
+        () => computeProblems(currentWs?.nodes, currentWs?.edges, workspaceStatuses[currentWorkspace]),
+        [currentWs?.nodes, currentWs?.edges, workspaceStatuses, currentWorkspace],
+    );
+
     // Command palette: Ctrl+K global shortcut
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -396,6 +403,7 @@ function App() {
                 onRemoveWorkspaceAt={removeWorkspace}
                 onRenameWorkspace={renameWorkspace}
                 workspaceStatuses={workspaceStatuses}
+                validationProblems={validationProblems}
                 sidebarRef={sidebarRef}
                 cwlRef={cwlRef}
                 utilityRef={utilityRef}

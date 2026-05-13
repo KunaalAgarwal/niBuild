@@ -94,19 +94,19 @@
 }
 
 .top-bar-btn-revert {
-    color: var(--color-warning);
-    border: 1px solid var(--color-warning-border);
+    color: #C9A84C;
+    border: 1px solid rgba(201, 168, 76, 0.4);
 }
 
 .top-bar-btn-revert:hover {
-    background-color: var(--color-warning-muted);
-    color: rgba(255, 220, 80, 1);
-    border-color: rgba(255, 193, 7, 0.6);
+    background-color: rgba(201, 168, 76, 0.12);
+    color: #DBBF6A;
+    border-color: rgba(201, 168, 76, 0.6);
 }
 
 .top-bar-btn-revert:disabled {
-    color: rgba(255, 193, 7, 0.4);
-    border-color: rgba(255, 193, 7, 0.2);
+    color: rgba(201, 168, 76, 0.4);
+    border-color: rgba(201, 168, 76, 0.2);
 }
 
 .top-bar-btn-generate {
