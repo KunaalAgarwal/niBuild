@@ -443,36 +443,200 @@
     margin: 4px 0;
 }
 
-/* ── Empty state ───────────────────────────────────────────────── */
+/* ── Welcome screen (zero-workflows state) ─────────────────────── */
 
-.wm-empty {
+/* VS Code-style welcome that replaces the empty state when no workflows
+   are saved. Replaces the page's section-bar entirely so the welcome owns
+   the full canvas, mirroring VS Code's Welcome tab layout. */
+.wm-welcome {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 64px 24px;
-    text-align: center;
-    color: var(--text-muted);
+    gap: 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 64px 64px;
+    font-family: var(--font-ui);
+}
+
+.wm-welcome-hero {
+    display: flex;
+    flex-direction: column;
     gap: 8px;
 }
 
-.wm-empty svg {
-    opacity: 0.5;
-    margin-bottom: 8px;
+/* The hero title sits intentionally above --size-2xl (24px) — 2.4rem (~38px)
+   gives the welcome the same visual impact VS Code's "Visual Studio Code"
+   title has on its Welcome tab. This is the one derived value in this file. */
+.wm-welcome-title {
+    margin: 0;
+    font-size: 2.4rem;
+    font-weight: var(--weight-light);
+    color: var(--text-primary);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--lh-tight);
 }
 
-.wm-empty h2 {
+.wm-welcome-tagline {
     margin: 0;
-    font-family: var(--font-ui);
-    font-size: var(--size-xl);
+    font-size: var(--size-lg);
+    color: var(--text-secondary);
+}
+
+.wm-welcome-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+}
+
+@media (max-width: 800px) {
+    .wm-welcome-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .wm-welcome {
+        padding: 32px 32px 48px;
+    }
+}
+
+.wm-welcome-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.wm-welcome-col-title {
+    margin: 0 0 12px;
+    font-size: var(--size-base);
+    font-weight: var(--weight-semibold);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+}
+
+.wm-welcome-actions,
+.wm-welcome-cards {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.wm-welcome-actions {
+    gap: 4px;
+}
+
+.wm-welcome-cards {
+    gap: 10px;
+}
+
+/* Start-column "text-button" actions: an icon-leading link-styled button
+   that mirrors VS Code's "New File…" / "Open Folder…" Welcome entries.
+   Explicit transform / box-shadow resets neutralize the global `button:hover`
+   (5% scale + soft shadow) from background.css. */
+.wm-welcome-action {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-link);
+    text-align: left;
+    cursor: pointer;
+    transform: none;
+    box-shadow: none;
+    transition: color var(--transition-fast);
+}
+
+.wm-welcome-action:hover {
+    background-color: transparent;
+    color: var(--text-link-hover);
+    transform: none;
+    box-shadow: none;
+}
+
+.wm-welcome-action:focus-visible {
+    outline: 1px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+.wm-welcome-action-icon {
+    flex-shrink: 0;
+    color: var(--color-accent);
+    margin-top: 2px;
+}
+
+.wm-welcome-action-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.wm-welcome-action-label {
+    font-size: var(--size-sm);
+    font-weight: var(--weight-medium);
+}
+
+.wm-welcome-action-sub {
+    font-size: var(--size-xs);
+    color: var(--text-muted);
+    font-weight: var(--weight-regular);
+}
+
+/* Right-column help/resource cards. Overlay surface with a hairline border
+   that strengthens on hover. */
+.wm-welcome-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    background-color: var(--bg-overlay);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.wm-welcome-card:hover {
+    background-color: var(--bg-interactive);
+    border-color: var(--border-medium);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.wm-welcome-card:focus-visible {
+    outline: 1px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+.wm-welcome-card-icon {
+    flex-shrink: 0;
+    color: var(--color-accent);
+    margin-top: 2px;
+}
+
+.wm-welcome-card-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.wm-welcome-card-title {
+    font-size: var(--size-sm);
     font-weight: var(--weight-semibold);
     color: var(--text-primary);
 }
 
-.wm-empty p {
-    margin: 0;
-    max-width: 380px;
-    font-family: var(--font-ui);
-    font-size: var(--size-sm);
-    line-height: var(--lh-relaxed);
+.wm-welcome-card-desc {
+    margin-top: 2px;
+    font-size: var(--size-xs);
+    color: var(--text-muted);
+    line-height: var(--lh-snug);
 }

@@ -120,3 +120,11 @@
     padding: 5px 0;
     border-color: transparent;
 }
+
+/* Drag-select rubber-band — subtler than ReactFlow's default. Accent-tinted
+   fill at very low opacity so it hints at the selection area without
+   competing visually with the nodes underneath. */
+.react-flow__selection {
+    background: rgba(0, 120, 212, 0.04) !important;
+    border: 1px dashed rgba(0, 120, 212, 0.35) !important;
+}

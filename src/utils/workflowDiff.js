@@ -48,6 +48,10 @@ export function serializeNodes(nodes) {
         isBIDS: n.data?.isBIDS || n.isBIDS || false,
         bidsStructure: n.data?.bidsStructure || n.bidsStructure || null,
         bidsSelections: n.data?.bidsSelections || n.bidsSelections || null,
+        isStandardTemplate: n.data?.isStandardTemplate || n.isStandardTemplate || false,
+        templateId: n.data?.templateId || n.templateId || null,
+        template: n.data?.template || n.template || null,
+        resolvedFilename: n.data?.resolvedFilename || n.resolvedFilename || null,
         notes: n.data?.notes || n.notes || '',
         parameters: n.data?.parameters || n.parameters || {},
         dockerVersion: n.data?.dockerVersion || n.dockerVersion || 'latest',
@@ -75,6 +79,10 @@ export function deserializeNode(n) {
             isBIDS: n.isBIDS || false,
             bidsStructure: n.bidsStructure || null,
             bidsSelections: n.bidsSelections || null,
+            isStandardTemplate: n.isStandardTemplate || false,
+            templateId: n.templateId || null,
+            template: n.template || null,
+            resolvedFilename: n.resolvedFilename || null,
             notes: n.notes || '',
             parameters: n.parameters || {},
             dockerVersion: n.dockerVersion || 'latest',
@@ -110,8 +118,8 @@ export function hasUnsavedChanges(workspace, savedWorkflow) {
     const savedName = savedWorkflow.name || savedWorkflow.outputName || '';
     if ((workspace.name || '') !== savedName) return true;
 
-    const wsNodes = serializeNodes(workspace.nodes || []).map(({ position, ...rest }) => rest);
-    const savedNodes = serializeNodes(savedWorkflow.nodes || []).map(({ position, ...rest }) => rest);
+    const wsNodes = serializeNodes(workspace.nodes || []).map(({ position: _position, ...rest }) => rest);
+    const savedNodes = serializeNodes(savedWorkflow.nodes || []).map(({ position: _position, ...rest }) => rest);
 
     const wsEdges = serializeEdges(workspace.edges || []);
     const savedEdges = serializeEdges(savedWorkflow.edges || []);
@@ -332,8 +340,8 @@ export function computeWorkflowDiff(savedWorkflow, currentWorkspace) {
     const savedNodes = savedWorkflow.nodes || [];
 
     // Strip position for comparison
-    const wsNodesClean = wsNodes.map(({ position, ...rest }) => rest);
-    const savedNodesClean = savedNodes.map(({ position, ...rest }) => rest);
+    const wsNodesClean = wsNodes.map(({ position: _position, ...rest }) => rest);
+    const savedNodesClean = savedNodes.map(({ position: _position, ...rest }) => rest);
 
     const savedNodeMap = new Map(savedNodesClean.map((n) => [n.id, n]));
     const currentNodeMap = new Map(wsNodesClean.map((n) => [n.id, n]));

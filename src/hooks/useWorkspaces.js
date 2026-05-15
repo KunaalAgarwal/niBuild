@@ -192,7 +192,7 @@ function workspaceReducer(state, action) {
             return { ...state, workspaces: updated };
         }
         case 'REMOVE_CURRENT': {
-            if (state.workspaces.length === 1) return state;
+            if (state.workspaces.length === 0) return state;
             const idx = state.currentIndex;
             const updated = state.workspaces.filter((_, i) => i !== idx);
             return {
@@ -201,7 +201,7 @@ function workspaceReducer(state, action) {
             };
         }
         case 'REMOVE_AT': {
-            if (state.workspaces.length === 1) return state;
+            if (state.workspaces.length === 0) return state;
             const rmIdx = action.index;
             const remaining = state.workspaces.filter((_, i) => i !== rmIdx);
             let newIndex = state.currentIndex;
@@ -272,6 +272,27 @@ function workspaceReducer(state, action) {
             if (idx < 0 || idx >= state.workspaces.length) return state;
             return { ...state, currentIndex: idx };
         }
+        case 'CLEAR_STALE_BINDINGS': {
+            // Defensive safety net: drop any per-kind binding whose target id
+            // is not in `liveIds`. The in-app deletion path (REMOVE_WORKFLOW_NODES)
+            // already clears bindings synchronously, so this only fires for cross-tab
+            // races, dev-tools manipulation, or future code paths that mutate
+            // customWorkflows without routing through handleDeleteWorkflow.
+            const { liveIds } = action;
+            let anyChanged = false;
+            const updated = state.workspaces.map((ws) => {
+                const wfStale = ws.boundWorkflowId && !liveIds.has(ws.boundWorkflowId);
+                const cnStale = ws.boundCustomNodeId && !liveIds.has(ws.boundCustomNodeId);
+                if (!wfStale && !cnStale) return ws;
+                anyChanged = true;
+                return {
+                    ...ws,
+                    boundWorkflowId: wfStale ? null : ws.boundWorkflowId,
+                    boundCustomNodeId: cnStale ? null : ws.boundCustomNodeId,
+                };
+            });
+            return anyChanged ? { ...state, workspaces: updated } : state;
+        }
         case 'REVERT_CURRENT_ITEMS': {
             const { nodes, edges } = action;
             const ws = state.workspaces[state.currentIndex];
@@ -325,6 +346,7 @@ export function useWorkspaces() {
         (workflowId) => dispatch({ type: 'REMOVE_WORKFLOW_NODES', workflowId }),
         [],
     );
+    const clearStaleBindings = useCallback((liveIds) => dispatch({ type: 'CLEAR_STALE_BINDINGS', liveIds }), []);
     const saveViewportForWorkspace = useCallback(
         (index, viewport) => dispatch({ type: 'SAVE_VIEWPORT', index, viewport }),
         [],
@@ -348,6 +370,7 @@ export function useWorkspaces() {
         renameWorkspace,
         updateBinding,
         removeWorkflowNodesFromAll,
+        clearStaleBindings,
         revertCurrentWorkspaceItems,
         saveViewportForWorkspace,
     };

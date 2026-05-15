@@ -13,6 +13,7 @@ import { ToastProvider, useToast } from './context/ToastContext.jsx';
 import { AuxTabProvider, useAuxTabsContext } from './context/AuxTabContext.jsx';
 import { CustomWorkflowsProvider, useCustomWorkflowsContext } from './context/CustomWorkflowsContext.jsx';
 import { SidebarProvider, useSidebar } from './context/SidebarContext.jsx';
+import { TemplateAssetProvider } from './context/TemplateAssetContext.jsx';
 import { TOOL_ANNOTATIONS } from './utils/toolAnnotations.js';
 import { preloadAllCWL } from './utils/cwlParser.js';
 import { invalidateMergeCache } from './utils/toolRegistry.js';
@@ -82,6 +83,7 @@ function App() {
         renameWorkspace,
         updateBinding,
         removeWorkflowNodesFromAll,
+        clearStaleBindings,
         revertCurrentWorkspaceItems,
         saveViewportForWorkspace,
     } = useWorkspaces();
@@ -104,6 +106,11 @@ function App() {
     const [addNode, setAddNode] = useState(null);
     const [cwlReady, setCwlReady] = useState(false);
     const [showCommandPalette, setShowCommandPalette] = useState(false);
+    const [searchAnchorEl, setSearchAnchorEl] = useState(null);
+    // Query is held here so the TopBar search input (now the visible textbox
+    // when the palette is open) and the palette's filter share the same value.
+    // Reset on every open via an effect on showCommandPalette below.
+    const [paletteQuery, setPaletteQuery] = useState('');
 
     // Sidebar tab state — App needs to be able to flip the sidebar to the
     // 'staged' tab when the TopBar Staged Changes button is clicked.
@@ -149,7 +156,7 @@ function App() {
                 showError('Failed to load tool definitions. Some tools may not work correctly.');
                 setCwlReady(true); // still allow rendering so the app isn't stuck
             });
-    }, []);
+    }, [showError]);
 
     const handleDeleteWorkflow = useCallback(
         (wfId) => {
@@ -393,6 +400,18 @@ function App() {
         syncTabOrder(liveKeys);
     }, [workspaces, auxTabs, syncTabOrder]);
 
+    // Defensive sweep: clear any workspace binding whose target customWorkflow id
+    // no longer exists. The in-app deletion path (REMOVE_WORKFLOW_NODES) already
+    // clears bindings synchronously, so this is only for cross-tab races
+    // (another tab/window deletes a workflow, this tab's customWorkflows array
+    // re-syncs from localStorage but no REMOVE_WORKFLOW_NODES action ever fires
+    // here) and for any future code path that mutates customWorkflows outside
+    // handleDeleteWorkflow. The reducer no-ops when no orphans are present.
+    useEffect(() => {
+        const liveIds = new Set(customWorkflows.map((w) => w.id));
+        clearStaleBindings(liveIds);
+    }, [customWorkflows, clearStaleBindings]);
+
     // Wrap workspace removal: close its aux tabs and, if the workspace (or one
     // of its aux tabs) was active, pick the next active tab before tearing down.
     const handleRemoveWorkspaceAt = useCallback(
@@ -613,13 +632,19 @@ function App() {
     );
 
     const currentWs = workspaces[currentWorkspace];
+    // `cwlReady` is intentionally in the deps below: computeProblems and
+    // computeWorkflowIO read from the tool-registry sync cache (populated by
+    // preloadAllCWL), so they need to re-run once the cache is hot. ESLint
+    // can't see that data dependency because it's not a syntactic reference.
     const validationProblems = useMemo(
         () => computeProblems(currentWs?.nodes, currentWs?.edges, workspaceStatuses[currentWorkspace]),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentWs?.nodes, currentWs?.edges, workspaceStatuses, currentWorkspace, cwlReady],
     );
 
     const workflowIO = useMemo(
         () => computeWorkflowIO(currentWs?.nodes, currentWs?.edges),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentWs?.nodes, currentWs?.edges, cwlReady],
     );
 
@@ -640,6 +665,26 @@ function App() {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
+
+    // Save: Ctrl+S global shortcut. Registered at the top level so it fires
+    // from the sidebar, aux tabs, and workflow manager — not only when the
+    // canvas pane is mounted.
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && !e.shiftKey && (e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+                handleSaveAsWorkflow();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleSaveAsWorkflow]);
+
+    // Clear the palette query whenever the palette opens, so each open starts
+    // fresh regardless of where the typing happened (TopBar search input).
+    useEffect(() => {
+        if (showCommandPalette) setPaletteQuery('');
+    }, [showCommandPalette]);
 
     const handleImportCWL = useCallback(() => {
         const input = document.createElement('input');
@@ -667,7 +712,7 @@ function App() {
                 id: 'remove-workspace',
                 label: 'Remove Workspace',
                 handler: removeCurrentWorkspace,
-                disabled: workspaces.length <= 1,
+                disabled: workspaces.length === 0,
             },
             { id: 'save-as-workflow', label: 'Save as Workflow', handler: handleSaveAsWorkflow },
             { id: 'save-as-custom', label: 'Save as Custom Node', handler: handleSaveAsCustomNode },
@@ -741,6 +786,9 @@ function App() {
                 workflowDisplayName={currentName.trim() || getNextDefaultName()}
                 onOpenCommandPalette={() => setShowCommandPalette(true)}
                 isCommandPaletteOpen={showCommandPalette}
+                onSearchRefReady={setSearchAnchorEl}
+                paletteQuery={paletteQuery}
+                onPaletteQueryChange={setPaletteQuery}
                 currentWorkspace={currentWorkspace}
                 totalWorkspaces={workspaces.length}
                 workspaces={workspaces}
@@ -809,6 +857,8 @@ function App() {
                 actions={paletteActions}
                 customWorkflows={customWorkflows}
                 onSelectWorkflow={handlePaletteWorkflowSelect}
+                anchorEl={searchAnchorEl}
+                query={paletteQuery}
             />
         </>
     );
@@ -819,7 +869,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <AuxTabProvider>
             <CustomWorkflowsProvider>
                 <SidebarProvider>
-                    <App />
+                    <TemplateAssetProvider>
+                        <App />
+                    </TemplateAssetProvider>
                 </SidebarProvider>
             </CustomWorkflowsProvider>
         </AuxTabProvider>

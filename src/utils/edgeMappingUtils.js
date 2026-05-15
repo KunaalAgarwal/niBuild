@@ -117,6 +117,34 @@ export const checkTypeCompatibility = (
 export const getToolIO = (nodeData) => {
     const { label: toolLabel, isDummy, isCustomWorkflow, internalNodes } = nodeData;
 
+    // Standard Template nodes: one File output named after the chosen template id
+    if (isDummy && nodeData.isStandardTemplate) {
+        const tpl = nodeData.template;
+        const tplId = nodeData.templateId;
+        if (!tplId || !tpl) {
+            return {
+                outputs: [{ name: 'template', type: 'File', label: 'template (not configured)', extensions: [] }],
+                inputs: [],
+                isGeneric: false,
+                isStandardTemplate: true,
+            };
+        }
+        return {
+            outputs: [
+                {
+                    name: tplId,
+                    type: 'File',
+                    label: tpl.label || tplId,
+                    description: tpl.citation || '',
+                    extensions: ['.nii.gz', '.nii', '.gii', '.mgz', '.mgh'],
+                },
+            ],
+            inputs: [],
+            isGeneric: false,
+            isStandardTemplate: true,
+        };
+    }
+
     // BIDS Input nodes: dynamic outputs from BIDS selections
     if (isDummy && nodeData.isBIDS) {
         const selections = nodeData.bidsSelections?.selections || {};

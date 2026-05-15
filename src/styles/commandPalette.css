@@ -4,49 +4,25 @@
     z-index: 10001;
 }
 
+/* Position (top/left/width) is set as inline style from the JS measurement of
+   the TopBar search bar — see CommandPalette.jsx. The palette extends from the
+   search bar's bottom edge so the two read as one continuous element: the
+   search bar drops its bottom border/rounding (.top-bar-search.palette-open in
+   topBar.css), and the palette mirrors with a square top and no top border. */
 .command-palette {
     position: fixed;
-    top: 7px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: clamp(200px, 40%, 550px);
-    max-height: min(60vh, calc(100vh - 17px));
+    max-height: calc(100vh - 50px);
     display: flex;
     flex-direction: column;
     background-color: var(--bg-input);
     border: 1px solid var(--border-default);
+    border-top: none;
     border-radius: var(--radius-md);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
     box-shadow: var(--shadow-lg);
     z-index: 10002;
     overflow: hidden;
-}
-
-.command-palette-input-wrapper {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    border-bottom: 1px solid var(--border-default);
-    gap: 8px;
-}
-
-.command-palette-input-icon {
-    color: var(--text-muted);
-    flex-shrink: 0;
-}
-
-.command-palette-input {
-    font-family: var(--font-ui);
-    font-size: var(--size-md);
-    background: transparent;
-    border: none;
-    color: var(--text-primary);
-    outline: none;
-    flex: 1;
-    min-width: 0;
-}
-
-.command-palette-input::placeholder {
-    color: var(--text-placeholder);
 }
 
 .command-palette-results {

@@ -4,6 +4,7 @@ import { ScatterPropagationContext } from '../context/ScatterPropagationContext.
 import { WiredInputsContext } from '../context/WiredInputsContext.jsx';
 import IONodeComponent from './IONodeComponent.jsx';
 import BIDSNodeComponent from './BIDSNodeComponent.jsx';
+import StandardTemplateNodeComponent from './StandardTemplateNodeComponent.jsx';
 import CustomWorkflowNodeComponent from './CustomWorkflowNodeComponent.jsx';
 import ToolNodeComponent from './ToolNodeComponent.jsx';
 import '../styles/workflowItem.css';
@@ -17,7 +18,7 @@ const NodeComponent = ({ data, id }) => {
     const updateNodeInternals = useUpdateNodeInternals();
     useEffect(() => {
         updateNodeInternals(id);
-    }, []);
+    }, [id, updateNodeInternals]);
 
     // Check scatter propagation and source-node status
     const { propagatedIds, scatteredUpstreamInputs, gatherNodeIds } = useContext(ScatterPropagationContext);
@@ -30,6 +31,17 @@ const NodeComponent = ({ data, id }) => {
     const wiredInputs = wiredContext?.get(id) || new Map();
 
     const isDummy = data.isDummy === true;
+
+    // Standard Template I/O nodes (MNI152, fsaverage, atlases)
+    if (isDummy && data.isStandardTemplate) {
+        return (
+            <StandardTemplateNodeComponent
+                data={data}
+                isScatterInherited={isScatterInherited}
+                isGatherNode={isGatherNode}
+            />
+        );
+    }
 
     // I/O dummy nodes (Input/Output)
     if (isDummy && !data.isBIDS) {

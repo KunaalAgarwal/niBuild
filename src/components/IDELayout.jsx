@@ -17,6 +17,9 @@ function IDELayout({
     workflowDisplayName,
     onOpenCommandPalette,
     isCommandPaletteOpen,
+    onSearchRefReady,
+    paletteQuery,
+    onPaletteQueryChange,
     currentWorkspace,
     totalWorkspaces,
     sidebarContent,
@@ -415,6 +418,9 @@ function IDELayout({
                 workflowDisplayName={workflowDisplayName}
                 onOpenCommandPalette={onOpenCommandPalette}
                 isCommandPaletteOpen={isCommandPaletteOpen}
+                onSearchRefReady={onSearchRefReady}
+                paletteQuery={paletteQuery}
+                onPaletteQueryChange={onPaletteQueryChange}
                 isManagerActive={isManagerActive}
                 isBoundAsWorkflow={isBoundAsWorkflow}
                 isBoundAsCustomNode={isBoundAsCustomNode}
@@ -677,7 +683,7 @@ function IDELayout({
                                                                             )}
                                                                         </>
                                                                     )}
-                                                                    {workspaces.length > 1 && editingTab !== i && (
+                                                                    {editingTab !== i && (
                                                                         <button
                                                                             className="ide-tab-close"
                                                                             draggable={false}

@@ -225,6 +225,16 @@
     border-color: var(--border-strong);
 }
 
+/* When the command palette is open, the search bar's bottom edge becomes the
+   shared seam with the dropdown — drop the bottom radius and border so the two
+   read as one continuous element. The palette mirrors this with a square top
+   and no top border (see commandPalette.css). */
+.top-bar-search.palette-open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: none;
+}
+
 .top-bar-search-icon {
     color: var(--text-muted);
     margin-right: 6px;
@@ -234,13 +244,26 @@
 .top-bar-search-input {
     font-family: var(--font-ui);
     font-size: var(--size-sm);
-    background: transparent;
+    /* Explicit background + UA reset: when the input becomes editable + focused
+       (palette open), some browsers / Bootstrap normalize.css apply a subtle
+       focus background that shifts the search bar a shade away from the
+       palette body below. Forcing transparent here lets the parent's
+       --bg-input show through unchanged in every state. */
+    background-color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    box-shadow: none;
     border: none;
     color: var(--text-muted);
     outline: none;
     flex: 1;
     cursor: pointer;
     min-width: 0;
+}
+
+.top-bar-search-input:focus {
+    background-color: transparent;
+    box-shadow: none;
 }
 
 /* Responsive: narrow screens */

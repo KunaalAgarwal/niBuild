@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import '../styles/topBar.css';
 
 /**
@@ -26,6 +27,9 @@ function TopBar({
     workflowDisplayName,
     onOpenCommandPalette,
     isCommandPaletteOpen,
+    onSearchRefReady,
+    paletteQuery = '',
+    onPaletteQueryChange,
     isManagerActive = false,
     isBoundAsWorkflow = false,
     isBoundAsCustomNode = false,
@@ -49,6 +53,16 @@ function TopBar({
 
     const workflowDisabled = isManagerActive || (workflowUpdateMode && !hasWorkflowChanges);
     const customDisabled = isManagerActive || (customNodeUpdateMode && !hasCustomNodeChanges);
+
+    // Auto-focus the search input when the palette opens so the user can start
+    // typing immediately. The palette no longer renders its own input row —
+    // this input is the single visible search field for the command palette.
+    const searchInputRef = useRef(null);
+    useEffect(() => {
+        if (isCommandPaletteOpen) {
+            requestAnimationFrame(() => searchInputRef.current?.focus());
+        }
+    }, [isCommandPaletteOpen]);
 
     const workflowTitle = isManagerActive
         ? 'Open a workspace to save as a workflow'
@@ -98,8 +112,9 @@ function TopBar({
 
             <div className="top-bar-center">
                 <div
+                    ref={onSearchRefReady}
                     className={`top-bar-search${isCommandPaletteOpen ? ' palette-open' : ''}`}
-                    onClick={onOpenCommandPalette}
+                    onClick={isCommandPaletteOpen ? undefined : onOpenCommandPalette}
                 >
                     <svg
                         className="top-bar-search-icon"
@@ -115,7 +130,15 @@ function TopBar({
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
-                    <input type="text" className="top-bar-search-input" placeholder={workflowDisplayName} readOnly />
+                    <input
+                        ref={searchInputRef}
+                        type="text"
+                        className="top-bar-search-input"
+                        placeholder={isCommandPaletteOpen ? 'Search' : workflowDisplayName}
+                        value={isCommandPaletteOpen ? paletteQuery : ''}
+                        onChange={(e) => onPaletteQueryChange?.(e.target.value)}
+                        readOnly={!isCommandPaletteOpen}
+                    />
                 </div>
             </div>
 

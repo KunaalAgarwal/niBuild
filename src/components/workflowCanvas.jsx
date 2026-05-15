@@ -8,17 +8,20 @@ import NodeComponent from './NodeComponent';
 import EdgeMappingModal from './EdgeMappingModal';
 import { useNodeLookup } from '../hooks/useNodeLookup.js';
 import { useBIDSHandler } from '../hooks/useBIDSHandler.js';
+import { useCanvasShortcuts } from '../hooks/useCanvasShortcuts.js';
+import { useCanvasClipboard } from '../hooks/useCanvasClipboard.js';
+import { useFlowContexts } from '../hooks/useFlowContexts.js';
+import { useEdgeMapping } from '../hooks/useEdgeMapping.js';
+import { useCanvasDrop } from '../hooks/useCanvasDrop.js';
+import { useCustomWorkflowSync } from '../hooks/useCustomWorkflowSync.js';
 import { ScatterPropagationContext } from '../context/ScatterPropagationContext.jsx';
 import { WiredInputsContext } from '../context/WiredInputsContext.jsx';
 import { WorkflowMetaProvider } from '../context/WorkflowMetaContext.jsx';
 import { useAuxTabsContext } from '../context/AuxTabContext.jsx';
 import { useSidebar } from '../context/SidebarContext.jsx';
-import { computeScatteredNodes, buildArrayTypedInputs } from '../utils/scatterPropagation.js';
-import { getToolConfigSync } from '../utils/toolRegistry.js';
 import { useCustomWorkflowsContext } from '../context/CustomWorkflowsContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import { layoutGraph } from '../utils/layoutGraph.js';
-import { deserializeNode } from '../utils/workflowDiff.js';
 
 // Define node types.
 const nodeTypes = { default: NodeComponent };
@@ -67,191 +70,9 @@ function WorkflowCanvas({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, updateCurrentWorkspaceItems]);
 
-    // Compute which nodes inherit scatter from upstream (BFS propagation).
-    // Used by NodeComponent via ScatterPropagationContext to show badges.
-    // BIDS nodes participate in scatter (they output File[] arrays) but regular dummy nodes don't.
-    const scatterContext = useMemo(() => {
-        const dummyIds = new Set(nodes.filter((n) => n.data?.isDummy && !n.data?.isBIDS).map((n) => n.id));
-        const realNodes = nodes.filter((n) => !n.data?.isDummy || n.data?.isBIDS);
-        const realEdges = edges.filter((e) => !dummyIds.has(e.source) && !dummyIds.has(e.target));
+    const { scatterContext, wiredContext } = useFlowContexts(nodes, edges, nodeMap, setNodes, markForSync);
 
-        const arrayTypedInputs = buildArrayTypedInputs(realNodes);
-
-        const { scatteredNodeIds, sourceNodeIds, scatteredUpstreamInputs, gatherNodeIds } = computeScatteredNodes(
-            realNodes,
-            realEdges,
-            arrayTypedInputs,
-        );
-        return { propagatedIds: scatteredNodeIds, sourceNodeIds, scatteredUpstreamInputs, gatherNodeIds };
-    }, [nodes, edges]);
-
-    // Compute which inputs on each node are wired from upstream edge mappings.
-    // Used by NodeComponent via WiredInputsContext to show wired/unwired state.
-    // Value: Map<nodeId, Map<inputName, Array<{ sourceNodeId, sourceNodeLabel, sourceOutput }>>>
-    const wiredContext = useMemo(() => {
-        const wiredMap = new Map();
-        edges.forEach((edge) => {
-            if (!edge.data?.mappings) return;
-            edge.data.mappings.forEach((mapping) => {
-                if (!wiredMap.has(edge.target)) wiredMap.set(edge.target, new Map());
-                const nodeInputs = wiredMap.get(edge.target);
-                const sourceNode = nodeMap.get(edge.source);
-                const sourceInfo = {
-                    sourceNodeId: edge.source,
-                    sourceNodeLabel: sourceNode?.data?.label || 'Unknown',
-                    sourceOutput: mapping.sourceOutput,
-                };
-                if (nodeInputs.has(mapping.targetInput)) {
-                    nodeInputs.get(mapping.targetInput).push(sourceInfo);
-                } else {
-                    nodeInputs.set(mapping.targetInput, [sourceInfo]);
-                }
-            });
-        });
-        return wiredMap;
-    }, [edges, nodeMap]);
-
-    // Detect inputs that need a flatten expression due to scattered array outputs.
-    // When a scattered step produces an array type (e.g. File[]), scatter wraps it
-    // in another array (File[][]). Downstream inputs expecting File[] need
-    // $(self.flat()) to unwrap. Returns Map<nodeId, Set<inputName>>.
-    const flattenInputs = useMemo(() => {
-        const result = new Map();
-        for (const [nodeId, inputMap] of wiredContext) {
-            for (const [inputName, sources] of inputMap) {
-                for (const src of sources) {
-                    if (!scatterContext.propagatedIds.has(src.sourceNodeId)) continue;
-                    const sourceNode = nodeMap.get(src.sourceNodeId);
-                    if (!sourceNode || sourceNode.data?.isDummy) continue;
-                    const sourceTool = getToolConfigSync(sourceNode.data.label);
-                    if (!sourceTool) continue;
-                    const outputDef = sourceTool.outputs?.[src.sourceOutput];
-                    if (!outputDef?.type) continue;
-                    const baseType = outputDef.type.replace(/\?$/, '');
-                    if (baseType.endsWith('[]')) {
-                        if (!result.has(nodeId)) result.set(nodeId, new Set());
-                        result.get(nodeId).add(inputName);
-                    }
-                }
-            }
-        }
-        return result;
-    }, [wiredContext, scatterContext.propagatedIds, nodeMap]);
-
-    // Sync flatten expressions into node.data.expressions so they appear in the UI.
-    const prevFlattenKeyRef = useRef('');
-    useEffect(() => {
-        // Build a stable key to detect actual changes and avoid render loops.
-        const parts = [];
-        for (const [nodeId, inputs] of flattenInputs) {
-            parts.push(nodeId + ':' + [...inputs].sort().join(','));
-        }
-        const key = parts.sort().join('|');
-        if (key === prevFlattenKeyRef.current) return;
-        prevFlattenKeyRef.current = key;
-
-        const FLATTEN = '$(self.flat())';
-        setNodes((prev) => {
-            let changed = false;
-            const updated = prev.map((node) => {
-                const needs = flattenInputs.get(node.id);
-                const exprs = node.data.expressions || {};
-                let newExprs = null;
-
-                // Add flatten where needed and expression is empty or already flatten
-                if (needs) {
-                    for (const inputName of needs) {
-                        if (!exprs[inputName] || exprs[inputName] === FLATTEN) {
-                            if (exprs[inputName] !== FLATTEN) {
-                                if (!newExprs) newExprs = { ...exprs };
-                                newExprs[inputName] = FLATTEN;
-                            }
-                        }
-                    }
-                }
-
-                // Remove stale flatten expressions
-                for (const [inputName, expr] of Object.entries(exprs)) {
-                    if (expr === FLATTEN && (!needs || !needs.has(inputName))) {
-                        if (!newExprs) newExprs = { ...exprs };
-                        delete newExprs[inputName];
-                    }
-                }
-
-                if (newExprs) {
-                    changed = true;
-                    return { ...node, data: { ...node.data, expressions: newExprs } };
-                }
-                return node;
-            });
-            if (changed) {
-                markForSync();
-                return updated;
-            }
-            return prev;
-        });
-    }, [flattenInputs, setNodes, markForSync]);
-
-    // Sync on-canvas custom workflow nodes when saved workflows change.
-    // Also removes orphaned nodes whose workflow was deleted.
-    useEffect(() => {
-        if (!customWorkflows) return;
-
-        let changed = false;
-        const removedIds = new Set();
-        const updatedNodes = nodes
-            .map((node) => {
-                if (!node.data?.isCustomWorkflow || !node.data?.customWorkflowId) return node;
-                const saved = customWorkflows.find((w) => w.id === node.data.customWorkflowId);
-                if (!saved) {
-                    // Workflow was deleted — mark node for removal
-                    changed = true;
-                    removedIds.add(node.id);
-                    return null;
-                }
-
-                // Shallow check: compare node count, IDs, and labels to detect changes
-                const cur = node.data.internalNodes || [];
-                const sav = saved.nodes || [];
-                const nodesMatch =
-                    cur.length === sav.length &&
-                    cur.every(
-                        (n, i) =>
-                            n.id === sav[i]?.id &&
-                            (n.label ?? n.data?.label) === (sav[i]?.label ?? sav[i]?.data?.label),
-                    );
-                if (
-                    nodesMatch &&
-                    node.data.label === saved.name &&
-                    node.data.hasValidationWarnings === saved.hasValidationWarnings
-                ) {
-                    return node;
-                }
-
-                changed = true;
-                return {
-                    ...node,
-                    data: {
-                        ...node.data,
-                        label: saved.name,
-                        internalNodes: structuredClone(saved.nodes),
-                        internalEdges: structuredClone(saved.edges),
-                        boundaryNodes: { ...saved.boundaryNodes },
-                        hasValidationWarnings: saved.hasValidationWarnings,
-                    },
-                };
-            })
-            .filter(Boolean);
-
-        if (changed) {
-            if (removedIds.size > 0) {
-                setEdges((prev) => prev.filter((e) => !removedIds.has(e.source) && !removedIds.has(e.target)));
-            }
-            setNodes(updatedNodes);
-            markForSync();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [customWorkflows]);
+    useCustomWorkflowSync(nodes, customWorkflows, setNodes, setEdges, markForSync);
 
     // Compute display labels for duplicate node names (e.g., "flirt (1)", "flirt (2)").
     // Runs as an effect to avoid infinite re-render loops from mutating nodes in useMemo.
@@ -293,12 +114,6 @@ function WorkflowCanvas({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes]);
-
-    // Edge mapping modal state
-    const [showEdgeModal, setShowEdgeModal] = useState(false);
-    const [pendingConnection, setPendingConnection] = useState(null);
-    const [editingEdge, setEditingEdge] = useState(null);
-    const [edgeModalData, setEdgeModalData] = useState(null);
 
     const [toolsHidden, setToolsHidden] = useState(false);
     const { showError, showWarning, showInfo } = useToast();
@@ -373,6 +188,12 @@ function WorkflowCanvas({
                         // Reattach BIDS callback
                         ...(node.data.isBIDS
                             ? { onUpdateBIDS: (updates) => handleBIDSNodeUpdate(node.id, updates) }
+                            : {}),
+                        // Reattach Standard Template callback
+                        ...(node.data.isStandardTemplate
+                            ? {
+                                  onUpdateStandardTemplate: (updates) => handleStandardTemplateUpdate(node.id, updates),
+                              }
                             : {}),
                         // Reattach internal BIDS callback for custom workflow nodes
                         ...(node.data.isCustomWorkflow
@@ -568,332 +389,48 @@ function WorkflowCanvas({
             selectedOutputs: u.selectedOutputs,
         }));
 
-    // Build a flat node-info object for the EdgeMappingModal from a ReactFlow node.
-    const buildEdgeModalNode = useCallback(
-        (node) => ({
-            id: node.id,
-            label: node.data.label,
-            isDummy: node.data.isDummy || false,
-            isBIDS: node.data.isBIDS || false,
-            bidsSelections: node.data.bidsSelections || null,
-            isCustomWorkflow: node.data.isCustomWorkflow || false,
-            internalNodes: node.data.internalNodes || [],
-            internalEdges: node.data.internalEdges || [],
-            isScattered: scatterContext.propagatedIds.has(node.id),
-        }),
-        [scatterContext],
-    );
+    const handleStandardTemplateUpdate = (nodeId, u) =>
+        updateNodeData(nodeId, (d) => ({
+            ...d,
+            ...(u.templateId !== undefined ? { templateId: u.templateId } : {}),
+            ...(u.template !== undefined ? { template: u.template } : {}),
+            ...(u.resolvedFilename !== undefined ? { resolvedFilename: u.resolvedFilename } : {}),
+            ...(u.label !== undefined ? { label: u.label } : {}),
+            ...(u._pickTemplate !== undefined ? { _pickTemplate: u._pickTemplate } : {}),
+        }));
 
-    // Connect edges - open modal to configure mapping.
-    const onConnect = useCallback(
-        (connection) => {
-            setPendingConnection(connection);
-            setEditingEdge(null);
+    const {
+        modalState: { showEdgeModal, edgeModalData },
+        onConnect,
+        onEdgeDoubleClick,
+        handleEdgeMappingSave,
+        handleEdgeModalClose,
+        handleEdgesChange,
+    } = useEdgeMapping(nodeMap, setEdges, onEdgesChange, scatterContext, markForSync);
 
-            const sourceNode = nodeMap.get(connection.source);
-            const targetNode = nodeMap.get(connection.target);
-
-            if (sourceNode && targetNode) {
-                setEdgeModalData({
-                    sourceNode: buildEdgeModalNode(sourceNode),
-                    targetNode: buildEdgeModalNode(targetNode),
-                    existingMappings: [],
-                });
-                setShowEdgeModal(true);
-            }
+    const {
+        onDragOver: handleDragOver,
+        onDrop: handleDrop,
+        addNodeAtCenter,
+    } = useCanvasDrop({
+        reactFlowInstance,
+        reactFlowWrapper,
+        customWorkflows,
+        setNodes,
+        setEdges,
+        markForSync,
+        showError,
+        handlers: {
+            handleNodeUpdate,
+            handleBIDSNodeUpdate,
+            handleCustomNodeUpdate,
+            handleInternalBIDSUpdate,
+            handleIONodeUpdate,
+            handleOutputNodeUpdate,
+            handleStandardTemplateUpdate,
         },
-        [nodeMap, buildEdgeModalNode],
-    );
-
-    // Handle double-click on edge to edit mapping
-    const onEdgeDoubleClick = useCallback(
-        (event, edge) => {
-            event.stopPropagation();
-            const sourceNode = nodeMap.get(edge.source);
-            const targetNode = nodeMap.get(edge.target);
-
-            if (sourceNode && targetNode) {
-                setEditingEdge(edge);
-                setPendingConnection(null);
-                setEdgeModalData({
-                    sourceNode: buildEdgeModalNode(sourceNode),
-                    targetNode: buildEdgeModalNode(targetNode),
-                    existingMappings: edge.data?.mappings || [],
-                });
-                setShowEdgeModal(true);
-            }
-        },
-        [nodeMap, buildEdgeModalNode],
-    );
-
-    // Handle saving edge mappings from modal
-    const handleEdgeMappingSave = useCallback(
-        (mappings) => {
-            if (editingEdge) {
-                // Update existing edge
-                setEdges((eds) =>
-                    eds.map((e) => (e.id === editingEdge.id ? { ...e, data: { ...e.data, mappings } } : e)),
-                );
-            } else if (pendingConnection) {
-                // Create new edge with mappings
-                const newEdge = {
-                    id: `${pendingConnection.source}-${pendingConnection.target}-${crypto.randomUUID()}`,
-                    source: pendingConnection.source,
-                    target: pendingConnection.target,
-                    animated: true,
-                    markerEnd: EDGE_ARROW,
-                    style: { strokeWidth: 2 },
-                    data: { mappings },
-                };
-                setEdges((eds) => [...eds, newEdge]);
-            }
-
-            markForSync();
-
-            // Reset modal state
-            setShowEdgeModal(false);
-            setPendingConnection(null);
-            setEditingEdge(null);
-            setEdgeModalData(null);
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [pendingConnection, editingEdge],
-    );
-
-    // Handle closing edge modal without saving
-    const handleEdgeModalClose = useCallback(() => {
-        setShowEdgeModal(false);
-        setPendingConnection(null);
-        setEditingEdge(null);
-        setEdgeModalData(null);
-    }, []);
-
-    // Wrap onEdgesChange to sync edge deletions to localStorage
-    // Uses nodesRef to avoid stale closure capturing nodes
-    const handleEdgesChange = useCallback(
-        (changes) => {
-            onEdgesChange(changes);
-
-            // Sync edge deletions to localStorage
-            const deletions = changes.filter((c) => c.type === 'remove');
-            if (deletions.length > 0) {
-                markForSync();
-            }
-        },
-        [onEdgesChange, markForSync],
-    );
-
-    // Handle drag over.
-    const handleDragOver = useCallback((event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-    }, []);
-
-    // Shared node creation helper — used by both handleDrop and addNodeAtCenter
-    const createNodeAt = useCallback(
-        (position, name, dataOverrides, afterAdd) => {
-            const newNodeId = crypto.randomUUID();
-            const newNode = {
-                id: newNodeId,
-                type: 'default',
-                position,
-                data: {
-                    label: name,
-                    isDummy: false,
-                    parameters: '',
-                    dockerVersion: 'latest',
-                    linkMergeOverrides: {},
-                    whenExpression: '',
-                    expressions: {},
-                    notes: '',
-                    ...dataOverrides(newNodeId),
-                },
-            };
-            setNodes((prevNodes) => [...prevNodes, newNode]);
-            markForSync();
-            if (afterAdd) afterAdd(newNodeId);
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [markForSync],
-    );
-
-    const buildNodeOverrides = useCallback(
-        (name, { isDummy, isBIDS, isOutputNode, customWorkflowId }) => {
-            if (isBIDS) {
-                return {
-                    overrides: (id) => ({
-                        isDummy: true,
-                        isBIDS: true,
-                        bidsStructure: null,
-                        bidsSelections: null,
-                        onSaveParameters: null,
-                        onSaveIO: (data) => handleIONodeUpdate(id, data),
-                        onUpdateBIDS: (updates) => handleBIDSNodeUpdate(id, updates),
-                    }),
-                    afterAdd: (id) => triggerBIDSDirectoryPicker(id),
-                };
-            }
-            if (customWorkflowId) {
-                const savedWorkflow = customWorkflows.find((w) => w.id === customWorkflowId);
-                if (!savedWorkflow) return null;
-                return {
-                    overrides: (id) => ({
-                        label: savedWorkflow.name,
-                        isCustomWorkflow: true,
-                        customWorkflowId: savedWorkflow.id,
-                        internalNodes: structuredClone(savedWorkflow.nodes),
-                        internalEdges: structuredClone(savedWorkflow.edges),
-                        boundaryNodes: { ...savedWorkflow.boundaryNodes },
-                        hasValidationWarnings: savedWorkflow.hasValidationWarnings,
-                        parameters: {},
-                        onSaveParameters: (newData) => handleCustomNodeUpdate(id, newData),
-                        onUpdateInternalBIDS: (updates) => handleInternalBIDSUpdate(id, updates),
-                    }),
-                };
-            }
-            return {
-                overrides: (id) => ({
-                    isDummy,
-                    isOutputNode: isOutputNode || undefined,
-                    selectedOutputs: isOutputNode ? null : undefined,
-                    onSaveParameters: isDummy ? null : (newData) => handleNodeUpdate(id, newData),
-                    onSaveIO: isDummy ? (data) => handleIONodeUpdate(id, data) : null,
-                    onSaveOutputConfig: isOutputNode ? (data) => handleOutputNodeUpdate(id, data) : null,
-                }),
-            };
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [customWorkflows],
-    );
-
-    // Workflow expansion drop: takes a saved workflow (kind='workflow') and
-    // splats every saved node + edge onto the canvas with fresh UUIDs. Edges
-    // are remapped to the new IDs, callbacks reattached per node-kind (the
-    // same set the existing rehydration loop on workspace load attaches), and
-    // positions are translated so the saved layout's top-left lands at the
-    // drop point.
-    //
-    // The composite-node drop path (custom-node-kind, via
-    // `node/customWorkflowId`) is left untouched and still flows through
-    // `buildNodeOverrides` below.
-    const expandSavedWorkflow = useCallback(
-        (savedWorkflowId, dropPosition) => {
-            const saved = customWorkflows.find((w) => w.id === savedWorkflowId);
-            if (!saved) {
-                showError('Workflow to expand was not found.');
-                return;
-            }
-            const savedNodes = saved.nodes || [];
-            if (savedNodes.length === 0) return;
-
-            // Translate the saved layout so its top-left lands at the cursor.
-            const minX = Math.min(...savedNodes.map((n) => n.position?.x ?? 0));
-            const minY = Math.min(...savedNodes.map((n) => n.position?.y ?? 0));
-            const offset = { x: dropPosition.x - minX, y: dropPosition.y - minY };
-
-            // Fresh UUID per node; edges below remap their source/target via this map.
-            const idMap = new Map(savedNodes.map((n) => [n.id, crypto.randomUUID()]));
-
-            const newNodes = savedNodes.map((savedNode) => {
-                const newId = idMap.get(savedNode.id);
-                const base = deserializeNode(savedNode);
-                const d = base.data;
-                const data = {
-                    ...d,
-                    // Per-kind callback wiring — mirrors the rehydration loop in
-                    // the workspace-load effect above so newly expanded nodes are
-                    // immediately interactive. `isCustomWorkflow` and
-                    // `isOutputNode` are not preserved by `serializeNodes` today,
-                    // so we don't restore their callbacks here.
-                    onSaveParameters: d.isDummy ? null : (newParams) => handleNodeUpdate(newId, newParams),
-                    ...(d.isBIDS ? { onUpdateBIDS: (updates) => handleBIDSNodeUpdate(newId, updates) } : {}),
-                    onSaveIO: d.isDummy ? (data2) => handleIONodeUpdate(newId, data2) : null,
-                    onSaveOutputConfig:
-                        d.isDummy && d.label === 'Output' ? (data2) => handleOutputNodeUpdate(newId, data2) : null,
-                };
-                return {
-                    id: newId,
-                    type: base.type,
-                    position: {
-                        x: (base.position?.x ?? 0) + offset.x,
-                        y: (base.position?.y ?? 0) + offset.y,
-                    },
-                    data,
-                };
-            });
-
-            const newEdges = (saved.edges || [])
-                .map((e, idx) => {
-                    const newSource = idMap.get(e.source);
-                    const newTarget = idMap.get(e.target);
-                    if (!newSource || !newTarget) return null;
-                    return {
-                        id: e.id ? `${e.id}-exp-${idx}` : `${newSource}-${newTarget}-${idx}`,
-                        source: newSource,
-                        target: newTarget,
-                        data: { mappings: e.data?.mappings || [] },
-                        animated: true,
-                        markerEnd: EDGE_ARROW,
-                        style: { strokeWidth: 2 },
-                    };
-                })
-                .filter(Boolean);
-
-            setNodes((prev) => [...prev, ...newNodes]);
-            setEdges((prev) => [...prev, ...newEdges]);
-            markForSync();
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [customWorkflows, setNodes, setEdges, markForSync, showError],
-    );
-
-    // On drop, create a new node — or, for workflow-kind drags, expand the
-    // saved workflow's nodes+edges in place.
-    const handleDrop = (event) => {
-        event.preventDefault();
-        if (!reactFlowInstance) return;
-
-        const flowPosition = reactFlowInstance.screenToFlowPosition({
-            x: event.clientX,
-            y: event.clientY,
-        });
-
-        // Expansion path — a "My Workflows" row was dragged.
-        const savedWorkflowId = event.dataTransfer.getData('node/savedWorkflowId');
-        const shouldExpand = event.dataTransfer.getData('node/expand') === 'true';
-        if (shouldExpand && savedWorkflowId) {
-            expandSavedWorkflow(savedWorkflowId, flowPosition);
-            return;
-        }
-
-        // Standard path — primitives, BIDS, output, custom-node composite.
-        const name = event.dataTransfer.getData('node/name') || 'Unnamed Node';
-        const isDummy = event.dataTransfer.getData('node/isDummy') === 'true';
-        const isBIDS = event.dataTransfer.getData('node/isBIDS') === 'true';
-        const isOutputNode = event.dataTransfer.getData('node/isOutputNode') === 'true';
-        const customWorkflowId = event.dataTransfer.getData('node/customWorkflowId');
-
-        const result = buildNodeOverrides(name, { isDummy, isBIDS, isOutputNode, customWorkflowId });
-        if (!result) return;
-        createNodeAt(flowPosition, name, result.overrides, result.afterAdd);
-    };
-
-    // Add a node at the center of the current viewport (used by command palette)
-    const addNodeAtCenter = useCallback(
-        (name, opts = {}) => {
-            if (!reactFlowInstance) return;
-            const { x, y, zoom } = reactFlowInstance.getViewport();
-            const wrapper = reactFlowWrapper.current;
-            if (!wrapper) return;
-            const cx = (-x + wrapper.clientWidth / 2) / zoom;
-            const cy = (-y + wrapper.clientHeight / 2) / zoom;
-
-            const result = buildNodeOverrides(name, opts);
-            if (!result) return;
-            createNodeAt({ x: cx, y: cy }, name, result.overrides, result.afterAdd);
-        },
-        [reactFlowInstance, createNodeAt, buildNodeOverrides],
-    );
+        triggerBIDSDirectoryPicker,
+    });
 
     // Delete nodes and corresponding edges.
     // Uses Set for O(1) lookups instead of O(n) array.some()
@@ -925,6 +462,10 @@ function WorkflowCanvas({
         [markForSync, auxTabs, closeAuxTab, workspaceId],
     );
 
+    // Track all currently-selected node ids in a ref so copy/paste handlers
+    // can read them without re-rendering on every selection change.
+    const selectedNodeIdsRef = useRef([]);
+
     // Mirror ReactFlow's selection state into SidebarContext so the sidebar's
     // Params tab knows which node (if any) is currently focused. Fires on
     // click-to-select, drag-select, deselect (click empty canvas), and
@@ -933,6 +474,7 @@ function WorkflowCanvas({
     // collapses to a single focus by design.
     const onSelectionChange = useCallback(
         ({ nodes: selectedNodes }) => {
+            selectedNodeIdsRef.current = (selectedNodes || []).map((n) => n.id);
             if (!workspaceId) return;
             const sel = selectedNodes && selectedNodes[0] ? selectedNodes[0].id : null;
             setSelectedNode(workspaceId, sel);
@@ -952,19 +494,85 @@ function WorkflowCanvas({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, reactFlowInstance, markForSync]);
 
-    // --- Global Key Listener for Auto-Layout Shortcut ---
-    // Note: Delete key is handled natively by ReactFlow via onNodesDelete.
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.ctrlKey && e.shiftKey && e.key === 'L') {
-                e.preventDefault();
-                handleAutoLayout();
-            }
-        };
+    // --- Clipboard (Ctrl+C / Ctrl+V) ---
+    const clipboard = useCanvasClipboard();
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [handleAutoLayout]);
+    const handleCopy = useCallback(() => {
+        clipboard.copy(selectedNodeIdsRef.current, nodes, edges);
+    }, [clipboard, nodes, edges]);
+
+    // Paste: re-UUID every node, remap edges, reattach per-kind callbacks (mirrors
+    // the workspace-load rehydration logic above and the expansion logic in
+    // useCanvasDrop). Offset is fixed +40,+40 from the clipboard's top-left so
+    // successive pastes stair-step visually.
+    const handlePaste = useCallback(() => {
+        const payload = clipboard.read();
+        if (!payload || payload.nodes.length === 0) return;
+
+        const idMap = new Map(payload.nodes.map((n) => [n.id, crypto.randomUUID()]));
+
+        const newNodes = payload.nodes.map((savedNode) => {
+            const newId = idMap.get(savedNode.id);
+            const d = savedNode.data || {};
+            const data = {
+                ...structuredClone(d),
+                onSaveParameters: d.isDummy
+                    ? null
+                    : d.isCustomWorkflow
+                      ? (newData) => handleCustomNodeUpdate(newId, newData)
+                      : (newParams) => handleNodeUpdate(newId, newParams),
+                ...(d.isBIDS ? { onUpdateBIDS: (updates) => handleBIDSNodeUpdate(newId, updates) } : {}),
+                ...(d.isStandardTemplate
+                    ? { onUpdateStandardTemplate: (updates) => handleStandardTemplateUpdate(newId, updates) }
+                    : {}),
+                ...(d.isCustomWorkflow
+                    ? { onUpdateInternalBIDS: (updates) => handleInternalBIDSUpdate(newId, updates) }
+                    : {}),
+                onSaveIO: d.isDummy ? (data2) => handleIONodeUpdate(newId, data2) : null,
+                onSaveOutputConfig:
+                    d.isOutputNode || (d.isDummy && d.label === 'Output')
+                        ? (data2) => handleOutputNodeUpdate(newId, data2)
+                        : null,
+            };
+            return {
+                id: newId,
+                type: savedNode.type || 'default',
+                position: {
+                    x: (savedNode.position?.x ?? 0) + 40,
+                    y: (savedNode.position?.y ?? 0) + 40,
+                },
+                data,
+            };
+        });
+
+        const newEdges = (payload.edges || [])
+            .map((e, idx) => {
+                const newSource = idMap.get(e.source);
+                const newTarget = idMap.get(e.target);
+                if (!newSource || !newTarget) return null;
+                return {
+                    id: `${newSource}-${newTarget}-${idx}-${crypto.randomUUID().slice(0, 8)}`,
+                    source: newSource,
+                    target: newTarget,
+                    data: { mappings: e.data?.mappings || [] },
+                    animated: true,
+                    markerEnd: EDGE_ARROW,
+                    style: { strokeWidth: 2 },
+                };
+            })
+            .filter(Boolean);
+
+        setNodes((prev) => [...prev, ...newNodes]);
+        setEdges((prev) => [...prev, ...newEdges]);
+        markForSync();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clipboard, setNodes, setEdges, markForSync]);
+
+    useCanvasShortcuts({
+        onAutoLayout: handleAutoLayout,
+        onCopy: handleCopy,
+        onPaste: handlePaste,
+    });
 
     // Provide complete workflow data for exporting.
     const getWorkflowData = () => ({
@@ -1015,6 +623,7 @@ function WorkflowCanvas({
                                 onSelectionChange={onSelectionChange}
                                 onEdgeDoubleClick={onEdgeDoubleClick}
                                 nodeTypes={nodeTypes}
+                                multiSelectionKeyCode="Shift"
                                 onInit={(instance) => {
                                     setReactFlowInstance(instance);
                                     // Initial fitView on first load (before any workspace viewport is restored)

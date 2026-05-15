@@ -158,6 +158,22 @@ function buildSupportEntities(singularityFiles) {
     return entities;
 }
 
+/** Build entities for standard reference templates staged into additional_inputs/. */
+function buildStandardTemplateEntities(standardTemplates) {
+    return standardTemplates.map((tpl) => {
+        const entity = {
+            '@id': `additional_inputs/${tpl.filename}`,
+            '@type': 'File',
+            name: tpl.label || tpl.filename,
+            description: `Standard reference template (${tpl.family}, ${tpl.modality}, ${tpl.resolution})`,
+        };
+        if (tpl.license) entity.license = tpl.license;
+        if (tpl.citation) entity.citation = tpl.citation;
+        if (tpl.source?.url) entity.url = { '@id': tpl.source.url };
+        return entity;
+    });
+}
+
 /** Build entities for BIDS integration files. */
 function buildBIDSEntities() {
     return [
@@ -207,6 +223,7 @@ export function buildROCrateMetadata({
     dockerImages,
     singularityFiles = [],
     hasBIDS = false,
+    standardTemplates = [],
 }) {
     const hasPart = [
         { '@id': mainWorkflowPath },
@@ -218,6 +235,7 @@ export function buildROCrateMetadata({
         ...singularityFiles.map((f) => ({ '@id': f })),
         ...toolCWLPaths.map((p) => ({ '@id': p })),
         { '@id': 'additional_inputs/' },
+        ...standardTemplates.map((tpl) => ({ '@id': `additional_inputs/${tpl.filename}` })),
         ...(hasBIDS ? [{ '@id': 'bids_query.json' }, { '@id': 'resolve_bids.py' }] : []),
     ];
 
@@ -227,6 +245,7 @@ export function buildROCrateMetadata({
         ...buildToolEntities(toolCWLPaths, toolMetadata),
         ...buildDockerEntities(dockerImages),
         ...buildSupportEntities(singularityFiles),
+        ...buildStandardTemplateEntities(standardTemplates),
         ...(hasBIDS ? buildBIDSEntities() : []),
     ];
 

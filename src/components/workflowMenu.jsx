@@ -98,6 +98,9 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow }) {
         if (dummyDef?.isOutputNode) {
             event.dataTransfer.setData('node/isOutputNode', 'true');
         }
+        if (dummyDef?.isStandardTemplate) {
+            event.dataTransfer.setData('node/isStandardTemplate', 'true');
+        }
     }, []);
 
     // Workflow row (kind='workflow') → drop expands into all the saved nodes+edges.

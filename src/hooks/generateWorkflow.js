@@ -6,6 +6,7 @@ import { getToolConfigSync } from '../utils/toolRegistry.js';
 import { FIXED_POSITION_PARAMS } from '../utils/toolAnnotations.js';
 import { buildROCrateMetadata } from '../utils/buildROCrateMetadata.js';
 import { useToast } from '../context/ToastContext.jsx';
+import { useTemplateAssets } from '../context/TemplateAssetContext.jsx';
 import {
     generateDockerfile,
     generateRunSh,
@@ -111,6 +112,7 @@ const collectUniqueDockerImages = (dockerVersionMap) => {
 
 export function useGenerateWorkflow() {
     const { showError, showWarning } = useToast();
+    const { fetchTemplate, getTemplateBlob } = useTemplateAssets();
     /**
      * Sanitize workflow name for safe use as a filename.
      * Security: Prevents path traversal, code injection, and special characters.
@@ -303,6 +305,34 @@ export function useGenerateWorkflow() {
         const bidsNodes = expandedGraph.nodes.filter((n) => n.data?.isBIDS && n.data?.bidsSelections);
         const hasBIDS = bidsNodes.length > 0;
 
+        /* ---------- detect Standard Template nodes and stage their files ---------- */
+        const templateNodes = expandedGraph.nodes.filter(
+            (n) => n.data?.isStandardTemplate && n.data?.templateId && n.data?.template,
+        );
+        // Dedupe by templateId — multiple nodes selecting the same variant
+        // share one file in additional_inputs/.
+        const stagedTemplates = new Map(); // templateId -> template registry entry
+        for (const n of templateNodes) {
+            stagedTemplates.set(n.data.templateId, n.data.template);
+        }
+        for (const [templateId, tpl] of stagedTemplates) {
+            try {
+                let blob = getTemplateBlob(templateId);
+                if (!blob) {
+                    blob = await fetchTemplate(templateId);
+                }
+                if (blob) {
+                    zip.file(`additional_inputs/${tpl.filename}`, blob);
+                }
+            } catch (err) {
+                showWarning(
+                    `Could not fetch template "${tpl.label}" (${tpl.filename}): ${err.message}. ` +
+                        `The job template still references it but the file is missing from the bundle.`,
+                );
+            }
+        }
+        const stagedTemplateEntries = [...stagedTemplates.values()];
+
         if (hasBIDS) {
             // Serialize BIDS query from the first BIDS node's selections
             const bidsQuery = {
@@ -361,6 +391,7 @@ export function useGenerateWorkflow() {
                 hasBIDS,
                 dockerImages,
                 singularityFiles: ['Singularity.def', 'run_singularity.sh', 'prefetch_images_singularity.sh'],
+                standardTemplates: stagedTemplateEntries,
             }),
         );
 

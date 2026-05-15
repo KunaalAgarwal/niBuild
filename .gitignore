@@ -70,3 +70,9 @@ nul
 
 # Claude Code config (local only)
 .claude/
+
+# Code maintenance
+.prettierignore
+.prettierrc
+eslint.config.mjs
+

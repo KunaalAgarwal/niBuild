@@ -3492,6 +3492,16 @@ export const dummyNodes = {
             isDummy: true,
             isBIDS: true,
         },
+        {
+            name: 'Standard Template',
+            fullName: 'Standard Reference Template',
+            function:
+                'Provides a standard reference file (MNI152, fsaverage, atlases) bundled into additional_inputs/ at export',
+            typicalUse:
+                'Drag onto canvas, pick a variant (e.g. MNI152 T1 2 mm brain), and wire to a registration tool input like FLIRT reference',
+            isDummy: true,
+            isStandardTemplate: true,
+        },
     ],
 };
 

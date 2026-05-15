@@ -624,6 +624,14 @@ export function buildCWLWorkflowObject(graph) {
     // Collect edges FROM BIDS nodes (used for wired-inputs computation)
     const bidsEdges = graph.edges.filter((e) => bidsNodeIds.has(e.source));
 
+    // Extract Standard Template nodes — they generate workflow-level File inputs
+    // and pre-fill the job template with a relative path into additional_inputs/.
+    const templateNodes = graph.nodes.filter(
+        (n) => n.data?.isStandardTemplate && n.data?.templateId && n.data?.template,
+    );
+    const templateNodeIds = new Set(templateNodes.map((n) => n.id));
+    const templateEdges = graph.edges.filter((e) => templateNodeIds.has(e.source));
+
     // Filter out ALL dummy nodes (including BIDS) before processing
     const dummyNodeIds = new Set(graph.nodes.filter((n) => n.data?.isDummy).map((n) => n.id));
 
@@ -679,12 +687,13 @@ export function buildCWLWorkflowObject(graph) {
     /* ---------- resolve CWL source reference for a wired input ---------- */
     const resolveWiredSource = (ws) => {
         if (ws.isBIDSInput) return ws.sourceOutput; // workflow-level input name
+        if (ws.isStandardTemplateInput) return ws.sourceOutput; // workflow-level input name
         return `${getStepId(ws.sourceNodeId)}/${ws.sourceOutput}`;
     };
 
     /* ---------- compute scatter propagation ---------- */
-    const scatterNodes = [...nodes, ...bidsNodes];
-    const scatterEdges = [...edges, ...bidsEdges];
+    const scatterNodes = [...nodes, ...bidsNodes, ...templateNodes];
+    const scatterEdges = [...edges, ...bidsEdges, ...templateEdges];
 
     const arrayTypedInputs = buildArrayTypedInputs(nodes);
 
@@ -717,6 +726,29 @@ export function buildCWLWorkflowObject(graph) {
     const jobDefaults = {};
     const cwlDefaultKeys = new Set();
 
+    // Generate workflow-level File inputs for Standard Templates consumed by
+    // non-dummy nodes. The job template is pre-filled with a relative path
+    // pointing to the staged file under additional_inputs/.
+    const consumedTemplates = new Map(); // templateId -> template registry entry
+    for (const edge of templateEdges) {
+        if (dummyNodeIds.has(edge.target)) continue;
+        const srcNode = templateNodes.find((n) => n.id === edge.source);
+        if (!srcNode) continue;
+        for (const m of edge.data?.mappings || []) {
+            // sourceOutput is the templateId (set by getToolIO for Standard Templates)
+            if (!consumedTemplates.has(m.sourceOutput)) {
+                consumedTemplates.set(m.sourceOutput, srcNode.data.template);
+            }
+        }
+    }
+    for (const [templateId, tpl] of consumedTemplates) {
+        wf.inputs[templateId] = { type: 'File' };
+        jobDefaults[templateId] = {
+            class: 'File',
+            path: `../additional_inputs/${tpl.filename}`,
+        };
+    }
+
     /* ---------- pre-compute wired inputs per node from edge mappings ---------- */
     // wiredInputsMap: Map<nodeId, Map<inputName, Array<{ sourceNodeId, sourceOutput, isBIDSInput? }>>>
     const wiredInputsMap = new Map();
@@ -744,6 +776,27 @@ export function buildCWLWorkflowObject(graph) {
                 sourceNodeId: null,
                 sourceOutput: m.sourceOutput, // This is the BIDS selection key (workflow input name)
                 isBIDSInput: true,
+            };
+            if (nodeInputs.has(m.targetInput)) {
+                nodeInputs.get(m.targetInput).push(sourceInfo);
+            } else {
+                nodeInputs.set(m.targetInput, [sourceInfo]);
+            }
+        }
+    }
+
+    // Add Standard Template edges to the wired inputs map. Source is a
+    // workflow-level input named after the templateId; the job YAML carries
+    // the relative path to the staged file under additional_inputs/.
+    for (const edge of templateEdges) {
+        const mappings = edge.data?.mappings || [];
+        for (const m of mappings) {
+            if (!wiredInputsMap.has(edge.target)) wiredInputsMap.set(edge.target, new Map());
+            const nodeInputs = wiredInputsMap.get(edge.target);
+            const sourceInfo = {
+                sourceNodeId: null,
+                sourceOutput: m.sourceOutput,
+                isStandardTemplateInput: true,
             };
             if (nodeInputs.has(m.targetInput)) {
                 nodeInputs.get(m.targetInput).push(sourceInfo);
