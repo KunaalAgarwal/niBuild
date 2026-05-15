@@ -360,13 +360,6 @@ g:hover .connection-dot {
     flex-shrink: 0;
 }
 
-.io-item .info-icon {
-    font-size: 0.75rem;
-    margin-left: auto;
-    opacity: 0.7;
-    flex-shrink: 0;
-}
-
 /* Scatter note banner (shown at top like warning banners) */
 .scatter-note-banner {
     background-color: rgba(111, 194, 207, 0.12);

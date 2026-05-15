@@ -122,8 +122,7 @@
 }
 
 /* Inline controls — switches */
-.param-switch .form-check-input,
-.scatter-switch .form-check-input {
+.param-switch .form-check-input {
     width: 32px;
     height: 16px;
     cursor: pointer;
@@ -137,27 +136,23 @@
         background-position var(--transition-normal);
 }
 
-.param-switch .form-check-input:hover,
-.scatter-switch .form-check-input:hover {
+.param-switch .form-check-input:hover {
     background-color: var(--bg-hover);
     border-color: var(--border-input-hover);
 }
 
-.param-switch .form-check-input:checked,
-.scatter-switch .form-check-input:checked {
+.param-switch .form-check-input:checked {
     background-color: var(--color-accent);
     border-color: var(--color-accent);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
 }
 
-.param-switch .form-check-input:focus,
-.scatter-switch .form-check-input:focus {
+.param-switch .form-check-input:focus {
     box-shadow: var(--shadow-focus);
     border-color: var(--color-accent);
 }
 
-.param-switch .form-check-input:disabled,
-.scatter-switch .form-check-input:disabled {
+.param-switch .form-check-input:disabled {
     opacity: 0.35;
     cursor: not-allowed;
 }
@@ -475,26 +470,6 @@
     margin-top: 6px;
 }
 
-.scatter-toggle-group {
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border-panel);
-}
-
-.scatter-toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-/* scatter-switch is styled alongside param-switch above */
-
-.scatter-help-text {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-top: 6px;
-}
-
 /* Wired/unwired state for File/Directory params */
 .param-card.input-wired {
     background-color: var(--color-accent-muted);
@@ -646,11 +621,6 @@
         font-size: 0.75rem;
     }
 
-    .scatter-toggle-row {
-        gap: 8px;
-    }
-
-    .scatter-help-text,
     .docker-help-text {
         font-size: 0.75rem;
     }
@@ -1267,22 +1237,6 @@
     border: 1px solid var(--color-green-io-border);
 }
 
-.node-notes-textarea {
-    background-color: var(--bg-inset) !important;
-    border: 1px solid var(--border-panel) !important;
-    color: var(--text-primary) !important;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    border-radius: var(--radius-md);
-    resize: vertical;
-    min-height: 60px;
-}
-
-.node-notes-textarea:focus {
-    border-color: var(--border-focus) !important;
-    box-shadow: none !important;
-}
-
 /* ============================================
    TOOLTIP SUB-STYLES (used by node info tooltip)
    Base .workflow-tooltip is in workflowMenuItem.css
@@ -1462,7 +1416,7 @@
     pointer-events: none;
 }
 
-/* ----- CustomWorkflowParamPanel (extracted from CustomWorkflowParamModal) ----- */
+/* ----- CustomWorkflowParamPanel ----- */
 /* Panel wraps header (nav) + scrollable body + footer in both modal and tab modes. */
 .custom-workflow-param-panel {
     display: flex;

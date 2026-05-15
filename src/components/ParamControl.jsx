@@ -4,7 +4,7 @@ const isFileType = (type) => /^(File|Directory)(\[\])?$/.test(type);
 
 /**
  * Shared parameter control renderer used by both ToolNodeComponent and
- * CustomWorkflowParamModal. Renders the appropriate form control based on
+ * CustomWorkflowParamPanel. Renders the appropriate form control based on
  * param type (file, record, boolean, select, number, text) with expression
  * and scatter toggle support.
  */

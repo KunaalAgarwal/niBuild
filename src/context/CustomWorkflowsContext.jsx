@@ -8,4 +8,8 @@ export function CustomWorkflowsProvider({ children }) {
     return <CustomWorkflowsContext.Provider value={hook}>{children}</CustomWorkflowsContext.Provider>;
 }
 
-export const useCustomWorkflowsContext = () => useContext(CustomWorkflowsContext);
+export const useCustomWorkflowsContext = () => {
+    const ctx = useContext(CustomWorkflowsContext);
+    if (!ctx) throw new Error('useCustomWorkflowsContext must be used within CustomWorkflowsProvider');
+    return ctx;
+};

@@ -30,28 +30,6 @@ h3 {
     font-size: var(--size-base);
 }
 
-.app-layout {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: auto;
-    scroll-behavior: smooth;
-}
-
-.workflow-content {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    height: 100%;
-    padding-bottom: 0;
-}
-
-.workflow-content-main {
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-}
-
 button {
     font-family: var(--font-ui);
     font-weight: var(--weight-medium);
@@ -77,21 +55,6 @@ button:hover {
 button:focus {
     outline: 2px solid var(--border-focus);
     outline-offset: 2px;
-}
-
-.toolbar-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    padding: 0 clamp(10px, 2vw, 20px);
-    margin-bottom: clamp(8px, 2vw, 15px);
-}
-
-@media (max-width: 768px) {
-    .toolbar-row {
-        flex-wrap: wrap;
-    }
 }
 
 /* Global Scrollbar Styling */

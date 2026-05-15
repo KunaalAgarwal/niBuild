@@ -1,5 +1,5 @@
 /**
- * Shared constants used by NodeComponent and CustomWorkflowParamModal.
+ * Shared constants used by NodeComponent and CustomWorkflowParamPanel.
  */
 import { DOCKER_IMAGES } from './toolAnnotations.js';
 

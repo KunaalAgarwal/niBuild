@@ -88,8 +88,10 @@ function computeNodeFormState(node, internalNodes, internalEdges) {
 }
 
 /**
- * CustomWorkflowParamPanel — body of CustomWorkflowParamModal extracted as a reusable panel.
- * Works in both modal and tab modes.
+ * CustomWorkflowParamPanel — reusable composite-node param editor. Renders as a sidebar
+ * tab and as a full aux tab. (A modal-wrapped variant existed during the redesign but has
+ * been removed; the `mode` prop's 'modal' branch is now dead code, slated for a future
+ * cleanup pass.)
  *
  * `initialDraft` (optional) — when provided (from Expand-to-tab), seeds all state at once.
  * Otherwise the panel initializes from `internalNodes[0]`.

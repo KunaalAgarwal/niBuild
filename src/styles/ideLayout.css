@@ -334,18 +334,18 @@
 }
 
 .ide-tab-dirty {
-    color: var(--color-warning, #e2b340);
+    color: var(--color-warning);
 }
 
 .ide-tab-dirty.active {
-    color: var(--color-warning, #e2b340);
+    color: var(--color-warning);
 }
 
 .ide-tab-badge {
     font-family: var(--font-mono);
     font-size: 0.6rem;
     font-weight: 700;
-    color: var(--color-warning, #e2b340);
+    color: var(--color-warning);
     flex-shrink: 0;
     line-height: 1;
 }
@@ -617,11 +617,11 @@
 }
 
 .ide-badge-count.error {
-    background-color: var(--color-danger, #dc3545);
+    background-color: var(--color-danger);
 }
 
 .ide-badge-count.warning {
-    background-color: var(--color-warning, #e2b340);
+    background-color: var(--color-warning);
 }
 
 .ide-badge-count.info {
@@ -658,15 +658,15 @@
 }
 
 .ide-problem-icon.error {
-    background-color: var(--color-danger, #dc3545);
+    background-color: var(--color-danger);
 }
 
 .ide-problem-icon.warning {
-    background-color: var(--color-warning, #e2b340);
+    background-color: var(--color-warning);
 }
 
 .ide-problem-icon.success {
-    background-color: var(--color-success, #28a745);
+    background-color: var(--color-success);
 }
 
 .ide-problem-icon.info {
@@ -833,13 +833,6 @@
 }
 
 /* Placeholder text */
-.ide-placeholder-label {
-    font-family: var(--font-mono);
-    font-size: var(--size-xs);
-    color: var(--text-muted);
-    user-select: none;
-}
-
 .ide-placeholder-text {
     font-family: var(--font-mono);
     font-size: var(--size-xs);

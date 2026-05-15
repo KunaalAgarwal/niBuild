@@ -3,7 +3,7 @@ import { EXPRESSION_TEMPLATES } from '../utils/expressionTemplates.js';
 
 /**
  * Shared inline expression editor for CWL valueFrom expressions.
- * Used in both NodeComponent (regular tool params) and CustomWorkflowParamModal (internal nodes).
+ * Used in both NodeComponent (regular tool params) and CustomWorkflowParamPanel (internal nodes).
  *
  * @param {Object} props
  * @param {string}  props.paramName  - Parameter name (key into expressionValues)

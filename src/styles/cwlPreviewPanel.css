@@ -120,11 +120,6 @@
     box-sizing: border-box;
 }
 
-.cwl-code-fullscreen {
-    max-height: 70vh;
-    overflow-y: auto;
-}
-
 .cwl-key {
     color: var(--color-accent);
 }
@@ -171,87 +166,6 @@
     border-radius: 50%;
     background-color: var(--color-warning-border);
     flex-shrink: 0;
-}
-
-.cwl-fullscreen-modal .modal-dialog {
-    max-width: 95vw;
-}
-
-.cwl-fullscreen-modal .modal-content {
-    border-radius: var(--radius-lg);
-    background-color: var(--bg-surface);
-    color: var(--text-primary);
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-lg);
-    font-family: var(--font-ui);
-}
-
-.cwl-fullscreen-modal .modal-header {
-    border-bottom: 1px solid var(--border-panel);
-    padding: 16px 20px;
-    background-color: var(--bg-elevated);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.cwl-fullscreen-modal .modal-title {
-    font-family: var(--font-mono);
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--text-primary);
-}
-
-.cwl-fullscreen-modal .modal-body {
-    padding: 20px;
-    background-color: var(--bg-surface);
-}
-
-.cwl-split-container {
-    display: flex;
-    gap: 12px;
-    height: 80vh;
-}
-
-.cwl-split-pane {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.cwl-split-pane-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 10px;
-    background-color: var(--bg-elevated);
-    border: 1px solid var(--border-panel);
-    border-bottom: none;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-}
-
-.cwl-split-pane-label {
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    letter-spacing: 0.5px;
-}
-
-.cwl-split-pane .cwl-code-fullscreen {
-    flex: 1;
-    max-height: none;
-    overflow-y: auto;
-    overflow-x: auto;
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
-    font-size: clamp(0.85rem, 1.1vw, 1.05rem);
-}
-
-.cwl-split-pane .cwl-code-fullscreen::-webkit-scrollbar:horizontal {
-    height: 0;
 }
 
 /* CWLPreviewContent: shared body used in both right-panel and aux-tab modes.

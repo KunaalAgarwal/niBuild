@@ -166,9 +166,7 @@ function CommandPalette({ isOpen, onClose, actions, customWorkflows, onSelectWor
                                             onClick={() => handleSelect(item)}
                                             onMouseEnter={() => setSelectedIndex(idx)}
                                         >
-                                            <span className="command-palette-item-name">
-                                                {item.name}
-                                            </span>
+                                            <span className="command-palette-item-name">{item.name}</span>
                                             {item.description && (
                                                 <span className="command-palette-item-description">
                                                     {item.description}

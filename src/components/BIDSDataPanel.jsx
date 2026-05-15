@@ -158,14 +158,16 @@ function buildInternalStateFromSaved(savedSelections, bidsStructure) {
 }
 
 /**
- * BIDSDataPanel — body of BIDSDataModal extracted as a reusable panel.
- * Works in both modal (inside a Bootstrap Modal) and tab (full editor tab) modes.
+ * BIDSDataPanel — reusable BIDS browser. Renders as a sidebar tab and as a full aux tab.
+ * (A modal-wrapped variant existed during the redesign but has been removed; the `mode`
+ * prop's 'modal' branch is now dead code, slated for a future cleanup pass.)
  *
- * `initialDraft` — if provided (e.g., transferred from a modal on Expand), seeds state directly.
- * Otherwise the panel converts `savedSelections` to internal state.
+ * `initialDraft` — if provided (e.g., transferred when expanding from sidebar to a full
+ * aux tab), seeds state directly. Otherwise the panel converts `savedSelections` to
+ * internal state.
  *
  * Imperative handle: `getDraftState()` returns the current internal state object,
- * for use when expanding the modal to a tab.
+ * for use when expanding from sidebar to a full aux tab.
  */
 const BIDSDataPanel = forwardRef(function BIDSDataPanel(
     {
