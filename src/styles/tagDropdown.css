@@ -6,8 +6,8 @@
 .tag-dropdown-wrapper {
     display: flex;
     align-items: center;
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-input-hover);
+    background-color: var(--bg-inset);
+    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     padding: 6px 10px;
     transition:

@@ -87,24 +87,37 @@
 
 .cwl-preview-body {
     flex: 1;
-    overflow-y: auto;
-    padding: clamp(6px, 0.8vw, 12px);
+    overflow: hidden;
+    padding: 0;
     min-height: 0;
 }
 
+/* Base <pre> code styling — no card chrome (no separate border / radius). The
+   code shares the gutter's bg-elevated surface so the gutter and code read as
+   one flat editor surface; in panel mode this makes the code-block stand out
+   slightly against the panel's --bg-preview chrome (like VS Code's editor vs.
+   sidebar), in tab mode the surface already matches the canvas bg. The
+   .cwl-code-block flex wrapper holds the sticky line gutter and the code
+   side-by-side, and the nearest scrolling ancestor (.cwl-preview-content)
+   owns the scroll. */
 .cwl-code {
     font-family: var(--font-mono);
     font-size: clamp(0.65rem, 0.9vw, 0.8rem);
     line-height: 1.6;
     color: var(--text-secondary);
-    background-color: var(--bg-inset);
-    padding: clamp(6px, 0.8vw, 12px);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-subtle);
+    background-color: var(--bg-elevated);
+    padding: 8px 12px;
+    border: none;
+    border-radius: 0;
     margin: 0;
     white-space: pre;
-    overflow-x: auto;
+    overflow: visible;
     tab-size: 2;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: auto;
+    min-height: 100%;
+    box-sizing: border-box;
 }
 
 .cwl-code-fullscreen {
@@ -239,4 +252,96 @@
 
 .cwl-split-pane .cwl-code-fullscreen::-webkit-scrollbar:horizontal {
     height: 0;
+}
+
+/* CWLPreviewContent: shared body used in both right-panel and aux-tab modes.
+   Owns the scroll context (both axes) so .cwl-code-block can stretch wider
+   than the container and the sticky line gutter stays anchored on the left. */
+.cwl-preview-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: auto;
+}
+
+/* Tab variant: edge-to-edge fill of the canvas-wrapper. Only differences from
+   the panel base are the surface bg and a roomier font / padding. */
+.cwl-preview-content--tab {
+    background-color: var(--bg-elevated);
+}
+
+.cwl-preview-content--tab .cwl-code {
+    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    line-height: 1.65;
+    padding: 12px 16px;
+}
+
+/* Two-column code layout: sticky line-number gutter + code. */
+.cwl-code-block {
+    display: flex;
+    align-items: stretch;
+    min-height: 100%;
+    width: max-content;
+    min-width: 100%;
+}
+
+/* Base gutter sizing matches the panel's narrower font scale; the tab variant
+   below scales it up to match the larger tab-mode code font. */
+.cwl-line-gutter {
+    font-family: var(--font-mono);
+    font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+    line-height: 1.6;
+    padding: 8px 6px 8px 8px;
+    margin: 0;
+    color: var(--text-disabled);
+    background-color: var(--bg-elevated);
+    border-right: 1px solid var(--border-subtle);
+    text-align: right;
+    white-space: pre;
+    user-select: none;
+    flex-shrink: 0;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
+.cwl-preview-content--tab .cwl-line-gutter {
+    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    line-height: 1.65;
+    padding: 12px 8px 12px 12px;
+}
+
+.cwl-preview-content--tab .cwl-empty-message {
+    padding: 60px 20px;
+    font-size: 0.95rem;
+}
+
+/* Copy button overlay (top-right of the code area). */
+.cwl-content-copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-family: var(--font-mono);
+    font-size: clamp(0.55rem, 0.7vw, 0.7rem);
+    font-weight: 500;
+    padding: 3px 8px;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    z-index: 2;
+}
+
+.cwl-content-copy-btn:hover {
+    background-color: var(--border-subtle);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+}
+
+.cwl-content-copy-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }

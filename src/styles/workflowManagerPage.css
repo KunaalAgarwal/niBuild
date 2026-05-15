@@ -2,52 +2,80 @@
     height: 100%;
     width: 100%;
     overflow-y: auto;
-    background-color: var(--bg-canvas);
-    padding: 32px 48px;
+    /* Match the rest of the IDE chrome (topbar, sidebar, footer, tabbar all
+       resolve to #181818) — the workflow manager is a panel of content, not
+       the editor canvas. */
+    background-color: var(--bg-base);
+    padding: 24px 48px 48px;
     color: var(--text-primary);
 }
 
-/* Page header */
-.wm-header {
-    margin-bottom: 28px;
-    max-width: 920px;
+/* ── Section bar — title left, creation actions right ──────────── */
+
+.wm-section-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 0 16px;
+    gap: 16px;
 }
 
-.wm-title {
-    margin: 0;
+/* Toolbar collapses to a tight button group sitting on the right side
+   of the section bar — no width/padding of its own. */
+.wm-toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Borderless text-style toolbar buttons. Primary (New Workflow) uses
+   accent text to remain the visual lead without a hard frame. */
+.wm-toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    background-color: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+    font-weight: var(--weight-medium);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.wm-toolbar-btn:hover {
+    background-color: rgba(255, 255, 255, 0.025);
+}
+
+.wm-toolbar-btn-primary {
+    color: var(--color-accent);
+}
+
+/* Whisper-quiet accent tint — no text-color shift on hover, just the
+   barely-visible bg lift. Matches the muted hover language used by the
+   row-level controls. */
+.wm-toolbar-btn-primary:hover {
+    background-color: rgba(0, 120, 212, 0.04);
+}
+
+/* ── Section title (sits inside .wm-section-bar) ───────────────── */
+
+/* Page-level heading — sized up so it carries the visual weight of the
+   page above the table. The toolbar buttons sit alongside it as
+   secondary-weight actions. */
+.wm-section-title {
     font-family: var(--font-ui);
     font-size: var(--size-2xl);
     font-weight: var(--weight-semibold);
     color: var(--text-primary);
-    letter-spacing: var(--tracking-tight);
-}
-
-.wm-subtitle {
-    margin: 6px 0 0;
-    font-family: var(--font-ui);
-    font-size: var(--size-md);
-    color: var(--text-muted);
-    line-height: var(--lh-relaxed);
-}
-
-/* Section header above the list */
-.wm-section-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border-default);
-    max-width: 920px;
-    margin-bottom: 0;
-}
-
-.wm-section-title {
-    font-family: var(--font-ui);
-    font-size: var(--size-2xs);
-    font-weight: var(--weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-wide);
-    color: var(--text-sidebar-heading);
+    line-height: 1.2;
 }
 
 .wm-section-count {
@@ -56,50 +84,131 @@
     color: var(--text-muted);
 }
 
-/* List */
+/* ── Table footer — count, right-aligned below the last row ────── */
+
+.wm-table-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 8px 0;
+}
+
+/* ── Table layout ──────────────────────────────────────────────── */
+
+.wm-table {
+    width: 100%;
+}
+
+/* Shared grid template for header + rows so columns line up exactly.
+   Name (flex) · Status (fixed) · Notes (flex, larger) · Operations (fixed).
+   Status and Operations use fixed widths because each .wm-row is its own
+   grid container — using `auto` would let each row size those columns to
+   its own content (e.g. "OK" vs "5 warnings"), which would shift the Notes
+   column horizontally per row. */
+.wm-thead,
+.wm-row {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) 120px minmax(220px, 1.4fr) 110px;
+    align-items: center;
+    column-gap: 16px;
+}
+
+.wm-thead {
+    padding: 8px 8px;
+    border-bottom: 1px solid var(--border-default);
+    background-color: transparent;
+}
+
+.wm-th {
+    font-family: var(--font-ui);
+    font-size: var(--size-2xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.wm-th-sortable {
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.wm-th-sortable:hover {
+    color: var(--text-secondary);
+}
+
+.wm-th-active {
+    color: var(--text-primary);
+}
+
+.wm-th-notes,
+.wm-th-actions {
+    cursor: default;
+}
+
+/* Match the textarea's 8px internal padding so "NOTES" lines up with the
+   placeholder/text below it. */
+.wm-th-notes {
+    padding-left: 8px;
+}
+
+.wm-th-actions {
+    justify-self: end;
+}
+
+.wm-sort-chevron {
+    flex-shrink: 0;
+}
+
+.wm-sort-chevron-idle {
+    opacity: 0.4;
+}
+
+.wm-sort-chevron-active {
+    opacity: 1;
+    color: var(--color-accent);
+}
+
+/* ── Rows ──────────────────────────────────────────────────────── */
+
 .wm-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    max-width: 920px;
 }
 
 .wm-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 8px;
+    padding: 10px 8px;
     border-bottom: 1px solid var(--border-subtle);
     transition: background-color var(--transition-fast);
 }
 
+/* Subtle lift — much quieter than the previous --bg-hover (#3c3c3c). */
 .wm-row:hover {
-    background-color: var(--bg-hover);
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
-.wm-status {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
+.wm-cell {
+    min-width: 0; /* allow children to ellipsize */
 }
 
-.wm-status-ok {
-    color: var(--color-success);
-}
-
-.wm-status-warning {
-    color: var(--color-warning);
-}
-
-.wm-row-main {
-    flex: 1;
-    min-width: 0;
+.wm-cell-name {
     display: flex;
     flex-direction: column;
     gap: 2px;
+}
+
+.wm-row-name-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
 }
 
 .wm-row-name {
@@ -110,19 +219,128 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    min-width: 0;
 }
 
 .wm-row-meta {
     font-family: var(--font-ui);
     font-size: var(--size-sm);
     color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.wm-row-actions {
+/* "Open" / "Editing" chip next to the workflow name */
+.wm-open-chip {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-accent-muted);
+    color: var(--color-accent);
+    font-family: var(--font-ui);
+    font-size: var(--size-2xs);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.wm-open-chip-editing {
+    background-color: rgba(255, 193, 7, 0.12);
+    color: var(--color-warning);
+}
+
+/* ── Status cell ───────────────────────────────────────────────── */
+
+.wm-cell-status {
+    display: inline-flex;
+    align-items: center;
+}
+
+.wm-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-family: var(--font-ui);
+    font-size: var(--size-2xs);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.wm-status-pill-ok {
+    color: var(--color-success);
+    background-color: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.25);
+}
+
+.wm-status-pill-warning {
+    color: var(--color-warning);
+    background-color: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.wm-status-pill-error {
+    color: var(--color-danger);
+    background-color: rgba(231, 76, 60, 0.12);
+    border: 1px solid rgba(231, 76, 60, 0.35);
+}
+
+/* ── Notes cell — inline auto-growing textarea ─────────────────── */
+
+.wm-cell-notes {
     display: flex;
+    align-items: stretch;
+}
+
+.wm-notes-input {
+    width: 100%;
+    min-height: 32px;
+    padding: 6px 8px;
+    background-color: transparent;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+    line-height: var(--lh-relaxed);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    resize: none;
+    overflow: hidden;
+    outline: none;
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.wm-notes-input::placeholder {
+    color: var(--text-placeholder);
+}
+
+/* No hover state — the textarea sits quietly until clicked. On focus it
+   gains just a background fill so the writing surface is clearly distinct
+   from the row. Border + box-shadow are suppressed explicitly because
+   Bootstrap reboot otherwise paints a gray focus ring. */
+.wm-notes-input:focus,
+.wm-notes-input:focus-visible {
+    background-color: var(--bg-input, #313131);
+    border-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
+/* ── Action cell ───────────────────────────────────────────────── */
+
+.wm-cell-actions {
+    display: inline-flex;
     align-items: center;
     gap: 6px;
-    flex-shrink: 0;
+    justify-self: end;
 }
 
 .wm-action-btn {
@@ -130,7 +348,7 @@
     align-items: center;
     gap: 6px;
     height: 28px;
-    padding: 0 10px;
+    padding: 0 12px;
     background-color: transparent;
     border: 1px solid var(--border-default);
     border-radius: var(--radius-sm);
@@ -149,35 +367,84 @@
     border-color: var(--color-accent-border);
 }
 
+/* Subtle accent tint — keeps the bordered identity without filling the
+   button hard. */
 .wm-action-open:hover {
-    background-color: var(--color-accent-muted);
-    color: var(--color-accent-hover);
+    background-color: rgba(0, 120, 212, 0.08);
 }
 
-.wm-action-delete {
+/* Always-visible muted state; very subtle lift on direct hover. */
+.wm-action-more {
     width: 28px;
     padding: 0;
     justify-content: center;
-    opacity: 0;
+    color: var(--text-muted);
+}
+
+.wm-action-more:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ── "..." overflow menu (portal) ──────────────────────────────── */
+
+.wm-action-menu {
+    position: fixed;
+    z-index: 2000;
+    min-width: 200px;
+    background-color: var(--bg-elevated, #252526);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    font-family: var(--font-ui);
+    font-size: var(--size-sm);
+}
+
+.wm-action-menu-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    padding: 6px 10px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-xs);
+    color: var(--text-secondary);
+    cursor: pointer;
     transition:
-        opacity var(--transition-fast),
         background-color var(--transition-fast),
-        color var(--transition-fast),
-        border-color var(--transition-fast);
+        color var(--transition-fast);
 }
 
-.wm-row:hover .wm-action-delete,
-.wm-row:focus-within .wm-action-delete {
-    opacity: 1;
+/* Whisper-quiet hover — only barely-visible bg lift, no text color shift. */
+.wm-action-menu-item:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
-.wm-action-delete:hover {
-    background-color: var(--color-danger-muted);
+.wm-action-menu-item:disabled {
+    color: var(--text-disabled);
+    cursor: not-allowed;
+}
+
+.wm-action-menu-danger {
     color: var(--color-danger);
-    border-color: var(--color-danger-border);
 }
 
-/* Empty state */
+.wm-action-menu-danger:hover:not(:disabled) {
+    background-color: rgba(231, 76, 60, 0.06);
+}
+
+.wm-action-menu-divider {
+    height: 1px;
+    background-color: var(--border-default);
+    margin: 4px 0;
+}
+
+/* ── Empty state ───────────────────────────────────────────────── */
+
 .wm-empty {
     display: flex;
     flex-direction: column;

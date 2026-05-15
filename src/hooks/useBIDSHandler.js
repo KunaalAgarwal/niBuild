@@ -1,23 +1,48 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { parseBIDSDirectory } from '../utils/bidsParser.js';
 
 /**
  * Custom hook encapsulating all BIDS node state and handlers.
- * Manages the BIDS directory picker, modal state, and node updates
- * for both regular BIDS nodes and internal BIDS nodes within custom workflows.
+ * Manages the BIDS directory picker and node updates for both regular BIDS nodes
+ * and internal BIDS nodes within custom workflows.
+ *
+ * Opening the BIDS editor activates the left sidebar's BIDS tab (and selects
+ * the target node) — callers pass `setActiveSidebarTab` and `setSidebarSelectedNode`
+ * + `workspaceId` so the hook can drive the sidebar directly. The aux-tab path
+ * remains available via the "expand" button inside the sidebar panel.
  */
-export function useBIDSHandler({ setNodes, markForSync, showError, showWarning, showInfo }) {
-    const [showBIDSModal, setShowBIDSModal] = useState(false);
-    const [bidsModalNodeId, setBidsModalNodeId] = useState(null);
+export function useBIDSHandler({
+    setNodes,
+    markForSync,
+    showError,
+    showWarning,
+    showInfo,
+    setActiveSidebarTab,
+    setSidebarSelectedNode,
+    workspaceId,
+}) {
     const bidsFileInputRef = useRef(null);
     const bidsPickerTargetRef = useRef(null);
 
+    // For a regular BIDS node, the sidebar selection is the BIDS node id. For
+    // an internal BIDS node inside a custom workflow, the selection is the
+    // wrapping custom-workflow node id — workflowCanvas registers the save
+    // handler under that id (see registerSaveHandler('bids-modal', nodeId, ...)).
+    const openBIDSTab = (nodeIdForTab) => {
+        if (!workspaceId || !nodeIdForTab) return;
+        if (typeof setSidebarSelectedNode === 'function') {
+            setSidebarSelectedNode(workspaceId, nodeIdForTab);
+        }
+        if (typeof setActiveSidebarTab === 'function') {
+            setActiveSidebarTab('bids');
+        }
+    };
+
     const handleBIDSNodeUpdate = (nodeId, updates) => {
         // Handle signal actions from NodeComponent
-        if (updates._openModal) {
+        if (updates._openModal || updates._openTab) {
             bidsPickerTargetRef.current = nodeId;
-            setBidsModalNodeId(nodeId);
-            setShowBIDSModal(true);
+            openBIDSTab(nodeId);
             return;
         }
         if (updates._pickDirectory) {
@@ -51,10 +76,9 @@ export function useBIDSHandler({ setNodes, markForSync, showError, showWarning, 
 
     // Handle BIDS actions for internal BIDS nodes within custom workflows
     const handleInternalBIDSUpdate = (cwNodeId, updates) => {
-        if (updates._openModal) {
+        if (updates._openModal || updates._openTab) {
             bidsPickerTargetRef.current = { cwNodeId };
-            setBidsModalNodeId(cwNodeId);
-            setShowBIDSModal(true);
+            openBIDSTab(cwNodeId);
             return;
         }
         if (updates._pickDirectory) {
@@ -80,7 +104,6 @@ export function useBIDSHandler({ setNodes, markForSync, showError, showWarning, 
 
         if (result.errors.length > 0) {
             result.errors.forEach((e) => showError(e, 6000));
-            // Reset file input
             event.target.value = '';
             return;
         }
@@ -93,44 +116,25 @@ export function useBIDSHandler({ setNodes, markForSync, showError, showWarning, 
             showInfo(result.info.join(' '));
         }
 
-        // Store structure and open modal — route to internal or regular BIDS node
+        // Store structure and open the BIDS tab — route to internal or regular BIDS node.
         if (target !== null && typeof target === 'object' && target.cwNodeId) {
             updateInternalBIDSNode(target.cwNodeId, { bidsStructure: result.bidsStructure });
-            setBidsModalNodeId(target.cwNodeId);
+            openBIDSTab(target.cwNodeId);
         } else {
             handleBIDSNodeUpdate(target, { bidsStructure: result.bidsStructure });
-            setBidsModalNodeId(target);
+            openBIDSTab(target);
         }
-        setShowBIDSModal(true);
 
         // Reset file input so same directory can be re-selected
         event.target.value = '';
     };
 
-    const handleBIDSModalClose = (bidsSelections) => {
-        if (bidsSelections && bidsModalNodeId) {
-            const target = bidsPickerTargetRef.current;
-            if (target !== null && typeof target === 'object' && target.cwNodeId) {
-                // Internal BIDS node within a custom workflow
-                updateInternalBIDSNode(target.cwNodeId, { bidsSelections });
-            } else {
-                // Regular BIDS node
-                handleBIDSNodeUpdate(bidsModalNodeId, { bidsSelections });
-            }
-        }
-        setShowBIDSModal(false);
-        setBidsModalNodeId(null);
-    };
-
     return {
-        showBIDSModal,
-        bidsModalNodeId,
         bidsFileInputRef,
         bidsPickerTargetRef,
         handleBIDSNodeUpdate,
         handleInternalBIDSUpdate,
         triggerBIDSDirectoryPicker,
         handleBIDSDirectorySelected,
-        handleBIDSModalClose,
     };
 }

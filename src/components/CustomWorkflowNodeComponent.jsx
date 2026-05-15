@@ -1,15 +1,16 @@
-import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Handle, Position } from 'reactflow';
 import { usePinnableTooltip } from '../hooks/usePinnableTooltip.js';
-import CustomWorkflowParamModal from './CustomWorkflowParamModal.jsx';
+import { useWorkflowMeta } from '../context/WorkflowMetaContext.jsx';
+import { useSidebar } from '../context/SidebarContext.jsx';
 import { labelFontSize } from './nodeUtils.js';
 
 /**
  * Renders custom workflow (sub-workflow) nodes with distinct styling.
  */
-const CustomWorkflowNodeComponent = ({ data, isScatterInherited, isGatherNode, wiredInputs }) => {
-    const [showCustomModal, setShowCustomModal] = useState(false);
+const CustomWorkflowNodeComponent = ({ id, data, isScatterInherited, isGatherNode }) => {
+    const { workspaceId } = useWorkflowMeta();
+    const { setSelectedNode, setActiveTab } = useSidebar();
     const customInfoTip = usePinnableTooltip();
 
     const nonDummyInternalNodes = (data.internalNodes || []).filter((n) => !n.isDummy);
@@ -21,13 +22,13 @@ const CustomWorkflowNodeComponent = ({ data, isScatterInherited, isGatherNode, w
     const hasBIDSNode = !!internalBIDSNode;
     const hasBIDSData = hasBIDSNode && internalBIDSNode.bidsStructure != null;
 
-    const handleOpenCustomModal = () => setShowCustomModal(true);
-
-    const handleCloseCustomModal = (updatedInternalNodes) => {
-        if (updatedInternalNodes && typeof data.onSaveParameters === 'function') {
-            data.onSaveParameters({ internalNodes: updatedInternalNodes });
-        }
-        setShowCustomModal(false);
+    // Select this custom-workflow node in the sidebar and switch the strip to
+    // Params. Saves are still routed back through the registered handler in
+    // workflowCanvas.jsx (registerSaveHandler('param-modal', id, ...)) — same
+    // plumbing the aux tab path uses.
+    const handleOpenCustomTab = () => {
+        if (workspaceId) setSelectedNode(workspaceId, id);
+        setActiveTab('params');
     };
 
     const toolLabels = nonDummyInternalNodes.map((n) => n.label);
@@ -39,7 +40,7 @@ const CustomWorkflowNodeComponent = ({ data, isScatterInherited, isGatherNode, w
 
     return (
         <>
-            <div className="node-wrapper node-custom-workflow" onDoubleClick={handleOpenCustomModal}>
+            <div className="node-wrapper node-custom-workflow" onDoubleClick={handleOpenCustomTab}>
                 <div className="node-top-row">
                     {hasBIDSNode ? (
                         <span className="node-bottom-left">
@@ -59,7 +60,7 @@ const CustomWorkflowNodeComponent = ({ data, isScatterInherited, isGatherNode, w
                             <span className="node-custom-badge-text">{nonDummyCount} tools</span>
                         </span>
                     )}
-                    <span className="node-params-btn" onClick={handleOpenCustomModal}>
+                    <span className="node-params-btn" onClick={handleOpenCustomTab}>
                         Params
                     </span>
                 </div>
@@ -156,15 +157,6 @@ const CustomWorkflowNodeComponent = ({ data, isScatterInherited, isGatherNode, w
                     </div>,
                     document.body,
                 )}
-
-            <CustomWorkflowParamModal
-                show={showCustomModal}
-                onClose={handleCloseCustomModal}
-                workflowName={data.label}
-                internalNodes={data.internalNodes || []}
-                internalEdges={data.internalEdges || []}
-                wiredInputs={wiredInputs}
-            />
         </>
     );
 };

@@ -1,22 +1,20 @@
-.custom-modal .modal-dialog {
-    max-width: min(90vw, 1500px);
-}
-
-.custom-modal .modal-content {
-    border-radius: var(--radius-md);
-    background-color: var(--bg-overlay);
+/* Dialog/content/header/body/footer chrome lives in tokens.css under
+   "Shared modal chrome — minimal variant" (alongside the matching
+   .bids-modal and .edge-mapping-modal rules). Only the title and the
+   responsive @media body-padding overrides (lines ~626, ~685 below)
+   remain per-modal here. */
+.custom-modal .modal-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: clamp(0.9rem, 0.7rem + 0.7vw, 1.05rem);
     color: var(--text-primary);
-    border: 1px solid var(--border-medium);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-    padding: 8px;
-    font-family: var(--font-ui);
 }
 
 .modal-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-ui);
     font-weight: 600;
     color: var(--text-primary);
-    font-size: 1rem;
+    font-size: 0.85rem;
     display: block;
     margin-bottom: 6px;
 }
@@ -66,7 +64,7 @@
 
 .param-card:hover {
     border-color: var(--border-medium);
-    background-color: rgba(42, 42, 42, 0.9);
+    background-color: var(--bg-hover);
 }
 
 .param-card-header {
@@ -80,7 +78,7 @@
 
 .param-name {
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     flex-shrink: 0;
 }
 
@@ -155,7 +153,7 @@
 .param-switch .form-check-input:focus,
 .scatter-switch .form-check-input:focus {
     box-shadow: var(--shadow-focus);
-    border-color: rgba(0, 120, 212, 0.5);
+    border-color: var(--color-accent);
 }
 
 .param-switch .form-check-input:disabled,
@@ -166,8 +164,8 @@
 
 /* Inline controls — text & number inputs
    .custom-modal prefix wins specificity over Bootstrap .form-control */
-.custom-modal .param-number,
-.custom-modal .param-text {
+:is(.custom-modal, .custom-workflow-param-panel) .param-number,
+:is(.custom-modal, .custom-workflow-param-panel) .param-text {
     font-family: var(--font-mono);
     background-color: var(--bg-inset);
     color: var(--text-secondary);
@@ -176,7 +174,7 @@
     border-radius: 5px;
     font-size: 0.9rem;
     padding: 5px 10px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-inset-sm);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal),
@@ -185,14 +183,14 @@
     -moz-appearance: textfield;
 }
 
-.custom-modal .param-number {
+:is(.custom-modal, .custom-workflow-param-panel) .param-number {
     width: 100px;
     min-width: 100px;
     max-width: 100px;
     text-align: right;
 }
 
-.custom-modal .param-text {
+:is(.custom-modal, .custom-workflow-param-panel) .param-text {
     width: 140px;
     max-width: 140px;
 }
@@ -203,39 +201,38 @@
     margin: 0;
 }
 
-.custom-modal .param-number:hover,
-.custom-modal .param-text:hover {
+:is(.custom-modal, .custom-workflow-param-panel) .param-number:hover,
+:is(.custom-modal, .custom-workflow-param-panel) .param-text:hover {
     border-color: var(--border-input-hover);
-    background-color: rgba(26, 26, 26, 0.85);
+    background-color: var(--bg-inset);
 }
 
-.custom-modal .param-number:focus,
-.custom-modal .param-text:focus {
-    box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        var(--shadow-focus);
+:is(.custom-modal, .custom-workflow-param-panel) .param-number:focus,
+:is(.custom-modal, .custom-workflow-param-panel) .param-text:focus {
+    box-shadow: var(--shadow-inset-sm), var(--shadow-focus);
     border-color: var(--color-accent);
     border-left-color: var(--color-accent);
     color: var(--text-primary);
-    background-color: rgba(26, 26, 26, 0.95);
+    background-color: var(--bg-inset);
 }
 
 /* Filled state — accent left border when a value is entered */
-.custom-modal .param-number.filled,
-.custom-modal .param-text.filled {
+:is(.custom-modal, .custom-workflow-param-panel) .param-number.filled,
+:is(.custom-modal, .custom-workflow-param-panel) .param-text.filled {
     border-left-color: var(--color-accent);
-    color: var(--text-primary);
+    color: var(--text-on-accent);
+    font-weight: 500;
 }
 
-.custom-modal .param-number::placeholder,
-.custom-modal .param-text::placeholder {
+:is(.custom-modal, .custom-workflow-param-panel) .param-number::placeholder,
+:is(.custom-modal, .custom-workflow-param-panel) .param-text::placeholder {
     color: var(--text-secondary);
     font-style: italic;
     opacity: 0.7;
 }
 
 /* Inline controls — select dropdowns */
-.custom-modal .param-select {
+:is(.custom-modal, .custom-workflow-param-panel) .param-select {
     font-family: var(--font-mono);
     background-color: var(--bg-inset);
     color: var(--text-secondary);
@@ -245,7 +242,7 @@
     font-size: 0.9rem;
     width: 150px;
     padding: 5px 28px 5px 10px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-inset-sm);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal),
@@ -259,30 +256,26 @@
     -moz-appearance: none;
     appearance: none;
     cursor: pointer;
+    color-scheme: dark;
 }
 
-.custom-modal .param-select:hover {
+:is(.custom-modal, .custom-workflow-param-panel) .param-select:hover {
     border-color: var(--border-input-hover);
-    background-color: rgba(26, 26, 26, 0.85);
+    background-color: var(--bg-inset);
 }
 
-.custom-modal .param-select:focus {
-    box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        var(--shadow-focus);
+:is(.custom-modal, .custom-workflow-param-panel) .param-select:focus {
+    box-shadow: var(--shadow-inset-sm), var(--shadow-focus);
     border-color: var(--color-accent);
     border-left-color: var(--color-accent);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234a90e2' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
 /* Filled state for selects */
-.custom-modal .param-select.filled {
+:is(.custom-modal, .custom-workflow-param-panel) .param-select.filled {
     border-left-color: var(--color-accent);
-    color: var(--text-primary);
-}
-
-.custom-modal .modal-body {
-    padding: 12px;
+    color: var(--text-on-accent);
+    font-weight: 500;
 }
 
 /* Docker version input styles */
@@ -320,7 +313,7 @@
     gap: 8px;
 }
 
-.custom-modal .when-param-select {
+:is(.custom-modal, .custom-workflow-param-panel) .when-param-select {
     font-family: var(--font-mono);
     background-color: var(--bg-inset);
     color: var(--text-secondary);
@@ -331,7 +324,7 @@
     flex: 1;
     max-width: 180px;
     padding: 5px 28px 5px 10px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-inset-sm);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal);
@@ -343,21 +336,20 @@
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 12px;
+    color-scheme: dark;
 }
 
-.custom-modal .when-param-select:hover {
+:is(.custom-modal, .custom-workflow-param-panel) .when-param-select:hover {
     border-color: var(--border-input-hover);
 }
 
-.custom-modal .when-param-select:focus {
-    box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        var(--shadow-focus);
+:is(.custom-modal, .custom-workflow-param-panel) .when-param-select:focus {
+    box-shadow: var(--shadow-inset-sm), var(--shadow-focus);
     border-color: var(--color-accent);
     border-left-color: var(--color-accent);
 }
 
-.custom-modal .when-condition-input {
+:is(.custom-modal, .custom-workflow-param-panel) .when-condition-input {
     font-family: var(--font-mono);
     background-color: var(--bg-inset);
     color: var(--text-secondary);
@@ -368,7 +360,7 @@
     flex: 1;
     max-width: 140px;
     padding: 5px 10px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-inset-sm);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal),
@@ -376,26 +368,25 @@
         background-color var(--transition-normal);
 }
 
-.custom-modal .when-condition-input:hover {
+:is(.custom-modal, .custom-workflow-param-panel) .when-condition-input:hover {
     border-color: var(--border-input-hover);
 }
 
-.custom-modal .when-condition-input:focus {
-    box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        var(--shadow-focus);
+:is(.custom-modal, .custom-workflow-param-panel) .when-condition-input:focus {
+    box-shadow: var(--shadow-inset-sm), var(--shadow-focus);
     border-color: var(--color-accent);
     border-left-color: var(--color-accent);
     color: var(--text-primary);
-    background-color: rgba(26, 26, 26, 0.95);
+    background-color: var(--bg-inset);
 }
 
-.custom-modal .when-condition-input.filled {
+:is(.custom-modal, .custom-workflow-param-panel) .when-condition-input.filled {
     border-left-color: var(--color-warning);
-    color: var(--text-primary);
+    color: var(--text-on-accent);
+    font-weight: 500;
 }
 
-.custom-modal .when-condition-input::placeholder {
+:is(.custom-modal, .custom-workflow-param-panel) .when-condition-input::placeholder {
     color: var(--text-secondary);
     font-style: italic;
     opacity: 0.7;
@@ -407,18 +398,18 @@
     color: var(--text-muted);
     margin-top: 4px;
     padding: 3px 8px;
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: var(--border-subtle);
     border-radius: 3px;
 }
 
-.custom-modal .when-condition-input.invalid {
+:is(.custom-modal, .custom-workflow-param-panel) .when-condition-input.invalid {
     border-color: var(--color-danger);
     border-left-color: var(--color-danger);
 }
 
-.custom-modal .when-condition-input.invalid:focus {
+:is(.custom-modal, .custom-workflow-param-panel) .when-condition-input.invalid:focus {
     box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, 0.25),
+        var(--shadow-inset-sm),
         0 0 0 2px rgba(231, 76, 60, 0.25);
 }
 
@@ -445,7 +436,7 @@
     border-bottom: 1px solid var(--border-panel);
 }
 
-.custom-modal .scatter-method-select {
+:is(.custom-modal, .custom-workflow-param-panel) .scatter-method-select {
     font-family: var(--font-mono);
     background-color: var(--bg-inset);
     color: var(--text-secondary);
@@ -454,7 +445,7 @@
     font-size: 0.9rem;
     max-width: 220px;
     padding: 5px 28px 5px 10px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-inset-sm);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal);
@@ -466,16 +457,15 @@
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 12px;
+    color-scheme: dark;
 }
 
-.custom-modal .scatter-method-select:hover {
+:is(.custom-modal, .custom-workflow-param-panel) .scatter-method-select:hover {
     border-color: var(--border-input-hover);
 }
 
-.custom-modal .scatter-method-select:focus {
-    box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        var(--shadow-focus);
+:is(.custom-modal, .custom-workflow-param-panel) .scatter-method-select:focus {
+    box-shadow: var(--shadow-inset-sm), var(--shadow-focus);
     border-color: var(--color-accent);
 }
 
@@ -507,8 +497,8 @@
 
 /* Wired/unwired state for File/Directory params */
 .param-card.input-wired {
-    background-color: rgba(0, 120, 212, 0.08);
-    border-color: rgba(0, 120, 212, 0.2);
+    background-color: var(--color-accent-muted);
+    border-color: var(--color-accent-border);
 }
 
 .input-source {
@@ -557,7 +547,7 @@
 }
 
 /* .custom-modal prefix needed to override Bootstrap .form-select */
-.custom-modal .link-merge-select {
+:is(.custom-modal, .custom-workflow-param-panel, .tool-param-panel) .link-merge-select {
     font-family: var(--font-mono);
     font-size: 0.8rem;
     background-color: var(--bg-inset);
@@ -582,11 +572,11 @@
     color-scheme: dark;
 }
 
-.custom-modal .link-merge-select:hover {
+:is(.custom-modal, .custom-workflow-param-panel, .tool-param-panel) .link-merge-select:hover {
     border-color: var(--border-input-hover);
 }
 
-.custom-modal .link-merge-select:focus {
+:is(.custom-modal, .custom-workflow-param-panel, .tool-param-panel) .link-merge-select:focus {
     box-shadow:
         inset 0 1px 2px rgba(0, 0, 0, 0.25),
         var(--shadow-focus);
@@ -637,18 +627,18 @@
         white-space: nowrap;
     }
 
-    .custom-modal .param-number {
+    :is(.custom-modal, .custom-workflow-param-panel) .param-number {
         width: 90px;
         min-width: 90px;
         max-width: 90px;
     }
 
-    .custom-modal .param-text {
+    :is(.custom-modal, .custom-workflow-param-panel) .param-text {
         width: 120px;
         max-width: 120px;
     }
 
-    .custom-modal .param-select {
+    :is(.custom-modal, .custom-workflow-param-panel) .param-select {
         width: 140px;
     }
 
@@ -686,20 +676,20 @@
         margin-top: 4px;
     }
 
-    .custom-modal .param-number {
+    :is(.custom-modal, .custom-workflow-param-panel) .param-number {
         width: 70px;
         min-width: 70px;
         max-width: 70px;
         font-size: 0.85rem;
     }
 
-    .custom-modal .param-text {
+    :is(.custom-modal, .custom-workflow-param-panel) .param-text {
         width: 100%;
         max-width: 100%;
         font-size: 0.85rem;
     }
 
-    .custom-modal .param-select {
+    :is(.custom-modal, .custom-workflow-param-panel) .param-select {
         width: 100%;
         max-width: 100%;
         font-size: 0.85rem;
@@ -773,7 +763,7 @@
 .node-label {
     font-weight: 600;
     font-size: 0.95rem;
-    color: var(--text-on-light);
+    color: var(--text-on-node);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -874,7 +864,7 @@
 .node-gather-badge {
     color: var(--color-success);
     background-color: var(--color-green-io-muted);
-    border: 1px solid rgba(46, 204, 113, 0.3);
+    border: 1px solid var(--color-green-io-border);
 }
 
 .node-fx-badge {
@@ -992,6 +982,14 @@
     border-top: 1px solid var(--border-default);
 }
 
+/* Modal-mode modifier: no title sits above the nav row, so the margin-top
+   and border-top would render as a stranded divider. Strip them. */
+.custom-workflow-nav--alone {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
 .custom-workflow-nav-btn {
     font-size: 0.85rem;
     padding: 2px 10px;
@@ -1001,7 +999,7 @@
 .custom-workflow-nav-label {
     font-family: var(--font-mono);
     font-size: 0.9rem;
-    color: var(--text-disabled);
+    color: var(--text-secondary);
 }
 
 /* Expression toggle button in param control */
@@ -1027,7 +1025,7 @@
 
 .expression-toggle:hover {
     color: var(--color-accent);
-    border-color: rgba(0, 120, 212, 0.5);
+    border-color: var(--color-accent);
     background-color: rgba(0, 120, 212, 0.06);
 }
 
@@ -1059,7 +1057,7 @@
 
 .scatter-toggle:hover {
     color: var(--color-info);
-    border-color: rgba(74, 198, 226, 0.5);
+    border-color: var(--color-info);
     background-color: rgba(74, 198, 226, 0.06);
 }
 
@@ -1104,7 +1102,7 @@
     width: auto;
 }
 
-.custom-modal .expression-input {
+:is(.custom-modal, .custom-workflow-param-panel) .expression-input {
     font-family: var(--font-mono);
     background-color: var(--bg-inset);
     color: var(--text-secondary);
@@ -1114,7 +1112,7 @@
     font-size: 0.85rem;
     padding: 5px 10px;
     flex: 1;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-inset-sm);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal),
@@ -1122,27 +1120,26 @@
         background-color var(--transition-normal);
 }
 
-.custom-modal .expression-input.filled {
+:is(.custom-modal, .custom-workflow-param-panel) .expression-input.filled {
     border-left-color: var(--color-accent);
-    color: var(--text-primary);
+    color: var(--text-on-accent);
+    font-weight: 500;
 }
 
-.custom-modal .expression-input:focus {
-    box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        var(--shadow-focus);
+:is(.custom-modal, .custom-workflow-param-panel) .expression-input:focus {
+    box-shadow: var(--shadow-inset-sm), var(--shadow-focus);
     border-color: var(--color-accent);
     border-left-color: var(--color-accent);
-    background-color: rgba(26, 26, 26, 0.95);
+    background-color: var(--bg-inset);
 }
 
-.custom-modal .expression-input::placeholder {
+:is(.custom-modal, .custom-workflow-param-panel) .expression-input::placeholder {
     color: var(--text-secondary);
     font-style: italic;
     opacity: 0.7;
 }
 
-.custom-modal .expression-template-select {
+:is(.custom-modal, .custom-workflow-param-panel) .expression-template-select {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     background-color: var(--bg-inset);
@@ -1167,11 +1164,11 @@
     color-scheme: dark;
 }
 
-.custom-modal .expression-template-select:hover {
+:is(.custom-modal, .custom-workflow-param-panel) .expression-template-select:hover {
     border-color: var(--border-input-hover);
 }
 
-.custom-modal .expression-template-select:focus {
+:is(.custom-modal, .custom-workflow-param-panel) .expression-template-select:focus {
     box-shadow:
         inset 0 1px 2px rgba(0, 0, 0, 0.2),
         var(--shadow-focus);
@@ -1185,7 +1182,7 @@
     color: var(--text-muted);
     margin-top: 4px;
     padding: 3px 8px;
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: var(--border-subtle);
     border-radius: 3px;
     border-left: 2px solid var(--color-accent-border);
 }
@@ -1201,14 +1198,14 @@
     border-radius: 3px;
 }
 
-.custom-modal .expression-input.invalid {
+:is(.custom-modal, .custom-workflow-param-panel) .expression-input.invalid {
     border-color: var(--color-danger);
     border-left-color: var(--color-danger);
 }
 
-.custom-modal .expression-input.invalid:focus {
+:is(.custom-modal, .custom-workflow-param-panel) .expression-input.invalid:focus {
     box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, 0.25),
+        var(--shadow-inset-sm),
         0 0 0 2px rgba(231, 76, 60, 0.25);
 }
 
@@ -1267,7 +1264,7 @@
 .node-notes-badge {
     color: var(--color-success);
     background-color: var(--color-green-io-muted);
-    border: 1px solid rgba(46, 204, 113, 0.3);
+    border: 1px solid var(--color-green-io-border);
 }
 
 .node-notes-textarea {
@@ -1359,7 +1356,7 @@
 
 .operation-order-item:hover {
     border-color: var(--border-medium);
-    background-color: rgba(42, 42, 42, 0.9);
+    background-color: var(--bg-widget);
 }
 
 .operation-order-pos {
@@ -1449,7 +1446,7 @@
 
 .operation-order-toggle:hover {
     color: var(--color-accent);
-    border-color: rgba(0, 120, 212, 0.5);
+    border-color: var(--color-accent);
     background-color: rgba(0, 120, 212, 0.06);
 }
 
@@ -1463,4 +1460,112 @@
     opacity: 0.3;
     cursor: not-allowed;
     pointer-events: none;
+}
+
+/* ----- CustomWorkflowParamPanel (extracted from CustomWorkflowParamModal) ----- */
+/* Panel wraps header (nav) + scrollable body + footer in both modal and tab modes. */
+.custom-workflow-param-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    color: var(--text-primary);
+}
+
+.custom-workflow-param-panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: transparent;
+    /* Flex row holding [title+nav column | optional expand button]. The inner
+       `-header-main` wrapper preserves the original column stacking of title
+       and nav, so visuals are unchanged in modal mode (where no expand button
+       renders); the expand button only attaches in contexts that pass
+       `onExpand` (currently the sidebar). */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.custom-workflow-param-panel-header-main {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.custom-workflow-param-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: clamp(0.9rem, 0.7rem + 0.7vw, 1.05rem);
+    color: var(--text-primary);
+}
+
+/* Expand-to-tab button — mirrors `.tool-param-panel-expand-btn` (which lives in
+   `toolParamPanel.css`). Rendered only when the parent passes `onExpand`. */
+.custom-workflow-param-panel-expand-btn {
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    letter-spacing: 0.3px;
+    text-transform: lowercase;
+    padding: 3px 8px;
+    cursor: pointer;
+    border-radius: var(--radius-xs);
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast);
+}
+
+.custom-workflow-param-panel-expand-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+    /* Neutralize the global button:hover scale + shadow from background.css. */
+    transform: none;
+    box-shadow: none;
+}
+
+.custom-workflow-param-panel-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 12px 16px;
+    min-height: 0;
+}
+
+.custom-workflow-param-panel-footer {
+    border-top: 1px solid var(--border-subtle);
+    padding: 8px 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* Tab variant — slim chrome bars on bg-canvas, no card feel: drop the
+   --bg-elevated header strip, give the footer an explicit canvas bg so it
+   reads as a separator bar. Flex layout already pins the footer at the
+   bottom (panel: column height:100%; body: flex 1 1 auto + overflow-y:auto;
+   footer: flex-shrink: 0) — no position:sticky needed. */
+.custom-workflow-param-panel--tab {
+    background-color: var(--bg-canvas);
+}
+
+.custom-workflow-param-panel--tab .custom-workflow-param-panel-header {
+    padding: 14px 24px;
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.custom-workflow-param-panel--tab .custom-workflow-param-panel-body {
+    padding: 16px 24px;
+}
+
+.custom-workflow-param-panel--tab .custom-workflow-param-panel-footer {
+    padding: 12px 24px;
+    background-color: var(--bg-canvas);
 }

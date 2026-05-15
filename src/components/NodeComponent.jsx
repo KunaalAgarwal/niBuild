@@ -53,6 +53,7 @@ const NodeComponent = ({ data, id }) => {
     if (data.isCustomWorkflow) {
         return (
             <CustomWorkflowNodeComponent
+                id={id}
                 data={data}
                 isScatterInherited={isScatterInherited}
                 isGatherNode={isGatherNode}

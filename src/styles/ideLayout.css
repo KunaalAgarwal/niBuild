@@ -37,11 +37,150 @@
     overflow: auto;
 }
 
-/* Sidebar */
+/* Sidebar — flex column so the tab strip pins to the top and the content
+   area beneath fills the rest. WorkflowMenu / ToolParamPanel /
+   CustomWorkflowParamPanel each own their own internal scroller within the
+   content area; the outer .ide-sidebar stays `overflow: hidden` so neither
+   the strip nor the content can spill out of the resizable Panel. */
 .ide-sidebar {
     background-color: var(--bg-sidebar);
     border-right: 1px solid var(--border-default);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.ide-sidebar-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sidebar tab strip — toggles between the operations Menu (workflowMenu)
+   and a node-scoped Params panel. Mirrors .ide-utility-tab styling but
+   shorter (26px vs 30px) since sidebar real estate is narrower. */
+.ide-sidebar-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 6px;
+    height: 26px;
+    min-height: 26px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border-default);
+    background-color: var(--bg-elevated);
+}
+
+.ide-sidebar-tab {
+    font-family: var(--font-mono);
+    font-size: var(--size-2xs);
+    font-weight: var(--weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    padding: 4px 10px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition:
+        color var(--transition-normal),
+        border-color var(--transition-normal);
+    user-select: none;
+    /* Allow tabs to shrink and truncate when the sidebar is narrow. Without
+       these, "PARAMETERS" overflows and pushes the strip wider than its panel. */
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ide-sidebar-tab:hover:not(.disabled) {
+    color: var(--text-primary);
+}
+
+.ide-sidebar-tab.active {
+    color: var(--text-on-accent);
+    border-bottom-color: var(--color-accent);
+}
+
+.ide-sidebar-tab.disabled {
+    color: var(--text-disabled);
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Unsaved-changes indicator on the sidebar Parameters / BIDS tabs. Smaller
+   than the aux tab dot because the sidebar tab strip is more compact (the
+   sidebar tab itself is uppercase mono at --size-2xs). */
+.ide-sidebar-tab-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: 6px;
+    border-radius: 50%;
+    background-color: var(--text-secondary);
+    vertical-align: middle;
+}
+
+.ide-sidebar-tab.active .ide-sidebar-tab-dot {
+    background-color: var(--text-on-accent);
+}
+
+/* Collapse button at the LEFT of the sidebar tab strip — visible regardless of
+   which tab (Tools/Parameters) is active, and never shrinks even when the
+   tab labels truncate at narrow sidebar widths. Replaces the legacy
+   `.menu-collapse-btn` that used to live inside WorkflowMenu's search row. */
+.ide-sidebar-collapse-btn {
+    flex-shrink: 0;
+    margin-right: 4px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 2px 6px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: filter var(--transition-normal);
+}
+
+/* Whisper-light hover — just a small brightness nudge on the muted glyph.
+   No color jump, no background fill — the button's role as utility chrome
+   shouldn't compete with the tab labels for visual attention. The transform
+   / box-shadow / background-color resets neutralize the global `button:hover`
+   rule in `background.css:71-75` (same pattern used by `.ide-tab-close:hover`
+   at line 251). */
+.ide-sidebar-collapse-btn:hover {
+    filter: brightness(1.25);
+    background-color: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Sidebar-scoped param-panel padding. The `--tab` variants (in toolParamPanel.css
+   and workflowItem.css) bake in 24px horizontal padding tuned for the wider
+   aux-tab editor area. In the narrower sidebar context, tighten to 12px so the
+   breadcrumb, params list, and Save footer have more room. Aux-tab usage is
+   unaffected since this selector requires the `.ide-sidebar-content` ancestor. */
+.ide-sidebar-content .tool-param-panel--tab .tool-param-panel-header,
+.ide-sidebar-content .tool-param-panel--tab .tool-param-panel-body,
+.ide-sidebar-content .tool-param-panel--tab .tool-param-panel-footer,
+.ide-sidebar-content .custom-workflow-param-panel--tab .custom-workflow-param-panel-header,
+.ide-sidebar-content .custom-workflow-param-panel--tab .custom-workflow-param-panel-body,
+.ide-sidebar-content .custom-workflow-param-panel--tab .custom-workflow-param-panel-footer {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+/* Sidebar context: omit the ToolParamPanel TOC. The TOC is an "expanded surface"
+   affordance — when the panel is hosted in the narrower left-sidebar slot, the
+   params reclaim the full main-pane width. The container query at
+   toolParamPanel.css:254 still applies inside the aux-tab editor for users who
+   narrow that pane below 360px. Flex `gap` and the TOC's right border collapse
+   naturally with `display: none`, so no other layout rules need updating. */
+.ide-sidebar-content .tool-param-panel-toc {
+    display: none;
 }
 
 /* Center column: tab bar + canvas stacked vertically */
@@ -96,6 +235,9 @@
         color var(--transition-fast);
     flex-shrink: 0;
     user-select: none;
+    /* Required for the ::before/::after drop indicators (.ide-tab--drop-before/after)
+       to anchor to the tab's edges. */
+    position: relative;
 }
 
 .ide-tab:hover {
@@ -137,6 +279,24 @@
 .ide-tab:hover .ide-tab-close,
 .ide-tab.active .ide-tab-close {
     opacity: 1;
+}
+
+/* Unsaved-changes indicator on an aux tab — small filled circle, VS Code style.
+   Sits between the label and the close button. The close button defaults to
+   opacity:0 and reveals on hover/active, so the dot is the persistent signal
+   that the panel inside has uncommitted edits. */
+.ide-tab-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin: 0 2px;
+    border-radius: 50%;
+    background-color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.ide-tab.active .ide-tab-dot {
+    background-color: var(--text-primary);
 }
 
 .ide-tab-close:hover {
@@ -203,6 +363,35 @@
     max-width: 150px;
 }
 
+/* --- Drag-and-drop tab reordering ---
+   .ide-tab--dragging  → visual ghost on the source tab during a drag.
+   .ide-tab--drop-before / --drop-after → 2px accent line on the tab being hovered
+   over, indicating where the dragged tab will land. Pseudo-elements paint without
+   shifting layout, so tabs don't jitter as the cursor moves between halves. */
+.ide-tab--dragging {
+    opacity: 0.4;
+}
+
+.ide-tab--drop-before::before,
+.ide-tab--drop-after::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--color-accent);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.ide-tab--drop-before::before {
+    left: -1px;
+}
+
+.ide-tab--drop-after::after {
+    right: -1px;
+}
+
 /* Canvas wrapper — fills remaining space below tab bar */
 .ide-canvas-wrapper {
     flex: 1 1 0;
@@ -210,6 +399,151 @@
     overflow: hidden;
     position: relative;
     background-color: var(--bg-canvas);
+}
+
+/* Multi-pane stack inside the canvas wrapper: canvas/manager/aux occupy the same
+   absolute area, visibility controlled by JS. Only one is visible at a time. */
+.ide-pane {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.ide-pane-aux,
+.ide-pane-manager {
+    background-color: var(--bg-canvas);
+    z-index: 1;
+}
+
+/* Tab decoration: a small uppercase monospace badge on the left side of each tab,
+   indicating the tab kind (WRKF / CWL / YML / BIDS / PARAMS). Visual treatment
+   mirrors node decorations in workflowItem.css (.node-scatter-badge,
+   .node-fx-badge, etc.). Slightly larger font (9px vs node's 7px) since tabs are
+   taller than node footers — 7px would be hard to read at tab scale. */
+.ide-tab-decoration {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    line-height: 1.4;
+    padding: 1px 4px;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-style: normal;
+}
+
+.ide-tab-decoration-wrkf {
+    color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+    border-color: var(--color-accent-border);
+}
+
+.ide-tab-decoration-cwl {
+    color: var(--color-danger);
+    background-color: var(--color-danger-muted);
+    border-color: var(--color-danger-border);
+}
+
+.ide-tab-decoration-yml {
+    color: var(--color-info);
+    background-color: var(--color-info-muted);
+    border-color: var(--color-info-border);
+}
+
+.ide-tab-decoration-bids {
+    color: var(--color-green-io);
+    background-color: var(--color-green-io-muted);
+    border-color: var(--color-green-io-border);
+}
+
+.ide-tab-decoration-params {
+    color: var(--color-warning);
+    background-color: var(--color-warning-muted);
+    border-color: var(--color-warning-border);
+}
+
+/* CUSTOM badge — workspace tabs bound to a kind='custom-node' saved entry.
+   Tangerine matches the TopBar "Save as Custom Node" button and the
+   workflowMenu "Custom Nodes" section header, so the user can trace a
+   custom-node identity from the menu → tab → save action by color. */
+.ide-tab-decoration-custom {
+    color: var(--color-custom);
+    background-color: var(--color-custom-muted);
+    border-color: var(--color-custom-border);
+}
+
+/* Aux-tab content container — fills its pane and provides padding. */
+.ide-aux-tab-content {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--bg-canvas);
+}
+
+.ide-aux-tab-cwl {
+    padding: 0;
+}
+
+.ide-aux-tab-modal {
+    padding: 0;
+}
+
+.ide-aux-tab-empty {
+    padding: 24px;
+    color: var(--text-muted);
+    font-size: var(--size-sm);
+    text-align: center;
+}
+
+/* "Open as Tab" button on modals — opens the same content as a full editor tab. */
+.ide-modal-expand {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    margin-left: auto;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+    font-size: var(--size-2xs);
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.ide-modal-expand:hover {
+    background-color: var(--bg-hover, rgba(255, 255, 255, 0.08));
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+    transform: none;
+    box-shadow: none;
+}
+
+.ide-modal-expand:focus-visible {
+    outline: 1px solid var(--border-input-focus);
+    outline-offset: 1px;
+}
+
+.ide-modal-expand-icon {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.ide-modal-expand:hover .ide-modal-expand-icon {
+    color: var(--text-primary);
 }
 
 /* CWL Preview */
@@ -580,6 +914,9 @@
     writing-mode: vertical-rl;
     text-orientation: mixed;
     cursor: pointer;
+    /* Use the shared IDE chrome color so collapsed strips match across panels
+       (sidebar, CWL preview), regardless of each panel's expanded surface tint. */
+    background-color: var(--bg-sidebar);
 }
 
 .ide-collapsed-label {

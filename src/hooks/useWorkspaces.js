@@ -1,37 +1,110 @@
 import { useReducer, useCallback } from 'react';
 import { useDebouncedStorage } from './useDebouncedStorage.js';
 
+// Each workspace tracks one binding *per save kind*. This lets a single
+// workspace be the "live" editor for both a workflow entry and a custom-node
+// entry at the same time (a common pattern when extracting a reusable
+// composite from a fuller pipeline). Each binding is independent: saving as
+// a workflow updates only `boundWorkflowId`; saving as a custom node updates
+// only `boundCustomNodeId`. The legacy `savedWorkflowId` field — which used
+// to hold whichever kind the workspace happened to be bound to — is migrated
+// on first load and no longer written by the reducer.
 const DEFAULT_WORKSPACE = {
     id: crypto.randomUUID(),
     nodes: [],
     edges: [],
     name: '',
-    workflowName: '',
-    savedWorkflowId: null,
+    boundWorkflowId: null,
+    boundCustomNodeId: null,
     viewport: null,
     syncVersion: 0,
 };
 
-function migrateWorkspace(ws) {
+// Lazy load of the saved-entry kind map at init time. We read customWorkflows
+// straight from localStorage here (rather than threading the
+// `useCustomWorkflows` hook in) so that migrateWorkspace can resolve the kind
+// of a legacy `savedWorkflowId` without a circular hook dependency.
+function readCustomWorkflowKindMap() {
+    try {
+        const arr = JSON.parse(localStorage.getItem('customWorkflows'));
+        if (!Array.isArray(arr)) return new Map();
+        // useCustomWorkflows backfills kind to 'custom-node' for pre-kind
+        // entries on first read; replicate that here so unknown-kind legacy
+        // entries get treated the same way (matches how the rest of the app
+        // sees them once useCustomWorkflows initializes).
+        return new Map(arr.filter((w) => w && w.id).map((w) => [w.id, w.kind || 'custom-node']));
+    } catch {
+        return new Map();
+    }
+}
+
+function migrateWorkspace(ws, kindById) {
+    let boundWorkflowId = ws.boundWorkflowId || null;
+    let boundCustomNodeId = ws.boundCustomNodeId || null;
+
+    // Legacy migration: pre-split workspaces only had `savedWorkflowId`,
+    // which could point at either kind of entry. Look the id up in the kind
+    // map and assign to whichever new field matches. If the id doesn't
+    // resolve (orphan binding), drop it silently.
+    if (!boundWorkflowId && !boundCustomNodeId && ws.savedWorkflowId) {
+        const kind = kindById.get(ws.savedWorkflowId);
+        if (kind === 'workflow') boundWorkflowId = ws.savedWorkflowId;
+        else if (kind === 'custom-node') boundCustomNodeId = ws.savedWorkflowId;
+    }
+
     return {
         id: ws.id || crypto.randomUUID(),
         nodes: ws.nodes || [],
         edges: ws.edges || [],
-        name: ws.name || '',
-        workflowName: ws.workflowName || '',
-        savedWorkflowId: ws.savedWorkflowId || null,
+        // Legacy: pre-unification workspaces had a separate `workflowName` that
+        // was the tab-displayed name and a `name` that drove export filenames.
+        // The displayed name wins so users keep their tab labels on first load.
+        name: ws.workflowName || ws.name || '',
+        boundWorkflowId,
+        boundCustomNodeId,
         viewport: ws.viewport || null,
         syncVersion: ws.syncVersion || 0,
     };
 }
 
+// Returns `desiredName` if no other workspace shares the same name, otherwise
+// appends " (2)", " (3)", … until unique. Empty stays empty (unnamed tabs show
+// the index-based fallback "Workspace N" and are exempt from uniqueness).
+// `excludeIndex` skips the workspace being renamed so a no-op rename doesn't
+// collide with itself; pass -1 when adding a new workspace.
+function disambiguateName(workspaces, desiredName, excludeIndex = -1) {
+    if (!desiredName) return desiredName;
+    const isTaken = (candidate) => workspaces.some((ws, i) => i !== excludeIndex && ws.name === candidate);
+    if (!isTaken(desiredName)) return desiredName;
+    let n = 2;
+    while (isTaken(`${desiredName} (${n})`)) n++;
+    return `${desiredName} (${n})`;
+}
+
+// Walks workspaces in order and disambiguates any duplicates against earlier
+// entries. Called once at init to repair sessions persisted before uniqueness
+// enforcement existed.
+function dedupeWorkspaceNames(workspaces) {
+    const result = [];
+    for (const ws of workspaces) {
+        if (!ws.name) {
+            result.push(ws);
+            continue;
+        }
+        const unique = disambiguateName(result, ws.name, -1);
+        result.push(unique === ws.name ? ws : { ...ws, name: unique });
+    }
+    return result;
+}
+
 function initState() {
     let workspaces = [DEFAULT_WORKSPACE];
     let currentIndex = 0;
+    const kindById = readCustomWorkflowKindMap();
     try {
         const saved = JSON.parse(localStorage.getItem('workspaces'));
         if (Array.isArray(saved) && saved.length > 0) {
-            workspaces = saved.map(migrateWorkspace);
+            workspaces = dedupeWorkspaceNames(saved.map((ws) => migrateWorkspace(ws, kindById)));
         }
     } catch {
         /* corrupted localStorage — use default */
@@ -47,16 +120,22 @@ function initState() {
     return { workspaces, currentIndex };
 }
 
+// Per-kind binding field name. Kept as a small helper so action handlers and
+// callers reading the binding stay symmetric.
+function bindingFieldForKind(kind) {
+    return kind === 'workflow' ? 'boundWorkflowId' : 'boundCustomNodeId';
+}
+
 function workspaceReducer(state, action) {
     switch (action.type) {
         case 'ADD_WORKSPACE': {
             const newWs = {
-                id: crypto.randomUUID(),
+                id: action.id || crypto.randomUUID(),
                 nodes: [],
                 edges: [],
                 name: '',
-                workflowName: '',
-                savedWorkflowId: null,
+                boundWorkflowId: null,
+                boundCustomNodeId: null,
                 viewport: null,
                 syncVersion: 0,
             };
@@ -64,14 +143,18 @@ function workspaceReducer(state, action) {
             return { workspaces: updated, currentIndex: updated.length - 1 };
         }
         case 'ADD_WORKSPACE_WITH_DATA': {
-            const { data } = action;
+            const { data, id } = action;
+            const requested = data.name || '';
+            const name = requested ? disambiguateName(state.workspaces, requested, -1) : '';
+            // The id is generated in the dispatcher (so the caller can return it
+            // synchronously) and threaded through the action.
             const newWs = {
-                id: crypto.randomUUID(),
+                id: id || crypto.randomUUID(),
                 nodes: data.nodes || [],
                 edges: data.edges || [],
-                name: data.name || '',
-                workflowName: data.workflowName || '',
-                savedWorkflowId: data.savedWorkflowId || null,
+                name,
+                boundWorkflowId: data.boundWorkflowId || null,
+                boundCustomNodeId: data.boundCustomNodeId || null,
                 viewport: null,
                 syncVersion: 0,
             };
@@ -86,8 +169,8 @@ function workspaceReducer(state, action) {
                 nodes: [],
                 edges: [],
                 name: ws?.name || '',
-                workflowName: ws?.workflowName || '',
-                savedWorkflowId: ws?.savedWorkflowId || null,
+                boundWorkflowId: ws?.boundWorkflowId || null,
+                boundCustomNodeId: ws?.boundCustomNodeId || null,
                 viewport: null,
                 syncVersion: ws?.syncVersion || 0,
             };
@@ -101,8 +184,8 @@ function workspaceReducer(state, action) {
                 ...newItems,
                 id: ws?.id || crypto.randomUUID(),
                 name: ws?.name || '',
-                workflowName: ws?.workflowName || '',
-                savedWorkflowId: ws?.savedWorkflowId || null,
+                boundWorkflowId: ws?.boundWorkflowId || null,
+                boundCustomNodeId: ws?.boundCustomNodeId || null,
                 viewport: newItems.viewport !== undefined ? newItems.viewport : ws?.viewport || null,
                 syncVersion: ws?.syncVersion || 0,
             };
@@ -127,27 +210,22 @@ function workspaceReducer(state, action) {
             return { workspaces: remaining, currentIndex: newIndex };
         }
         case 'RENAME_AT': {
+            const uniqueName = disambiguateName(state.workspaces, action.name, action.index);
             const updated = [...state.workspaces];
             updated[action.index] = {
                 ...updated[action.index],
-                name: action.name,
-                workflowName: action.name,
+                name: uniqueName,
             };
             return { ...state, workspaces: updated };
         }
-        case 'UPDATE_NAME': {
+        case 'UPDATE_BINDING': {
+            // Set or clear (id === null) the per-kind binding on the current
+            // workspace. The two kinds are independent — saving as a workflow
+            // does not touch boundCustomNodeId, and vice versa.
+            const { kind, id } = action;
+            const field = bindingFieldForKind(kind);
             const updated = [...state.workspaces];
-            updated[state.currentIndex] = { ...updated[state.currentIndex], name: action.name };
-            return { ...state, workspaces: updated };
-        }
-        case 'UPDATE_WORKFLOW_NAME': {
-            const updated = [...state.workspaces];
-            updated[state.currentIndex] = { ...updated[state.currentIndex], workflowName: action.name };
-            return { ...state, workspaces: updated };
-        }
-        case 'UPDATE_SAVED_ID': {
-            const updated = [...state.workspaces];
-            updated[state.currentIndex] = { ...updated[state.currentIndex], savedWorkflowId: action.id };
+            updated[state.currentIndex] = { ...updated[state.currentIndex], [field]: id };
             return { ...state, workspaces: updated };
         }
         case 'REMOVE_WORKFLOW_NODES': {
@@ -162,10 +240,23 @@ function workspaceReducer(state, action) {
                     }
                     return true;
                 });
-                if (removedIds.size === 0) return ws;
+                // Also drop the binding if the workspace pointed at the deleted entry.
+                let nextBoundWorkflowId = ws.boundWorkflowId;
+                let nextBoundCustomNodeId = ws.boundCustomNodeId;
+                if (nextBoundWorkflowId === workflowId) nextBoundWorkflowId = null;
+                if (nextBoundCustomNodeId === workflowId) nextBoundCustomNodeId = null;
+                const bindingsChanged =
+                    nextBoundWorkflowId !== ws.boundWorkflowId || nextBoundCustomNodeId !== ws.boundCustomNodeId;
+                if (removedIds.size === 0 && !bindingsChanged) return ws;
                 anyChanged = true;
                 const filteredEdges = ws.edges.filter((e) => !removedIds.has(e.source) && !removedIds.has(e.target));
-                return { ...ws, nodes: filteredNodes, edges: filteredEdges };
+                return {
+                    ...ws,
+                    nodes: filteredNodes,
+                    edges: filteredEdges,
+                    boundWorkflowId: nextBoundWorkflowId,
+                    boundCustomNodeId: nextBoundCustomNodeId,
+                };
             });
             return anyChanged ? { ...state, workspaces: updated } : state;
         }
@@ -205,8 +296,20 @@ export function useWorkspaces() {
     useDebouncedStorage('workspaces', state.workspaces, 300);
     useDebouncedStorage('currentWorkspace', state.currentIndex, 300);
 
-    const addNewWorkspace = useCallback(() => dispatch({ type: 'ADD_WORKSPACE' }), []);
-    const addNewWorkspaceWithData = useCallback((data) => dispatch({ type: 'ADD_WORKSPACE_WITH_DATA', data }), []);
+    const addNewWorkspace = useCallback(() => {
+        // Generate the id here so the caller can chain follow-up actions
+        // (e.g. switching the active tab to the new workspace) synchronously.
+        const newId = crypto.randomUUID();
+        dispatch({ type: 'ADD_WORKSPACE', id: newId });
+        return newId;
+    }, []);
+    const addNewWorkspaceWithData = useCallback((data) => {
+        // Same pattern: id generated outside the reducer so the caller can
+        // open the right aux tab / activate the right key immediately.
+        const newId = crypto.randomUUID();
+        dispatch({ type: 'ADD_WORKSPACE_WITH_DATA', data, id: newId });
+        return newId;
+    }, []);
     const clearCurrentWorkspace = useCallback(() => dispatch({ type: 'CLEAR_CURRENT' }), []);
     const updateCurrentWorkspaceItems = useCallback(
         (newItems) => dispatch({ type: 'UPDATE_CURRENT_ITEMS', newItems }),
@@ -215,9 +318,9 @@ export function useWorkspaces() {
     const removeCurrentWorkspace = useCallback(() => dispatch({ type: 'REMOVE_CURRENT' }), []);
     const removeWorkspace = useCallback((index) => dispatch({ type: 'REMOVE_AT', index }), []);
     const renameWorkspace = useCallback((index, name) => dispatch({ type: 'RENAME_AT', index, name }), []);
-    const updateWorkspaceName = useCallback((newName) => dispatch({ type: 'UPDATE_NAME', name: newName }), []);
-    const updateWorkflowName = useCallback((newName) => dispatch({ type: 'UPDATE_WORKFLOW_NAME', name: newName }), []);
-    const updateSavedWorkflowId = useCallback((id) => dispatch({ type: 'UPDATE_SAVED_ID', id }), []);
+    // Per-kind binding setter. `kind` is 'workflow' | 'custom-node'; `id` is
+    // the saved-entry id to bind to, or null to clear the binding for that kind.
+    const updateBinding = useCallback((kind, id) => dispatch({ type: 'UPDATE_BINDING', kind, id }), []);
     const removeWorkflowNodesFromAll = useCallback(
         (workflowId) => dispatch({ type: 'REMOVE_WORKFLOW_NODES', workflowId }),
         [],
@@ -243,9 +346,7 @@ export function useWorkspaces() {
         removeCurrentWorkspace,
         removeWorkspace,
         renameWorkspace,
-        updateWorkspaceName,
-        updateWorkflowName,
-        updateSavedWorkflowId,
+        updateBinding,
         removeWorkflowNodesFromAll,
         revertCurrentWorkspaceItems,
         saveViewportForWorkspace,

@@ -1,26 +1,10 @@
 /* ============================================
    BIDS DATA MODAL
+   The dialog/content/header/body/footer chrome rules now live in tokens.css
+   under "Shared modal chrome — minimal variant" (alongside the matching
+   .edge-mapping-modal and .custom-modal rules). Only the title and the
+   per-modal bits remain here.
    ============================================ */
-
-.bids-modal .modal-dialog {
-    max-width: min(90vw, 1500px);
-}
-
-.bids-modal .modal-content {
-    border-radius: var(--radius-md);
-    background-color: var(--bg-overlay);
-    color: var(--text-primary);
-    border: 1px solid var(--border-medium);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-    padding: 8px;
-    font-family: var(--font-ui);
-}
-
-.bids-modal .modal-header {
-    border-bottom: 1px solid var(--border-subtle);
-    padding: 12px 16px;
-}
-
 .bids-modal .modal-title {
     font-family: var(--font-mono);
     font-weight: 600;
@@ -34,13 +18,121 @@
     margin-top: 2px;
 }
 
-.bids-modal .modal-body {
-    padding: 12px 16px;
+/* Header has title (left) and the Expand button (right). */
+.bids-modal-header-left {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
-.bids-modal .modal-footer {
+/* BIDSDataPanel — wraps body + footer; layout adapts to modal vs tab. */
+.bids-data-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+.bids-data-panel-body {
+    padding: 12px 16px;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.bids-data-panel-footer {
     border-top: 1px solid var(--border-subtle);
     padding: 8px 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* Tab variant — slim chrome bars on bg-canvas, no card feel. The panel itself
+   provides the header (rendered only in tab mode in BIDSDataPanel.jsx since
+   modal mode uses Modal.Header). Flex layout (column, height:100%; body flex
+   1 1 auto + overflow-y:auto; footer flex-shrink: 0) pins the footer at the
+   bottom naturally — no position:sticky needed. */
+.bids-data-panel--tab {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+}
+
+/* Tab-mode header is a flex row so the Expand button can sit at the right.
+   The header element only renders in tab mode (BIDSDataPanel.jsx gates it on
+   `mode === 'tab'`), so no modal-mode special-casing is needed here. */
+.bids-data-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bids-data-panel-header-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.bids-data-panel--tab .bids-data-panel-header {
+    padding: 14px 24px;
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Expand-to-tab button — mirrors `.tool-param-panel-expand-btn` (in
+   `toolParamPanel.css`). Rendered only when the parent passes `onExpand` —
+   the sidebar host does; the aux tab itself doesn't (no expand-of-expand
+   recursion). `margin-left: auto` right-aligns it without depending on the
+   header-text flex sizing. */
+.bids-data-panel-expand-btn {
+    flex-shrink: 0;
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    letter-spacing: 0.3px;
+    text-transform: lowercase;
+    padding: 3px 8px;
+    cursor: pointer;
+    border-radius: var(--radius-xs);
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast);
+}
+
+.bids-data-panel-expand-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+    /* Neutralize the global button:hover scale + shadow from background.css. */
+    transform: none;
+    box-shadow: none;
+}
+
+.bids-data-panel-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: clamp(0.9rem, 0.7rem + 0.7vw, 1.05rem);
+    color: var(--text-primary);
+}
+
+.bids-data-panel-subtitle {
+    font-size: clamp(0.72rem, 0.55rem + 0.55vw, 0.82rem);
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.bids-data-panel--tab .bids-data-panel-body {
+    padding: 16px 24px;
+}
+
+.bids-data-panel--tab .bids-data-panel-footer {
+    padding: 12px 24px;
+    background-color: var(--bg-canvas);
 }
 
 /* ---- Layout: 2-panel grid ---- */
@@ -92,7 +184,7 @@
     color: var(--color-accent);
     background: none;
     border: 1px solid var(--color-accent-border);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     padding: 1px 6px;
     cursor: pointer;
     white-space: nowrap;
@@ -108,7 +200,7 @@
 .bids-search-input {
     background-color: var(--bg-inset);
     border: 1px solid var(--border-subtle);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-family: var(--font-mono);
     font-size: clamp(0.68rem, 0.52rem + 0.55vw, 0.78rem);
@@ -131,7 +223,7 @@
     align-items: center;
     gap: 6px;
     padding: 2px 4px;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     font-family: var(--font-mono);
     font-size: clamp(0.68rem, 0.52rem + 0.55vw, 0.78rem);
     cursor: pointer;
@@ -251,7 +343,7 @@
     overflow-y: auto;
     max-height: clamp(200px, 38vh, 320px);
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 .bids-output-group {
@@ -276,7 +368,7 @@
 .bids-output-label-input {
     background-color: var(--bg-inset);
     border: 1px solid var(--border-subtle);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-family: var(--font-mono);
     font-size: clamp(0.76rem, 0.58rem + 0.55vw, 0.88rem);
@@ -304,9 +396,9 @@
     font-family: var(--font-mono);
     font-size: clamp(0.66rem, 0.5rem + 0.55vw, 0.78rem);
     color: var(--text-muted);
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: var(--border-subtle);
     border: 1px solid var(--border-subtle);
-    border-radius: 2px;
+    border-radius: var(--radius-xs);
     padding: 1px 4px;
 }
 
@@ -315,7 +407,7 @@
     color: var(--color-danger);
     background: none;
     border: 1px solid var(--color-danger-border);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     padding: 1px 6px;
     cursor: pointer;
 }
@@ -344,7 +436,7 @@
 .bids-filter-select {
     background-color: var(--bg-inset);
     border: 1px solid var(--border-subtle);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-family: var(--font-mono);
     font-size: clamp(0.73rem, 0.56rem + 0.55vw, 0.85rem);
@@ -377,7 +469,7 @@
     color: var(--color-success);
     background: none;
     border: 1px solid var(--color-success-border);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     padding: 3px 8px;
     cursor: pointer;
     margin-top: 4px;
@@ -407,7 +499,7 @@
     overflow-y: auto;
     padding: 4px 8px 8px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 .bids-preview-path {
@@ -425,8 +517,14 @@
     font-style: italic;
 }
 
-/* ---- Modal buttons ---- */
-.bids-modal .btn-save {
+/* ---- Panel footer buttons ---- */
+/* Scoped to the panel wrappers (not .bids-modal) so the same styling applies in
+   both modal mode (panel rendered inside the BIDS modal) and tab mode (panel
+   rendered as an aux tab). The Param panel uses the same selectors after
+   CustomWorkflowParamPanel.jsx switches its <Button variant=...> usage to
+   className="btn-save"/"btn-cancel". */
+.bids-data-panel .btn-save,
+.custom-workflow-param-panel .btn-save {
     background-color: var(--color-accent);
     border-color: var(--color-accent);
     font-family: var(--font-mono);
@@ -434,11 +532,13 @@
     padding: 4px 14px;
 }
 
-.bids-modal .btn-save:hover {
+.bids-data-panel .btn-save:hover,
+.custom-workflow-param-panel .btn-save:hover {
     background-color: var(--color-accent-hover);
 }
 
-.bids-modal .btn-cancel {
+.bids-data-panel .btn-cancel,
+.custom-workflow-param-panel .btn-cancel {
     background-color: transparent;
     border: 1px solid var(--border-medium);
     color: var(--text-muted);
@@ -447,7 +547,8 @@
     padding: 4px 14px;
 }
 
-.bids-modal .btn-cancel:hover {
+.bids-data-panel .btn-cancel:hover,
+.custom-workflow-param-panel .btn-cancel:hover {
     background-color: var(--bg-hover);
     color: var(--text-primary);
 }

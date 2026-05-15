@@ -1,42 +1,12 @@
-/* Larger modal override */
-.edge-mapping-modal .modal-dialog {
-    max-width: min(90vw, 1500px);
-}
-
-.edge-mapping-modal .modal-content {
-    border-radius: var(--radius-lg);
-    background-color: var(--bg-surface);
-    color: var(--text-primary);
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-lg);
-    font-family: var(--font-ui);
-}
-
-.edge-mapping-modal .modal-header {
-    border-bottom: 1px solid var(--border-panel);
-    padding: 18px 24px;
-    background-color: var(--bg-elevated);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-}
-
+/* Dialog/content/header/body/footer chrome (including footer gap) lives in
+   tokens.css under "Shared modal chrome — minimal variant" (alongside the
+   matching .bids-modal and .custom-modal rules). Only the title and the
+   per-modal bits remain here. */
 .edge-mapping-modal .modal-title {
     font-family: var(--font-mono);
     font-size: clamp(0.85rem, 0.6rem + 0.7vw, 1.15rem);
     font-weight: 500;
     color: var(--text-primary);
-}
-
-.edge-mapping-modal .modal-body {
-    padding: 28px;
-    background-color: var(--bg-surface);
-}
-
-.edge-mapping-modal .modal-footer {
-    border-top: 1px solid var(--border-panel);
-    padding: 18px 24px;
-    background-color: var(--bg-elevated);
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    gap: 10px;
 }
 
 .mapping-container {

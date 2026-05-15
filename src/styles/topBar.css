@@ -27,16 +27,26 @@
     gap: 4px;
     flex-shrink: 0;
     z-index: 1;
-    margin-left: auto;
+    /* margin-left: auto used to be needed when .top-bar-center was absolutely
+       positioned — now the center's auto margins do the right-alignment. */
 }
 
+/* Search-bar container. Lives in the flex flow (no longer absolute-centered)
+   so when the left/right groups need room, the center genuinely shrinks
+   instead of overlapping them.
+     flex-basis 550px  → preferred width at wide viewports
+     flex-shrink 1     → shrinks down to fit when total content exceeds viewport
+     min-width 120px   → keeps the icon + placeholder usable below 700px the
+                         media query hides the bar entirely)
+     margin: 0 auto    → at viewports wide enough that the basis fits with room
+                         to spare, auto margins absorb the leftover space
+                         symmetrically, keeping the bar visually centered */
 .top-bar-center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
     justify-content: center;
-    width: clamp(200px, 40%, 550px);
+    flex: 0 1 550px;
+    min-width: 120px;
+    margin: 0 auto;
 }
 
 .top-bar-logo {
@@ -50,7 +60,7 @@
 .top-bar-btn {
     font-family: var(--font-ui);
     font-size: var(--size-md);
-    font-weight: var(--weight-semibold);
+    font-weight: var(--weight-medium);
     padding: 3px 8px;
     background-color: transparent;
     color: var(--text-muted);
@@ -71,53 +81,130 @@
     box-shadow: none;
 }
 
-.top-bar-btn:disabled {
+/* External-link anchors (Docs / GitHub / Issues) — strip every hover affordance
+   except the text getting brighter (--text-muted → --text-primary, inherited
+   from .top-bar-btn:hover above). No gray fill, no scale, no shadow. */
+.top-bar-external-link:hover {
+    background-color: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+/* The .top-bar-btn:disabled fade-to-40% is for non-action buttons (Docs /
+   GitHub / Issues anchors); the action buttons below own their own disabled
+   styling so the colored border doesn't ghost at 40% opacity. */
+.top-bar-btn:disabled:not(.top-bar-btn-action) {
     opacity: 0.4;
     cursor: not-allowed;
 }
 
-.top-bar-btn:disabled:hover {
+.top-bar-btn:disabled:not(.top-bar-btn-action):hover {
     background-color: transparent;
     color: var(--text-muted);
     transform: none;
     box-shadow: none;
 }
 
-.top-bar-btn-save {
-    color: var(--color-purple);
-    border: 1px solid var(--color-purple-border);
+/* ───────────────────────────────────────────────────────────────
+   Action buttons (Save as Workflow / Save as Custom Node / Generate)
+
+   All three share identical structure: colored text + matching border,
+   hover tints background to the kind's muted color and darkens the
+   border slightly, focus paints a 2px accent ring, mouse-down nudges
+   1px. Per-kind classes only override four CSS custom properties.
+   ─────────────────────────────────────────────────────────────── */
+.top-bar-btn-action {
+    color: var(--ba-color);
+    border: 1px solid var(--ba-border);
+    /* Slightly smaller than the .top-bar-btn base (which uses --size-md / 14px
+       for the external-link anchors). --size-sm matches the WorkflowManagerPage
+       toolbar buttons (.wm-toolbar-btn) and the VS Code base UI size, so the
+       three action buttons sit consistently with the rest of the app's chrome
+       controls. line-height kept tight so the slimmer padding doesn't make the
+       label feel floaty inside the colored border. */
+    font-size: var(--size-sm);
+    line-height: 1.4;
+    padding: 2px 9px;
+    transition:
+        background-color var(--transition-normal),
+        color var(--transition-normal),
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal);
 }
 
-.top-bar-btn-save:hover {
-    background-color: var(--color-purple-muted);
-    color: var(--color-purple-hover);
+.top-bar-btn-action:hover:not(:disabled) {
+    /* Subtle hover: no background fill — just a small text brighten plus a
+       gentle border darken so the button registers as interactive without
+       lighting up the chrome. transform / box-shadow are still reset so the
+       global `button:hover` (5% scale + soft shadow) and any stray
+       :focus-visible ring don't sneak through on top. */
+    color: var(--ba-hover);
+    border-color: var(--ba-border-strong);
+    background-color: transparent;
+    box-shadow: none;
+    transform: none;
 }
 
-.top-bar-btn-revert {
-    color: #c9a84c;
-    border: 1px solid rgba(201, 168, 76, 0.4);
+.top-bar-btn-action:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
 }
 
-.top-bar-btn-revert:hover {
-    background-color: rgba(201, 168, 76, 0.12);
-    color: #dbbf6a;
-    border-color: rgba(201, 168, 76, 0.6);
+.top-bar-btn-action:active:not(:disabled) {
+    transform: translateY(1px);
 }
 
-.top-bar-btn-revert:disabled {
-    color: rgba(201, 168, 76, 0.4);
-    border-color: rgba(201, 168, 76, 0.2);
+.top-bar-btn-action:disabled {
+    /* Subtle but still kind-tinted: keep the kind's text + border color
+       (--ba-color / --ba-border) so the button still reads as "this kind of
+       save / generate", and rely on the opacity drop to communicate "off".
+       Without the kind-color the buttons all collapsed to the same grey,
+       which made it harder to tell at a glance which action you couldn't take. */
+    color: var(--ba-color);
+    border-color: var(--ba-border);
+    background-color: transparent;
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+/* "Save as Workflow" — purple, inherits the visual identity of the original
+   single Save button so users carry the "save = purple" association across
+   the split. */
+.top-bar-btn-save-workflow {
+    --ba-color: var(--color-purple);
+    --ba-border: var(--color-purple-border);
+    --ba-border-strong: rgba(168, 85, 247, 0.6);
+    --ba-muted: var(--color-purple-muted);
+    --ba-hover: var(--color-purple-hover);
+}
+
+/* "Save as Custom Node" — tangerine, the dedicated color for the
+   custom-workflow-node concept. Matches the Custom Nodes menu section
+   and the CUSTOM tab decoration. */
+.top-bar-btn-save-custom {
+    --ba-color: var(--color-custom);
+    --ba-border: var(--color-custom-border);
+    --ba-border-strong: rgba(255, 157, 86, 0.6);
+    --ba-muted: var(--color-custom-muted);
+    --ba-hover: var(--color-custom-hover);
 }
 
 .top-bar-btn-generate {
-    color: var(--color-accent);
-    border: 1px solid var(--color-accent-border);
+    --ba-color: var(--color-accent);
+    --ba-border: var(--color-accent-border);
+    --ba-border-strong: rgba(0, 120, 212, 0.6);
+    --ba-muted: var(--color-accent-muted);
+    --ba-hover: var(--color-accent-hover);
 }
 
-.top-bar-btn-generate:hover {
-    background-color: var(--color-accent-muted);
-    color: var(--color-accent-hover);
-    border-color: rgba(0, 120, 212, 0.6);
+/* Responsive labels — long form by default, short form below 900px (matches
+   the breakpoint that already hides the .top-bar-external-link anchors so the
+   right-side group is the only thing changing through the cascade). The
+   `aria-label` / `title` on the button itself carries the full action so
+   screen readers and tooltips don't lose meaning when the visible text
+   shortens. */
+.top-bar-btn-label-short {
+    display: none;
 }
 
 /* Search bar */
@@ -160,6 +247,12 @@
 @media (max-width: 900px) {
     .top-bar-external-link {
         display: none;
+    }
+    .top-bar-btn-label-long {
+        display: none;
+    }
+    .top-bar-btn-label-short {
+        display: inline;
     }
 }
 

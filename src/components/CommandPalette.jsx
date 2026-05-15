@@ -1,46 +1,13 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { toolsByModality, dummyNodes } from '../utils/toolAnnotations';
 import '../styles/commandPalette.css';
 
-function buildAllTools() {
-    const tools = [];
-    for (const ioNode of dummyNodes['I/O']) {
-        tools.push({
-            type: 'tool',
-            name: ioNode.name,
-            fullName: ioNode.fullName,
-            description: ioNode.function,
-            modality: 'I/O',
-            isDummy: true,
-            isBIDS: ioNode.isBIDS || false,
-            isOutputNode: ioNode.isOutputNode || false,
-        });
-    }
-    for (const [modality, libraries] of Object.entries(toolsByModality)) {
-        for (const [, categories] of Object.entries(libraries)) {
-            for (const [, toolList] of Object.entries(categories)) {
-                for (const tool of toolList) {
-                    tools.push({
-                        type: 'tool',
-                        name: tool.name,
-                        fullName: tool.fullName || tool.name,
-                        description: tool.function || '',
-                        modality,
-                        isDummy: false,
-                        isBIDS: false,
-                        isOutputNode: false,
-                    });
-                }
-            }
-        }
-    }
-    return tools;
-}
-
-const ALL_TOOLS = buildAllTools();
-
-function CommandPalette({ isOpen, onClose, actions, customWorkflows, onSelectTool, onSelectWorkflow }) {
+// The palette surfaces two kinds of entries: invocable Actions (from main.jsx's
+// `paletteActions`) and saved Workflows / Custom Nodes (from `customWorkflows`).
+// Draggable tool/IO entries used to live here too, but the sidebar's workflow
+// menu is the canonical place to add tools — the palette stays focused on
+// commands and saved-entry navigation.
+function CommandPalette({ isOpen, onClose, actions, customWorkflows, onSelectWorkflow }) {
     const [query, setQuery] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
     const inputRef = useRef(null);
@@ -53,16 +20,9 @@ function CommandPalette({ isOpen, onClose, actions, customWorkflows, onSelectToo
                 type: 'action',
                 id: action.id,
                 name: action.label,
-                description: '',
                 handler: action.handler,
                 disabled: action.disabled || false,
                 searchText: action.label.toLowerCase(),
-            });
-        }
-        for (const tool of ALL_TOOLS) {
-            items.push({
-                ...tool,
-                searchText: `${tool.name} ${tool.fullName} ${tool.description} ${tool.modality}`.toLowerCase(),
             });
         }
         for (const wf of customWorkflows) {
@@ -88,17 +48,16 @@ function CommandPalette({ isOpen, onClose, actions, customWorkflows, onSelectToo
     const groupedItems = useMemo(() => {
         const groups = [];
         const actionItems = filteredItems.filter((i) => i.type === 'action');
-        const toolItems = filteredItems.filter((i) => i.type === 'tool');
         const workflowItems = filteredItems.filter((i) => i.type === 'workflow');
         if (actionItems.length > 0) groups.push({ label: 'Actions', items: actionItems });
-        if (toolItems.length > 0) groups.push({ label: 'Tools', items: toolItems });
         if (workflowItems.length > 0) groups.push({ label: 'Workflows', items: workflowItems });
         return groups;
     }, [filteredItems]);
 
-    const flatFiltered = useMemo(() => {
-        return groupedItems.flatMap((g) => g.items);
-    }, [groupedItems]);
+    // `filteredItems` doubles as the flat list for keyboard navigation: items
+    // are built in actions-then-workflows order, the filter preserves that
+    // order, and the render iterates groups in the same order — so the visual
+    // index matches the array index directly. No separate flat memo needed.
 
     useEffect(() => {
         setSelectedIndex(0);
@@ -122,14 +81,12 @@ function CommandPalette({ isOpen, onClose, actions, customWorkflows, onSelectToo
             if (item.disabled) return;
             if (item.type === 'action') {
                 item.handler();
-            } else if (item.type === 'tool') {
-                onSelectTool(item);
             } else if (item.type === 'workflow') {
                 onSelectWorkflow(item.workflow);
             }
             onClose();
         },
-        [onSelectTool, onSelectWorkflow, onClose],
+        [onSelectWorkflow, onClose],
     );
 
     const handleKeyDown = useCallback(
@@ -138,26 +95,26 @@ function CommandPalette({ isOpen, onClose, actions, customWorkflows, onSelectToo
                 e.preventDefault();
                 setSelectedIndex((prev) => {
                     let next = prev + 1;
-                    while (next < flatFiltered.length && flatFiltered[next]?.disabled) next++;
-                    return next >= flatFiltered.length ? 0 : next;
+                    while (next < filteredItems.length && filteredItems[next]?.disabled) next++;
+                    return next >= filteredItems.length ? 0 : next;
                 });
             } else if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 setSelectedIndex((prev) => {
                     let next = prev - 1;
-                    while (next >= 0 && flatFiltered[next]?.disabled) next--;
-                    return next < 0 ? flatFiltered.length - 1 : next;
+                    while (next >= 0 && filteredItems[next]?.disabled) next--;
+                    return next < 0 ? filteredItems.length - 1 : next;
                 });
             } else if (e.key === 'Enter') {
                 e.preventDefault();
-                const item = flatFiltered[selectedIndex];
+                const item = filteredItems[selectedIndex];
                 if (item) handleSelect(item);
             } else if (e.key === 'Escape') {
                 e.preventDefault();
                 onClose();
             }
         },
-        [flatFiltered, selectedIndex, handleSelect, onClose],
+        [filteredItems, selectedIndex, handleSelect, onClose],
     );
 
     if (!isOpen) return null;
@@ -187,7 +144,7 @@ function CommandPalette({ isOpen, onClose, actions, customWorkflows, onSelectToo
                         ref={inputRef}
                         className="command-palette-input"
                         type="text"
-                        placeholder="Search tools, workflows, actions..."
+                        placeholder="Search actions and workflows..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
@@ -204,20 +161,13 @@ function CommandPalette({ isOpen, onClose, actions, customWorkflows, onSelectToo
                                     const idx = globalIdx++;
                                     return (
                                         <div
-                                            key={item.id || item.name}
+                                            key={item.id}
                                             className={`command-palette-item${idx === selectedIndex ? ' selected' : ''}${item.disabled ? ' disabled' : ''}`}
                                             onClick={() => handleSelect(item)}
                                             onMouseEnter={() => setSelectedIndex(idx)}
                                         >
-                                            <span className="command-palette-badge">
-                                                {item.type === 'action'
-                                                    ? 'Action'
-                                                    : item.type === 'workflow'
-                                                      ? 'Workflow'
-                                                      : item.modality || 'Tool'}
-                                            </span>
                                             <span className="command-palette-item-name">
-                                                {item.fullName || item.name}
+                                                {item.name}
                                             </span>
                                             {item.description && (
                                                 <span className="command-palette-item-description">

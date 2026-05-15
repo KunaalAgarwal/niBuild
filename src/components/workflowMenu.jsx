@@ -32,13 +32,15 @@ function Chevron({ expanded }) {
     );
 }
 
-function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
-    const { customWorkflows, updateWorkflow, deleteWorkflow } = useCustomWorkflowsContext();
+function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow }) {
+    // `workflows` (kind='workflow') and `customNodes` (kind='custom-node') are
+    // per-kind views of `customWorkflows` — the single hook still owns storage.
+    const { customWorkflows, workflows, customNodes, updateWorkflow } = useCustomWorkflowsContext();
 
     // Collapse is handled by the panel system (react-resizable-panels)
 
     const [expandedSections, setExpandedSections] = useState(() => {
-        const initial = { DummyNodes: false, MyWorkflows: false };
+        const initial = { DummyNodes: false, MyWorkflows: false, CustomNodes: false };
         modalityOrder.forEach((m) => {
             initial[m] = false;
         });
@@ -98,7 +100,18 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
         }
     }, []);
 
-    const handleCustomWorkflowDragStart = useCallback((event, workflow) => {
+    // Workflow row (kind='workflow') → drop expands into all the saved nodes+edges.
+    const handleWorkflowDragStart = useCallback((event, workflow) => {
+        event.dataTransfer.setData('node/name', workflow.name);
+        event.dataTransfer.setData('node/isDummy', 'false');
+        event.dataTransfer.setData('node/savedWorkflowId', workflow.id);
+        event.dataTransfer.setData('node/expand', 'true');
+    }, []);
+
+    // Custom-node row (kind='custom-node') → drop inserts a single composite
+    // node. Existing `node/customWorkflowId` protocol is preserved so the
+    // canvas drop handler (`buildNodeOverrides`) doesn't need to change.
+    const handleCustomNodeDragStart = useCallback((event, workflow) => {
         event.dataTransfer.setData('node/name', workflow.name);
         event.dataTransfer.setData('node/isDummy', 'false');
         event.dataTransfer.setData('node/customWorkflowId', workflow.id);
@@ -185,23 +198,26 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
             }
         }
 
-        // Also search custom workflows
+        // Also search saved entries — group by kind so the search-result
+        // headers mirror the menu's section split (My Workflows / Custom Nodes).
         for (const wf of customWorkflows) {
             const nonDummyTools = wf.nodes.filter((n) => !n.isDummy).map((n) => n.label);
             const matchFields = [wf.name, ...nonDummyTools];
             const searchTerm = toolQuery || query;
             if (matchFields.some((f) => f.toLowerCase().includes(searchTerm))) {
+                const isWorkflowKind = (wf.kind || 'custom-node') === 'workflow';
+                const descriptor = isWorkflowKind ? 'Workflow' : 'Custom node';
                 results.push({
-                    modality: 'My Workflows',
+                    modality: isWorkflowKind ? 'My Workflows' : 'Custom Nodes',
                     library: 'Custom',
                     category: 'Custom',
                     tool: {
                         name: wf.name,
                         fullName: wf.name,
-                        function: `Custom workflow with ${nonDummyTools.length} tools: ${nonDummyTools.join(', ')}`,
+                        function: `${descriptor} with ${nonDummyTools.length} tools: ${nonDummyTools.join(', ')}`,
                         typicalUse: `Tools: ${nonDummyTools.join(', ')}`,
                     },
-                    isCustomWorkflow: true,
+                    isSavedEntry: true,
                     customWorkflow: wf,
                 });
             }
@@ -213,6 +229,152 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
     const clearSearch = () => {
         setSearchQuery('');
         searchInputRef.current?.focus();
+    };
+
+    // One row of the My Workflows / Custom Nodes lists. Both sections share
+    // every visible affordance — rename, drag, open, delete — so we factor the
+    // ~120-line row JSX out and pass in just the drag handler. `kind` shapes
+    // the tooltip copy and aria labels so screen readers and hover text reflect
+    // the section the user is in.
+    const renderSavedEntryRow = (wf, onDragStart, kind) => {
+        const nonDummyTools = wf.nodes.filter((n) => !n.isDummy).map((n) => n.label);
+        const isWorkflowKind = kind === 'workflow';
+        const noun = isWorkflowKind ? 'workflow' : 'custom node';
+        const descriptor = isWorkflowKind ? 'Workflow' : 'Custom node';
+
+        // Inline rename mode (F2 / pencil click / double-click on row)
+        if (renamingId === wf.id) {
+            return (
+                <div key={wf.id} className="custom-workflow-row custom-workflow-row-renaming">
+                    <input
+                        type="text"
+                        className="custom-workflow-rename-input"
+                        autoFocus
+                        defaultValue={wf.name}
+                        onFocus={(e) => e.currentTarget.select()}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                commitRename(wf.id, e.currentTarget.value);
+                            } else if (e.key === 'Escape') {
+                                cancelRename();
+                            }
+                        }}
+                        onBlur={(e) => commitRename(wf.id, e.target.value)}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <div
+                key={wf.id}
+                className="custom-workflow-row"
+                onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    setRenamingId(wf.id);
+                }}
+            >
+                <WorkflowMenuItem
+                    name={wf.name}
+                    toolInfo={{
+                        fullName: wf.name,
+                        function: `${descriptor} with ${nonDummyTools.length} tools`,
+                        typicalUse: `Tools: ${nonDummyTools.join(', ')}`,
+                    }}
+                    onDragStart={(event) => onDragStart(event, wf)}
+                    warningIcon={wf.hasValidationWarnings}
+                />
+                <div className="custom-workflow-actions">
+                    {/* Rename — pencil icon */}
+                    <button
+                        type="button"
+                        className="custom-workflow-action-btn rename-btn"
+                        title={`Rename ${noun}`}
+                        aria-label={`Rename ${noun}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setRenamingId(wf.id);
+                        }}
+                    >
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                        </svg>
+                    </button>
+                    {/* Open in new workspace — external-link icon */}
+                    <button
+                        type="button"
+                        className="custom-workflow-action-btn open-btn"
+                        title="Open in new workspace"
+                        aria-label={`Open ${noun} in new workspace`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (onEditWorkflow) onEditWorkflow(wf);
+                        }}
+                    >
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                            <polyline points="15 3 21 3 21 9" />
+                            <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                    </button>
+                    {/* Delete — X icon */}
+                    <button
+                        type="button"
+                        className="custom-workflow-action-btn delete-btn"
+                        title={`Delete ${noun}`}
+                        aria-label={`Delete ${noun}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            setDeleteConfirm({
+                                wfId: wf.id,
+                                wfName: wf.name,
+                                position: {
+                                    top: rect.top + rect.height / 2,
+                                    left: rect.right + 8,
+                                },
+                            });
+                        }}
+                    >
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                        >
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        );
     };
 
     // Group search results by modality for display
@@ -245,13 +407,16 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
                                 docUrl: r.tool.docUrl,
                             }}
                             onDragStart={
-                                r.isCustomWorkflow
-                                    ? (event) => handleCustomWorkflowDragStart(event, r.customWorkflow)
+                                r.isSavedEntry
+                                    ? (event) =>
+                                          (r.customWorkflow.kind || 'custom-node') === 'workflow'
+                                              ? handleWorkflowDragStart(event, r.customWorkflow)
+                                              : handleCustomNodeDragStart(event, r.customWorkflow)
                                     : r.isDummyNode
                                       ? (event, name) => handleDragStart(event, name, true)
                                       : handleDragStart
                             }
-                            warningIcon={r.isCustomWorkflow && r.customWorkflow.hasValidationWarnings}
+                            warningIcon={r.isSavedEntry && r.customWorkflow.hasValidationWarnings}
                         />
                     ))}
                 </div>
@@ -297,11 +462,6 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
                     )}
 
                 <div className="workflow-search">
-                    {onCollapse && (
-                        <button className="menu-collapse-btn" onClick={onCollapse} title="Collapse menu">
-                            &laquo;
-                        </button>
-                    )}
                     <div className="workflow-search-wrapper">
                         <svg
                             className="workflow-search-icon"
@@ -322,7 +482,7 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
                             ref={searchInputRef}
                             type="text"
                             className="workflow-search-input"
-                            placeholder="Search tools..."
+                            placeholder="Search tools"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             onKeyDown={(e) => {
@@ -360,6 +520,54 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
                         renderSearchResults()
                     ) : (
                         <>
+                            {/* My Workflows (kind='workflow') — drop expands the saved entry. */}
+                            {workflows.length > 0 && (
+                                <div className="library-section my-workflows-section">
+                                    <div
+                                        className="library-header my-workflows-header"
+                                        onClick={() => toggleSection('MyWorkflows')}
+                                    >
+                                        <Chevron expanded={expandedSections['MyWorkflows']} />
+                                        <span className="library-name">My Workflows</span>
+                                        <span className="tool-count">{workflows.length}</span>
+                                    </div>
+
+                                    {expandedSections['MyWorkflows'] && (
+                                        <div className="library-tools">
+                                            <div className="subsection-tools">
+                                                {workflows.map((wf) =>
+                                                    renderSavedEntryRow(wf, handleWorkflowDragStart, 'workflow'),
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Custom Nodes (kind='custom-node') — drop inserts a single composite node. */}
+                            {customNodes.length > 0 && (
+                                <div className="library-section custom-nodes-section">
+                                    <div
+                                        className="library-header custom-nodes-header"
+                                        onClick={() => toggleSection('CustomNodes')}
+                                    >
+                                        <Chevron expanded={expandedSections['CustomNodes']} />
+                                        <span className="library-name">Custom Nodes</span>
+                                        <span className="tool-count">{customNodes.length}</span>
+                                    </div>
+
+                                    {expandedSections['CustomNodes'] && (
+                                        <div className="library-tools">
+                                            <div className="subsection-tools">
+                                                {customNodes.map((wf) =>
+                                                    renderSavedEntryRow(wf, handleCustomNodeDragStart, 'custom-node'),
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             {/* I/O (Dummy Nodes) Section */}
                             <div className="library-section io-section">
                                 <div className="library-header io-header" onClick={() => toggleSection('DummyNodes')}>
@@ -387,172 +595,6 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow, onCollapse }) {
                                     </div>
                                 )}
                             </div>
-
-                            {/* My Workflows Section */}
-                            {customWorkflows.length > 0 && (
-                                <div className="library-section my-workflows-section">
-                                    <div
-                                        className="library-header my-workflows-header"
-                                        onClick={() => toggleSection('MyWorkflows')}
-                                    >
-                                        <Chevron expanded={expandedSections['MyWorkflows']} />
-                                        <span className="library-name">My Workflows</span>
-                                        <span className="tool-count">{customWorkflows.length}</span>
-                                    </div>
-
-                                    {expandedSections['MyWorkflows'] && (
-                                        <div className="library-tools">
-                                            <div className="subsection-tools">
-                                                {customWorkflows.map((wf) => {
-                                                    const nonDummyTools = wf.nodes
-                                                        .filter((n) => !n.isDummy)
-                                                        .map((n) => n.label);
-
-                                                    // Inline rename mode (F2 / pencil click / double-click on row)
-                                                    if (renamingId === wf.id) {
-                                                        return (
-                                                            <div
-                                                                key={wf.id}
-                                                                className="custom-workflow-row custom-workflow-row-renaming"
-                                                            >
-                                                                <input
-                                                                    type="text"
-                                                                    className="custom-workflow-rename-input"
-                                                                    autoFocus
-                                                                    defaultValue={wf.name}
-                                                                    onFocus={(e) => e.currentTarget.select()}
-                                                                    onKeyDown={(e) => {
-                                                                        if (e.key === 'Enter') {
-                                                                            commitRename(wf.id, e.currentTarget.value);
-                                                                        } else if (e.key === 'Escape') {
-                                                                            cancelRename();
-                                                                        }
-                                                                    }}
-                                                                    onBlur={(e) => commitRename(wf.id, e.target.value)}
-                                                                />
-                                                            </div>
-                                                        );
-                                                    }
-
-                                                    return (
-                                                        <div
-                                                            key={wf.id}
-                                                            className="custom-workflow-row"
-                                                            onDoubleClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setRenamingId(wf.id);
-                                                            }}
-                                                        >
-                                                            <WorkflowMenuItem
-                                                                name={wf.name}
-                                                                toolInfo={{
-                                                                    fullName: wf.name,
-                                                                    function: `Custom workflow with ${nonDummyTools.length} tools`,
-                                                                    typicalUse: `Tools: ${nonDummyTools.join(', ')}`,
-                                                                }}
-                                                                onDragStart={(event) =>
-                                                                    handleCustomWorkflowDragStart(event, wf)
-                                                                }
-                                                                warningIcon={wf.hasValidationWarnings}
-                                                            />
-                                                            <div className="custom-workflow-actions">
-                                                                {/* Rename — pencil icon */}
-                                                                <button
-                                                                    type="button"
-                                                                    className="custom-workflow-action-btn rename-btn"
-                                                                    title="Rename workflow"
-                                                                    aria-label="Rename workflow"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setRenamingId(wf.id);
-                                                                    }}
-                                                                >
-                                                                    <svg
-                                                                        width="14"
-                                                                        height="14"
-                                                                        viewBox="0 0 24 24"
-                                                                        fill="none"
-                                                                        stroke="currentColor"
-                                                                        strokeWidth="2"
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        aria-hidden="true"
-                                                                    >
-                                                                        <path d="M12 20h9" />
-                                                                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                                                                    </svg>
-                                                                </button>
-                                                                {/* Open in new workspace — external-link icon */}
-                                                                <button
-                                                                    type="button"
-                                                                    className="custom-workflow-action-btn open-btn"
-                                                                    title="Open in new workspace"
-                                                                    aria-label="Open workflow in new workspace"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        if (onEditWorkflow) onEditWorkflow(wf);
-                                                                    }}
-                                                                >
-                                                                    <svg
-                                                                        width="14"
-                                                                        height="14"
-                                                                        viewBox="0 0 24 24"
-                                                                        fill="none"
-                                                                        stroke="currentColor"
-                                                                        strokeWidth="2"
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        aria-hidden="true"
-                                                                    >
-                                                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                                                        <polyline points="15 3 21 3 21 9" />
-                                                                        <line x1="10" y1="14" x2="21" y2="3" />
-                                                                    </svg>
-                                                                </button>
-                                                                {/* Delete — X icon */}
-                                                                <button
-                                                                    type="button"
-                                                                    className="custom-workflow-action-btn delete-btn"
-                                                                    title="Delete workflow"
-                                                                    aria-label="Delete workflow"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        const rect =
-                                                                            e.currentTarget.getBoundingClientRect();
-                                                                        setDeleteConfirm({
-                                                                            wfId: wf.id,
-                                                                            wfName: wf.name,
-                                                                            position: {
-                                                                                top: rect.top + rect.height / 2,
-                                                                                left: rect.right + 8,
-                                                                            },
-                                                                        });
-                                                                    }}
-                                                                >
-                                                                    <svg
-                                                                        width="14"
-                                                                        height="14"
-                                                                        viewBox="0 0 24 24"
-                                                                        fill="none"
-                                                                        stroke="currentColor"
-                                                                        strokeWidth="2"
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        aria-hidden="true"
-                                                                    >
-                                                                        <line x1="18" y1="6" x2="6" y2="18" />
-                                                                        <line x1="6" y1="6" x2="18" y2="18" />
-                                                                    </svg>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
 
                             {/* Modality Sections */}
                             {modalityOrder.map((modality) => {

@@ -3,20 +3,22 @@ import ReactFlow, { Background, Controls, MiniMap, useNodesState, useEdgesState,
 
 import 'reactflow/dist/style.css';
 import '../styles/workflowCanvas.css';
-import '../styles/actionsBar.css';
 
 import NodeComponent from './NodeComponent';
 import EdgeMappingModal from './EdgeMappingModal';
-import BIDSDataModal from './BIDSDataModal';
 import { useNodeLookup } from '../hooks/useNodeLookup.js';
 import { useBIDSHandler } from '../hooks/useBIDSHandler.js';
 import { ScatterPropagationContext } from '../context/ScatterPropagationContext.jsx';
 import { WiredInputsContext } from '../context/WiredInputsContext.jsx';
+import { WorkflowMetaProvider } from '../context/WorkflowMetaContext.jsx';
+import { useAuxTabsContext } from '../context/AuxTabContext.jsx';
+import { useSidebar } from '../context/SidebarContext.jsx';
 import { computeScatteredNodes, buildArrayTypedInputs } from '../utils/scatterPropagation.js';
 import { getToolConfigSync } from '../utils/toolRegistry.js';
 import { useCustomWorkflowsContext } from '../context/CustomWorkflowsContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import { layoutGraph } from '../utils/layoutGraph.js';
+import { deserializeNode } from '../utils/workflowDiff.js';
 
 // Define node types.
 const nodeTypes = { default: NodeComponent };
@@ -27,23 +29,13 @@ const EDGE_ARROW = { type: MarkerType.ArrowClosed, width: 10, height: 10 };
 // Consistent default viewport so every workspace starts with the same canvas size
 const DEFAULT_VIEWPORT = { x: 0, y: 0, zoom: 1 };
 
-/** Resolve BIDS node data by key, handling both direct and custom-workflow-embedded BIDS nodes. */
-function resolveBIDSNodeData(key, bidsModalNodeId, bidsPickerTargetRef, nodeMap) {
-    if (!bidsModalNodeId) return null;
-    const target = bidsPickerTargetRef.current;
-    if (target !== null && typeof target === 'object' && target.cwNodeId) {
-        const cwNode = nodeMap.get(target.cwNodeId);
-        return cwNode?.data?.internalNodes?.find((n) => n.isBIDS)?.[key] || null;
-    }
-    return nodeMap.get(bidsModalNodeId)?.data?.[key] || null;
-}
-
 function WorkflowCanvas({
     workflowItems,
     updateCurrentWorkspaceItems,
     onSetWorkflowData,
     onSetAddNode,
     currentWorkspaceIndex,
+    workspaceId,
     saveViewportForWorkspace,
 }) {
     const { customWorkflows } = useCustomWorkflowsContext();
@@ -311,18 +303,40 @@ function WorkflowCanvas({
     const [toolsHidden, setToolsHidden] = useState(false);
     const { showError, showWarning, showInfo } = useToast();
 
-    // BIDS node state and handlers
+    // Aux-tab context: opens tabs (BIDS / params / custom-workflow params) and registers
+    // save handlers so saved data from those tabs flows back into the canvas nodes.
+    // auxTabs/closeAuxTab are read by onNodesDelete to clean up orphaned tabs.
+    const { registerSaveHandler, auxTabs, closeAuxTab } = useAuxTabsContext();
+    // Sidebar selection + active-tab — written from ReactFlow's onSelectionChange
+    // so the left sidebar's Params tab reflects whichever node is currently
+    // selected, and from the BIDS handler so clicking "Data" on a BIDS node
+    // flips to the BIDS sidebar tab.
+    const { setSelectedNode, setActiveTab: setActiveSidebarTab } = useSidebar();
+
+    // BIDS node state and handlers. Opening the BIDS editor activates the
+    // sidebar's BIDS tab (and selects the target node) — pass the sidebar
+    // setters + workspaceId so the hook can drive the sidebar directly.
     const {
-        showBIDSModal,
-        bidsModalNodeId,
         bidsFileInputRef,
-        bidsPickerTargetRef,
         handleBIDSNodeUpdate,
         handleInternalBIDSUpdate,
         triggerBIDSDirectoryPicker,
         handleBIDSDirectorySelected,
-        handleBIDSModalClose,
-    } = useBIDSHandler({ setNodes, markForSync, showError, showWarning, showInfo });
+    } = useBIDSHandler({
+        setNodes,
+        markForSync,
+        showError,
+        showWarning,
+        showInfo,
+        setActiveSidebarTab,
+        setSidebarSelectedNode: setSelectedNode,
+        workspaceId,
+    });
+
+    // Aux-tab save handler registration. Keep latest handlers in refs so the registered
+    // closures always invoke up-to-date logic without re-registering on every change.
+    const handleBIDSNodeUpdateRef = useRef(handleBIDSNodeUpdate);
+    handleBIDSNodeUpdateRef.current = handleBIDSNodeUpdate;
 
     // --- INITIALIZATION & Synchronization ---
     // This effect watches for changes in the persistent workspace.
@@ -474,6 +488,73 @@ function WorkflowCanvas({
             notes: u.notes ?? d.notes ?? '',
         }));
 
+    // Keep latest custom-workflow update handler in a ref for the aux-tab registration below.
+    const handleCustomNodeUpdateRef = useRef(handleCustomNodeUpdate);
+    handleCustomNodeUpdateRef.current = handleCustomNodeUpdate;
+    const handleNodeUpdateRef = useRef(handleNodeUpdate);
+    handleNodeUpdateRef.current = handleNodeUpdate;
+
+    // Register aux-tab save handlers for every BIDS / custom-workflow node currently on the canvas.
+    // We key by node id; the set of IDs (joined-sorted) is the only thing that needs to invalidate the effect.
+    const bidsNodeIdsKey = useMemo(
+        () =>
+            nodes
+                .filter((n) => n.data?.isBIDS)
+                .map((n) => n.id)
+                .sort()
+                .join(','),
+        [nodes],
+    );
+    const customWfNodeIdsKey = useMemo(
+        () =>
+            nodes
+                .filter((n) => n.data?.isCustomWorkflow)
+                .map((n) => n.id)
+                .sort()
+                .join(','),
+        [nodes],
+    );
+    const toolNodeIdsKey = useMemo(
+        () =>
+            nodes
+                .filter((n) => !n.data?.isDummy && !n.data?.isBIDS && !n.data?.isCustomWorkflow)
+                .map((n) => n.id)
+                .sort()
+                .join(','),
+        [nodes],
+    );
+    useEffect(() => {
+        const ids = bidsNodeIdsKey ? bidsNodeIdsKey.split(',') : [];
+        const cleanups = ids.map((nodeId) =>
+            registerSaveHandler('bids-modal', nodeId, (bidsSelections) => {
+                if (bidsSelections) {
+                    handleBIDSNodeUpdateRef.current(nodeId, { bidsSelections });
+                }
+            }),
+        );
+        return () => cleanups.forEach((c) => c && c());
+    }, [bidsNodeIdsKey, registerSaveHandler]);
+    useEffect(() => {
+        const ids = customWfNodeIdsKey ? customWfNodeIdsKey.split(',') : [];
+        const cleanups = ids.map((nodeId) =>
+            registerSaveHandler('param-modal', nodeId, (updatedInternalNodes) => {
+                if (updatedInternalNodes) {
+                    handleCustomNodeUpdateRef.current(nodeId, { internalNodes: updatedInternalNodes });
+                }
+            }),
+        );
+        return () => cleanups.forEach((c) => c && c());
+    }, [customWfNodeIdsKey, registerSaveHandler]);
+    useEffect(() => {
+        const ids = toolNodeIdsKey ? toolNodeIdsKey.split(',') : [];
+        const cleanups = ids.map((nodeId) =>
+            registerSaveHandler('tool-param-modal', nodeId, (payload) => {
+                if (payload) handleNodeUpdateRef.current(nodeId, payload);
+            }),
+        );
+        return () => cleanups.forEach((c) => c && c());
+    }, [toolNodeIdsKey, registerSaveHandler]);
+
     const handleIONodeUpdate = (nodeId, u) =>
         updateNodeData(nodeId, (d) => ({
             ...d,
@@ -517,7 +598,6 @@ function WorkflowCanvas({
                     sourceNode: buildEdgeModalNode(sourceNode),
                     targetNode: buildEdgeModalNode(targetNode),
                     existingMappings: [],
-                    adjacencyWarning: null, // disabled — cross-modality false positives; type/extension validation is sufficient
                 });
                 setShowEdgeModal(true);
             }
@@ -539,7 +619,6 @@ function WorkflowCanvas({
                     sourceNode: buildEdgeModalNode(sourceNode),
                     targetNode: buildEdgeModalNode(targetNode),
                     existingMappings: edge.data?.mappings || [],
-                    adjacencyWarning: null, // disabled — cross-modality false positives; type/extension validation is sufficient
                 });
                 setShowEdgeModal(true);
             }
@@ -687,20 +766,112 @@ function WorkflowCanvas({
         [customWorkflows],
     );
 
-    // On drop, create a new node.
+    // Workflow expansion drop: takes a saved workflow (kind='workflow') and
+    // splats every saved node + edge onto the canvas with fresh UUIDs. Edges
+    // are remapped to the new IDs, callbacks reattached per node-kind (the
+    // same set the existing rehydration loop on workspace load attaches), and
+    // positions are translated so the saved layout's top-left lands at the
+    // drop point.
+    //
+    // The composite-node drop path (custom-node-kind, via
+    // `node/customWorkflowId`) is left untouched and still flows through
+    // `buildNodeOverrides` below.
+    const expandSavedWorkflow = useCallback(
+        (savedWorkflowId, dropPosition) => {
+            const saved = customWorkflows.find((w) => w.id === savedWorkflowId);
+            if (!saved) {
+                showError('Workflow to expand was not found.');
+                return;
+            }
+            const savedNodes = saved.nodes || [];
+            if (savedNodes.length === 0) return;
+
+            // Translate the saved layout so its top-left lands at the cursor.
+            const minX = Math.min(...savedNodes.map((n) => n.position?.x ?? 0));
+            const minY = Math.min(...savedNodes.map((n) => n.position?.y ?? 0));
+            const offset = { x: dropPosition.x - minX, y: dropPosition.y - minY };
+
+            // Fresh UUID per node; edges below remap their source/target via this map.
+            const idMap = new Map(savedNodes.map((n) => [n.id, crypto.randomUUID()]));
+
+            const newNodes = savedNodes.map((savedNode) => {
+                const newId = idMap.get(savedNode.id);
+                const base = deserializeNode(savedNode);
+                const d = base.data;
+                const data = {
+                    ...d,
+                    // Per-kind callback wiring — mirrors the rehydration loop in
+                    // the workspace-load effect above so newly expanded nodes are
+                    // immediately interactive. `isCustomWorkflow` and
+                    // `isOutputNode` are not preserved by `serializeNodes` today,
+                    // so we don't restore their callbacks here.
+                    onSaveParameters: d.isDummy ? null : (newParams) => handleNodeUpdate(newId, newParams),
+                    ...(d.isBIDS ? { onUpdateBIDS: (updates) => handleBIDSNodeUpdate(newId, updates) } : {}),
+                    onSaveIO: d.isDummy ? (data2) => handleIONodeUpdate(newId, data2) : null,
+                    onSaveOutputConfig:
+                        d.isDummy && d.label === 'Output' ? (data2) => handleOutputNodeUpdate(newId, data2) : null,
+                };
+                return {
+                    id: newId,
+                    type: base.type,
+                    position: {
+                        x: (base.position?.x ?? 0) + offset.x,
+                        y: (base.position?.y ?? 0) + offset.y,
+                    },
+                    data,
+                };
+            });
+
+            const newEdges = (saved.edges || [])
+                .map((e, idx) => {
+                    const newSource = idMap.get(e.source);
+                    const newTarget = idMap.get(e.target);
+                    if (!newSource || !newTarget) return null;
+                    return {
+                        id: e.id ? `${e.id}-exp-${idx}` : `${newSource}-${newTarget}-${idx}`,
+                        source: newSource,
+                        target: newTarget,
+                        data: { mappings: e.data?.mappings || [] },
+                        animated: true,
+                        markerEnd: EDGE_ARROW,
+                        style: { strokeWidth: 2 },
+                    };
+                })
+                .filter(Boolean);
+
+            setNodes((prev) => [...prev, ...newNodes]);
+            setEdges((prev) => [...prev, ...newEdges]);
+            markForSync();
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [customWorkflows, setNodes, setEdges, markForSync, showError],
+    );
+
+    // On drop, create a new node — or, for workflow-kind drags, expand the
+    // saved workflow's nodes+edges in place.
     const handleDrop = (event) => {
         event.preventDefault();
-        const name = event.dataTransfer.getData('node/name') || 'Unnamed Node';
-        const isDummy = event.dataTransfer.getData('node/isDummy') === 'true';
-        const isBIDS = event.dataTransfer.getData('node/isBIDS') === 'true';
-        const isOutputNode = event.dataTransfer.getData('node/isOutputNode') === 'true';
-        const customWorkflowId = event.dataTransfer.getData('node/customWorkflowId');
         if (!reactFlowInstance) return;
 
         const flowPosition = reactFlowInstance.screenToFlowPosition({
             x: event.clientX,
             y: event.clientY,
         });
+
+        // Expansion path — a "My Workflows" row was dragged.
+        const savedWorkflowId = event.dataTransfer.getData('node/savedWorkflowId');
+        const shouldExpand = event.dataTransfer.getData('node/expand') === 'true';
+        if (shouldExpand && savedWorkflowId) {
+            expandSavedWorkflow(savedWorkflowId, flowPosition);
+            return;
+        }
+
+        // Standard path — primitives, BIDS, output, custom-node composite.
+        const name = event.dataTransfer.getData('node/name') || 'Unnamed Node';
+        const isDummy = event.dataTransfer.getData('node/isDummy') === 'true';
+        const isBIDS = event.dataTransfer.getData('node/isBIDS') === 'true';
+        const isOutputNode = event.dataTransfer.getData('node/isOutputNode') === 'true';
+        const customWorkflowId = event.dataTransfer.getData('node/customWorkflowId');
 
         const result = buildNodeOverrides(name, { isDummy, isBIDS, isOutputNode, customWorkflowId });
         if (!result) return;
@@ -735,10 +906,38 @@ function WorkflowCanvas({
             setEdges((prevEdges) =>
                 prevEdges.filter((edge) => !deletedIds.has(edge.source) && !deletedIds.has(edge.target)),
             );
+
+            // Close any aux tabs bound to a deleted node in THIS workspace. The
+            // workspaceId guard avoids collateral damage if node IDs ever collide
+            // across workspaces. AuxTabContext's wrapped closeAuxTab returns focus
+            // to the parent workspace when the closing tab was active.
+            if (workspaceId) {
+                for (const t of auxTabs) {
+                    if (t.workspaceId === workspaceId && t.nodeId && deletedIds.has(t.nodeId)) {
+                        closeAuxTab(t.id);
+                    }
+                }
+            }
+
             markForSync();
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [markForSync],
+        [markForSync, auxTabs, closeAuxTab, workspaceId],
+    );
+
+    // Mirror ReactFlow's selection state into SidebarContext so the sidebar's
+    // Params tab knows which node (if any) is currently focused. Fires on
+    // click-to-select, drag-select, deselect (click empty canvas), and
+    // programmatic selection changes — covers all the gestures the sidebar
+    // needs. Only the first selected node feeds the Params panel; multi-select
+    // collapses to a single focus by design.
+    const onSelectionChange = useCallback(
+        ({ nodes: selectedNodes }) => {
+            if (!workspaceId) return;
+            const sel = selectedNodes && selectedNodes[0] ? selectedNodes[0].id : null;
+            setSelectedNode(workspaceId, sel);
+        },
+        [workspaceId, setSelectedNode],
     );
 
     // --- Auto-layout: arrange nodes as a layered DAG ---
@@ -796,112 +995,109 @@ function WorkflowCanvas({
     }, [addNodeAtCenter, onSetAddNode]);
 
     return (
-        <div className="workflow-canvas">
-            <div
-                ref={reactFlowWrapper}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                className="workflow-canvas-container"
-            >
-                <ScatterPropagationContext.Provider value={scatterContext}>
-                    <WiredInputsContext.Provider value={wiredContext}>
-                        <ReactFlow
-                            nodes={nodes}
-                            edges={edges}
-                            onNodesChange={onNodesChange}
-                            onEdgesChange={handleEdgesChange}
-                            onConnect={onConnect}
-                            onNodesDelete={onNodesDelete}
-                            onEdgeDoubleClick={onEdgeDoubleClick}
-                            nodeTypes={nodeTypes}
-                            onInit={(instance) => {
-                                setReactFlowInstance(instance);
-                                // Initial fitView on first load (before any workspace viewport is restored)
-                                const savedViewport = workflowItems?.viewport;
-                                if (savedViewport) {
-                                    instance.setViewport(savedViewport);
-                                } else {
-                                    instance.setViewport(DEFAULT_VIEWPORT);
-                                }
-                            }}
-                        >
-                            <MiniMap
-                                nodeColor="var(--color-accent)"
-                                maskColor="var(--minimap-mask)"
-                                style={{ backgroundColor: 'var(--minimap-bg)' }}
-                            />
-                            <Background variant="dots" gap={12} size={1} />
-                            {!toolsHidden && <Controls />}
-                            <div className={`canvas-bottom-bar${toolsHidden ? ' tools-hidden' : ''}`}>
-                                <button className="canvas-bottom-btn" onClick={() => setToolsHidden((prev) => !prev)}>
-                                    {toolsHidden ? 'Show tools' : 'Hide tools'}
-                                </button>
-                                <button
-                                    className="canvas-bottom-btn collapsible"
-                                    onClick={handleAutoLayout}
-                                    disabled={nodes.length < 2}
-                                    title="Auto Layout (Ctrl+Shift+L)"
-                                >
-                                    Auto Layout
-                                </button>
-                                <button
-                                    className="canvas-bottom-btn collapsible"
-                                    onClick={() => {
-                                        setEdges([]);
-                                        markForSync();
-                                    }}
-                                    disabled={edges.length === 0}
-                                    title="Remove all edges"
-                                >
-                                    Clear Edges
-                                </button>
-                                <button
-                                    className="canvas-bottom-btn collapsible"
-                                    onClick={() => {
-                                        setNodes([]);
-                                        setEdges([]);
-                                        markForSync();
-                                    }}
-                                    disabled={nodes.length === 0}
-                                    title="Clear all nodes and edges"
-                                >
-                                    Clear All
-                                </button>
-                            </div>
-                        </ReactFlow>
-                    </WiredInputsContext.Provider>
-                </ScatterPropagationContext.Provider>
+        <WorkflowMetaProvider workspaceId={workspaceId}>
+            <div className="workflow-canvas">
+                <div
+                    ref={reactFlowWrapper}
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    className="workflow-canvas-container"
+                >
+                    <ScatterPropagationContext.Provider value={scatterContext}>
+                        <WiredInputsContext.Provider value={wiredContext}>
+                            <ReactFlow
+                                nodes={nodes}
+                                edges={edges}
+                                onNodesChange={onNodesChange}
+                                onEdgesChange={handleEdgesChange}
+                                onConnect={onConnect}
+                                onNodesDelete={onNodesDelete}
+                                onSelectionChange={onSelectionChange}
+                                onEdgeDoubleClick={onEdgeDoubleClick}
+                                nodeTypes={nodeTypes}
+                                onInit={(instance) => {
+                                    setReactFlowInstance(instance);
+                                    // Initial fitView on first load (before any workspace viewport is restored)
+                                    const savedViewport = workflowItems?.viewport;
+                                    if (savedViewport) {
+                                        instance.setViewport(savedViewport);
+                                    } else {
+                                        instance.setViewport(DEFAULT_VIEWPORT);
+                                    }
+                                }}
+                            >
+                                <MiniMap
+                                    nodeColor="var(--color-accent)"
+                                    maskColor="var(--minimap-mask)"
+                                    style={{ backgroundColor: 'var(--minimap-bg)' }}
+                                />
+                                <Background variant="dots" gap={12} size={1} />
+                                {!toolsHidden && <Controls />}
+                                <div className={`canvas-bottom-bar${toolsHidden ? ' tools-hidden' : ''}`}>
+                                    <button
+                                        className="canvas-bottom-btn"
+                                        onClick={() => setToolsHidden((prev) => !prev)}
+                                    >
+                                        {toolsHidden ? 'Show tools' : 'Hide tools'}
+                                    </button>
+                                    <button
+                                        className="canvas-bottom-btn collapsible"
+                                        onClick={handleAutoLayout}
+                                        disabled={nodes.length < 2}
+                                        title="Auto Layout (Ctrl+Shift+L)"
+                                    >
+                                        Auto Layout
+                                    </button>
+                                    <button
+                                        className="canvas-bottom-btn collapsible"
+                                        onClick={() => {
+                                            setEdges([]);
+                                            markForSync();
+                                        }}
+                                        disabled={edges.length === 0}
+                                        title="Remove all edges"
+                                    >
+                                        Clear Edges
+                                    </button>
+                                    <button
+                                        className="canvas-bottom-btn collapsible"
+                                        onClick={() => {
+                                            setNodes([]);
+                                            setEdges([]);
+                                            markForSync();
+                                        }}
+                                        disabled={nodes.length === 0}
+                                        title="Clear all nodes and edges"
+                                    >
+                                        Clear All
+                                    </button>
+                                </div>
+                            </ReactFlow>
+                        </WiredInputsContext.Provider>
+                    </ScatterPropagationContext.Provider>
+                </div>
+
+                {/* Edge Mapping Modal */}
+                <EdgeMappingModal
+                    show={showEdgeModal}
+                    onClose={handleEdgeModalClose}
+                    onSave={handleEdgeMappingSave}
+                    sourceNode={edgeModalData?.sourceNode}
+                    targetNode={edgeModalData?.targetNode}
+                    existingMappings={edgeModalData?.existingMappings || []}
+                    sourceIsScattered={edgeModalData?.sourceNode?.isScattered || false}
+                />
+
+                {/* Hidden directory picker for BIDS nodes */}
+                <input
+                    ref={bidsFileInputRef}
+                    type="file"
+                    webkitdirectory=""
+                    style={{ display: 'none' }}
+                    onChange={handleBIDSDirectorySelected}
+                />
             </div>
-
-            {/* Edge Mapping Modal */}
-            <EdgeMappingModal
-                show={showEdgeModal}
-                onClose={handleEdgeModalClose}
-                onSave={handleEdgeMappingSave}
-                sourceNode={edgeModalData?.sourceNode}
-                targetNode={edgeModalData?.targetNode}
-                existingMappings={edgeModalData?.existingMappings || []}
-                adjacencyWarning={edgeModalData?.adjacencyWarning || null}
-                sourceIsScattered={edgeModalData?.sourceNode?.isScattered || false}
-            />
-
-            {/* Hidden directory picker for BIDS nodes */}
-            <input
-                ref={bidsFileInputRef}
-                type="file"
-                webkitdirectory=""
-                style={{ display: 'none' }}
-                onChange={handleBIDSDirectorySelected}
-            />
-
-            {/* BIDS Data Modal */}
-            <BIDSDataModal
-                show={showBIDSModal}
-                onClose={handleBIDSModalClose}
-                bidsStructure={resolveBIDSNodeData('bidsStructure', bidsModalNodeId, bidsPickerTargetRef, nodeMap)}
-                bidsSelections={resolveBIDSNodeData('bidsSelections', bidsModalNodeId, bidsPickerTargetRef, nodeMap)}
-            />
-        </div>
+        </WorkflowMetaProvider>
     );
 }
 

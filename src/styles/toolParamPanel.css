@@ -1,0 +1,621 @@
+/* ToolParamPanel — first-class aux-tab styling for a tool node's parameter editor.
+ *
+ * Rules are scoped under `.tool-param-panel` so this refresh does not bleed into
+ * `CustomWorkflowParamPanel` or `BIDSDataPanel`, which still share the same inner
+ * widget classes (`.param-card`, `.docker-version-group`, `.params-scroll`, etc.).
+ *
+ * Layout invariants:
+ *   panel:   display: flex; flex-direction: column; height: 100%;
+ *   header:  flex-shrink: 0 (border-bottom separator)
+ *   body:    flex: 1 1 auto; min-height: 0; flex-row container (no scroll)
+ *     layout: flex-row holding [toc | main]; container-type: inline-size
+ *       toc:  flex: 0 0 180px; non-scrolling-parent (own overflow-y if internal content overflows)
+ *       main: flex: 1 1 auto; overflow-y: auto  ← scroll OWNER
+ *   footer:  flex-shrink: 0 (border-top separator); single Save button right-aligned
+ *
+ * The footer holds only Save — Cancel was removed (the tab's `×` provides
+ * discard-and-close). See plans/i-want-to-make-compiled-wigderson.md for context.
+ *
+ * The TOC + main-pane split (replacing the previous body-owned scroll) implements
+ * the redesign in `niBuild/notes/redesign.md` and `niBuild/notes/img_14.png`. The
+ * TOC is hidden via container query below 360px so narrow sidebar widths fall back
+ * to a single-column layout. See plans/we-are-working-on-sunny-catmull.md.
+ */
+
+/* ---- Root container ---- */
+.tool-param-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    color: var(--text-primary);
+}
+
+.tool-param-panel--tab {
+    background-color: var(--bg-canvas);
+}
+
+/* ---- Header + breadcrumb ----
+   Breadcrumb spans three parts: muted workflow name, disabled-color chevron,
+   primary tool name. Long workflow names truncate so the tool name stays
+   visible at any panel width. The header is a flex row so the optional
+   "Open in tab" expand button (visible when the parent passes `onExpand`,
+   e.g. from the sidebar) sits flush at the right edge. */
+.tool-param-panel-header {
+    flex-shrink: 0;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tool-param-panel--tab .tool-param-panel-header {
+    padding: 14px 24px;
+}
+
+/* Expand-to-tab button at the right edge of the header. Rendered only when
+   the parent supplies an `onExpand` callback — the sidebar provides one to
+   promote its panel into an aux tab; the aux tab itself doesn't (no recursion).
+   `margin-left: auto` reliably right-aligns it without depending on the
+   breadcrumb's flex sizing. */
+.tool-param-panel-expand-btn {
+    flex-shrink: 0;
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    letter-spacing: 0.3px;
+    text-transform: lowercase;
+    padding: 3px 8px;
+    cursor: pointer;
+    border-radius: var(--radius-xs);
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast);
+}
+
+.tool-param-panel-expand-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+    /* Neutralize the global button:hover scale + shadow from background.css. */
+    transform: none;
+    box-shadow: none;
+}
+
+.tool-param-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: clamp(0.85rem, 0.7rem + 0.5vw, 1rem);
+    line-height: 1.2;
+    min-width: 0; /* enables ellipsis on the workflow span */
+}
+
+.tool-param-breadcrumb-workflow {
+    color: var(--text-muted);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.tool-param-breadcrumb-sep {
+    color: var(--text-disabled);
+    font-size: 1.1em;
+    line-height: 1;
+    padding: 0 2px;
+    flex-shrink: 0;
+}
+
+.tool-param-breadcrumb-tool {
+    color: var(--text-primary);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ---- Body ----
+   The body is now the outer host for the TOC + main-pane flex row. It does NOT
+   scroll itself — `.tool-param-panel-main` owns vertical scroll so the TOC stays
+   pinned. Inner sections inherit base styling from workflowItem.css; scoped
+   overrides below tighten the vertical rhythm and replace the heavier
+   `--border-panel` dividers with hairline `--border-subtle`. */
+.tool-param-panel-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    padding: 14px 18px;
+    display: flex;
+}
+
+.tool-param-panel--tab .tool-param-panel-body {
+    padding: 16px 24px;
+}
+
+/* ---- TOC + main-pane layout ----
+   `.tool-param-panel-layout` is the inner flex row that holds the TOC on the
+   left and the scrollable main pane on the right. `container-type: inline-size`
+   enables the container query below that hides the TOC at narrow widths
+   (sidebar collapsed-narrow, or any embed below ~360px). */
+.tool-param-panel-layout {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    gap: 18px;
+    min-width: 0;
+    min-height: 0;
+    container-type: inline-size;
+    container-name: tparam;
+}
+
+.tool-param-panel-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* ---- TOC ----
+   Sticky-by-flex-layout: TOC is a flex sibling of `.tool-param-panel-main` and
+   their shared parent (`.tool-param-panel-body`) does not scroll, so the TOC
+   stays put naturally as the main pane scrolls inside its own bounds. If TOC
+   content exceeds available height (very long param lists), the TOC scrolls
+   internally via its own overflow-y. */
+.tool-param-panel-toc {
+    flex: 0 0 180px;
+    align-self: stretch;
+    overflow-y: auto;
+    padding-right: 6px;
+    border-right: 1px solid var(--border-subtle);
+}
+
+.tool-param-panel-toc-list,
+.tool-param-panel-toc-sublist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tool-param-panel-toc-group {
+    /* Group container for the "Parameters" entry + its Required/Optional subgroups. */
+    margin: 0;
+}
+
+.tool-param-panel-toc-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-left: 2px solid transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    padding: 4px 8px 4px 10px;
+    cursor: pointer;
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        border-color var(--transition-fast);
+    /* Truncate long param names rather than wrap or overflow the TOC column. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tool-param-panel-toc-item:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    /* Neutralize the global button:hover scale + shadow from background.css. */
+    transform: none;
+    box-shadow: none;
+}
+
+.tool-param-panel-toc-item.active {
+    border-left-color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+    color: var(--text-primary);
+}
+
+.tool-param-panel-toc-item--leaf {
+    padding-left: 22px;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+}
+
+.tool-param-panel-toc-subgroup {
+    margin: 4px 0;
+}
+
+.tool-param-panel-toc-subheader {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-disabled);
+    padding: 6px 8px 2px 14px;
+    user-select: none;
+}
+
+/* Hide the TOC when the panel container is narrow (e.g., sidebar at default or
+   near-collapsed widths). The threshold is on the inline size of
+   `.tool-param-panel-layout` thanks to container-type above. */
+@container tparam (max-width: 360px) {
+    .tool-param-panel-toc {
+        display: none;
+    }
+}
+
+/* ====================================================================
+ * Settings-style flat-list body
+ * --------------------------------------------------------------------
+ * Every form group (Docker / Conditional / Operation Order / Scatter /
+ * Required / Optional) is a `.param-section` with an uppercase header
+ * and a hairline rule. Rows inside (.param-row or .param-card) drop
+ * the bordered-card chrome they had in modal mode; state is signalled
+ * by inner controls (fx/scatter buttons) and inline indented rows
+ * (wired sources, expression editor) rather than by tinting the row.
+ *
+ * Scope: all rules are nested under `.tool-param-panel` so
+ * `CustomWorkflowParamPanel` (which shares the same widget classes)
+ * remains visually unchanged.
+ * ==================================================================== */
+
+/* The body already scrolls — avoid a nested scroller for the params list. */
+.tool-param-panel .params-scroll {
+    max-height: none;
+    overflow: visible;
+}
+
+/* ---- Section structure ---- */
+.tool-param-panel .param-section {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+/* Spacing between sibling sections inside the main pane. Op-order is now
+   wrapped in `<section id="section-op-order">` so the selector list covers
+   that wrapper too. The 26px gap (up from 18px) gives the section headings
+   the breathing room their settings-page weight wants. */
+.tool-param-panel .param-section + .param-section,
+.tool-param-panel .param-section + section,
+.tool-param-panel section + .param-section,
+.tool-param-panel .param-section + .params-scroll,
+.tool-param-panel section + .params-scroll {
+    margin-top: 26px;
+}
+
+/* Top-level section headers (Docker / Conditional / Operation Order / Scatter
+   Method / Parameters placeholder). Upgraded from small uppercase-mono to a
+   larger, mixed-case mono with primary text color — closer to the
+   GitHub-settings rhythm while staying in-family with the rest of the IDE's
+   monospaced UI chrome. */
+.tool-param-panel .param-section-header {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: none;
+    letter-spacing: 0;
+    padding: 0 0 8px 0;
+    margin: 0 0 10px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Required/Optional sub-section headers (rendered inside `.params-scroll`)
+   stay smaller and uppercase — they're sub-categories of "Parameters", not
+   peers of the top-level sections, so the visual hierarchy reads
+   Parameters > Required/Optional > each param. */
+.tool-param-panel .params-scroll .param-section-header {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 0 0 6px 0;
+    margin: 0 0 6px 0;
+}
+
+/* Inner-group classes are now structural-only — outer .param-section
+   provides the divider and spacing. */
+.tool-param-panel .docker-version-group,
+.tool-param-panel .when-expression-group,
+.tool-param-panel .scatter-method-group {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+/* ---- Row structure ----
+   Flatten both the new top-section `.param-row` and the existing
+   `.param-card` (Required/Optional params) into the same chrome-less
+   row treatment. !important is needed to override the heavily
+   specified card-state rules in workflowItem.css. */
+.tool-param-panel .param-row,
+.tool-param-panel .param-card {
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tool-param-panel .param-row + .param-row,
+.tool-param-panel .param-card + .param-card,
+.tool-param-panel .param-row + .param-card,
+.tool-param-panel .param-card + .param-row {
+    border-top: 1px solid var(--border-subtle) !important;
+}
+
+.tool-param-panel .param-row:hover,
+.tool-param-panel .param-card:hover {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+.tool-param-panel .param-row-main,
+.tool-param-panel .param-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+/* Right-align controls in top-section rows so docker/when/scatter
+   share the same alignment as parameter rows (.param-control already
+   has margin-left:auto inside .param-card-header). */
+.tool-param-panel .param-row-main .param-control {
+    margin-left: auto;
+}
+
+/* Param-card label-block — the JSX wraps `.param-name` + `.param-type-badge`
+   in `<div className="param-card-label">` so the two-column row reads as
+   [label-block | control + scatter/fx] with the control reliably
+   right-aligned via the existing `.param-control { margin-left: auto }`
+   rule from workflowItem.css. The label-block is flexible (1fr-ish) so long
+   param names truncate before they shove the control off-screen at narrow
+   sidebar widths. */
+.tool-param-panel .param-card-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Refined param-name + type-badge within tool-param-panel scope.
+   The tighter type-badge uses --bg-hover (subtle) instead of
+   --border-panel (slightly heavier) so the pill reads as metadata rather
+   than competing with the param name. The name truncates with ellipsis
+   when the label-block is narrower than its content. */
+.tool-param-panel .param-name {
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.tool-param-panel .param-type-badge {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    line-height: 1.4;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background-color: var(--bg-hover);
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+/* Normalize scatter (↻) + fx button sizing inside tool-param-panel scope.
+   The base rules in workflowItem.css use slightly different metrics for
+   each; align both to the same dimensions so they read as a paired set
+   in the right column. */
+.tool-param-panel .scatter-toggle,
+.tool-param-panel .expression-toggle {
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.4;
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+}
+
+.tool-param-panel .param-control {
+    gap: 6px;
+}
+
+/* ---- State communication ----
+   The .has-expression / .has-scatter / .input-wired card states
+   previously tinted the entire card. In flat-row mode, state is
+   communicated by inner controls (fx button blue, scatter button cyan)
+   and by the indented source/expression rows below — so cancel the
+   global wrapper tint. */
+.tool-param-panel .param-card.has-expression,
+.tool-param-panel .param-card.has-scatter,
+.tool-param-panel .param-card.input-wired {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+/* ---- Inline sub-rows ----
+   Wired sources, expression editors, descriptions, bounds, defaults
+   sit indented beneath the row-main. Drop the bordered-box treatment
+   inherited from the modal era. */
+.tool-param-panel .input-source-single {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 2px 0 2px 18px !important;
+    margin-top: 2px !important;
+}
+
+.tool-param-panel .input-source-multi-details {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 2px 0 2px 18px !important;
+    margin-top: 2px !important;
+    gap: 4px;
+}
+
+/* Multi-source layout: align the link-merge dropdown vertically against the
+   wired sources column and tag each source row with the same ↳ glyph used by
+   the single-source variant. */
+.tool-param-panel .input-source-multi-row {
+    align-items: center;
+    gap: 8px;
+}
+
+.tool-param-panel .input-source-multi-row .input-source-detail::before {
+    content: '↳ ';
+    color: var(--text-disabled);
+    margin-right: 2px;
+}
+
+/* The container already provides the 18px left indent — zero the inner
+   merge-help-text padding so it doesn't double up. */
+.tool-param-panel .input-source-multi-details .merge-help-text {
+    padding-left: 0;
+}
+
+.tool-param-panel .input-source-single::before {
+    content: '↳ ';
+    color: var(--text-disabled);
+    margin-right: 2px;
+}
+
+.tool-param-panel .expression-file-details,
+.tool-param-panel .expression-scalar-details {
+    background-color: transparent !important;
+    border: none !important;
+    border-left: 2px solid var(--color-accent-border) !important;
+    border-radius: 0 !important;
+    padding: 4px 0 4px 12px !important;
+    margin-top: 6px;
+    margin-left: 6px;
+}
+
+.tool-param-panel .param-description,
+.tool-param-panel .param-bounds,
+.tool-param-panel .param-default-hint {
+    font-size: var(--size-xs);
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* ---- Help & warning lines (top sections + multi-source merge) ---- */
+.tool-param-panel .docker-help-text,
+.tool-param-panel .when-help-text,
+.tool-param-panel .merge-help-text,
+.tool-param-panel .scatter-method-help-text {
+    font-size: var(--size-xs);
+    color: var(--text-muted);
+    padding-left: 18px;
+    margin-top: 2px;
+}
+
+.tool-param-panel .docker-warning-text,
+.tool-param-panel .when-warning-text {
+    font-size: var(--size-xs);
+    color: var(--color-danger);
+    padding-left: 18px;
+    margin-top: 2px;
+}
+
+.tool-param-panel .when-preview {
+    padding-left: 18px;
+    margin-top: 2px;
+}
+
+/* ---- OperationOrderPanel ----
+   The widget renders its own .operation-order-group with an internal
+   `.modal-label` ("Operation Order"). Promote that label to the same
+   section-header treatment as the surrounding `.param-section`s and
+   strip the inner group divider, so the panel slots into the rhythm
+   without modifying the leaf widget. */
+.tool-param-panel .operation-order-group {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.tool-param-panel .operation-order-group .modal-label {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: none;
+    letter-spacing: 0;
+    padding: 0 0 8px 0;
+    margin: 0 0 10px 0 !important;
+    border-bottom: 1px solid var(--border-subtle);
+    display: block;
+}
+
+/* ---- Footer ----
+   Save-only, right-aligned. No gap needed (single button). */
+.tool-param-panel-footer {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.tool-param-panel--tab .tool-param-panel-footer {
+    padding: 12px 24px;
+    background-color: var(--bg-canvas);
+}
+
+/* ---- Save button ----
+   Refined version of the existing sibling-panel rules. Subtle hover brightness
+   and a focus ring via shadow-focus, matching the design system. */
+.tool-param-panel .btn-save {
+    background-color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: var(--size-sm);
+    padding: 5px 16px;
+    border-radius: var(--radius-sm);
+    transition:
+        background-color 120ms ease,
+        box-shadow 120ms ease;
+}
+
+.tool-param-panel .btn-save:hover {
+    background-color: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+}
+
+.tool-param-panel .btn-save:focus,
+.tool-param-panel .btn-save:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+.tool-param-panel .btn-save:active {
+    transform: translateY(1px);
+}

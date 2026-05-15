@@ -88,6 +88,15 @@
     --color-green-io-muted: rgba(46, 204, 113, 0.12);
     --color-green-io-border: rgba(46, 204, 113, 0.4);
 
+    /* Pastel tangerine — the dedicated color for "custom (workflow) nodes":
+       saved composites that drag onto a canvas as a single reusable unit.
+       Used by the TopBar Save-as-Custom-Node button, the workflowMenu
+       "Custom Nodes" section header, and the CUSTOM tab decoration. */
+    --color-custom: #ff9d56;
+    --color-custom-hover: #ffb37a;
+    --color-custom-muted: rgba(255, 157, 86, 0.15);
+    --color-custom-border: rgba(255, 157, 86, 0.4);
+
     /* ── Borders ─────────────────────────────────────────── */
     --border-subtle: rgba(255, 255, 255, 0.06);
     --border-default: rgba(255, 255, 255, 0.1);
@@ -110,8 +119,17 @@
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
+    /* Tight modal card shadow — used by .modal-content for BIDS / Param / EdgeMapping
+       so the three complex modals share one chrome standard. Smaller spread and
+       deeper opacity than --shadow-md; suits the compact --bg-overlay frame. */
+    --shadow-modal: 0 3px 10px rgba(0, 0, 0, 0.4);
     --shadow-focus: 0 0 0 2px rgba(0, 120, 212, 0.25);
     --shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.4);
+    /* Inset "pressed-in" shadow — the dark-well look used by every form input
+       in the parameter modal/panel (param-text, param-number, param-select,
+       expression-input, when-param-select, etc.). Centralized here so input
+       styling stays consistent across the ~14 places that used it inline. */
+    --shadow-inset-sm: inset 0 1px 3px rgba(0, 0, 0, 0.25);
 
     /* ── Border radius ───────────────────────────────────── */
     --radius-xs: 2px;
@@ -169,16 +187,79 @@
     /* ── Minimap ─────────────────────────────────────────── */
     --minimap-bg: #1a1a1a;
     --minimap-mask: rgba(0, 0, 0, 0.65);
+}
 
-    /* ── Legacy aliases (backward compat) ────────────────── */
-    --bg-primary: var(--bg-inset);
-    --bg-secondary: var(--bg-surface);
-    --bg-tertiary: var(--bg-overlay);
-    --bg-card: var(--bg-overlay);
-    --bg-header: var(--bg-elevated);
-    --text-light: var(--text-primary);
-    --text-medium: var(--text-secondary);
-    --text-on-light: var(--text-on-node);
-    --color-primary: var(--color-accent);
-    --color-cyan: var(--color-info);
+/* ============================================
+   Dark-theme overrides for Bootstrap modal close button.
+   Bootstrap renders .btn-close with a hardcoded black SVG icon; we filter to
+   light so it stays visible on the dark --bg-overlay modal surface. Applies
+   to every modal in the app — modal-specific rules can still override.
+   ============================================ */
+.modal-content .btn-close {
+    filter: invert(1) grayscale(100%) brightness(120%);
+    opacity: 0.6;
+    background-color: transparent;
+    box-shadow: none;
+    transform: none;
+    padding: 8px;
+    transition: opacity var(--transition-normal);
+}
+
+.modal-content .btn-close:hover,
+.modal-content .btn-close:focus {
+    opacity: 1;
+    background-color: transparent;
+    box-shadow: none;
+    transform: none;
+}
+
+.modal-content .btn-close:focus-visible {
+    outline: 1px solid var(--border-input-focus);
+    outline-offset: 1px;
+}
+
+/* ============================================
+   Shared modal chrome — "minimal" variant.
+   The .bids-modal, .edge-mapping-modal, and .custom-modal modals all share
+   the same compact --bg-overlay frame with --radius-md corners, hairline
+   --border-subtle separators inside, and consistent header/body/footer
+   padding. Rules flow outer→inner: dialog (sizing) → content (frame) →
+   header/body/footer (sections). Surface-variant modals (cwl-preview,
+   io-node, comparison, output-config) deliberately use larger padding +
+   --bg-elevated + rounded corners, so they own their own chrome rules and
+   are intentionally not covered here.
+   ============================================ */
+:is(.bids-modal, .edge-mapping-modal, .custom-modal) .modal-dialog {
+    max-width: min(90vw, 1500px);
+}
+
+:is(.bids-modal, .edge-mapping-modal, .custom-modal) .modal-content {
+    border-radius: var(--radius-md);
+    background-color: var(--bg-overlay);
+    color: var(--text-primary);
+    border: 1px solid var(--border-medium);
+    box-shadow: var(--shadow-modal);
+    padding: 8px;
+    font-family: var(--font-ui);
+}
+
+:is(.bids-modal, .edge-mapping-modal, .custom-modal) .modal-header {
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px 16px;
+}
+
+:is(.bids-modal, .edge-mapping-modal, .custom-modal) .modal-body {
+    padding: 12px 16px;
+}
+
+:is(.bids-modal, .edge-mapping-modal, .custom-modal) .modal-footer {
+    border-top: 1px solid var(--border-subtle);
+    padding: 8px 16px;
+}
+
+/* The edge-mapping and custom-modal footers add inter-button gap;
+   bidsDataModal historically had no gap, so it opts out by exclusion to
+   keep its existing layout pixel-identical. */
+:is(.edge-mapping-modal, .custom-modal) .modal-footer {
+    gap: 8px;
 }

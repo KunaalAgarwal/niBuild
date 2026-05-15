@@ -105,8 +105,10 @@ export function serializeEdges(edges) {
 export function hasUnsavedChanges(workspace, savedWorkflow) {
     if (!workspace || !savedWorkflow) return false;
 
-    if ((workspace.workflowName || '') !== (savedWorkflow.name || '')) return true;
-    if ((workspace.name || '') !== (savedWorkflow.outputName || '')) return true;
+    // Tab name (workspace.name) vs saved record's name. Legacy records may
+    // carry `outputName` instead of (or alongside) `name` — fall through to it.
+    const savedName = savedWorkflow.name || savedWorkflow.outputName || '';
+    if ((workspace.name || '') !== savedName) return true;
 
     const wsNodes = serializeNodes(workspace.nodes || []).map(({ position, ...rest }) => rest);
     const savedNodes = serializeNodes(savedWorkflow.nodes || []).map(({ position, ...rest }) => rest);
@@ -305,8 +307,8 @@ function computePropagation(flatNodes, flatEdges) {
 /**
  * Compute structured diff between a saved workflow and the current workspace.
  *
- * @param {Object} savedWorkflow - The saved custom workflow { name, outputName, nodes, edges, ... }
- * @param {Object} currentWorkspace - The current workspace { workflowName, name, nodes, edges, ... }
+ * @param {Object} savedWorkflow - The saved custom workflow { name, nodes, edges, ... }
+ * @param {Object} currentWorkspace - The current workspace { name, nodes, edges, ... }
  * @returns {Object} Structured diff object
  */
 export function computeWorkflowDiff(savedWorkflow, currentWorkspace) {
@@ -318,16 +320,11 @@ export function computeWorkflowDiff(savedWorkflow, currentWorkspace) {
     };
 
     // ── Metadata ────────────────────────────────────────────────
-    const savedName = savedWorkflow.name || '';
-    const currentName = currentWorkspace.workflowName || '';
+    // Legacy saved records may carry `outputName` instead of `name`.
+    const savedName = savedWorkflow.name || savedWorkflow.outputName || '';
+    const currentName = currentWorkspace.name || '';
     if (savedName !== currentName) {
-        result.metadata.push({ field: 'Workflow Name', saved: savedName, current: currentName });
-    }
-
-    const savedOutput = savedWorkflow.outputName || '';
-    const currentOutput = currentWorkspace.name || '';
-    if (savedOutput !== currentOutput) {
-        result.metadata.push({ field: 'Output Name', saved: savedOutput, current: currentOutput });
+        result.metadata.push({ field: 'Name', saved: savedName, current: currentName });
     }
 
     // ── Nodes ───────────────────────────────────────────────────

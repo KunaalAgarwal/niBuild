@@ -11,7 +11,6 @@ const EdgeMappingModal = ({
     sourceNode,
     targetNode,
     existingMappings = [],
-    adjacencyWarning = null,
     sourceIsScattered = false,
 }) => {
     const { showWarning } = useToast();
@@ -293,12 +292,6 @@ const EdgeMappingModal = ({
             </Modal.Header>
             <Modal.Body>
                 {/* Warning banners */}
-                {adjacencyWarning && (
-                    <div className="type-warning-banner">
-                        <span className="warning-icon">⚠️</span>
-                        <span>{adjacencyWarning}</span>
-                    </div>
-                )}
                 {hasIncompatibleMappings && (
                     <div className="type-warning-banner">
                         <span className="warning-icon">⚠️</span>

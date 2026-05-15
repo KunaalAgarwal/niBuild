@@ -111,17 +111,6 @@
     white-space: nowrap;
 }
 
-.command-palette-badge {
-    font-family: var(--font-mono);
-    font-size: var(--size-2xs);
-    color: var(--text-disabled);
-    background-color: var(--border-subtle);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-xs);
-    padding: 1px 5px;
-    flex-shrink: 0;
-}
-
 .command-palette-empty {
     font-family: var(--font-ui);
     font-size: var(--size-sm);
