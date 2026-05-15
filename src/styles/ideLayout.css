@@ -1,3 +1,7 @@
+/* ============================================
+   Root layout & panel chrome
+   ============================================ */
+
 .ide-layout {
     display: flex;
     flex-direction: column;
@@ -36,6 +40,10 @@
     width: 100%;
     overflow: auto;
 }
+
+/* ============================================
+   Sidebar (left): tab strip + active panel
+   ============================================ */
 
 /* Sidebar — flex column so the tab strip pins to the top and the content
    area beneath fills the rest. WorkflowMenu / ToolParamPanel /
@@ -182,6 +190,10 @@
 .ide-sidebar-content .tool-param-panel-toc {
     display: none;
 }
+
+/* ============================================
+   Center column: tab bar, canvas, aux panes
+   ============================================ */
 
 /* Center column: tab bar + canvas stacked vertically */
 .ide-center-column {
@@ -498,6 +510,10 @@
     text-align: center;
 }
 
+/* ============================================
+   "Open as Tab" button on modals
+   ============================================ */
+
 /* "Open as Tab" button on modals — opens the same content as a full editor tab. */
 .ide-modal-expand {
     display: inline-flex;
@@ -546,11 +562,19 @@
     color: var(--text-primary);
 }
 
+/* ============================================
+   CWL Preview (right pane)
+   ============================================ */
+
 /* CWL Preview */
 .ide-cwl-preview {
     background-color: var(--bg-preview);
     border-left: 1px solid var(--border-default);
 }
+
+/* ============================================
+   Utility bar (bottom): problems, tools, CWL output
+   ============================================ */
 
 /* Utility bar */
 .ide-utility-bar {

@@ -80,6 +80,7 @@ export function useScrollSpy({ ids, container, rootMargin = '0px 0px -60% 0px', 
         });
 
         return () => observer.disconnect();
+        // Reason: deliberately keying on `idsKey` (joined string) instead of the `ids` array — array identity churns on every render but content rarely changes; idsKey detects real changes.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [container, idsKey, rootMargin, threshold, suppressRef]);
 

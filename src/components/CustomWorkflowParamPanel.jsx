@@ -212,6 +212,7 @@ const CustomWorkflowParamPanel = forwardRef(function CustomWorkflowParamPanel(
         }
         const node = editedNodesRef.current[currentIndex];
         if (node) loadNodeState(node);
+        // Reason: only currentIndex should drive this — editedNodesRef is a ref (stable) and loadNodeState is local; including them would re-load on every render.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentIndex]);
 
@@ -234,7 +235,7 @@ const CustomWorkflowParamPanel = forwardRef(function CustomWorkflowParamPanel(
             return;
         }
         onDirtyChangeRef.current?.(true);
-        // initialDraft captured at mount; later identity changes don't matter.
+        // Reason: initialDraft is captured at mount via initialStateRef; later prop identity changes don't affect mount-time dirty inference.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         paramValues,
@@ -374,11 +375,13 @@ const CustomWorkflowParamPanel = forwardRef(function CustomWorkflowParamPanel(
             if (key.startsWith(prefix)) filtered.set(key.slice(prefix.length), sources);
         }
         return filtered;
+        // Reason: only currentNode.id drives the prefix; full currentNode object identity churns more often than its id.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wiredInputs, currentNode?.id]);
 
     const tool = useMemo(
         () => (currentNode ? getToolConfigSync(currentNode.label) : null),
+        // Reason: only currentNode.label drives the tool lookup; full currentNode object identity churns more often.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentNode?.label],
     );
@@ -397,6 +400,7 @@ const CustomWorkflowParamPanel = forwardRef(function CustomWorkflowParamPanel(
             }
         }
         return wired;
+        // Reason: only currentNode.id is used in the edge match; full currentNode object identity churns more often.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentNode?.id, internalNodes, internalEdges]);
 

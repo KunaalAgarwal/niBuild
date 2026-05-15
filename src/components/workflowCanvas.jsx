@@ -67,6 +67,7 @@ function WorkflowCanvas({
                 updateCurrentWorkspaceItems({ nodes, edges, viewport });
             }
         }
+        // Reason: reactFlowInstance is read at fire time only; we don't want to re-sync just because ReactFlow rebound the instance ref.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, updateCurrentWorkspaceItems]);
 
@@ -112,6 +113,7 @@ function WorkflowCanvas({
         if (anyChange) {
             setNodes(updated);
         }
+        // Reason: setNodes from useNodesState is stable; ESLint can't see that.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes]);
 
@@ -259,6 +261,7 @@ function WorkflowCanvas({
                 }
             }
         }
+        // Reason: this fires on workspace identity change only — using `nodes.length` as a coarse trigger avoids re-running per node mutation. Update handlers, customWorkflows, setNodes/setEdges, reactFlowInstance, markForSync are all read at fire time and intentionally omitted.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [workflowItems, nodes.length, currentWorkspaceIndex]);
 
@@ -458,6 +461,7 @@ function WorkflowCanvas({
 
             markForSync();
         },
+        // Reason: setNodes/setEdges from useNodesState/useEdgesState are stable; ESLint can't see that.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [markForSync, auxTabs, closeAuxTab, workspaceId],
     );
@@ -491,6 +495,7 @@ function WorkflowCanvas({
         requestAnimationFrame(() => {
             reactFlowInstance?.fitView({ padding: 0.05, duration: 300 });
         });
+        // Reason: setNodes from useNodesState is stable; ESLint can't see that.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, reactFlowInstance, markForSync]);
 
@@ -565,6 +570,7 @@ function WorkflowCanvas({
         setNodes((prev) => [...prev, ...newNodes]);
         setEdges((prev) => [...prev, ...newEdges]);
         markForSync();
+        // Reason: the per-kind update handlers (handleNodeUpdate, handleBIDSNodeUpdate, etc.) close over stable setNodes; including them would re-create handlePaste on every node mutation. Read at fire time only.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clipboard, setNodes, setEdges, markForSync]);
 
@@ -593,6 +599,7 @@ function WorkflowCanvas({
         if (onSetWorkflowData) {
             onSetWorkflowData(() => getWorkflowData);
         }
+        // Reason: getWorkflowData is re-created each render and captures latest nodes/edges via closure; including it would cause infinite re-registration. We re-expose it on nodes/edges change so the parent sees a fresh closure.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, onSetWorkflowData]);
 

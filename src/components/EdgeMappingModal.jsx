@@ -55,6 +55,8 @@ const EdgeMappingModal = ({
             }
             setSelectedOutput(null);
         }
+        // Reason: intentionally seeds state on modal-open / node-label change only. sourceIO/targetIO are derived from the node props; existingMappings is captured at fire time as the seed. Re-running on every prop identity change would clobber user edits.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show, sourceNode?.label, targetNode?.label]);
 
     // Calculate line positions synchronously after DOM mutations + recalculate on resize/scroll
@@ -77,6 +79,8 @@ const EdgeMappingModal = ({
             if (outputsEl) outputsEl.removeEventListener('scroll', calculateLinePositions);
             if (inputsEl) inputsEl.removeEventListener('scroll', calculateLinePositions);
         };
+        // Reason: calculateLinePositions reads stable refs + mappings; it's recreated each render but the effect already re-runs on every show/mappings change, so a fresh closure is captured.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show, mappings]);
 
     const calculateLinePositions = () => {
@@ -266,6 +270,8 @@ const EdgeMappingModal = ({
                 const { compatible } = getMappingCompatibility(m.sourceOutput, m.targetInput);
                 return !compatible;
             }),
+        // Reason: getMappingCompatibility is a local function recreated each render that closes over outputByName/inputByName/sourceIsScattered (already in deps). Including the function itself would re-trigger this memo on every render.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [mappings, outputByName, inputByName, sourceIsScattered],
     );
 
@@ -279,6 +285,8 @@ const EdgeMappingModal = ({
             if (compat.gatherNote) gather.add(compat.reason);
         }
         return { inheritNotes: [...inherit], gatherNotes: [...gather] };
+        // Reason: same as hasIncompatibleMappings above — getMappingCompatibility is recreated each render but reads stable inputs that are already in deps.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mappings, sourceIsScattered]);
 
     if (!sourceNode || !targetNode) return null;

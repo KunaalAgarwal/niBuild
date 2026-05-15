@@ -113,6 +113,7 @@ export function useEdgeMapping(nodeMap, setEdges, onEdgesChange, scatterContext,
             setEditingEdge(null);
             setEdgeModalData(null);
         },
+        // Reason: setEdges/markForSync and the local useState setters are stable; only pendingConnection + editingEdge drive what this callback does.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [pendingConnection, editingEdge],
     );

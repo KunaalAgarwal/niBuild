@@ -265,6 +265,7 @@ function IDELayout({
             if (!prev.utility) utilityRef.current?.expand();
             beforeManagerState.current = null;
         }
+        // Reason: panel refs and enableAnimation are stable; this effect intentionally fires only on isManagerActive transitions.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isManagerActive]);
 

@@ -158,7 +158,9 @@
     border: 1px solid var(--border-panel);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: background-color 0.12s, border-color 0.12s;
+    transition:
+        background-color 0.12s,
+        border-color 0.12s;
 }
 
 .template-picker-item:hover {
@@ -201,16 +203,16 @@
 }
 
 .status-ready {
-    background-color: var(--color-success-muted, rgba(16, 185, 129, 0.15));
-    color: var(--color-success, #10b981);
+    background-color: var(--color-success-muted);
+    color: var(--color-success);
 }
 
 .status-fetching {
-    background-color: var(--color-info-muted, rgba(59, 130, 246, 0.15));
-    color: var(--color-info, #3b82f6);
+    background-color: var(--color-info-muted);
+    color: var(--color-info);
 }
 
 .status-error {
-    background-color: var(--color-danger-muted, rgba(239, 68, 68, 0.15));
-    color: var(--color-danger, #ef4444);
+    background-color: var(--color-danger-muted);
+    color: var(--color-danger);
 }

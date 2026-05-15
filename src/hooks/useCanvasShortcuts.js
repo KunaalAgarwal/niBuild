@@ -22,8 +22,7 @@ import { useEffect } from 'react';
 export function useCanvasShortcuts({ onAutoLayout, onCopy, onPaste }) {
     useEffect(() => {
         const isEditableTarget = (target) =>
-            target &&
-            (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+            target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
 
         const handleKeyDown = (e) => {
             if (e.ctrlKey && e.shiftKey && (e.key === 'L' || e.key === 'l')) {

@@ -1,3 +1,7 @@
+/* ============================================
+   Modal chrome
+   ============================================ */
+
 /* Dialog/content/header/body/footer chrome (including footer gap) lives in
    tokens.css under "Shared modal chrome — minimal variant" (alongside the
    matching .bids-modal and .custom-modal rules). Only the title and the
@@ -114,6 +118,10 @@
     border-style: solid;
 }
 
+/* ============================================
+   IO columns (outputs left, inputs right)
+   ============================================ */
+
 /* IO item layout */
 .io-item-main {
     display: flex;
@@ -158,6 +166,10 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* ============================================
+   Connection lines (SVG) + junction dots
+   ============================================ */
 
 .connection-lines {
     position: absolute;
@@ -282,6 +294,10 @@ g:hover .connection-dot {
     }
 }
 
+/* ============================================
+   Instructions row + footer buttons
+   ============================================ */
+
 .mapping-instructions {
     text-align: center;
     font-size: clamp(0.68rem, 0.5rem + 0.5vw, 0.88rem);
@@ -320,6 +336,10 @@ g:hover .connection-dot {
     border-color: var(--border-strong);
     color: var(--text-primary);
 }
+
+/* ============================================
+   Warnings: type-mismatch, scatter notes, group headers
+   ============================================ */
 
 /* Warning banner */
 .type-warning-banner {
@@ -467,6 +487,10 @@ g:hover .connection-line.warning-line {
 g:hover .connection-dot.warning-dot {
     fill: var(--color-danger);
 }
+
+/* ============================================
+   Responsive
+   ============================================ */
 
 /* Responsive: small screens — layout changes only */
 @media (max-width: 768px) {

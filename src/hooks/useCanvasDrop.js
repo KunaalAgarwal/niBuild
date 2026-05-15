@@ -72,6 +72,7 @@ export function useCanvasDrop({
             markForSync();
             if (afterAdd) afterAdd(newNodeId);
         },
+        // Reason: setNodes from useNodesState is stable; ESLint can't see that.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [markForSync],
     );
@@ -103,8 +104,7 @@ export function useCanvasDrop({
                         _pickTemplate: true,
                         onSaveParameters: null,
                         onSaveIO: (data) => handlers.handleIONodeUpdate(id, data),
-                        onUpdateStandardTemplate: (updates) =>
-                            handlers.handleStandardTemplateUpdate(id, updates),
+                        onUpdateStandardTemplate: (updates) => handlers.handleStandardTemplateUpdate(id, updates),
                     }),
                 };
             }
@@ -137,6 +137,7 @@ export function useCanvasDrop({
                 }),
             };
         },
+        // Reason: handlers + triggerBIDSDirectoryPicker are passed in by the parent and re-created each render; the closures they wrap use stable setNodes/markForSync internally. Re-running this useCallback when handlers churn would cascade into recreating onDrop on every render.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [customWorkflows],
     );
@@ -183,9 +184,7 @@ export function useCanvasDrop({
                 const data = {
                     ...d,
                     onSaveParameters: d.isDummy ? null : (newParams) => handlers.handleNodeUpdate(newId, newParams),
-                    ...(d.isBIDS
-                        ? { onUpdateBIDS: (updates) => handlers.handleBIDSNodeUpdate(newId, updates) }
-                        : {}),
+                    ...(d.isBIDS ? { onUpdateBIDS: (updates) => handlers.handleBIDSNodeUpdate(newId, updates) } : {}),
                     ...(d.isStandardTemplate
                         ? {
                               onUpdateStandardTemplate: (updates) =>
@@ -230,6 +229,7 @@ export function useCanvasDrop({
             setEdges((prev) => [...prev, ...newEdges]);
             markForSync();
         },
+        // Reason: handlers are read at fire time (per-node closures get latest at expansion time); including the parent-supplied handlers prop would recreate this on every render and cascade into onDrop recreation.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [customWorkflows, setNodes, setEdges, markForSync, showError],
     );

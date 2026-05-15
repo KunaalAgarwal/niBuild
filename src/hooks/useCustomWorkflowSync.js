@@ -79,6 +79,7 @@ export function useCustomWorkflowSync(nodes, customWorkflows, setNodes, setEdges
             setNodes(updatedNodes);
             markForSync();
         }
+        // Reason: intentional snapshot semantics — sync only on customWorkflows change. Re-firing on every nodes mutation would defeat the purpose; setters/markForSync are stable and read at fire time.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [customWorkflows]);
 }

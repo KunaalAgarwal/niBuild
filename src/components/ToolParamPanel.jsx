@@ -301,8 +301,7 @@ const ToolParamPanel = forwardRef(function ToolParamPanel(
             return;
         }
         onDirtyChangeRef.current?.(true);
-        // initialDraft is captured at mount via initialStateRef; subsequent prop
-        // identity changes don't affect mount-time dirty inference.
+        // Reason: initialDraft is captured at mount via initialStateRef; subsequent prop identity changes don't affect mount-time dirty inference.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         paramValues,

@@ -532,7 +532,7 @@
     padding: 4px 28px 4px 8px;
     width: auto;
     max-width: 170px;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-inset-sm);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal);
@@ -1119,7 +1119,7 @@
     padding: 4px 28px 4px 8px;
     width: auto;
     max-width: 220px;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-inset-sm);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal);

@@ -241,8 +241,7 @@ const BIDSDataPanel = forwardRef(function BIDSDataPanel(
             return;
         }
         onDirtyChangeRef.current?.(true);
-        // initialDraft is captured at mount; later prop identity changes are
-        // irrelevant once init has completed.
+        // Reason: initialDraft is captured at mount; later prop identity changes are irrelevant once init has completed.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialized, selectedSubjects, selectedDataTypes, outputGroups, subjectSearch]);
 

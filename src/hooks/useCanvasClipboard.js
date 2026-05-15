@@ -25,13 +25,21 @@ export function useCanvasClipboard() {
             .filter((n) => idSet.has(n.id))
             .map((n) => {
                 // Strip non-cloneable callback closures before structuredClone.
-                const { onSaveParameters, onSaveIO, onUpdateBIDS, onUpdateInternalBIDS, onSaveOutputConfig, ...data } =
-                    n.data || {};
+                const {
+                    onSaveParameters,
+                    onSaveIO,
+                    onUpdateBIDS,
+                    onUpdateInternalBIDS,
+                    onUpdateStandardTemplate,
+                    onSaveOutputConfig,
+                    ...data
+                } = n.data || {};
                 // Suppress unused-var warnings; this destructure exists to discard the callbacks.
                 void onSaveParameters;
                 void onSaveIO;
                 void onUpdateBIDS;
                 void onUpdateInternalBIDS;
+                void onUpdateStandardTemplate;
                 void onSaveOutputConfig;
                 return {
                     id: n.id,
