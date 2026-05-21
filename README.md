@@ -1,48 +1,12 @@
 # niBuild
 
-Neuroimaging analysis suffers from a reproducibility crisis. The same dataset analyzed by different teams produces divergent results due to software versions, parameter choices, and undocumented processing steps ([Eklund et al., 2016](https://doi.org/10.1073/pnas.1602413113); [Botvinik-Nezer et al., 2020](https://doi.org/10.1038/s41586-020-2314-9)). Manual pipeline scripting is error-prone, hard to share, and rarely portable across computing environments.
+Recent advances in neuroimaging have led to an unprecedented emphasis on imaging in brain research. Despite progress in standardizing data dissemination, analysis remains fragmented.
 
-niBuild addresses this by providing a **no-code, browser-based GUI** where researchers visually design analysis workflows from **100+ neuroimaging tools across 9 libraries**, then export a self-contained [Workflow RO-Crate](https://w3id.org/workflowhub/workflow-ro-crate/1.0) bundle with [CWL](https://www.commonwl.org/) workflows, Docker/Singularity containers, and FAIR-compliant metadata — all without installing anything.
+The absence of analysis workflow standards leads to irreproducible and potentially invalid results, opacity in the literature, and reinforces archaic, esoteric analysis practices.
 
-Clicking **Export** generates a `.crate.zip` containing everything needed to run the workflow:
+niBuild addresses this by providing a web-based graphical user interface (GUI) enabling visual construction of multi-modal preprocessing and analysis workflows.
+The open-source architecture follows the FAIR principles for optimization of data sharing. niBuild workflows are portable, environment-agnostic containers. Individual operations are implemented via the Common Workflow Language (CWL) as standalone tools.
 
-```
-my_pipeline.crate.zip/
-├── workflows/my_pipeline.cwl          # CWL workflow definition
-├── workflows/my_pipeline_job.yml      # Pre-configured job template
-├── cwl/                               # Tool CWL files (with pinned Docker versions)
-├── Dockerfile                         # Docker orchestration container
-├── run.sh                             # Docker execution entrypoint
-├── prefetch_images.sh                 # Pre-pull tool images
-├── Singularity.def                    # Singularity/Apptainer container (if enabled)
-├── run_singularity.sh                 # HPC execution entrypoint
-├── prefetch_images_singularity.sh     # Convert images to SIF format
-├── ro-crate-metadata.json             # JSON-LD metadata (FAIR compliance)
-└── README.md                          # Execution instructions
-```
+For theoretical information please see the **paper (in progress)** or **poster (in progress)**. 
 
-## Contributing
-
-### Local Development
-
-```bash
-git clone https://github.com/KunaalAgarwal/niBuild.git
-cd niBuild
-npm install
-npm run dev
-```
-
-1. Create a feature branch from `main`:
-   ```bash
-   git checkout -b feature/your-feature
-   ```
-2. Make changes and test thoroughly (see `utils/` for the testing harness).
-3. Open a pull request to `main`. PRs are reviewed before merging.
-4. On merge to `main`, GitHub Actions automatically deploys to GitHub Pages.
-
-
-## Citation
-
-niBuild was created by **Kunaal Agarwal** and **Javier Rasero, PhD**, under the funding of the **University of Virginia Harrison Research Award**.
-
-> Publication forthcoming. If you use niBuild in your research, please cite this repository.
+For practical information please see the **[documentation](https://kunaalagarwal.github.io/niBuild-auxiliary/construction/)** and **[auxiliary directory](https://github.com/KunaalAgarwal/niBuild-auxiliary)**.
