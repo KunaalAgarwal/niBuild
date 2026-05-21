@@ -24,7 +24,7 @@
 .top-bar-right {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     flex-shrink: 0;
     z-index: 1;
     /* margin-left: auto used to be needed when .top-bar-center was absolutely
@@ -91,8 +91,9 @@
 }
 
 /* The .top-bar-btn:disabled fade-to-40% is for non-action buttons (Docs /
-   GitHub / Issues anchors); the action buttons below own their own disabled
-   styling so the colored border doesn't ghost at 40% opacity. */
+   GitHub / Issues anchors); the action buttons below own their own :disabled
+   rule — they keep the kind tint (text, fill, and border) and fade together
+   as one piece. */
 .top-bar-btn:disabled:not(.top-bar-btn-action) {
     opacity: 0.4;
     cursor: not-allowed;
@@ -108,41 +109,57 @@
 /* ───────────────────────────────────────────────────────────────
    Action buttons (Save as Workflow / Save as Custom Node / Generate)
 
-   All three share identical structure: colored text + matching border,
-   hover tints background to the kind's muted color and darkens the
-   border slightly, focus paints a 2px accent ring, mouse-down nudges
-   1px. Per-kind classes only override four CSS custom properties.
+   Soft-tinted "chip" style: a faint kind-colored fill behind colored
+   text, ringed by a 1px border in the same hue, so each one reads as
+   a finished button rather than a bare text link. The fixed 28px
+   height + inline-flex centering match the .wm-toolbar-btn family,
+   making the right-side cluster a deliberate button row.
+
+   Hover holds the text color steady and lets the chip gain weight —
+   the fill roughly doubles in density and the border firms up. No
+   text glow, no scale, no shadow, no motion: a heavier, quieter
+   shift than a brighten.
+
+   Per-kind classes set five custom properties:
+     --ba-color                       text   (rest + hover)
+     --ba-bg     / --ba-bg-hover      fill   — rest / hover
+     --ba-border / --ba-border-hover  border — rest / hover
    ─────────────────────────────────────────────────────────────── */
 .top-bar-btn-action {
-    color: var(--ba-color);
-    border: 1px solid var(--ba-border);
-    /* Slightly smaller than the .top-bar-btn base (which uses --size-md / 14px
-       for the external-link anchors). --size-sm matches the WorkflowManagerPage
-       toolbar buttons (.wm-toolbar-btn) and the VS Code base UI size, so the
-       three action buttons sit consistently with the rest of the app's chrome
-       controls. line-height kept tight so the slimmer padding doesn't make the
-       label feel floaty inside the colored border. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* border-box so the 1px border sits inside the 28px height — this
+       project has no global box-sizing reset. */
+    box-sizing: border-box;
+    height: 28px;
+    padding: 0 12px;
+    /* --size-sm + the 28px height match the .wm-toolbar-btn family and
+       VS Code's base UI size, keeping the right-side chrome consistent. */
     font-size: var(--size-sm);
-    line-height: 1.4;
-    padding: 2px 9px;
+    line-height: 1;
+    color: var(--ba-color);
+    background-color: var(--ba-bg);
+    border: 1px solid var(--ba-border);
     transition:
         background-color var(--transition-normal),
-        color var(--transition-normal),
-        border-color var(--transition-normal),
-        box-shadow var(--transition-normal);
+        border-color var(--transition-normal);
 }
 
 .top-bar-btn-action:hover:not(:disabled) {
-    /* Subtle hover: no background fill — just a small text brighten plus a
-       gentle border darken so the button registers as interactive without
-       lighting up the chrome. transform / box-shadow are still reset so the
-       global `button:hover` (5% scale + soft shadow) and any stray
-       :focus-visible ring don't sneak through on top. */
-    color: var(--ba-hover);
-    border-color: var(--ba-border-strong);
-    background-color: transparent;
+    /* Heavier, quieter hover: the fill roughly doubles in density and the
+       border firms up, but the text holds its rest color — the chip gains
+       tonal weight instead of lighting up. */
+    background-color: var(--ba-bg-hover);
+    border-color: var(--ba-border-hover);
     box-shadow: none;
     transform: none;
+}
+
+/* Suppress the global `button:focus` 2px outline on pointer focus;
+   keyboard focus still gets the soft --shadow-focus ring below. */
+.top-bar-btn-action:focus {
+    outline: none;
 }
 
 .top-bar-btn-action:focus-visible {
@@ -151,31 +168,32 @@
 }
 
 .top-bar-btn-action:active:not(:disabled) {
-    transform: translateY(1px);
+    transform: none;
 }
 
 .top-bar-btn-action:disabled {
-    /* Subtle but still kind-tinted: keep the kind's text + border color
-       (--ba-color / --ba-border) so the button still reads as "this kind of
-       save / generate", and rely on the opacity drop to communicate "off".
-       Without the kind-color the buttons all collapsed to the same grey,
-       which made it harder to tell at a glance which action you couldn't take. */
+    /* Keep the kind tint (text + fill + border) so a disabled "Update
+       Workflow" still reads as a workflow action; opacity alone carries
+       the "off" state. Re-stating the three properties here also outranks
+       the base .top-bar-btn:hover gray fill when a disabled button is
+       hovered. */
     color: var(--ba-color);
+    background-color: var(--ba-bg);
     border-color: var(--ba-border);
-    background-color: transparent;
     cursor: not-allowed;
-    opacity: 0.45;
+    opacity: 0.4;
 }
 
 /* "Save as Workflow" — purple, inherits the visual identity of the original
    single Save button so users carry the "save = purple" association across
-   the split. */
+   the split. The -hover values roughly double the --color-purple-muted
+   (0.15) fill and firm up the --color-purple-border (0.4). */
 .top-bar-btn-save-workflow {
     --ba-color: var(--color-purple);
+    --ba-bg: var(--color-purple-muted);
+    --ba-bg-hover: rgba(168, 85, 247, 0.3);
     --ba-border: var(--color-purple-border);
-    --ba-border-strong: rgba(168, 85, 247, 0.6);
-    --ba-muted: var(--color-purple-muted);
-    --ba-hover: var(--color-purple-hover);
+    --ba-border-hover: rgba(168, 85, 247, 0.66);
 }
 
 /* "Save as Custom Node" — tangerine, the dedicated color for the
@@ -183,18 +201,18 @@
    and the CUSTOM tab decoration. */
 .top-bar-btn-save-custom {
     --ba-color: var(--color-custom);
+    --ba-bg: var(--color-custom-muted);
+    --ba-bg-hover: rgba(255, 157, 86, 0.3);
     --ba-border: var(--color-custom-border);
-    --ba-border-strong: rgba(255, 157, 86, 0.6);
-    --ba-muted: var(--color-custom-muted);
-    --ba-hover: var(--color-custom-hover);
+    --ba-border-hover: rgba(255, 157, 86, 0.66);
 }
 
 .top-bar-btn-generate {
     --ba-color: var(--color-accent);
+    --ba-bg: var(--color-accent-muted);
+    --ba-bg-hover: rgba(0, 120, 212, 0.3);
     --ba-border: var(--color-accent-border);
-    --ba-border-strong: rgba(0, 120, 212, 0.6);
-    --ba-muted: var(--color-accent-muted);
-    --ba-hover: var(--color-accent-hover);
+    --ba-border-hover: rgba(0, 120, 212, 0.66);
 }
 
 /* Responsive labels — long form by default, short form below 900px (matches

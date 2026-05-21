@@ -157,6 +157,17 @@ export function useCustomWorkflows() {
     }, []);
 
     /**
+     * Rename a workflow. Does NOT bump `updatedAt` — the name is metadata
+     * about the workflow, not part of its executable content (same reasoning
+     * as `updateWorkflowNotes`). Ignores empty/whitespace-only names.
+     */
+    const renameWorkflow = useCallback((id, name) => {
+        const trimmed = (name || '').trim();
+        if (!trimmed) return;
+        setCustomWorkflows((prev) => prev.map((w) => (w.id === id ? { ...w, name: trimmed } : w)));
+    }, []);
+
+    /**
      * Stamp `lastOpenedAt` on a workflow. Does NOT bump `updatedAt` — opening a
      * workflow doesn't change its content, only its access metadata.
      */
@@ -179,6 +190,7 @@ export function useCustomWorkflows() {
             deleteWorkflow,
             duplicateWorkflow,
             updateWorkflowNotes,
+            renameWorkflow,
             markWorkflowOpened,
             getNextDefaultName,
         }),
@@ -191,6 +203,7 @@ export function useCustomWorkflows() {
             deleteWorkflow,
             duplicateWorkflow,
             updateWorkflowNotes,
+            renameWorkflow,
             markWorkflowOpened,
             getNextDefaultName,
         ],

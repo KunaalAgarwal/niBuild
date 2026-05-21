@@ -941,6 +941,74 @@
     line-height: 1.4;
 }
 
+/* Pipeline node styling — cyan/info accent to distinguish from
+   custom workflows (purple) and I/O (green). Pre-baked pipeline
+   definitions like fMRIPrep render as collapsed wrappers until
+   the user clicks Expand. */
+.react-flow__node-default:has(.node-pipeline) {
+    border: 2px solid var(--color-info-border) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(230, 248, 252, 0.95)) !important;
+    box-shadow: 0 0 6px var(--color-info-muted);
+    border-radius: var(--radius-lg);
+}
+
+.react-flow__node-default:has(.node-pipeline):hover {
+    border-color: rgba(74, 198, 226, 0.85) !important;
+    box-shadow: 0 0 10px rgba(74, 198, 226, 0.25);
+}
+
+.node-pipeline {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none;
+}
+
+.node-pipeline-badge {
+    width: 84px;
+    min-width: 84px;
+    max-width: 84px;
+    display: flex;
+    align-items: center;
+}
+
+.node-bottom-left .node-pipeline-badge {
+    width: auto;
+    min-width: auto;
+    max-width: none;
+}
+
+.node-pipeline-badge-text {
+    font-size: 7px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: rgba(18, 130, 160, 0.95);
+    background-color: rgba(74, 198, 226, 0.08);
+    border: 1px solid rgba(74, 198, 226, 0.3);
+    border-radius: 2px;
+    padding: 0px 3px;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.node-pipeline-expand-btn {
+    color: var(--color-info);
+    font-weight: 600;
+}
+
+/* Gap badge for pipeline-constituent nodes whose CLI tool has no CWL wrapper yet. */
+.node-gap-badge {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--color-warning);
+    background-color: var(--color-warning-muted);
+    border: 1px dashed var(--color-warning-border);
+    border-radius: 2px;
+    padding: 0px 3px;
+    white-space: nowrap;
+    line-height: 1.4;
+    margin-left: 3px;
+}
+
 /* Custom workflow parameter modal navigation */
 .custom-workflow-nav {
     display: flex;

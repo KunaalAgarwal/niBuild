@@ -2,6 +2,11 @@ import { useCallback } from 'react';
 import { MarkerType } from 'reactflow';
 
 import { deserializeNode } from '../utils/workflowDiff.js';
+import {
+    getPipelineDefinition,
+    filterPipelineByOptions,
+    getDefaultPipelineOptions,
+} from '../data/pipelineDefinitions.js';
 
 const EDGE_ARROW = { type: MarkerType.ArrowClosed, width: 10, height: 10 };
 
@@ -42,6 +47,7 @@ export function useCanvasDrop({
     showError,
     handlers,
     triggerBIDSDirectoryPicker,
+    nodesRef,
 }) {
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -78,7 +84,21 @@ export function useCanvasDrop({
     );
 
     const buildNodeOverrides = useCallback(
-        (name, { isDummy, isBIDS, isOutputNode, isStandardTemplate, customWorkflowId }) => {
+        (name, { isDummy, isBIDS, isOutputNode, isStandardTemplate, customWorkflowId, pipelineId }) => {
+            if (pipelineId) {
+                const def = getPipelineDefinition(pipelineId);
+                if (!def) return null;
+                return {
+                    overrides: (id) => ({
+                        label: def.name,
+                        isPipeline: true,
+                        pipelineId,
+                        pipelineOptions: getDefaultPipelineOptions(def),
+                        onExpand: () => handlers.handlePipelineExpand?.(id),
+                        onOpenOptions: () => handlers.handlePipelineOpenOptions?.(id),
+                    }),
+                };
+            }
             if (isBIDS) {
                 return {
                     overrides: (id) => ({
@@ -101,7 +121,6 @@ export function useCanvasDrop({
                         templateId: null,
                         template: null,
                         resolvedFilename: null,
-                        _pickTemplate: true,
                         onSaveParameters: null,
                         onSaveIO: (data) => handlers.handleIONodeUpdate(id, data),
                         onUpdateStandardTemplate: (updates) => handlers.handleStandardTemplateUpdate(id, updates),
@@ -140,6 +159,116 @@ export function useCanvasDrop({
         // Reason: handlers + triggerBIDSDirectoryPicker are passed in by the parent and re-created each render; the closures they wrap use stable setNodes/markForSync internally. Re-running this useCallback when handlers churn would cascade into recreating onDrop on every render.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [customWorkflows],
+    );
+
+    // Pipeline expansion: replace a collapsed PipelineNode wrapper with its
+    // constituent CLI nodes from PIPELINE_DEFINITIONS. Conditional nodes
+    // (gated by pipelineOptions) are filtered out before expansion. Edges
+    // attached to the wrapper are re-routed to the boundary nodes of the
+    // expanded graph. The wrapper itself is removed (destructive replace,
+    // mirroring `kind: 'workflow'` saved workflow expansion).
+    //
+    // Reads current node state via `nodesRef` (parent must keep it synced).
+    const expandPipelineNode = useCallback(
+        (pipelineNodeId) => {
+            const pipelineNode = nodesRef?.current?.find((n) => n.id === pipelineNodeId);
+            if (!pipelineNode || !pipelineNode.data?.isPipeline) {
+                showError('Pipeline node not found for expansion.');
+                return;
+            }
+            const def = getPipelineDefinition(pipelineNode.data.pipelineId);
+            if (!def) {
+                showError(`Pipeline definition "${pipelineNode.data.pipelineId}" not registered.`);
+                return;
+            }
+
+            const { nodes: filteredNodes, edges: filteredEdges } = filterPipelineByOptions(
+                def,
+                pipelineNode.data.pipelineOptions || {},
+            );
+            if (filteredNodes.length === 0) {
+                showError('No active nodes to expand with the current options.');
+                return;
+            }
+
+            // Position offset: anchor the expanded graph's top-left at the
+            // pipeline wrapper's current position so the user sees expansion
+            // happen "from" the wrapper.
+            const minX = Math.min(...filteredNodes.map((n) => n.position?.x ?? 0));
+            const minY = Math.min(...filteredNodes.map((n) => n.position?.y ?? 0));
+            const dropPosition = pipelineNode.position || { x: 0, y: 0 };
+            const offset = { x: dropPosition.x - minX, y: dropPosition.y - minY };
+
+            const idMap = new Map(filteredNodes.map((n) => [n.id, crypto.randomUUID()]));
+
+            // Resolve boundary node ids in the expanded graph (used to
+            // re-route external edges that were attached to the wrapper).
+            // Boundary refs in pipeline definitions are node IDs.
+            const firstBoundaryId = idMap.get(def.boundaryNodes?.firstNonDummy) || idMap.get(filteredNodes[0].id);
+            const lastBoundaryId =
+                idMap.get(def.boundaryNodes?.lastNonDummy) || idMap.get(filteredNodes[filteredNodes.length - 1].id);
+
+            const newNodes = filteredNodes.map((pNode) => {
+                const newId = idMap.get(pNode.id);
+                const base = deserializeNode(pNode);
+                const d = base.data;
+                return {
+                    id: newId,
+                    type: base.type,
+                    position: {
+                        x: (base.position?.x ?? 0) + offset.x,
+                        y: (base.position?.y ?? 0) + offset.y,
+                    },
+                    data: {
+                        ...d,
+                        // Preserve gap flag through deserialization (deserializeNode
+                        // doesn't know about _gap; copy it through manually).
+                        _gap: pNode._gap || false,
+                        stage: pNode.stage,
+                        onSaveParameters: (newData) => handlers.handleNodeUpdate(newId, newData),
+                    },
+                };
+            });
+
+            const newEdges = filteredEdges
+                .map((e, idx) => {
+                    const newSource = idMap.get(e.source);
+                    const newTarget = idMap.get(e.target);
+                    if (!newSource || !newTarget) return null;
+                    return {
+                        id: e.id ? `${e.id}-exp-${idx}` : `${newSource}-${newTarget}-${idx}`,
+                        source: newSource,
+                        target: newTarget,
+                        data: { mappings: e.data?.mappings || [] },
+                        animated: true,
+                        markerEnd: EDGE_ARROW,
+                        style: { strokeWidth: 2 },
+                    };
+                })
+                .filter(Boolean);
+
+            // Re-route external edges that were attached to the pipeline
+            // wrapper: source on wrapper → source on last boundary; target
+            // on wrapper → target on first boundary.
+            setNodes((prev) => prev.filter((n) => n.id !== pipelineNodeId).concat(newNodes));
+            setEdges((prev) => {
+                const rerouted = prev.map((e) => {
+                    if (e.source === pipelineNodeId && lastBoundaryId) {
+                        return { ...e, source: lastBoundaryId };
+                    }
+                    if (e.target === pipelineNodeId && firstBoundaryId) {
+                        return { ...e, target: firstBoundaryId };
+                    }
+                    return e;
+                });
+                return [...rerouted, ...newEdges];
+            });
+            markForSync();
+        },
+        // Reason: handlers + showError churn each render; closures resolve
+        // them at fire time. Matching the pattern used by expandSavedWorkflow.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [setNodes, setEdges, markForSync, showError],
     );
 
     // Workflow expansion drop: takes a saved workflow (kind='workflow') and
@@ -259,6 +388,7 @@ export function useCanvasDrop({
             const isOutputNode = event.dataTransfer.getData('node/isOutputNode') === 'true';
             const isStandardTemplate = event.dataTransfer.getData('node/isStandardTemplate') === 'true';
             const customWorkflowId = event.dataTransfer.getData('node/customWorkflowId');
+            const pipelineId = event.dataTransfer.getData('node/pipelineId');
 
             const result = buildNodeOverrides(name, {
                 isDummy,
@@ -266,6 +396,7 @@ export function useCanvasDrop({
                 isOutputNode,
                 isStandardTemplate,
                 customWorkflowId,
+                pipelineId,
             });
             if (!result) return;
             createNodeAt(flowPosition, name, result.overrides, result.afterAdd);
@@ -289,5 +420,5 @@ export function useCanvasDrop({
         [reactFlowInstance, reactFlowWrapper, createNodeAt, buildNodeOverrides],
     );
 
-    return { onDragOver, onDrop, addNodeAtCenter };
+    return { onDragOver, onDrop, addNodeAtCenter, expandPipelineNode };
 }

@@ -6,6 +6,7 @@ import IONodeComponent from './IONodeComponent.jsx';
 import BIDSNodeComponent from './BIDSNodeComponent.jsx';
 import StandardTemplateNodeComponent from './StandardTemplateNodeComponent.jsx';
 import CustomWorkflowNodeComponent from './CustomWorkflowNodeComponent.jsx';
+import PipelineNodeComponent from './PipelineNodeComponent.jsx';
 import ToolNodeComponent from './ToolNodeComponent.jsx';
 import '../styles/workflowItem.css';
 
@@ -72,6 +73,12 @@ const NodeComponent = ({ data, id }) => {
                 wiredInputs={wiredInputs}
             />
         );
+    }
+
+    // Pre-baked pipeline nodes (e.g. fMRIPrep) — collapsed wrappers that
+    // expand into their constituent CLI graph on demand.
+    if (data.isPipeline) {
+        return <PipelineNodeComponent id={id} data={data} />;
     }
 
     // Regular tool nodes

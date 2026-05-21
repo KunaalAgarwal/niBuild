@@ -220,6 +220,41 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     min-width: 0;
+    cursor: text;
+}
+
+/* Inline rename input — replaces .wm-row-name on double-click. Hugs its text
+   where `field-sizing` is supported, with a fixed-width fallback otherwise;
+   capped at the cell width so it never stretches or overflows the column. */
+.wm-row-name-input {
+    box-sizing: border-box;
+    flex: 0 1 auto;
+    width: 14rem;
+    min-width: 4rem;
+    max-width: 100%;
+    padding: 2px 6px;
+    margin-block: -3px;
+    font-family: var(--font-ui);
+    font-size: var(--size-md);
+    font-weight: var(--weight-semibold);
+    line-height: 1.4;
+    color: var(--text-primary);
+    background-color: var(--bg-input, #313131);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: box-shadow var(--transition-fast);
+}
+
+@supports (field-sizing: content) {
+    .wm-row-name-input {
+        field-sizing: content;
+        width: auto;
+    }
+}
+
+.wm-row-name-input:focus {
+    box-shadow: 0 0 0 2px var(--color-accent-muted);
 }
 
 .wm-row-meta {

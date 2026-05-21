@@ -52,6 +52,12 @@ export function serializeNodes(nodes) {
         templateId: n.data?.templateId || n.templateId || null,
         template: n.data?.template || n.template || null,
         resolvedFilename: n.data?.resolvedFilename || n.resolvedFilename || null,
+        // Pipeline wrapper persistence: an `isPipeline` node only needs its
+        // pipelineId + current pipelineOptions to round-trip. The constituent
+        // graph itself is looked up from PIPELINE_DEFINITIONS at expand time.
+        isPipeline: n.data?.isPipeline || n.isPipeline || false,
+        pipelineId: n.data?.pipelineId || n.pipelineId || null,
+        pipelineOptions: n.data?.pipelineOptions || n.pipelineOptions || null,
         notes: n.data?.notes || n.notes || '',
         parameters: n.data?.parameters || n.parameters || {},
         dockerVersion: n.data?.dockerVersion || n.dockerVersion || 'latest',
@@ -83,6 +89,9 @@ export function deserializeNode(n) {
             templateId: n.templateId || null,
             template: n.template || null,
             resolvedFilename: n.resolvedFilename || null,
+            isPipeline: n.isPipeline || false,
+            pipelineId: n.pipelineId || null,
+            pipelineOptions: n.pipelineOptions || null,
             notes: n.notes || '',
             parameters: n.parameters || {},
             dockerVersion: n.dockerVersion || 'latest',

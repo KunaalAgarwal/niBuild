@@ -3,6 +3,90 @@ import { getToolConfigSync } from '../utils/toolRegistry.js';
 import { computeScatteredNodes, buildArrayTypedInputs } from '../utils/scatterPropagation.js';
 import { topoSort } from '../utils/topoSort.js';
 import { deserializeNode } from '../utils/workflowDiff.js';
+import { getPipelineDefinition, filterPipelineByOptions } from '../data/pipelineDefinitions.js';
+
+/**
+ * Inline any unexpanded `isPipeline` wrapper nodes by replacing each with
+ * its constituent graph from PIPELINE_DEFINITIONS, filtered by the wrapper's
+ * pipelineOptions. External edges attached to the wrapper are re-routed to
+ * the boundary nodes of the expanded graph.
+ *
+ * This is the CWL-time analog of `expandPipelineNode` in useCanvasDrop.js,
+ * used when a user attempts to generate CWL with a collapsed PipelineNode
+ * still on the canvas. Returns a flat graph with no isPipeline wrappers.
+ */
+export function expandPipelineWrapperNodes(graph) {
+    const { nodes, edges } = graph;
+    const wrapperNodes = nodes.filter((n) => n.data?.isPipeline);
+    if (wrapperNodes.length === 0) return graph;
+
+    const wrapperIds = new Set(wrapperNodes.map((n) => n.id));
+    const expandedNodes = [];
+    const expandedEdges = [];
+    const boundaryMap = new Map(); // wrapperId → { firstId, lastId }
+
+    for (const wrapper of wrapperNodes) {
+        const def = getPipelineDefinition(wrapper.data.pipelineId);
+        if (!def) continue;
+        const { nodes: pNodes, edges: pEdges } = filterPipelineByOptions(def, wrapper.data.pipelineOptions || {});
+        if (pNodes.length === 0) continue;
+
+        // Skip _gap nodes during CWL generation — they have no CWL wrapper.
+        const cliNodes = pNodes.filter((n) => !n._gap);
+        const cliIds = new Set(cliNodes.map((n) => n.id));
+        const cliEdges = pEdges.filter((e) => cliIds.has(e.source) && cliIds.has(e.target));
+
+        for (const pNode of cliNodes) {
+            const deserialized = deserializeNode(pNode);
+            deserialized.id = `${wrapper.id}__${pNode.id}`;
+            expandedNodes.push(deserialized);
+        }
+        for (const pEdge of cliEdges) {
+            expandedEdges.push({
+                id: `${wrapper.id}__${pEdge.id}`,
+                source: `${wrapper.id}__${pEdge.source}`,
+                target: `${wrapper.id}__${pEdge.target}`,
+                data: pEdge.data ? structuredClone(pEdge.data) : {},
+            });
+        }
+
+        // Resolve boundary IDs for external-edge re-routing.
+        // Boundary refs in pipeline definitions are node IDs.
+        const firstId =
+            def.boundaryNodes?.firstNonDummy && cliIds.has(def.boundaryNodes.firstNonDummy)
+                ? `${wrapper.id}__${def.boundaryNodes.firstNonDummy}`
+                : `${wrapper.id}__${cliNodes[0].id}`;
+        const lastId =
+            def.boundaryNodes?.lastNonDummy && cliIds.has(def.boundaryNodes.lastNonDummy)
+                ? `${wrapper.id}__${def.boundaryNodes.lastNonDummy}`
+                : `${wrapper.id}__${cliNodes[cliNodes.length - 1].id}`;
+        boundaryMap.set(wrapper.id, { firstId, lastId });
+    }
+
+    const regularNodes = nodes.filter((n) => !wrapperIds.has(n.id));
+    const rewrittenEdges = [];
+    for (const edge of edges) {
+        const srcIsWrapper = wrapperIds.has(edge.source);
+        const tgtIsWrapper = wrapperIds.has(edge.target);
+        if (!srcIsWrapper && !tgtIsWrapper) {
+            rewrittenEdges.push(edge);
+            continue;
+        }
+        const newSource = srcIsWrapper ? boundaryMap.get(edge.source)?.lastId : edge.source;
+        const newTarget = tgtIsWrapper ? boundaryMap.get(edge.target)?.firstId : edge.target;
+        if (!newSource || !newTarget) continue;
+        rewrittenEdges.push({
+            ...edge,
+            source: newSource,
+            target: newTarget,
+        });
+    }
+
+    return {
+        nodes: [...regularNodes, ...expandedNodes],
+        edges: [...rewrittenEdges, ...expandedEdges],
+    };
+}
 
 /**
  * Expand custom workflow nodes into their internal nodes/edges.
@@ -606,7 +690,11 @@ function declareSelectedOutputs(ctx, selectedOutputs, conditionalStepIds) {
  * Returns the raw object before YAML serialization.
  */
 export function buildCWLWorkflowObject(graph) {
-    // Pre-process: expand any custom workflow nodes into flat internal nodes
+    // Pre-process: inline any unexpanded pipeline wrappers (fMRIPrep, etc.)
+    // and then expand any custom workflow nodes into flat internal nodes.
+    // Pipelines first so a pipeline whose internal graph contains a custom
+    // workflow (unlikely but possible) still composes correctly.
+    graph = expandPipelineWrapperNodes(graph);
     graph = expandCustomWorkflowNodes(graph);
 
     // Extract Output node configuration before filtering out dummies.

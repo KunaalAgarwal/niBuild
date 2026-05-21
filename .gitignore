@@ -20,6 +20,7 @@ notes/
 # Public folder artifacts
 /public/*.log
 /public/temp/
+/public/templates/
 
 # Testing artifacts (downloaded datasets and tool outputs)
 tests/data/

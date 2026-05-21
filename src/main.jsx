@@ -17,6 +17,8 @@ import { TemplateAssetProvider } from './context/TemplateAssetContext.jsx';
 import { TOOL_ANNOTATIONS } from './utils/toolAnnotations.js';
 import { preloadAllCWL } from './utils/cwlParser.js';
 import { invalidateMergeCache } from './utils/toolRegistry.js';
+import { readImportDirectory } from './utils/cwlImporter.js';
+import { buildGraphFromManifest } from './utils/cwlGraphBuilder.js';
 import {
     serializeNodes,
     serializeEdges,
@@ -124,6 +126,7 @@ function App() {
         deleteWorkflow,
         duplicateWorkflow,
         updateWorkflowNotes,
+        renameWorkflow,
         markWorkflowOpened,
         getNextDefaultName,
         customWorkflows,
@@ -689,14 +692,49 @@ function App() {
     const handleImportCWL = useCallback(() => {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = '.cwl,.yaml,.yml';
-        input.onchange = (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            showInfo(`Imported "${file.name}" — CWL import coming soon`);
+        input.webkitdirectory = true;
+        input.multiple = true;
+        input.onchange = async (e) => {
+            const files = e.target.files;
+            if (!files || files.length === 0) return;
+            const manifest = await readImportDirectory(files);
+
+            if (manifest.errors.length) {
+                manifest.errors.forEach((issue) => showError(issue.message, 6000));
+                console.warn('[cwlImporter] Import aborted:', manifest);
+                return;
+            }
+            if (manifest.warnings.length) {
+                manifest.warnings.forEach((issue) => showWarning(issue.message, 5000));
+            }
+
+            let graph;
+            try {
+                graph = buildGraphFromManifest(manifest);
+            } catch (err) {
+                showError(`Could not build the imported workflow: ${err.message}`, 6000);
+                return;
+            }
+            graph.warnings.forEach((w) => showWarning(w, 5000));
+
+            const wsName = manifest.workflowFile.name.replace(/\.cwl$/i, '');
+            const newWsId = addNewWorkspaceWithData({ nodes: graph.nodes, edges: graph.edges, name: wsName });
+            setActiveTabKey(`ws-${newWsId}`);
+
+            if (graph.stats.placeholderCount > 0) {
+                const n = graph.stats.placeholderCount;
+                showWarning(
+                    `${n} step${n === 1 ? '' : 's'} imported as placeholder${n === 1 ? '' : 's'} — replace with real tools before exporting.`,
+                    7000,
+                );
+            }
+            showSuccess(
+                `Imported "${wsName}" — ${graph.nodes.length} node${graph.nodes.length === 1 ? '' : 's'}.`,
+                5000,
+            );
         };
         input.click();
-    }, [showInfo]);
+    }, [showError, showWarning, showSuccess, addNewWorkspaceWithData, setActiveTabKey]);
 
     // Mirrors the TopBar's left-to-right action order: workspace lifecycle,
     // then the two save kinds (Save as Workflow → Save as Custom Node), then
@@ -846,6 +884,7 @@ function App() {
                         onDuplicateWorkflow={duplicateWorkflow}
                         onAccessArtifact={handleOpenWorkflowWithAction}
                         onUpdateNotes={updateWorkflowNotes}
+                        onRenameWorkflow={renameWorkflow}
                         workspaces={workspaces}
                         cwlReady={cwlReady}
                     />

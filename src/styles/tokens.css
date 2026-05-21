@@ -66,14 +66,17 @@
     --color-success: #4caf50;
     --color-success-muted: rgba(76, 175, 80, 0.12);
     --color-success-border: rgba(76, 175, 80, 0.35);
+    --color-success-text: #a5d6a7;
 
     --color-warning: #ffc107;
     --color-warning-muted: rgba(255, 193, 7, 0.12);
     --color-warning-border: rgba(255, 193, 7, 0.4);
+    --color-warning-hover: #ffdc50;
 
     --color-danger: #e74c3c;
     --color-danger-muted: rgba(231, 76, 60, 0.12);
     --color-danger-border: rgba(231, 76, 60, 0.4);
+    --color-danger-text: #ef9a9a;
 
     --color-info: #4ac6e2;
     --color-info-muted: rgba(74, 198, 226, 0.12);

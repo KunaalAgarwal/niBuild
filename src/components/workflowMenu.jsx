@@ -10,6 +10,7 @@ import {
     dummyNodes,
 } from '../utils/toolAnnotations';
 import { useCustomWorkflowsContext } from '../context/CustomWorkflowsContext.jsx';
+import { hasPipelineDefinition } from '../data/pipelineDefinitions.js';
 import '../styles/workflowMenu.css';
 
 // VS Code–style chevron: points right when collapsed, rotates 90° when expanded.
@@ -100,6 +101,13 @@ function WorkflowMenu({ onEditWorkflow, onDeleteWorkflow }) {
         }
         if (dummyDef?.isStandardTemplate) {
             event.dataTransfer.setData('node/isStandardTemplate', 'true');
+        }
+        // Pipeline tools (e.g. fmriprep) with a registered constituent
+        // graph drop as a collapsed PipelineNode wrapper. The canvas drop
+        // handler chooses between the standard tool path and the pipeline
+        // path based on `node/pipelineId`.
+        if (!isDummy && hasPipelineDefinition(name)) {
+            event.dataTransfer.setData('node/pipelineId', name);
         }
     }, []);
 

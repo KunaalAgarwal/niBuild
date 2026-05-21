@@ -201,6 +201,13 @@ function WorkflowCanvas({
                         ...(node.data.isCustomWorkflow
                             ? { onUpdateInternalBIDS: (updates) => handleInternalBIDSUpdate(node.id, updates) }
                             : {}),
+                        // Reattach pipeline callbacks for collapsed PipelineNode wrappers
+                        ...(node.data.isPipeline
+                            ? {
+                                  onExpand: () => handlePipelineExpand(node.id),
+                                  onOpenOptions: () => handlePipelineOpenOptions(node.id),
+                              }
+                            : {}),
                         // Reattach I/O edit callback for dummy nodes
                         onSaveIO: node.data.isDummy ? (data) => handleIONodeUpdate(node.id, data) : null,
                         // Reattach output config callback for Output nodes (fallback to label for legacy nodes)
@@ -399,8 +406,16 @@ function WorkflowCanvas({
             ...(u.template !== undefined ? { template: u.template } : {}),
             ...(u.resolvedFilename !== undefined ? { resolvedFilename: u.resolvedFilename } : {}),
             ...(u.label !== undefined ? { label: u.label } : {}),
-            ...(u._pickTemplate !== undefined ? { _pickTemplate: u._pickTemplate } : {}),
         }));
+
+    // Forward declaration: filled in after `expandPipelineNode` is returned
+    // from useCanvasDrop below. Used by the pipeline wrapper's Expand button.
+    const handlePipelineExpandRef = useRef(null);
+    const handlePipelineExpand = (nodeId) => handlePipelineExpandRef.current?.(nodeId);
+    const handlePipelineOpenOptions = (nodeId) => {
+        if (workspaceId) setSelectedNode(workspaceId, nodeId);
+        setActiveSidebarTab('params');
+    };
 
     const {
         modalState: { showEdgeModal, edgeModalData },
@@ -411,10 +426,16 @@ function WorkflowCanvas({
         handleEdgesChange,
     } = useEdgeMapping(nodeMap, setEdges, onEdgesChange, scatterContext, markForSync);
 
+    // Keep latest nodes accessible to expandPipelineNode (which needs to
+    // read the wrapper's current position + pipelineOptions at click time).
+    const nodesRef = useRef(nodes);
+    nodesRef.current = nodes;
+
     const {
         onDragOver: handleDragOver,
         onDrop: handleDrop,
         addNodeAtCenter,
+        expandPipelineNode,
     } = useCanvasDrop({
         reactFlowInstance,
         reactFlowWrapper,
@@ -431,9 +452,13 @@ function WorkflowCanvas({
             handleIONodeUpdate,
             handleOutputNodeUpdate,
             handleStandardTemplateUpdate,
+            handlePipelineExpand,
+            handlePipelineOpenOptions,
         },
         triggerBIDSDirectoryPicker,
+        nodesRef,
     });
+    handlePipelineExpandRef.current = expandPipelineNode;
 
     // Delete nodes and corresponding edges.
     // Uses Set for O(1) lookups instead of O(n) array.some()
